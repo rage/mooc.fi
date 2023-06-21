@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react"
 
-import { orderBy } from "lodash"
 import { useController, useFormContext } from "react-hook-form"
+import { sortBy } from "remeda"
 
 import {
   Autocomplete,
@@ -63,7 +63,7 @@ function CourseTagsForm() {
 
   const options = useMemo(
     () =>
-      orderBy(tagOptions ?? [], (tag) => tag.name?.toLocaleLowerCase()).filter(
+      sortBy(tagOptions ?? [], (tag) => tag.name?.toLocaleLowerCase()).filter(
         hasNoLanguageTag,
       ), // language tag should come from course instance language
     [tagOptions],

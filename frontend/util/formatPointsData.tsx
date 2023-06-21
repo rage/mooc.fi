@@ -1,4 +1,4 @@
-import { flatten, groupBy, mapValues } from "lodash"
+import { groupBy, mapValues } from "remeda"
 
 import {
   UserCourseProgressCoreFieldsFragment,
@@ -8,7 +8,7 @@ import {
 export type FormattedGroupPointsDictionary = {
   total: number
   exercises: number
-  groups: _.Dictionary<FormattedGroupPoints>
+  groups: Record<string, FormattedGroupPoints>
 }
 
 export interface FormattedGroupPoints {
@@ -47,33 +47,34 @@ function formatPointsData({
 
   const courseProgressesByGroup = groupBy(
     userCourseProgress.points_by_group,
-    "group",
+    (e) => e.group,
   )
   const courseProgressByGroup = mapValues(courseProgressesByGroup, (o) => o[0])
 
-  const serviceProgressesArray = flatten(
-    userCourseServiceProgresses?.map(
-      (o) =>
-        o?.points_by_group?.map((o2: GroupPoints) => {
-          return {
-            service: o?.service?.name,
-            group: o2.group,
-            max_points: o2.max_points ?? 0,
-            n_points: o2.n_points ?? 0,
-            progress: o2.progress,
-          }
-        }) as ServiceGroupPoints[],
-    ),
+  const serviceProgressesArray = (userCourseServiceProgresses ?? []).flatMap(
+    (o) =>
+      o?.points_by_group?.map((o2: GroupPoints) => {
+        return {
+          service: o?.service?.name,
+          group: o2.group,
+          max_points: o2.max_points ?? 0,
+          n_points: o2.n_points ?? 0,
+          progress: o2.progress,
+        }
+      }) as ServiceGroupPoints[],
   )
 
-  const serviceProgressesByGroup = groupBy(serviceProgressesArray, "group")
+  const serviceProgressesByGroup = groupBy(
+    serviceProgressesArray,
+    (e) => e.group,
+  )
 
   return {
     total: userCourseProgress.exercise_progress?.total ?? 0,
     exercises: userCourseProgress.exercise_progress?.exercises ?? 0,
     groups: mapValues(courseProgressByGroup, (o) => ({
       courseProgress: o,
-      service_progresses: serviceProgressesByGroup[o.group],
+      service_progresses: serviceProgressesByGroup[o.group] ?? [],
     })),
   }
 }

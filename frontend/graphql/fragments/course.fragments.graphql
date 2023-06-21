@@ -152,3 +152,16 @@ fragment EditorCourseOtherCoursesFields on Course {
     ...CourseTranslationCoreFields
   }
 }
+
+fragment CourseDashboardCourseFields on Course {
+  ...CourseCoreFields
+  teacher_in_charge_name
+  teacher_in_charge_email
+  start_date
+  completion_email {
+    ...EmailTemplateCoreFields
+  }
+  course_stats_email {
+    ...EmailTemplateCoreFields
+  }
+}

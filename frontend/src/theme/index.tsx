@@ -5,7 +5,7 @@ import { withTypography } from "./typography"
 import type {} from "@mui/x-date-pickers/themeAugmentation"
 import type {} from "@mui/lab/themeAugmentation"
 
-import { flow } from "lodash"
+import { pipe } from "remeda"
 
 import { createTheme } from "@mui/material/styles"
 
@@ -24,7 +24,7 @@ let theme = createTheme({
   },
 })
 
-theme = flow(withPalette, withTypography, withComponents)(theme)
+theme = pipe(theme, withPalette, withTypography, withComponents)
 
 export { fontVariableClass } from "./typography"
 export default theme

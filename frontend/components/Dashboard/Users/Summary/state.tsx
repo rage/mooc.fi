@@ -1,6 +1,6 @@
 import { Reducer } from "react"
 
-import { orderBy, sortBy } from "lodash"
+import { sortBy } from "remeda"
 
 import { SearchVariables } from "/components/FilterMenu"
 
@@ -50,7 +50,9 @@ function mapExerciseCompletionsToExercise(
             (ec) => ec?.exercise_id === exercise.id,
           ),
         })),
-        ["part", "section", "name"],
+        (entry) => entry.part ?? 999,
+        (entry) => entry.section ?? 999,
+        (entry) => entry.name ?? "",
       ),
     },
     tier_summaries:
@@ -65,7 +67,9 @@ function mapExerciseCompletionsToExercise(
                 tierEntry?.exercise_completions ?? []
               ).filter((ec) => ec?.exercise_id === exercise.id),
             })),
-            ["part", "section", "name"],
+            (entry) => entry.part ?? 999,
+            (entry) => entry.section ?? 999,
+            (entry) => entry.name ?? "",
           ),
         },
       })) ?? null,
@@ -89,7 +93,7 @@ const updateSortedData = (state: UserSummaryState) => {
 
   switch (state.sort) {
     case "activity_date":
-      sortedData = orderBy(
+      sortedData = sortBy(
         sortedData,
         [
           (entry) => {
@@ -101,27 +105,30 @@ const updateSortedData = (state: UserSummaryState) => {
               ),
             )
             return (
-              orderBy(combinedExerciseCompletions, "created_at")?.pop()
+              sortBy(combinedExerciseCompletions, (e) => e.created_at)?.pop()
                 ?.updated_at ?? "2999-01-01"
             )
           },
-          "course.name",
+          flipOrder(state.order),
         ],
-        [flipOrder(state.order), state.order],
+        [(entry) => entry.course.name, state.order],
       )
       break
     case "completion_date":
-      sortedData = orderBy(
+      sortedData = sortBy(
         sortedData,
         [
-          (entry) => entry.completion?.updated_at ?? "2999-01-01",
-          "course.name",
+          (entry) => entry.completion?.completion_date ?? "2999-01-01",
+          flipOrder(state.order),
         ],
-        [flipOrder(state.order), state.order],
+        [(entry) => entry.course.name, state.order],
       )
       break
     default:
-      sortedData = orderBy(sortedData, "course.name", state.order)
+      sortedData = sortBy(sortedData, [
+        (entry) => entry.course.name,
+        state.order,
+      ])
       break
   }
 

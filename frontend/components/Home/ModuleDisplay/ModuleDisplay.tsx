@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 
-import { orderBy } from "lodash"
+import { sortBy } from "remeda"
 
 import { styled } from "@mui/material/styles"
 
@@ -34,15 +34,15 @@ function Module(props: ModuleProps) {
 
   const orderedCourses = useMemo(
     () =>
-      orderBy(
+      sortBy(
         studyModule?.courses ?? [],
         [
-          (course) => course.study_module_order,
-          (course) => course.study_module_start_point === true,
-          (course) => course.status === CourseStatus.Active,
-          (course) => course.status === CourseStatus.Upcoming,
+          (course) => course.study_module_order ?? Number.MAX_SAFE_INTEGER,
+          "asc",
         ],
-        ["asc", "desc", "desc", "desc"],
+        [(course) => course.study_module_start_point === true, "desc"],
+        [(course) => course.status === CourseStatus.Active, "desc"],
+        [(course) => course.status === CourseStatus.Upcoming, "desc"],
       ),
     [studyModule?.courses],
   )

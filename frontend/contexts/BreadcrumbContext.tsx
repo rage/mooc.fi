@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useMemo, useState } from "react"
 
+import { KeyOfTranslation } from "/translations"
 import { Breadcrumbs } from "/translations/breadcrumbs"
 
 export interface Breadcrumb {
-  translation?: keyof Breadcrumbs
+  translation?: KeyOfTranslation<Breadcrumbs>
   label?: string
   as?: string
   href?: string

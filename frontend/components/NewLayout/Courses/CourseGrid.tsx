@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 
-import { differenceBy } from "lodash"
 import dynamic from "next/dynamic"
 import { useRouter } from "next/router"
+import { difference, sort } from "remeda"
 
 import { useQuery } from "@apollo/client"
 import ClearIcon from "@mui/icons-material/Clear"
@@ -279,7 +279,7 @@ const compareCourses = (
 }
 
 function areEqual<T>(a: Array<T>, b: Array<T>) {
-  return a.length === b.length && !differenceBy(a, b).length
+  return a.length === b.length && !difference(a, b).length
 }
 
 function CourseGrid() {
@@ -348,10 +348,10 @@ function CourseGrid() {
     }, {} as Record<string, Array<TagCoreFieldsFragment>>)
 
     if (res["language"]) {
-      res["language"] = res["language"].sort(sortByLanguage)
+      res["language"].sort(sortByLanguage)
     }
     if (res["difficulty"]) {
-      res["difficulty"] = res["difficulty"].sort(sortByDifficulty)
+      res["difficulty"].sort(sortByDifficulty)
     }
 
     return res
@@ -523,7 +523,7 @@ function CourseGrid() {
             count={filteredCourses.length}
           />
           <CardsContainer>
-            {filteredCourses.sort(compareCourses).map((course) => (
+            {sort(filteredCourses, compareCourses).map((course) => (
               <CourseCard key={course.id} course={course} />
             ))}
             {filteredCourses.length === 0 && (

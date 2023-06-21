@@ -1,7 +1,7 @@
 import { PropsWithChildren, useMemo } from "react"
 
-import { merge } from "lodash"
 import { MaterialReactTableProps, MRT_ColumnDef } from "material-react-table"
+import { merge } from "remeda"
 
 import { PropsOf } from "@emotion/react"
 import CheckIcon from "@fortawesome/fontawesome-free/svgs/solid/check.svg?icon"

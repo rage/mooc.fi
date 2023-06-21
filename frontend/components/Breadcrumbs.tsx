@@ -1,6 +1,6 @@
 import React from "react"
 
-import { memoize } from "lodash"
+import memo from "just-memoize"
 import { useRouter } from "next/router"
 
 import { Link, Skeleton } from "@mui/material"
@@ -9,7 +9,9 @@ import { css, styled } from "@mui/material/styles"
 import { Breadcrumb, useBreadcrumbContext } from "/contexts/BreadcrumbContext"
 import { useTranslator } from "/hooks/useTranslator"
 import { isTranslationKey } from "/translations"
-import BreadcrumbsTranslations from "/translations/breadcrumbs"
+import BreadcrumbsTranslations, {
+  Breadcrumbs as BreadcrumbsTranslationType,
+} from "/translations/breadcrumbs"
 
 const BreadcrumbList = styled("ul")`
   list-style: none;
@@ -92,9 +94,7 @@ const BreadcrumbComponent: React.FunctionComponent<Breadcrumb> = ({
 }) => {
   const t = useTranslator(BreadcrumbsTranslations)
 
-  const _translation = isTranslationKey<typeof BreadcrumbsTranslations>(
-    translation,
-  )
+  const _translation = isTranslationKey<BreadcrumbsTranslationType>(translation)
     ? t(translation)
     : translation
 
@@ -113,7 +113,7 @@ const BreadcrumbComponent: React.FunctionComponent<Breadcrumb> = ({
   )
 }
 
-const createKey = memoize(
+const createKey = memo(
   (href: string, prefix?: string) =>
     `${prefix ?? ""}${encodeURIComponent(href).replace(/[%#]/g, "-")}`,
 )
@@ -122,9 +122,9 @@ export function Breadcrumbs() {
   const router = useRouter()
   const { breadcrumbs } = useBreadcrumbContext()
 
-  const isHomePage = !!router?.asPath
-    ?.replace(/#(.*)/, "")
-    .match(/^(?:\/_new)?\/?$/)
+  const isHomePage = !!RegExp(/^(?:\/_new)?\/?$/).exec(
+    router?.asPath?.replace(/#(.*)/, ""),
+  )
 
   if (isHomePage) {
     return null

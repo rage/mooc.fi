@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react"
 
-import { sortBy } from "lodash"
+import { sortBy } from "remeda"
 
 import CheckIcon from "@fortawesome/fontawesome-free/svgs/solid/check.svg?icon"
 import XMarkIcon from "@fortawesome/fontawesome-free/svgs/solid/xmark.svg?icon"

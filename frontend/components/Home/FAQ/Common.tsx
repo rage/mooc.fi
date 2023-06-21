@@ -1,8 +1,8 @@
 import React from "react"
 
-import { range } from "lodash"
 import { MDXComponents } from "mdx/types"
 import dynamic from "next/dynamic"
+import { range } from "remeda"
 
 import { MDXProvider } from "@mdx-js/react"
 import {
@@ -197,7 +197,7 @@ export const Loader = () => (
   >
     <ContentBox>
       <SectionBox>
-        {range(20).map((i) => (
+        {range(0, 20).map((i) => (
           <Skeleton key={`content-skeleton-${i}`} />
         ))}
       </SectionBox>

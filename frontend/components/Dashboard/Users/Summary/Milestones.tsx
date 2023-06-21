@@ -1,4 +1,4 @@
-import { max, min } from "lodash"
+import { maxBy, minBy } from "remeda"
 
 import HelpIcon from "@mui/icons-material/HelpOutlineOutlined"
 import { CardContent, Skeleton, Tooltip, Typography } from "@mui/material"
@@ -74,12 +74,14 @@ function Milestones({ data }: MilestonesProps) {
         .filter(notEmpty)
         .filter((ec) => ec.attempted)
     : data?.exercise_completions?.filter(notEmpty).filter((ec) => ec.attempted)
-  const firstExerciseDate = min(
-    exerciseCompletions?.map((ec) => ec.created_at).filter(notEmpty),
-  )
-  const latestExerciseDate = max(
-    exerciseCompletions?.map((ec) => ec.created_at).filter(notEmpty),
-  )
+  const firstExerciseDate = minBy(
+    exerciseCompletions ?? [],
+    (ec) => ec.created_at,
+  )?.created_at
+  const latestExerciseDate = maxBy(
+    exerciseCompletions ?? [],
+    (ec) => ec.created_at,
+  )?.created_at
   /*const completionDate = isRootCourse
     ? data?.completion?.completion_date
     : undefined*/

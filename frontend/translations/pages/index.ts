@@ -1,10 +1,15 @@
-// generated Wed Nov 23 2022 13:42:15 GMT+0200 (Itä-Euroopan normaaliaika)
+// generated Wed Jun 21 2023 18:08:53 GMT+0300 (Itä-Euroopan kesäaika)
+
 import en from "./en.json"
 import fi from "./fi.json"
-import { TranslationDictionary } from "/translations"
+import { LanguageKey, TranslationDictionary } from "/translations"
+import { make } from "/util/brand"
 
-export type Pages = typeof en & typeof fi
+export type Pages = typeof en | typeof fi
 
-const PagesTranslations: TranslationDictionary<Pages> = { en, fi } as const
+const PagesTranslations: TranslationDictionary<Pages> = {
+  [make<LanguageKey>()("en")]: en,
+  [make<LanguageKey>()("fi")]: fi,
+} as const
 
 export default PagesTranslations

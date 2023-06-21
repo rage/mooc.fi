@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-import { range } from "lodash"
+import { range } from "remeda"
 
 import { useMutation, useQuery } from "@apollo/client"
 import {
@@ -262,7 +262,7 @@ const OrganizationItems = () => {
   if (loading) {
     return (
       <>
-        {range(5).map((i) => (
+        {range(0, 5).map((i) => (
           <SkeletonCard key={`skeleton-${i}`} />
         ))}
       </>

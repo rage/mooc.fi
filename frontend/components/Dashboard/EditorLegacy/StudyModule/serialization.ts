@@ -1,4 +1,4 @@
-import { omit } from "lodash"
+import { omit } from "remeda"
 
 import { initialValues } from "./form-validation"
 import {
@@ -31,7 +31,6 @@ export const toStudyModuleForm = ({
       module?.study_module_translations?.map((study_module_translation) => ({
         ...omit(study_module_translation, [
           "__typename",
-          "study_module_id",
           "created_at",
           "updated_at",
         ]),
@@ -50,7 +49,7 @@ export const fromStudyModuleForm = ({
 }: FromStudyModuleFormArgs): StudyModuleCreateArg | StudyModuleUpsertArg => {
   const study_module_translations = values?.study_module_translations?.map(
     (study_module_translation: StudyModuleTranslationFormValues) => ({
-      ...omit(study_module_translation, "__typename"),
+      ...study_module_translation,
       id:
         !study_module_translation.id || study_module_translation.id === ""
           ? null
@@ -59,7 +58,7 @@ export const fromStudyModuleForm = ({
   )
 
   return {
-    ...omit(values, ["__typename", "id", "courses"]),
+    ...omit(values, ["id"]),
     slug: values.id ? values.slug : values.new_slug.trim(),
     new_slug: values.new_slug.trim(),
     study_module_translations,

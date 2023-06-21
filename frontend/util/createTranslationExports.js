@@ -15,33 +15,37 @@ const traverse = (dir) => {
   const data = files
     .filter(
       (filename) =>
-        !IGNORED_FILES.includes(filename) &&
-        filename !== OUTPUT_FILE &&
-        PATTERN.test(filename),
+        !IGNORED_FILES.includes(filename) && filename !== OUTPUT_FILE,
     )
     .map((filename) => {
       const fullname = `${dir ? dir + "/" : ""}${filename}`
       const basename = path.parse(filename).name
-
       if (fs.statSync(fullname).isDirectory()) {
         const res = traverse(fullname)
-        const imports = res
+        const imports = (res ?? [])
+          .filter((entry) => PATTERN.test(entry?.basename))
           .map(
             ({ basename, filename }) =>
               `import ${basename} from "./${filename}"`,
           )
           .join("\n")
+        if (imports.length === 0) {
+          return
+        }
         const languages = res.map((r) => r.basename)
         const typename = camelCase(basename)
-        const exports = `import { TranslationDictionary } from "/translations"\n
+        const exports = `import { LanguageKey, TranslationDictionary } from "/translations"\n
+import { make } from "/util/brand"\n
 ${imports}\n
 export type ${typename} = ${languages
           .map((lang) => `typeof ${lang}`)
           .join(" | ")}\n
-const ${typename}Translations: TranslationDictionary<${typename}> = { ${languages.join(
-          ", ",
-        )} }\n
-export default ${typename}Translations as const\n`
+const ${typename}Translations: TranslationDictionary<${typename}> = { ${languages
+          .map(
+            (language) => `[make<LanguageKey>()("${language}")]: ${language}`,
+          )
+          .join(", ")} } as const\n
+export default ${typename}Translations\n`
 
         outputExports(exports, fullname)
       }

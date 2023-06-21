@@ -1,6 +1,6 @@
 import React, { useContext, useMemo } from "react"
 
-import { range } from "lodash"
+import { range } from "remeda"
 
 import {
   Card,
@@ -92,7 +92,7 @@ const RenderCards: React.FC = () => {
   if (loading && data.length < 1) {
     return (
       <>
-        {range(5).map((n) => (
+        {range(0, 5).map((n) => (
           <DataCard key={`skeleton-card-${n}`} />
         ))}
       </>

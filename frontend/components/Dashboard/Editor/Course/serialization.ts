@@ -1,9 +1,10 @@
 /* eslint-disable complexity */
-import { omit } from "lodash"
 import { DateTime } from "luxon"
+import { omit } from "remeda"
 
 import { initialValues } from "./form-validation"
 import { CourseFormValues, CourseTranslationFormValues } from "./types"
+import { filterNullRecursive } from "/util/filterNull"
 import notEmpty from "/util/notEmpty"
 
 import {
@@ -73,7 +74,9 @@ export const toCourseForm = ({
           _id: course_translation.id ?? undefined,
           link: course_translation.link ?? "",
           open_university_course_link: {
-            ...omit(open_university_course_link, ["__typename", "id"]),
+            ...(open_university_course_link
+              ? omit(open_university_course_link, ["__typename", "id"])
+              : undefined),
             _id: open_university_course_link?.id,
             link: open_university_course_link?.link ?? "",
             language: course_translation.language ?? "",
@@ -123,42 +126,32 @@ export const toCourseForm = ({
         ...omit(link, ["__typename", "id"]),
         _id: link.id ?? undefined,
       })) ?? [],
-    tags: (course?.tags ?? []).map((tag) => ({
-      ...omit(tag, ["__typename", "id", "created_at", "updated_at"]),
-      _id: tag.id,
-      hidden: tag.hidden ?? false,
-      types: tag.types ?? [],
-      tag_translations: tag.tag_translations?.map((tagTranslation) => ({
-        ...omit(tagTranslation, ["__typename", "created_at", "updated_at"]),
-        _id: `${tagTranslation.tag_id}:${tagTranslation.language}`,
-        language: tagTranslation.language,
-        name: tagTranslation.name,
-        description: tagTranslation.description ?? undefined,
-        abbreviation: tagTranslation.abbreviation ?? undefined,
-      })),
-    })),
-    sponsors: (course?.sponsors ?? []).map((sponsor) => ({
-      ...omit(sponsor, ["__typename", "id", "created_at", "updated_at"]),
-      _id: sponsor.id,
-      name: sponsor.name,
-      translations: (sponsor.translations ?? []).map((translation) => ({
-        ...omit(translation, ["__typename", "created_at", "updated_at"]),
-        _id: `${translation.sponsor_id}:${translation.language}`,
-        language: translation.language,
-        description: translation.description ?? undefined,
-        name: translation.name,
-        link: translation.link ?? undefined,
-        link_text: translation.link_text ?? undefined,
-      })),
-      images: (sponsor.images ?? []).map((image) => ({
-        ...omit(image, ["__typename", "id", "created_at", "updated_at"]),
-        _id: `${image.sponsor_id}:${image.type}`,
-        type: image.type,
-        width: image.width,
-        height: image.height,
-        uri: image.uri,
-      })),
-    })),
+    tags: (course?.tags ?? []).map((tag) =>
+      filterNullRecursive({
+        ...omit(tag, ["__typename", "id"]),
+        _id: tag.id,
+        hidden: tag.hidden ?? false,
+        types: tag.types ?? [],
+        tag_translations: tag.tag_translations?.map((tagTranslation) => ({
+          ...omit(tagTranslation, ["__typename"]),
+          _id: `${tagTranslation.tag_id}:${tagTranslation.language}`,
+        })),
+      }),
+    ),
+    sponsors: (course?.sponsors ?? []).map((sponsor) =>
+      filterNullRecursive({
+        ...omit(sponsor, ["__typename", "id"]),
+        _id: sponsor.id,
+        translations: (sponsor.translations ?? []).map((translation) => ({
+          ...omit(translation, ["__typename"]),
+          _id: `${translation.sponsor_id}:${translation.language}`,
+        })),
+        images: (sponsor.images ?? []).map((image) => ({
+          ...omit(image, ["__typename"]),
+          _id: `${image.sponsor_id}:${image.type}`,
+        })),
+      }),
+    ),
   }
 }
 

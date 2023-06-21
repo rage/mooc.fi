@@ -98,30 +98,12 @@ query CourseEditorDetails($slug: String) {
 
 query EmailTemplateEditorCourses {
   courses {
-    ...CourseCoreFields
-    teacher_in_charge_name
-    teacher_in_charge_email
-    start_date
-    completion_email {
-      ...EmailTemplateCoreFields
-    }
-    course_stats_email {
-      ...EmailTemplateCoreFields
-    }
+    ...CourseDashboardCourseFields
   }
 }
 
 query CourseDashboard($slug: String!, $language: String) {
   course(slug: $slug, language: $language) {
-    ...CourseCoreFields
-    teacher_in_charge_name
-    teacher_in_charge_email
-    start_date
-    completion_email {
-      ...EmailTemplateCoreFields
-    }
-    course_stats_email {
-      ...EmailTemplateCoreFields
-    }
+    ...CourseDashboardCourseFields
   }
 }

@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 
-import { omit } from "lodash"
+import { omit } from "remeda"
 
 import { useMutation, useQuery } from "@apollo/client"
 

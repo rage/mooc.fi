@@ -93,10 +93,6 @@ const nextConfiguration = (_phase) => ({
     "@mui/icons-material/?(((\\w*)?/?)*)": {
       transform: "@mui/icons-material/{{ matches.[1] }}/{{member}}",
     },
-    lodash: {
-      transform: "lodash-es/{{member}}",
-      preventFullImport: true,
-    },
     "@fortawesome/free-brands-svg-icons": {
       transform: "@fortawesome/free-brands-svg-icons/{{member}}",
     },

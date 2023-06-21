@@ -1,4 +1,4 @@
-import { omit } from "lodash"
+import { omit } from "remeda"
 
 import { initialValues } from "./form-validation"
 import {
@@ -33,7 +33,6 @@ export const toStudyModuleForm = ({
         ...omit(study_module_translation, [
           "__typename",
           "id",
-          "study_module_id",
           "created_at",
           "updated_at",
         ]),

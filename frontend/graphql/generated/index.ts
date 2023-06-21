@@ -24,7 +24,7 @@ export type Incremental<T> =
   | {
       [P in keyof T]?: P extends " $fragmentName" | "__typename" ? T[P] : never
     }
-// Generated on 2023-06-20T19:47:39+03:00
+// Generated on 2023-06-21T15:12:51+03:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -5365,6 +5365,44 @@ export type EditorCourseOtherCoursesFieldsFragment = {
     compressed_mimetype: string | null
     uncompressed: string
     uncompressed_mimetype: string
+    created_at: any
+    updated_at: any
+  } | null
+}
+
+export type CourseDashboardCourseFieldsFragment = {
+  __typename?: "Course"
+  teacher_in_charge_name: string
+  teacher_in_charge_email: string
+  start_date: string
+  name: string
+  ects: string | null
+  language: string | null
+  created_at: any
+  updated_at: any
+  id: string
+  slug: string
+  completion_email: {
+    __typename?: "EmailTemplate"
+    id: string
+    name: string | null
+    title: string | null
+    txt_body: string | null
+    html_body: string | null
+    template_type: string | null
+    course_instance_language: string | null
+    created_at: any
+    updated_at: any
+  } | null
+  course_stats_email: {
+    __typename?: "EmailTemplate"
+    id: string
+    name: string | null
+    title: string | null
+    txt_body: string | null
+    html_body: string | null
+    template_type: string | null
+    course_instance_language: string | null
     created_at: any
     updated_at: any
   } | null
@@ -15132,6 +15170,126 @@ export const EmailTemplateCoreFieldsFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<EmailTemplateCoreFieldsFragment, unknown>
+export const CourseDashboardCourseFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseDashboardCourseFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseCoreFields" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_name" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_email" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "start_date" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "completion_email" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "EmailTemplateCoreFields" },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "course_stats_email" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "EmailTemplateCoreFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseKeyFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "slug" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseKeyFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "EmailTemplateCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "EmailTemplate" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "title" } },
+          { kind: "Field", name: { kind: "Name", value: "txt_body" } },
+          { kind: "Field", name: { kind: "Name", value: "html_body" } },
+          { kind: "Field", name: { kind: "Name", value: "template_type" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "course_instance_language" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CourseDashboardCourseFieldsFragment, unknown>
 export const EmailTemplateFieldsFragmentDoc = {
   kind: "Document",
   definitions: [
