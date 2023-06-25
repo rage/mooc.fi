@@ -1,34 +1,44 @@
 import memoize from "just-memoize"
 import { NextRouter } from "next/router"
 
-import { Brand, make } from "/util/brand"
 import notEmpty from "/util/notEmpty"
 
-export type TranslationKey = Brand<string, "translation_key">
-export type LanguageKey = Brand<string, "language_key">
-export type TranslationString = Brand<string, "translation_string">
+export type TranslationKey = string
+export type LanguageKey = string
+export type TranslationString = string
 
-const defaultLanguage = make<LanguageKey>()("en")
+const defaultLanguage = "en"
 
-type ArrayTranslation = Brand<Array<TranslationEntry>, "translation_array">
-type ObjectTranslation = { [Key in TranslationKey]: TranslationEntry }
+type ArrayTranslation = Array<TranslationEntry>
+type ObjectTranslation<
+  T extends Record<TranslationKey, any> = Record<TranslationKey, any>,
+> = { [Key in keyof T]: T[Key] }
 type TranslationEntry = TranslationString | ArrayTranslation | ObjectTranslation
 
 export type Translation<EntryType extends TranslationEntry = TranslationEntry> =
-  Record<TranslationKey, EntryType>
+  {
+    [Key in TranslationKey]: EntryType
+  }
 
-export type TranslationDictionary<T extends Translation> = Record<
-  LanguageKey,
-  T
+export type TranslationDictionary<
+  T extends Translation,
+  O extends Record<LanguageKey, T> = Record<LanguageKey, T>,
+> = {
+  [Key in keyof O]: O[Key]
+}
+export type KeyOfTranslationDictionary<T> = T extends TranslationDictionary<
+  infer Trans,
+  infer _
 >
-export type KeyOfTranslation<T extends Translation> = keyof T
-export type KeyOfTranslationDictionary<
-  T extends TranslationDictionary<Translation>,
-> = keyof T[LanguageKey]
+  ? keyof Trans
+  : never
+export type KeyOfTranslation<T> = T extends Translation<infer _>
+  ? keyof T
+  : never
 
 export type TranslationVariables = Record<string, any>
 export type Translator<T extends Translation> = (
-  key: KeyOfTranslation<T>,
+  key: keyof T,
   variables?: TranslationVariables,
 ) => any
 
@@ -49,7 +59,7 @@ const getTranslator =
   <T extends Translation>(dicts: TranslationDictionary<T>) =>
   (lng: LanguageKey, router?: NextRouter): Translator<T> =>
     memoize(
-      (key: KeyOfTranslation<T>, variables?: TranslationVariables) => {
+      (key: keyof T, variables?: TranslationVariables) => {
         const translation = dicts[lng]?.[key] || dicts[defaultLanguage]?.[key]
 
         if (!translation) {
@@ -65,15 +75,12 @@ const getTranslator =
       },
       (key, variables) =>
         // cached value is supposed to depend on possible given variables
-        [key, variables].filter(notEmpty).reduce<string>((acc, curr) => {
+        [key, variables].reduce<string>((acc, curr) => {
           if (typeof curr === "function") {
             return `${String(acc)}_${curr.name}`
           }
           if (typeof curr === "object") {
             return `${String(acc)}_${JSON.stringify(curr)}`
-          }
-          if (!acc) {
-            return String(curr)
           }
           return `${String(acc)}_${String(curr)}`
         }, ""),
@@ -89,16 +96,16 @@ const substitute = <TE extends TranslationEntry = TranslationEntry>({
   translation,
   variables,
   router,
-}: Substitute<TE>): TE => {
+}: Substitute<TE>): TranslationEntry => {
   if (isArrayTranslation(translation)) {
     return translation.map((t) =>
       substitute({ translation: t, variables, router }),
-    ) as TE
+    )
   }
   if (isObjectTranslation(translation)) {
-    const substituteObject = {} as TE
+    const substituteObject: ObjectTranslation = {}
 
-    for (const key of Object.keys(translation) as Array<keyof TE>) {
+    for (const key of Object.keys(translation)) {
       substituteObject[key] = substitute({
         translation: translation[key],
         variables,
@@ -124,7 +131,7 @@ const substitute = <TE extends TranslationEntry = TranslationEntry>({
   const replaceGroups = translation.match(/{{(.*?)}}/gm)
   const keyGroups = translation.match(/\[\[(.*?)\]\]/gm)
 
-  let ret = translation
+  let ret: TranslationString = translation
 
   if (!replaceGroups && !keyGroups) {
     return ret
@@ -150,7 +157,7 @@ const substitute = <TE extends TranslationEntry = TranslationEntry>({
       ret = ret.replace(
         replaceRegExp,
         Array.isArray(queryParam) ? queryParam[0] : queryParam,
-      ) as typeof ret
+      )
     })
   }
 
@@ -171,7 +178,7 @@ const substitute = <TE extends TranslationEntry = TranslationEntry>({
       )
     } else {
       const replaceRegExp = new RegExp(`{{${key}}}`, "g")
-      ret = ret.replace(replaceRegExp, `${variable}`) as typeof ret
+      ret = ret.replace(replaceRegExp, `${variable}`)
     }
   })
 
@@ -191,23 +198,8 @@ const _combineDictionaries = <
 ): TranslationDictionary<T & U & V> => {
   const combined: TranslationDictionary<T & U & V> = {}
 
-  // TODO: not very good now
-  /*
-    const languages = Array.from(new Set(...dicts.map(dict => Object.keys(dict))))
-    const common = intersection(
-    dicts.map((dict) => Object.keys(dict[languages[0]] ?? [])),
-  )
-
-  if (common.length) {
-    console.warn(
-      `WARNING: translation dictionary key clash - following key(s) have duplicates: ${common.join(
-        ", ",
-      )}`,
-    )
-  }*/
-
   for (const dict of dicts.filter(notEmpty)) {
-    for (const lang of Object.keys(dict) as Array<keyof typeof dict>) {
+    for (const lang of Object.keys(dict)) {
       combined[lang] = Object.assign(combined[lang] ?? {}, dict[lang] ?? {})
     }
   }
@@ -220,7 +212,7 @@ export const combineDictionaries = memoize(_combineDictionaries, keyResolver)
 // export const combineDictionaries = _combineDictionaries
 
 export const isTranslationKey = <T extends Translation>(
-  key?: KeyOfTranslation<T> | null,
-): key is KeyOfTranslation<T> => key !== null && key !== undefined
+  key?: keyof T,
+): key is keyof T => key !== null && key !== undefined
 
 export default getTranslator

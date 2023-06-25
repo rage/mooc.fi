@@ -1,15 +1,11 @@
-// generated Wed Jun 21 2023 18:08:53 GMT+0300 (Itä-Euroopan kesäaika)
+// generated Sun Jun 25 2023 18:28:22 GMT+0300 (Itä-Euroopan kesäaika)
 
-import en from "./en.json"
-import fi from "./fi.json"
-import { LanguageKey, TranslationDictionary } from "/translations"
-import { make } from "/util/brand"
+import en from "./en"
+import fi from "./fi"
+import { TranslationDictionary } from "/translations"
 
 export type SignUp = typeof en | typeof fi
 
-const SignUpTranslations: TranslationDictionary<SignUp> = {
-  [make<LanguageKey>()("en")]: en,
-  [make<LanguageKey>()("fi")]: fi,
-} as const
+const SignUpTranslations = { en, fi } as TranslationDictionary<SignUp>
 
 export default SignUpTranslations

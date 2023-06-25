@@ -1,18 +1,16 @@
-// generated Wed Jun 21 2023 18:08:53 GMT+0300 (Itä-Euroopan kesäaika)
+// generated Sun Jun 25 2023 18:28:22 GMT+0300 (Itä-Euroopan kesäaika)
 
-import en from "./en.json"
-import fi from "./fi.json"
-import se from "./se.json"
-import { LanguageKey, TranslationDictionary } from "/translations"
-import { make } from "/util/brand"
+import en from "./en"
+import fi from "./fi"
+import se from "./se"
+import { TranslationDictionary } from "/translations"
 
 export type RegisterCompletion = typeof en | typeof fi | typeof se
 
-const RegisterCompletionTranslations: TranslationDictionary<RegisterCompletion> =
-  {
-    [make<LanguageKey>()("en")]: en,
-    [make<LanguageKey>()("fi")]: fi,
-    [make<LanguageKey>()("se")]: se,
-  } as const
+const RegisterCompletionTranslations = {
+  en,
+  fi,
+  se,
+} as TranslationDictionary<RegisterCompletion>
 
 export default RegisterCompletionTranslations
