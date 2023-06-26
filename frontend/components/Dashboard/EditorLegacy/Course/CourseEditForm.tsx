@@ -48,6 +48,7 @@ import { CourseFormValues } from "./types"
 import UserCourseSettingsVisibilityEditForm from "./UserCourseSettingsVisibilityEditForm"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useTranslator } from "/hooks/useTranslator"
+import CommonTranslations from "/translations/common"
 import CoursesTranslations from "/translations/courses"
 
 import {
@@ -112,7 +113,7 @@ const CourseEditFormComponent = ({
   const { locale } = useRouter()
   const { errors, values, setFieldValue } = useFormikContext<CourseFormValues>()
   const secret = useQueryParameter("secret", { enforce: false })
-  const t = useTranslator(CoursesTranslations)
+  const t = useTranslator(CoursesTranslations, CommonTranslations)
   const statuses = statusesT(t)
   const [selectedLanguage, setSelectedLanguage] = useState(
     values?.course_translations.length === 0

@@ -5,6 +5,7 @@ import { styled } from "@mui/material/styles"
 
 import { HeaderMenuButton } from "/components/Buttons/HeaderMenuButton"
 import { useTranslator } from "/hooks/useTranslator"
+import { LanguageKey, TranslationKey } from "/translations"
 import PagesTranslations from "/translations/pages"
 
 const SwitchButton = styled(HeaderMenuButton)`
@@ -41,9 +42,11 @@ const LanguageSwitch = () => {
   const { locale, asPath } = useRouter()
   const newLocale = locale === "en" ? "fi" : "en"
 
-  let href = asPath?.replace(/#.*/, "")
+  let href = asPath?.replace(/#.*/, "") as TranslationKey<
+    (typeof PagesTranslations)[LanguageKey]["alternate"]
+  >
   if (t("alternate")?.[href]) {
-    href = t("alternate")?.[href]
+    href = t("alternate")?.[href] as typeof href
   }
 
   const language = locale === "en" ? "Suomi" : "English"

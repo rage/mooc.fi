@@ -3,6 +3,7 @@ import { useMemo } from "react"
 import { useRouter } from "next/router"
 
 import { useTranslator } from "./useTranslator"
+import { LanguageKey, TranslationKey } from "/translations"
 import PagesTranslations from "/translations/pages"
 
 const BASE_URL =
@@ -19,12 +20,13 @@ export default function useAlternateLanguage() {
       (typeof window !== "undefined" ? window?.location.origin : undefined) ??
       BASE_URL
 
-    let newPath =
+    let newPath = (
       locale === "en"
         ? asPath.replace("/en/", "/").replace(/#(.*)/, "")
         : asPath.replace(/#(.*)/, "")
+    ) as TranslationKey<(typeof PagesTranslations)[LanguageKey]["alternate"]>
     if (t("alternate")?.[newPath]) {
-      newPath = t("alternate")?.[newPath]
+      newPath = t("alternate")?.[newPath] as typeof newPath
     }
 
     if (locale === "en") {

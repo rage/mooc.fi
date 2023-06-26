@@ -163,7 +163,7 @@ function ModuleCard({ studyModule, image, loading }: ModuleCardProps) {
           {moduleFound && (
             <ModuleButton
               href={`/study-modules/${studyModule.slug}/edit`}
-              aria-label={t("editStudyModule", { name: studyModule.name })}
+              aria-label={t("editStudyModule")}
               variant="text"
               color="secondary"
             >

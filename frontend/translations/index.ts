@@ -3,82 +3,146 @@ import { NextRouter } from "next/router"
 
 import notEmpty from "/util/notEmpty"
 
-export type TranslationKey = string
 export type LanguageKey = string
-export type TranslationString = string
+const defaultLanguage = "en" as const
 
-const defaultLanguage = "en"
+export type TranslationObjectEntry = {
+  [Key: string]:
+    | string
+    | TranslationEntry
+    | Array<TranslationEntry>
+    | Readonly<string>
+    | Readonly<TranslationEntry>
+    | Readonly<Array<TranslationEntry>>
+}
 
-type ArrayTranslation = Array<TranslationEntry>
-type ObjectTranslation<
-  T extends Record<TranslationKey, any> = Record<TranslationKey, any>,
-> = { [Key in keyof T]: T[Key] }
-type TranslationEntry = TranslationString | ArrayTranslation | ObjectTranslation
+export type TranslationEntry =
+  | {
+      [Key: number]:
+        | string
+        | TranslationEntry
+        | Array<TranslationEntry>
+        | Readonly<string>
+        | Readonly<TranslationEntry>
+        | Readonly<Array<TranslationEntry>>
+    }
+  | TranslationObjectEntry
+  | string[]
+  | Readonly<string[]>
 
-export type Translation<EntryType extends TranslationEntry = TranslationEntry> =
-  {
-    [Key in TranslationKey]: EntryType
-  }
+export type TranslationKey<
+  T extends TranslationEntry | Array<TranslationEntry> = TranslationEntry,
+> = keyof T
+export type TranslatedString = string
 
 export type TranslationDictionary<
-  T extends Translation,
-  O extends Record<LanguageKey, T> = Record<LanguageKey, T>,
+  T extends TranslationObjectEntry = TranslationObjectEntry,
+  D extends { [Key: LanguageKey]: T } = {
+    [Key: LanguageKey]: T
+  },
 > = {
-  [Key in keyof O]: O[Key]
+  [Key in keyof D as LanguageKey]: D[Key]
 }
-export type KeyOfTranslationDictionary<T> = T extends TranslationDictionary<
-  infer Trans,
-  infer _
->
-  ? keyof Trans
+
+export type KeyOfTranslation<T> = T extends TranslationObjectEntry
+  ? keyof T
   : never
-export type KeyOfTranslation<T> = T extends Translation<infer _>
+export type KeyOfTranslationDictionary<T> = T extends TranslationDictionary<
+  infer T
+>
   ? keyof T
   : never
 
-export type TranslationVariables = Record<string, any>
-export type Translator<T extends Translation> = (
-  key: keyof T,
-  variables?: TranslationVariables,
-) => any
+type VarsHelper<
+  T extends string,
+  Acc = never,
+> = T extends `${infer _Prefix}{{${infer Var}}}${infer Rest}`
+  ? VarsHelper<Rest, Acc | Var>
+  : Acc
+type Vars<T extends string> = VarsHelper<T, never>
+
+type VariablesOfEntry<EntryType, Acc = never> = EntryType extends string
+  ? Acc | Vars<EntryType>
+  : EntryType extends string[]
+  ? Acc | Vars<EntryType[number]>
+  : EntryType extends object
+  ? EntryType extends (infer ET)[]
+    ? VariablesOfEntry<ET, Acc>
+    : VariablesOfEntry<EntryType[keyof EntryType], Acc>
+  : Acc
+
+type AllKeys<T> = T extends unknown ? keyof T : never
+
+type AddMissingProps<T, K extends PropertyKey = AllKeys<T>> = T extends unknown
+  ? T & Record<Exclude<K, keyof T>, never>
+  : never
+
+type MergeUnion<T> = { [K in keyof AddMissingProps<T>]: AddMissingProps<T>[K] }
+
+export type TranslationVariables<
+  T extends TranslationEntry,
+  V = VariablesOfEntry<T>,
+> = (V extends string ? { [K in V]?: any } : never) extends infer O
+  ? [keyof MergeUnion<O>] extends [never]
+    ? never
+    : { [Key in keyof MergeUnion<O>]: MergeUnion<O>[Key] }
+  : never
 
 const isArrayTranslation = (
   translation: TranslationEntry,
-): translation is ArrayTranslation => Array.isArray(translation)
+): translation is Array<TranslationEntry> | Readonly<Array<TranslationEntry>> =>
+  Array.isArray(translation)
 const isObjectTranslation = (
   translation: TranslationEntry,
-): translation is ObjectTranslation =>
+): translation is { [Key: string]: TranslationEntry } =>
   !isArrayTranslation(translation) &&
   typeof translation === "object" &&
   translation !== null
 const isStringTranslation = (
   translation: TranslationEntry,
-): translation is TranslationString => typeof translation === "string"
+): translation is string => typeof translation === "string"
+
+type TranslationReturn<T, K> = K extends keyof T ? T[K] : K
+
+export type Translator<T extends TranslationObjectEntry> = <
+  K extends Extract<keyof T, string>,
+>(
+  key: K,
+  variables?: TranslationVariables<T>,
+) => K extends keyof T ? T[K] : K
 
 const getTranslator =
-  <T extends Translation>(dicts: TranslationDictionary<T>) =>
-  (lng: LanguageKey, router?: NextRouter): Translator<T> =>
+  <D extends TranslationDictionary = TranslationDictionary>(dicts: D) =>
+  <Language extends Extract<keyof D, string>>(
+    lng: Language,
+    router?: NextRouter,
+  ) =>
     memoize(
-      (key: keyof T, variables?: TranslationVariables) => {
-        const translation = dicts[lng]?.[key] || dicts[defaultLanguage]?.[key]
+      <Key extends Extract<keyof D[Language], string>>(
+        key: Key,
+        variables?: TranslationVariables<D[Language]>,
+      ): TranslationReturn<D[Language], Key> => {
+        const translation =
+          dicts[lng]?.[key] || dicts[defaultLanguage]?.[key as any]
 
         if (!translation) {
           console.warn(`WARNING: no translation for ${lng}:${String(key)}`)
-          return key
+          return key as TranslationReturn<D[Language], Key>
         }
-
-        return isArrayTranslation(translation)
-          ? translation.map((t) =>
-              substitute({ translation: t, variables, router }),
-            )
-          : substitute({ translation, variables, router })
+        if (isArrayTranslation(translation)) {
+          return translation.map((t) =>
+            // @ts-ignore: TODO: fix infinite recursion
+            substitute(t, variables, router),
+          ) as TranslationReturn<D[Language], Key>
+        }
+        return substitute(translation, variables, router) as TranslationReturn<
+          D[Language],
+          Key
+        >
       },
       (key, variables) =>
         // cached value is supposed to depend on possible given variables
         [key, variables].reduce<string>((acc, curr) => {
-          if (typeof curr === "function") {
-            return `${String(acc)}_${curr.name}`
-          }
           if (typeof curr === "object") {
             return `${String(acc)}_${JSON.stringify(curr)}`
           }
@@ -86,31 +150,26 @@ const getTranslator =
         }, ""),
     )
 
-interface Substitute<TE extends TranslationEntry> {
-  translation: TE // T[Key]
-  variables?: TranslationVariables
-  router?: NextRouter
-}
-
-const substitute = <TE extends TranslationEntry = TranslationEntry>({
-  translation,
-  variables,
-  router,
-}: Substitute<TE>): TranslationEntry => {
+const substitute = <TE extends TranslationEntry>(
+  translation: TE,
+  variables?: TranslationVariables<TE>,
+  router?: NextRouter,
+): TE => {
   if (isArrayTranslation(translation)) {
     return translation.map((t) =>
-      substitute({ translation: t, variables, router }),
-    )
+      // @ts-ignore: TODO: fix infinite recursion
+      substitute(t, variables, router),
+    ) as TE
   }
   if (isObjectTranslation(translation)) {
-    const substituteObject: ObjectTranslation = {}
+    const substituteObject = {} as typeof translation
 
     for (const key of Object.keys(translation)) {
-      substituteObject[key] = substitute({
-        translation: translation[key],
+      substituteObject[key] = substitute(
+        translation[key],
         variables,
         router,
-      })
+      ) as TE
     }
     return substituteObject
   }
@@ -131,7 +190,7 @@ const substitute = <TE extends TranslationEntry = TranslationEntry>({
   const replaceGroups = translation.match(/{{(.*?)}}/gm)
   const keyGroups = translation.match(/\[\[(.*?)\]\]/gm)
 
-  let ret: TranslationString = translation
+  let ret = translation
 
   if (!replaceGroups && !keyGroups) {
     return ret
@@ -157,7 +216,7 @@ const substitute = <TE extends TranslationEntry = TranslationEntry>({
       ret = ret.replace(
         replaceRegExp,
         Array.isArray(queryParam) ? queryParam[0] : queryParam,
-      )
+      ) as typeof translation
     })
   }
 
@@ -178,7 +237,7 @@ const substitute = <TE extends TranslationEntry = TranslationEntry>({
       )
     } else {
       const replaceRegExp = new RegExp(`{{${key}}}`, "g")
-      ret = ret.replace(replaceRegExp, `${variable}`)
+      ret = ret.replace(replaceRegExp, `${variable}`) as typeof translation
     }
   })
 
@@ -186,9 +245,9 @@ const substitute = <TE extends TranslationEntry = TranslationEntry>({
 }
 
 const _combineDictionaries = <
-  T extends Translation,
-  U extends Translation = any,
-  V extends Translation = any,
+  T extends TranslationObjectEntry,
+  U extends TranslationObjectEntry = never,
+  V extends TranslationObjectEntry = never,
 >(
   dicts: [
     TranslationDictionary<T>,
@@ -211,7 +270,7 @@ const keyResolver = (...args: any[]) => JSON.stringify(args)
 export const combineDictionaries = memoize(_combineDictionaries, keyResolver)
 // export const combineDictionaries = _combineDictionaries
 
-export const isTranslationKey = <T extends Translation>(
+export const isTranslationKey = <T extends TranslationObjectEntry>(
   key?: keyof T,
 ): key is keyof T => key !== null && key !== undefined
 

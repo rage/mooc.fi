@@ -41,7 +41,9 @@ export type ${typename} = ${languages
           .join(" | ")}\n
 const ${typename}Translations = { ${languages.join(
           ", ",
-        )} } as TranslationDictionary<${typename}>\n
+        )} } as TranslationDictionary<${typename}, { ${languages
+          .map((lang) => `${lang}: typeof ${lang}`)
+          .join(", ")} }>\n
 export default ${typename}Translations\n`
 
         outputExports(exports, fullname)

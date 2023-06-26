@@ -12,6 +12,7 @@ import {
   UserCourseSettingsVisibilityFormValues,
 } from "./types"
 import { Translator } from "/translations"
+import { Common } from "/translations/common"
 import { Courses } from "/translations/courses"
 
 import {
@@ -88,7 +89,7 @@ export const initialVisibility: UserCourseSettingsVisibilityFormValues = {
   course: undefined,
 }
 
-export const statuses = (t: Translator<Courses>) => [
+export const statuses = (t: CourseEditSchemaArgs["t"]) => [
   {
     value: CourseStatus.Upcoming,
     label: t("courseUpcoming"),
@@ -103,7 +104,7 @@ export const statuses = (t: Translator<Courses>) => [
   },
 ]
 
-export const languages = (t: Translator<Courses>) => [
+export const languages = (t: CourseEditSchemaArgs["t"]) => [
   {
     value: "fi_FI",
     label: t("courseFinnish"),
@@ -154,7 +155,7 @@ const testUnique = <T extends FormValues>(
 interface CourseEditSchemaArgs {
   client: ApolloClient<object>
   initialSlug: string | null
-  t: Translator<Courses>
+  t: Translator<Courses & Common>
 }
 
 type CourseTranslationsEditSchemaFields = Pick<

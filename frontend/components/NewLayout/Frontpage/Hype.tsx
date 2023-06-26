@@ -75,7 +75,7 @@ const HypeCard = ({ item: { title, text } }: HypeCardProps) => {
 function Hype() {
   const t = useTranslator(NaviTranslations)
 
-  const items = t("naviItems") as Array<NaviItem>
+  const items = t("naviItems") as readonly NaviItem[]
 
   // remember to test with divisible by 2 and 3
   return (

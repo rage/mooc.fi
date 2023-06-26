@@ -8,6 +8,7 @@ import {
   StudyModuleTranslationFormValues,
 } from "./types"
 import { Translator } from "/translations"
+import { Common } from "/translations/common"
 import { StudyModules } from "/translations/study-modules"
 
 import { StudyModuleExistsDocument } from "/graphql/generated"
@@ -28,7 +29,7 @@ export const initialValues: StudyModuleFormValues = {
   study_module_translations: [initialTranslation],
 }
 
-export const languages = (t: Translator<StudyModules>) => [
+export const languages = (t: StudyModuleEditSchemaArgs["t"]) => [
   {
     value: "fi_FI",
     label: t("moduleFinnish"),
@@ -60,7 +61,7 @@ function validateImage(this: Yup.TestContext, _value?: any): boolean {
 interface StudyModuleEditSchemaArgs {
   client: ApolloClient<object>
   initialSlug: string | null
-  t: Translator<StudyModules>
+  t: Translator<StudyModules & Common>
 }
 
 const studyModuleEditSchema = ({
