@@ -27,7 +27,7 @@ kafkaConsumer:
     userPointsRealtime:
       replicaCount: 1
     userCoursePoints:
-      replicaCount: 4
+      replicaCount: 3
     userCoursePointsRealtime:
       replicaCount: 1
 
