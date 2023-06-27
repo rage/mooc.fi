@@ -29,3 +29,8 @@ fragment SponsorCoreFields on Sponsor {
     ...SponsorImageFields
   }
 }
+
+fragment CourseSponsorFields on Sponsor {
+  ...SponsorCoreFields
+  order
+}

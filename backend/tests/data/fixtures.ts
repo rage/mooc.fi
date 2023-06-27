@@ -138,7 +138,9 @@ export const courses: Prisma.CourseCreateInput[] = [
       connect: [{ id: "tag1" }, { id: "tag2" }],
     },
     sponsors: {
-      connect: [{ id: "sponsor1" }],
+      create: {
+        sponsor: { connect: { id: "sponsor1" } },
+      },
     },
     course_translations: {
       create: [
@@ -201,7 +203,16 @@ export const courses: Prisma.CourseCreateInput[] = [
       connect: { id: "tag3" },
     },
     sponsors: {
-      connect: [{ id: "sponsor1" }, { id: "sponsor2" }],
+      create: [
+        {
+          order: 1,
+          sponsor: { connect: { id: "sponsor1" } },
+        },
+        {
+          order: 0,
+          sponsor: { connect: { id: "sponsor2" } },
+        },
+      ],
     },
     course_translations: {
       create: [

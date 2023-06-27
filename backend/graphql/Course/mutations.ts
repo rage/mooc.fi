@@ -3,7 +3,7 @@ import { omit, uniqBy } from "lodash"
 import { arg, extendType, idArg, nonNull, stringArg } from "nexus"
 import { NexusGenInputs } from "nexus-typegen"
 
-import { Course, Prisma, Sponsor, StudyModule, Tag } from "@prisma/client"
+import { Course, CourseSponsor, Prisma, StudyModule, Tag } from "@prisma/client"
 
 import { isAdmin } from "../../accessControl"
 import { Context } from "../../context"
@@ -114,7 +114,9 @@ export const CourseMutations = extendType({
               : undefined,
             tags: { connect: (tags ?? []).map((tag) => ({ id: tag.id })) },
             sponsors: {
-              connect: (sponsors ?? []).map((sponsor) => ({ id: sponsor.id })),
+              create: (sponsors ?? []).map((sponsor) => ({
+                sponsor: { connect: { id: sponsor.id } },
+              })),
             },
           },
         })
@@ -203,7 +205,7 @@ export const CourseMutations = extendType({
           "course_variants",
           "course_aliases",
           "user_course_settings_visibilities",
-        ])(course)
+        ])(omit(course, "sponsors"))
 
         for (const visibility of existingCourse.user_course_settings_visibilities ??
           []) {
@@ -376,22 +378,35 @@ function getTagMutation<C extends Course>(
 }
 
 function getSponsorMutation<C extends Course>(
-  existingCourse: C & { sponsors: Array<Sponsor> },
+  existingCourse: C & { sponsors: Array<CourseSponsor> },
   sponsors?:
     | (
         | NexusGenInputs["CourseCreateArg"]
         | NexusGenInputs["CourseUpsertArg"]
       )["sponsors"]
     | null,
-): Prisma.SponsorUpdateManyWithoutCoursesNestedInput | undefined {
+): Prisma.CourseSponsorUpdateManyWithoutCourseNestedInput | undefined {
   const sponsorIds = getIds(sponsors ?? [])
+  const newSponsorIds = sponsorIds?.filter(
+    (id) =>
+      !existingCourse.sponsors.some(
+        (courseSponsor) => id === courseSponsor.sponsor_id,
+      ),
+  )
   const removedSponsorIds =
     existingCourse.sponsors
-      ?.filter((sponsor) => !sponsorIds.includes(sponsor.id))
-      .map((sponsor) => ({ id: sponsor.id })) ?? []
+      ?.filter(
+        (courseSponsor) => !sponsorIds.includes(courseSponsor.sponsor_id),
+      )
+      .map((courseSponsor) => courseSponsor.sponsor_id) ?? []
+
   return {
-    connect: sponsorIds.length ? sponsorIds.map((id) => ({ id })) : undefined,
-    disconnect: removedSponsorIds.length ? removedSponsorIds : undefined,
+    create: newSponsorIds.length
+      ? newSponsorIds.map((id) => ({ sponsor: { connect: { id } } }))
+      : undefined,
+    deleteMany: removedSponsorIds.length
+      ? { sponsor_id: { in: removedSponsorIds } }
+      : undefined,
   }
 }
 

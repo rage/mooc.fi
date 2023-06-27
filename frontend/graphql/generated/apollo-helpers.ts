@@ -319,6 +319,25 @@ export type CourseOwnershipFieldPolicy = {
   user?: FieldPolicy<any> | FieldReadFunction<any>
   user_id?: FieldPolicy<any> | FieldReadFunction<any>
 }
+export type CourseSponsorKeySpecifier = (
+  | "course"
+  | "course_id"
+  | "created_at"
+  | "order"
+  | "sponsor"
+  | "sponsor_id"
+  | "updated_at"
+  | CourseSponsorKeySpecifier
+)[]
+export type CourseSponsorFieldPolicy = {
+  course?: FieldPolicy<any> | FieldReadFunction<any>
+  course_id?: FieldPolicy<any> | FieldReadFunction<any>
+  created_at?: FieldPolicy<any> | FieldReadFunction<any>
+  order?: FieldPolicy<any> | FieldReadFunction<any>
+  sponsor?: FieldPolicy<any> | FieldReadFunction<any>
+  sponsor_id?: FieldPolicy<any> | FieldReadFunction<any>
+  updated_at?: FieldPolicy<any> | FieldReadFunction<any>
+}
 export type CourseStatsSubscriptionKeySpecifier = (
   | "created_at"
   | "email_template"
@@ -1045,6 +1064,7 @@ export type SponsorKeySpecifier = (
   | "images"
   | "language"
   | "name"
+  | "order"
   | "translations"
   | "updated_at"
   | SponsorKeySpecifier
@@ -1056,6 +1076,7 @@ export type SponsorFieldPolicy = {
   images?: FieldPolicy<any> | FieldReadFunction<any>
   language?: FieldPolicy<any> | FieldReadFunction<any>
   name?: FieldPolicy<any> | FieldReadFunction<any>
+  order?: FieldPolicy<any> | FieldReadFunction<any>
   translations?: FieldPolicy<any> | FieldReadFunction<any>
   updated_at?: FieldPolicy<any> | FieldReadFunction<any>
 }
@@ -1688,6 +1709,13 @@ export type StrictTypedTypePolicies = {
       | CourseOwnershipKeySpecifier
       | (() => undefined | CourseOwnershipKeySpecifier)
     fields?: CourseOwnershipFieldPolicy
+  }
+  CourseSponsor?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | CourseSponsorKeySpecifier
+      | (() => undefined | CourseSponsorKeySpecifier)
+    fields?: CourseSponsorFieldPolicy
   }
   CourseStatsSubscription?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?:

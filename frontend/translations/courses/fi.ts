@@ -51,6 +51,7 @@ export default {
   courseVariants: "Kurssivariantit",
   courseAliases: "Kurssialiakset",
   courseTags: "Kurssitunnisteet",
+  courseSponsors: "Sponsorit",
   courseAliasCourseCode: "Kurssikoodi",
   confirmationRemoveVariant: "Haluatko poistaa tämän kurssivariantin?",
   confirmationRemoveAlias: "Haluatko poistaa tämän kurssialiaksen?",
@@ -144,4 +145,8 @@ export default {
   tabCourseSettingsTitle: "Kurssin asetukset",
   tabCourseAdvancedTitle: "Kurssin edistyneet asetukset",
   tabHasErrors: "(sisältää virheitä tai pakollisia kenttiä)",
+  noSponsorLogo: "Ei sponsorilogoa",
+  sponsorOrder: "Sponsorien järjestys",
+  moveSponsorUp: "Siirrä ylöspäin",
+  moveSponsorDown: "Siirrä alaspäin",
 } as const

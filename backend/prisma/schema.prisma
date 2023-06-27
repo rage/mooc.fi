@@ -143,7 +143,7 @@ model Course {
   tags                                    Tag[]                            @relation("CourseToTag")
   services                                Service[]                        @relation("course_to_service")
   study_modules                           StudyModule[]                    @relation("study_module_to_course")
-  sponsors                                Sponsor[]                        @relation("CourseToSponsor")
+  sponsors                                CourseSponsor[]
 
   @@index([completion_email_id])
   @@index([completions_handled_by_id])
@@ -657,7 +657,7 @@ model TagTranslation {
 model Sponsor {
   id           String               @id @unique
   name         String
-  courses      Course[]             @relation("CourseToSponsor")
+  courses      CourseSponsor[]
   translations SponsorTranslation[]
   images       SponsorImage[]
   created_at   DateTime             @default(now())
@@ -693,6 +693,19 @@ model SponsorImage {
 
   @@id([sponsor_id, type])
   @@map("sponsor_image")
+}
+
+model CourseSponsor {
+  course_id  String
+  sponsor_id String
+  order      Int?   @default(0)
+  course     Course @relation(fields: [course_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  sponsor    Sponsor @relation(fields: [sponsor_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+
+  @@id([course_id, sponsor_id])
+  @@map("course_sponsor")
 }
 
 enum CourseStatus {

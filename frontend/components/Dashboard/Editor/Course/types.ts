@@ -120,6 +120,7 @@ export type TagOptionValue = Omit<
 export interface SponsorFormValue extends FormValues {
   _id?: string
   name: string
+  order: number
   translations: SponsorTranslationFormValues[]
   images: SponsorImageFormValues[]
 }

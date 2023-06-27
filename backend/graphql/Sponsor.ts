@@ -31,16 +31,17 @@ export const Sponsor = objectType({
     t.model.created_at()
     t.model.updated_at()
 
+    t.int("order") // passed down
     t.string("language") // passed down
 
-    t.list.nonNull.field("translations", {
+    t.nonNull.list.nonNull.field("translations", {
       type: "SponsorTranslation",
       args: {
         language: stringArg(),
       },
       // @ts-ignore: parent language exists
       resolve: async ({ id, language: parentLanguage }, { language }, ctx) => {
-        return ctx.prisma.sponsor
+        const translations = await ctx.prisma.sponsor
           .findUnique({
             where: {
               id,
@@ -53,6 +54,7 @@ export const Sponsor = objectType({
               },
             }),
           })
+        return translations ?? []
       },
     })
 
@@ -70,6 +72,13 @@ export const Sponsor = objectType({
         { type, minWidth, minHeight, maxWidth, maxHeight },
         ctx,
       ) => {
+        const dimensions = [
+          ifDefined(minWidth, { width: { gte: minWidth as number } }),
+          ifDefined(maxWidth, { width: { lte: maxWidth as number } }),
+          ifDefined(minHeight, { height: { gte: minHeight as number } }),
+          ifDefined(maxHeight, { height: { lte: maxHeight as number } }),
+        ].filter(notEmpty)
+
         return ctx.prisma.sponsor
           .findUnique({
             where: {
@@ -81,12 +90,9 @@ export const Sponsor = objectType({
               ...(type && {
                 type,
               }),
-              AND: [
-                ifDefined(minWidth, { width: { gte: minWidth as number } }),
-                ifDefined(maxWidth, { width: { lte: maxWidth as number } }),
-                ifDefined(minHeight, { height: { gte: minHeight as number } }),
-                ifDefined(maxHeight, { height: { lte: maxHeight as number } }),
-              ].filter(notEmpty),
+              ...(dimensions.length && {
+                AND: dimensions,
+              }),
             },
           })
       },
@@ -138,21 +144,39 @@ export const SponsorQueries = extendType({
         id: stringArg(),
         course_id: idArg(),
         course_slug: stringArg(),
+        language: stringArg(),
       },
-      resolve: async (_, { id, course_id, course_slug }, ctx) => {
-        return ctx.prisma.sponsor.findMany({
+      resolve: async (_, { id, course_id, course_slug, language }, ctx) => {
+        const sponsors = await ctx.prisma.sponsor.findMany({
           where: {
             id: id ?? undefined,
             ...((course_id || course_slug) && {
               courses: {
                 some: {
-                  id: course_id ?? undefined,
-                  slug: course_slug ?? undefined,
+                  course: {
+                    id: course_id ?? undefined,
+                    slug: course_slug ?? undefined,
+                  },
+                },
+              },
+            }),
+            ...(language && {
+              translations: {
+                some: {
+                  language,
                 },
               },
             }),
           },
         })
+
+        if (language) {
+          return sponsors.map((sponsor) => ({
+            ...sponsor,
+            language,
+          }))
+        }
+        return sponsors
       },
     })
   },

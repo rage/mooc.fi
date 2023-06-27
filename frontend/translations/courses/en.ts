@@ -51,6 +51,7 @@ export default {
   courseVariants: "Course variants",
   courseAliases: "Course aliases",
   courseTags: "Course tags",
+  courseSponsors: "Course sponsors",
   courseNoAliases: "No course aliases",
   courseAliasCourseCode: "Course code",
   confirmationRemoveVariant: "Do you want to remove this course variant?",
@@ -148,4 +149,8 @@ export default {
   tabCourseSettingsTitle: "Course settings",
   tabCourseAdvancedTitle: "Advanced course settings",
   tabHasErrors: "(has errors or required fields)",
+  noSponsorLogo: "No sponsor logo",
+  sponsorOrder: "Sponsor order",
+  moveSponsorUp: "Move sponsor up",
+  moveSponsorDown: "Move sponsor down",
 } as const

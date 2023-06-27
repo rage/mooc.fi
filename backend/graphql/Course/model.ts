@@ -223,16 +223,25 @@ export const Course = objectType({
           .sponsors({
             ...(language && {
               where: {
-                translations: {
-                  some: {
-                    language,
+                sponsor: {
+                  translations: {
+                    some: {
+                      language,
+                    },
                   },
                 },
               },
             }),
+            include: {
+              sponsor: true,
+            },
           })
 
-        return (sponsors ?? []).map((sponsor) => ({ ...sponsor, language }))
+        return (sponsors ?? []).flatMap(({ sponsor, order }) => ({
+          ...sponsor,
+          order,
+          language,
+        }))
       },
     })
   },

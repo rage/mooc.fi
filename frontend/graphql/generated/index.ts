@@ -24,7 +24,7 @@ export type Incremental<T> =
   | {
       [P in keyof T]?: P extends " $fragmentName" | "__typename" ? T[P] : never
     }
-// Generated on 2023-06-21T15:12:51+03:00
+// Generated on 2023-06-27T15:28:14+03:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -648,7 +648,7 @@ export type CourseOrderByWithRelationAndSearchRelevanceInput = {
   promote?: InputMaybe<SortOrder>
   services?: InputMaybe<ServiceOrderByRelationAggregateInput>
   slug?: InputMaybe<SortOrder>
-  sponsors?: InputMaybe<SponsorOrderByRelationAggregateInput>
+  sponsors?: InputMaybe<CourseSponsorOrderByRelationAggregateInput>
   start_date?: InputMaybe<SortOrder>
   start_point?: InputMaybe<SortOrder>
   status?: InputMaybe<SortOrder>
@@ -771,6 +771,59 @@ export type CourseOwnershipWhereUniqueInput = {
   user?: InputMaybe<UserWhereInput>
   user_id?: InputMaybe<UuidNullableFilter>
   user_id_course_id?: InputMaybe<CourseOwnershipUser_idCourse_idCompoundUniqueInput>
+}
+
+export type CourseSponsor = {
+  __typename?: "CourseSponsor"
+  course: Course
+  course_id: Scalars["String"]["output"]
+  created_at: Scalars["DateTime"]["output"]
+  order: Maybe<Scalars["Int"]["output"]>
+  sponsor: Sponsor
+  sponsor_id: Scalars["String"]["output"]
+  updated_at: Scalars["DateTime"]["output"]
+}
+
+export type CourseSponsorCourse_idSponsor_idCompoundUniqueInput = {
+  course_id: Scalars["String"]["input"]
+  sponsor_id: Scalars["String"]["input"]
+}
+
+export type CourseSponsorListRelationFilter = {
+  every?: InputMaybe<CourseSponsorWhereInput>
+  none?: InputMaybe<CourseSponsorWhereInput>
+  some?: InputMaybe<CourseSponsorWhereInput>
+}
+
+export type CourseSponsorOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>
+}
+
+export type CourseSponsorWhereInput = {
+  AND?: InputMaybe<Array<CourseSponsorWhereInput>>
+  NOT?: InputMaybe<Array<CourseSponsorWhereInput>>
+  OR?: InputMaybe<Array<CourseSponsorWhereInput>>
+  course?: InputMaybe<CourseWhereInput>
+  course_id?: InputMaybe<StringFilter>
+  created_at?: InputMaybe<DateTimeFilter>
+  order?: InputMaybe<IntNullableFilter>
+  sponsor?: InputMaybe<SponsorWhereInput>
+  sponsor_id?: InputMaybe<StringFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
+}
+
+export type CourseSponsorWhereUniqueInput = {
+  AND?: InputMaybe<Array<CourseSponsorWhereInput>>
+  NOT?: InputMaybe<Array<CourseSponsorWhereInput>>
+  OR?: InputMaybe<Array<CourseSponsorWhereInput>>
+  course?: InputMaybe<CourseWhereInput>
+  course_id?: InputMaybe<StringFilter>
+  course_id_sponsor_id?: InputMaybe<CourseSponsorCourse_idSponsor_idCompoundUniqueInput>
+  created_at?: InputMaybe<DateTimeFilter>
+  order?: InputMaybe<IntNullableFilter>
+  sponsor?: InputMaybe<SponsorWhereInput>
+  sponsor_id?: InputMaybe<StringFilter>
+  updated_at?: InputMaybe<DateTimeFilter>
 }
 
 export type CourseStatsSubscription = {
@@ -1070,7 +1123,7 @@ export type CourseWhereInput = {
   promote?: InputMaybe<BoolNullableFilter>
   services?: InputMaybe<ServiceListRelationFilter>
   slug?: InputMaybe<StringFilter>
-  sponsors?: InputMaybe<SponsorListRelationFilter>
+  sponsors?: InputMaybe<CourseSponsorListRelationFilter>
   start_date?: InputMaybe<StringFilter>
   start_point?: InputMaybe<BoolNullableFilter>
   status?: InputMaybe<EnumCourseStatusNullableFilter>
@@ -1135,7 +1188,7 @@ export type CourseWhereUniqueInput = {
   promote?: InputMaybe<BoolNullableFilter>
   services?: InputMaybe<ServiceListRelationFilter>
   slug?: InputMaybe<Scalars["String"]["input"]>
-  sponsors?: InputMaybe<SponsorListRelationFilter>
+  sponsors?: InputMaybe<CourseSponsorListRelationFilter>
   start_date?: InputMaybe<StringFilter>
   start_point?: InputMaybe<BoolNullableFilter>
   status?: InputMaybe<EnumCourseStatusNullableFilter>
@@ -2914,6 +2967,7 @@ export type QuerysponsorsArgs = {
   course_id?: InputMaybe<Scalars["ID"]["input"]>
   course_slug?: InputMaybe<Scalars["String"]["input"]>
   id?: InputMaybe<Scalars["String"]["input"]>
+  language?: InputMaybe<Scalars["String"]["input"]>
 }
 
 export type Querystudy_moduleArgs = {
@@ -3156,18 +3210,19 @@ export enum SortOrder {
 
 export type Sponsor = {
   __typename?: "Sponsor"
-  courses: Array<Course>
+  courses: Array<CourseSponsor>
   created_at: Scalars["DateTime"]["output"]
   id: Scalars["String"]["output"]
   images: Maybe<Array<SponsorImage>>
   language: Maybe<Scalars["String"]["output"]>
   name: Scalars["String"]["output"]
-  translations: Maybe<Array<SponsorTranslation>>
+  order: Maybe<Scalars["Int"]["output"]>
+  translations: Array<SponsorTranslation>
   updated_at: Scalars["DateTime"]["output"]
 }
 
 export type SponsorcoursesArgs = {
-  cursor?: InputMaybe<CourseWhereUniqueInput>
+  cursor?: InputMaybe<CourseSponsorWhereUniqueInput>
   skip?: InputMaybe<Scalars["Int"]["input"]>
   take?: InputMaybe<Scalars["Int"]["input"]>
 }
@@ -3238,16 +3293,6 @@ export type SponsorImageWhereInput = {
   width?: InputMaybe<IntFilter>
 }
 
-export type SponsorListRelationFilter = {
-  every?: InputMaybe<SponsorWhereInput>
-  none?: InputMaybe<SponsorWhereInput>
-  some?: InputMaybe<SponsorWhereInput>
-}
-
-export type SponsorOrderByRelationAggregateInput = {
-  _count?: InputMaybe<SortOrder>
-}
-
 export type SponsorTranslation = {
   __typename?: "SponsorTranslation"
   created_at: Scalars["DateTime"]["output"]
@@ -3314,7 +3359,7 @@ export type SponsorWhereInput = {
   AND?: InputMaybe<Array<SponsorWhereInput>>
   NOT?: InputMaybe<Array<SponsorWhereInput>>
   OR?: InputMaybe<Array<SponsorWhereInput>>
-  courses?: InputMaybe<CourseListRelationFilter>
+  courses?: InputMaybe<CourseSponsorListRelationFilter>
   created_at?: InputMaybe<DateTimeFilter>
   id?: InputMaybe<StringFilter>
   images?: InputMaybe<SponsorImageListRelationFilter>
@@ -5257,6 +5302,7 @@ export type EditorCourseDetailedFieldsFragment = {
   } | null
   sponsors: Array<{
     __typename?: "Sponsor"
+    order: number | null
     id: string
     name: string
     translations: Array<{
@@ -5267,7 +5313,7 @@ export type EditorCourseDetailedFieldsFragment = {
       description: string | null
       link: string | null
       link_text: string | null
-    }> | null
+    }>
     images: Array<{
       __typename?: "SponsorImage"
       sponsor_id: string
@@ -5832,7 +5878,31 @@ export type SponsorCoreFieldsFragment = {
     description: string | null
     link: string | null
     link_text: string | null
+  }>
+  images: Array<{
+    __typename?: "SponsorImage"
+    sponsor_id: string
+    type: string
+    width: number
+    height: number
+    uri: string
   }> | null
+}
+
+export type CourseSponsorFieldsFragment = {
+  __typename?: "Sponsor"
+  order: number | null
+  id: string
+  name: string
+  translations: Array<{
+    __typename?: "SponsorTranslation"
+    sponsor_id: string
+    language: string
+    name: string
+    description: string | null
+    link: string | null
+    link_text: string | null
+  }>
   images: Array<{
     __typename?: "SponsorImage"
     sponsor_id: string
@@ -8020,6 +8090,7 @@ export type AddCourseMutation = {
     } | null
     sponsors: Array<{
       __typename?: "Sponsor"
+      order: number | null
       id: string
       name: string
       translations: Array<{
@@ -8030,7 +8101,7 @@ export type AddCourseMutation = {
         description: string | null
         link: string | null
         link_text: string | null
-      }> | null
+      }>
       images: Array<{
         __typename?: "SponsorImage"
         sponsor_id: string
@@ -8192,6 +8263,7 @@ export type UpdateCourseMutation = {
     } | null
     sponsors: Array<{
       __typename?: "Sponsor"
+      order: number | null
       id: string
       name: string
       translations: Array<{
@@ -8202,7 +8274,7 @@ export type UpdateCourseMutation = {
         description: string | null
         link: string | null
         link_text: string | null
-      }> | null
+      }>
       images: Array<{
         __typename?: "SponsorImage"
         sponsor_id: string
@@ -8802,7 +8874,7 @@ export type NewCoursesQuery = {
         description: string | null
         link: string | null
         link_text: string | null
-      }> | null
+      }>
       images: Array<{
         __typename?: "SponsorImage"
         sponsor_id: string
@@ -8952,7 +9024,7 @@ export type NewFrontpageCoursesModulesQuery = {
         description: string | null
         link: string | null
         link_text: string | null
-      }> | null
+      }>
       images: Array<{
         __typename?: "SponsorImage"
         sponsor_id: string
@@ -9232,6 +9304,7 @@ export type CourseEditorDetailsQuery = {
     } | null
     sponsors: Array<{
       __typename?: "Sponsor"
+      order: number | null
       id: string
       name: string
       translations: Array<{
@@ -9242,7 +9315,7 @@ export type CourseEditorDetailsQuery = {
         description: string | null
         link: string | null
         link_text: string | null
-      }> | null
+      }>
       images: Array<{
         __typename?: "SponsorImage"
         sponsor_id: string
@@ -9486,6 +9559,36 @@ export type OrganizationByIdQuery = {
     hidden: boolean | null
     name: string
   } | null
+}
+
+export type CourseEditorSponsorsQueryVariables = Exact<{
+  language?: InputMaybe<Scalars["String"]["input"]>
+}>
+
+export type CourseEditorSponsorsQuery = {
+  __typename?: "Query"
+  sponsors: Array<{
+    __typename?: "Sponsor"
+    id: string
+    name: string
+    translations: Array<{
+      __typename?: "SponsorTranslation"
+      sponsor_id: string
+      language: string
+      name: string
+      description: string | null
+      link: string | null
+      link_text: string | null
+    }>
+    images: Array<{
+      __typename?: "SponsorImage"
+      sponsor_id: string
+      type: string
+      width: number
+      height: number
+      uri: string
+    }> | null
+  }> | null
 }
 
 export type StudyModulesQueryVariables = Exact<{
@@ -14392,6 +14495,124 @@ export const SponsorCoreFieldsFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<SponsorCoreFieldsFragment, unknown>
+export const CourseSponsorFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseSponsorFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Sponsor" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "SponsorCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "order" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "SponsorFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Sponsor" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "SponsorTranslationFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "SponsorTranslation" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "sponsor_id" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "description" } },
+          { kind: "Field", name: { kind: "Name", value: "link" } },
+          { kind: "Field", name: { kind: "Name", value: "link_text" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "SponsorImageFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "SponsorImage" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "sponsor_id" } },
+          { kind: "Field", name: { kind: "Name", value: "type" } },
+          { kind: "Field", name: { kind: "Name", value: "width" } },
+          { kind: "Field", name: { kind: "Name", value: "height" } },
+          { kind: "Field", name: { kind: "Name", value: "uri" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "SponsorCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Sponsor" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "SponsorFields" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "translations" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "SponsorTranslationFields" },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "images" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "SponsorImageFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CourseSponsorFieldsFragment, unknown>
 export const EditorCourseDetailedFieldsFragmentDoc = {
   kind: "Document",
   definitions: [
@@ -14478,7 +14699,7 @@ export const EditorCourseDetailedFieldsFragmentDoc = {
               selections: [
                 {
                   kind: "FragmentSpread",
-                  name: { kind: "Name", value: "SponsorCoreFields" },
+                  name: { kind: "Name", value: "CourseSponsorFields" },
                 },
               ],
             },
@@ -14840,6 +15061,49 @@ export const EditorCourseDetailedFieldsFragmentDoc = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "SponsorCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Sponsor" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "SponsorFields" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "translations" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "SponsorTranslationFields" },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "images" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "SponsorImageFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "EditorCourseFields" },
       typeCondition: {
         kind: "NamedType",
@@ -14949,7 +15213,7 @@ export const EditorCourseDetailedFieldsFragmentDoc = {
     },
     {
       kind: "FragmentDefinition",
-      name: { kind: "Name", value: "SponsorCoreFields" },
+      name: { kind: "Name", value: "CourseSponsorFields" },
       typeCondition: {
         kind: "NamedType",
         name: { kind: "Name", value: "Sponsor" },
@@ -14959,34 +15223,9 @@ export const EditorCourseDetailedFieldsFragmentDoc = {
         selections: [
           {
             kind: "FragmentSpread",
-            name: { kind: "Name", value: "SponsorFields" },
+            name: { kind: "Name", value: "SponsorCoreFields" },
           },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "translations" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "FragmentSpread",
-                  name: { kind: "Name", value: "SponsorTranslationFields" },
-                },
-              ],
-            },
-          },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "images" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "FragmentSpread",
-                  name: { kind: "Name", value: "SponsorImageFields" },
-                },
-              ],
-            },
-          },
+          { kind: "Field", name: { kind: "Name", value: "order" } },
         ],
       },
     },
@@ -23967,6 +24206,24 @@ export const AddCourseDocument = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseSponsorFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Sponsor" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "SponsorCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "order" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "EditorCourseDetailedFields" },
       typeCondition: {
         kind: "NamedType",
@@ -24048,7 +24305,7 @@ export const AddCourseDocument = {
               selections: [
                 {
                   kind: "FragmentSpread",
-                  name: { kind: "Name", value: "SponsorCoreFields" },
+                  name: { kind: "Name", value: "CourseSponsorFields" },
                 },
               ],
             },
@@ -24648,6 +24905,24 @@ export const UpdateCourseDocument = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseSponsorFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Sponsor" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "SponsorCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "order" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "EditorCourseDetailedFields" },
       typeCondition: {
         kind: "NamedType",
@@ -24729,7 +25004,7 @@ export const UpdateCourseDocument = {
               selections: [
                 {
                   kind: "FragmentSpread",
-                  name: { kind: "Name", value: "SponsorCoreFields" },
+                  name: { kind: "Name", value: "CourseSponsorFields" },
                 },
               ],
             },
@@ -29828,6 +30103,24 @@ export const CourseEditorDetailsDocument = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseSponsorFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Sponsor" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "SponsorCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "order" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "EditorCourseDetailedFields" },
       typeCondition: {
         kind: "NamedType",
@@ -29909,7 +30202,7 @@ export const CourseEditorDetailsDocument = {
               selections: [
                 {
                   kind: "FragmentSpread",
-                  name: { kind: "Name", value: "SponsorCoreFields" },
+                  name: { kind: "Name", value: "CourseSponsorFields" },
                 },
               ],
             },
@@ -29940,48 +30233,7 @@ export const EmailTemplateEditorCoursesDocument = {
               selections: [
                 {
                   kind: "FragmentSpread",
-                  name: { kind: "Name", value: "CourseCoreFields" },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "teacher_in_charge_name" },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "teacher_in_charge_email" },
-                },
-                { kind: "Field", name: { kind: "Name", value: "start_date" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "completion_email" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      {
-                        kind: "FragmentSpread",
-                        name: {
-                          kind: "Name",
-                          value: "EmailTemplateCoreFields",
-                        },
-                      },
-                    ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "course_stats_email" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      {
-                        kind: "FragmentSpread",
-                        name: {
-                          kind: "Name",
-                          value: "EmailTemplateCoreFields",
-                        },
-                      },
-                    ],
-                  },
+                  name: { kind: "Name", value: "CourseDashboardCourseFields" },
                 },
               ],
             },
@@ -30049,6 +30301,58 @@ export const EmailTemplateEditorCoursesDocument = {
           },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseDashboardCourseFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseCoreFields" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_name" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_email" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "start_date" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "completion_email" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "EmailTemplateCoreFields" },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "course_stats_email" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "EmailTemplateCoreFields" },
+                },
+              ],
+            },
+          },
         ],
       },
     },
@@ -30114,48 +30418,7 @@ export const CourseDashboardDocument = {
               selections: [
                 {
                   kind: "FragmentSpread",
-                  name: { kind: "Name", value: "CourseCoreFields" },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "teacher_in_charge_name" },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "teacher_in_charge_email" },
-                },
-                { kind: "Field", name: { kind: "Name", value: "start_date" } },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "completion_email" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      {
-                        kind: "FragmentSpread",
-                        name: {
-                          kind: "Name",
-                          value: "EmailTemplateCoreFields",
-                        },
-                      },
-                    ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "course_stats_email" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      {
-                        kind: "FragmentSpread",
-                        name: {
-                          kind: "Name",
-                          value: "EmailTemplateCoreFields",
-                        },
-                      },
-                    ],
-                  },
+                  name: { kind: "Name", value: "CourseDashboardCourseFields" },
                 },
               ],
             },
@@ -30223,6 +30486,58 @@ export const CourseDashboardDocument = {
           },
           { kind: "Field", name: { kind: "Name", value: "created_at" } },
           { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseDashboardCourseFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseCoreFields" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_name" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_email" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "start_date" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "completion_email" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "EmailTemplateCoreFields" },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "course_stats_email" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "EmailTemplateCoreFields" },
+                },
+              ],
+            },
+          },
         ],
       },
     },
@@ -30528,6 +30843,152 @@ export const OrganizationByIdDocument = {
 } as unknown as DocumentNode<
   OrganizationByIdQuery,
   OrganizationByIdQueryVariables
+>
+export const CourseEditorSponsorsDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "CourseEditorSponsors" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "language" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "sponsors" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "language" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "language" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "SponsorCoreFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "SponsorFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Sponsor" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "SponsorTranslationFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "SponsorTranslation" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "sponsor_id" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "description" } },
+          { kind: "Field", name: { kind: "Name", value: "link" } },
+          { kind: "Field", name: { kind: "Name", value: "link_text" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "SponsorImageFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "SponsorImage" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "sponsor_id" } },
+          { kind: "Field", name: { kind: "Name", value: "type" } },
+          { kind: "Field", name: { kind: "Name", value: "width" } },
+          { kind: "Field", name: { kind: "Name", value: "height" } },
+          { kind: "Field", name: { kind: "Name", value: "uri" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "SponsorCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Sponsor" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "SponsorFields" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "translations" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "SponsorTranslationFields" },
+                },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "images" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "SponsorImageFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  CourseEditorSponsorsQuery,
+  CourseEditorSponsorsQueryVariables
 >
 export const StudyModulesDocument = {
   kind: "Document",

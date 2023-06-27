@@ -142,7 +142,7 @@ fragment EditorCourseDetailedFields on Course {
   exercise_completions_needed
   points_needed
   sponsors {
-    ...SponsorCoreFields
+    ...CourseSponsorFields
   }
 }
 

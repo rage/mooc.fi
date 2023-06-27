@@ -41,24 +41,25 @@ export async function up(knex: Knex): Promise<void> {
   `)
 
   await knex.raw(`
-    CREATE TABLE IF NOT EXISTS "_CourseToSponsor" (
-      "A" UUID NOT NULL,
-      "B" TEXT NOT NULL,
-      CONSTRAINT "_CourseToSponsor_A_fkey" FOREIGN KEY ("A") REFERENCES "course"(id) ON DELETE CASCADE,
-      CONSTRAINT "_CourseToSponsor_B_fkey" FOREIGN KEY ("B") REFERENCES "sponsor"(id) ON DELETE CASCADE
+    CREATE TABLE IF NOT EXISTS "course_sponsor" (
+      course_id uuid NOT NULL,
+      sponsor_id TEXT NOT NULL,
+      "order" INTEGER NOT NULL DEFAULT 0,
+      created_at TIMESTAMP(3) WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP(3) WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      CONSTRAINT "course_sponsor_course_id_fkey" FOREIGN KEY (course_id) REFERENCES "course"(id) ON DELETE CASCADE,
+      CONSTRAINT "course_sponsor_sponsor_id_fkey" FOREIGN KEY (sponsor_id) REFERENCES "sponsor"(id) ON DELETE CASCADE,
+      CONSTRAINT "course_sponsor_pkey" PRIMARY KEY (course_id, sponsor_id)
     );
   `)
   await knex.raw(`
-    CREATE UNIQUE INDEX IF NOT EXISTS "_CourseToSponsor_AB_unique" ON "_CourseToSponsor" USING btree ("A", "B");
-  `)
-  await knex.raw(`
-    CREATE INDEX IF NOT EXISTS "_CourseToSponsor_B" ON "_CourseToSponsor" ("B");
+    CREATE INDEX IF NOT EXISTS "course_sponsor_sponsor_id_idx" ON "course_sponsor" (sponsor_id);
   `)
 }
 
 export async function down(knex: Knex): Promise<void> {
   await knex.raw(`
-    DROP TABLE IF EXISTS "_CourseToSponsor";
+    DROP TABLE IF EXISTS "course_sponsor";
   `)
   await knex.raw(`
     DROP TABLE IF EXISTS "sponsor_image";
