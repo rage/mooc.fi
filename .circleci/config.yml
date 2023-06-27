@@ -52,7 +52,7 @@ jobs:
             mkdir -p frontend/.npm
             ls /mnt/ramdisk -la
             ls /mnt/ramdisk/frontend -la
-            [ -d /mnt/ramdisk/.npm ] && mv /mnt/ramdisk/.npm /mnt/ramdisk/frontend/.npm
+            [ -d /mnt/ramdisk/.npm ] && mv /mnt/ramdisk/.npm /mnt/ramdisk/frontend/.npm || true
       - run:
           name: Set npm cache
           command: "npm config set cache /mnt/ramdisk/frontend/.npm"
@@ -228,7 +228,7 @@ jobs:
             mkdir -p backend/.npm
             ls /mnt/ramdisk -la
             ls /mnt/ramdisk/backend -la
-            [ -d /mnt/ramdisk/.npm ] && mv /mnt/ramdisk/.npm /mnt/ramdisk/backend/.npm
+            [ -d /mnt/ramdisk/.npm ] && mv /mnt/ramdisk/.npm /mnt/ramdisk/backend/.npm || true
       - run:
           name: Set npm cache
           command: "npm config set cache /mnt/ramdisk/backend/.npm"
