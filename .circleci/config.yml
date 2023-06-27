@@ -50,8 +50,6 @@ jobs:
           name: Move cache to correct location
           command: |
             mkdir -p frontend/.npm
-            ls /mnt/ramdisk -la
-            ls /mnt/ramdisk/frontend -la
             [ -d /mnt/ramdisk/.npm ] && mv /mnt/ramdisk/.npm /mnt/ramdisk/frontend/.npm || true
       - run:
           name: Set npm cache
@@ -226,8 +224,6 @@ jobs:
           name: Move cache to correct location
           command: |
             mkdir -p backend/.npm
-            ls /mnt/ramdisk -la
-            ls /mnt/ramdisk/backend -la
             [ -d /mnt/ramdisk/.npm ] && mv /mnt/ramdisk/.npm /mnt/ramdisk/backend/.npm || true
       - run:
           name: Set npm cache
