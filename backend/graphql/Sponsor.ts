@@ -170,13 +170,11 @@ export const SponsorQueries = extendType({
           },
         })
 
-        if (language) {
-          return sponsors.map((sponsor) => ({
-            ...sponsor,
-            language,
-          }))
-        }
-        return sponsors
+        return sponsors.map((sponsor) => ({
+          ...sponsor,
+          order: 0,
+          language: language ?? undefined,
+        }))
       },
     })
   },

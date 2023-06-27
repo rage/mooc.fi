@@ -9,7 +9,7 @@ import { ListItem, ListItemSkeleton } from "./StudyModuleListItem"
 import ErrorMessage from "/components/ErrorMessage"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
-import { StudyModulesWithCoursesDocument } from "/graphql/generated"
+import { NewStudyModulesWithCoursesDocument } from "/graphql/generated"
 
 const ModuleList = styled("ul")`
   list-style: none;
@@ -27,9 +27,12 @@ export function StudyModuleList() {
   const { locale = "fi" } = useRouter()
   const language = mapNextLanguageToLocaleCode(locale)
 
-  const { data, loading, error } = useQuery(StudyModulesWithCoursesDocument, {
-    variables: { language },
-  })
+  const { data, loading, error } = useQuery(
+    NewStudyModulesWithCoursesDocument,
+    {
+      variables: { language },
+    },
+  )
 
   if (error) {
     // TODO

@@ -102,6 +102,9 @@ fragment NewCourseFields on Course {
   tags {
     ...TagCoreFields
   }
+  sponsors(language: $language) {
+    ...CourseSponsorFields
+  }
 }
 
 fragment EditorCourseFields on Course {

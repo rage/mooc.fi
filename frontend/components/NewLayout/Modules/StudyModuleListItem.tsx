@@ -13,11 +13,11 @@ import StudyModulesTranslations from "/translations/_new/study-modules"
 
 import {
   CourseStatus,
-  StudyModuleFieldsWithCoursesFragment,
+  NewStudyModuleFieldsWithCoursesFragment,
 } from "/graphql/generated"
 
 interface StudyModuleListItemProps {
-  studyModule: StudyModuleFieldsWithCoursesFragment
+  studyModule: NewStudyModuleFieldsWithCoursesFragment
   backgroundColor: string
 }
 
@@ -142,7 +142,7 @@ const EndedCoursesButton = styled(Button)`
 `
 
 const getCoursesByStatus = (
-  courses: StudyModuleFieldsWithCoursesFragment["courses"],
+  courses: NewStudyModuleFieldsWithCoursesFragment["courses"],
 ) => {
   const filteredCourses = courses?.filter((course) => course.description) ?? []
   const active = filteredCourses.filter(
