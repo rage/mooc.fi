@@ -1,5 +1,10 @@
 export type Optional<T> = T | undefined | null
 export type Nullish = null | undefined
+export type PromiseReturnType<T> = T extends (
+  ...args: any[]
+) => Promise<infer R>
+  ? R
+  : never
 
 export function isDefined<T>(value: T | Nullish): value is T {
   return value !== null && typeof value !== "undefined"

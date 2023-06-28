@@ -1,0 +1,1190 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Course queries course admin returns full course on id and slug 1`] = `
+{
+  "automatic_completions": true,
+  "automatic_completions_eligible_for_ects": true,
+  "completions_handled_by": null,
+  "course_aliases": [
+    {
+      "course_code": "alias",
+      "id": "67000000-0000-0000-0000-000000000001",
+    },
+  ],
+  "course_translations": [
+    {
+      "description": "course1_description_en_US",
+      "id": "00000000-0000-0000-0000-000000000011",
+      "language": "en_US",
+      "link": "http://link.com",
+      "name": "course1_en_US",
+    },
+    {
+      "description": "course1_description_fi_FI",
+      "id": "00000000-0000-0000-0000-000000000012",
+      "language": "fi_FI",
+      "link": "http:/link.fi.com",
+      "name": "course1_fi_FI",
+    },
+  ],
+  "course_variants": [],
+  "ects": null,
+  "end_date": "12/31/2100",
+  "exercise_completions_needed": 1,
+  "exercises": [
+    {
+      "deleted": false,
+      "id": "50000000-0000-0000-0000-000000000003",
+      "name": "exercise 3",
+    },
+  ],
+  "has_certificate": false,
+  "hidden": null,
+  "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+  "inherit_settings_from": null,
+  "name": "course1",
+  "open_university_registration_links": [
+    {
+      "course_code": "alias",
+      "id": "e3eea9b5-1ff1-47f8-94f4-269c7a092d93",
+      "language": "en_US",
+      "link": "avoin-link",
+    },
+  ],
+  "order": null,
+  "photo": {
+    "compressed": "webp",
+    "compressed_mimetype": "image/webp",
+    "id": "00000000-0000-0000-0000-000000001101",
+    "uncompressed": "jpeg",
+    "uncompressed_mimetype": "image/jpeg",
+  },
+  "points_needed": 3,
+  "promote": null,
+  "slug": "course1",
+  "start_date": "01/01/1900",
+  "start_point": null,
+  "status": "Upcoming",
+  "study_module_order": null,
+  "study_module_start_point": null,
+  "study_modules": [
+    {
+      "id": "00000000-0000-0000-0000-000000000101",
+      "name": "module2",
+      "slug": "module2",
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000102",
+      "name": "module1",
+      "slug": "module1",
+    },
+  ],
+  "support_email": null,
+  "tags": [
+    {
+      "description": null,
+      "hidden": false,
+      "id": "tag1",
+      "name": null,
+      "tag_translations": [
+        {
+          "description": "tag1 description",
+          "language": "en_US",
+          "name": "tag1 in english",
+        },
+        {
+          "description": "tag1 kuvaus",
+          "language": "fi_FI",
+          "name": "tag1 suomeksi",
+        },
+      ],
+      "tag_types": [
+        {
+          "name": "type1",
+        },
+      ],
+      "types": [
+        "type1",
+      ],
+    },
+    {
+      "description": null,
+      "hidden": false,
+      "id": "tag2",
+      "name": null,
+      "tag_translations": [
+        {
+          "description": "tag2 description",
+          "language": "en_US",
+          "name": "tag2 in english",
+        },
+        {
+          "description": "tag2 kuvaus ja jotain muuta",
+          "language": "fi_FI",
+          "name": "tag2 suomeksi",
+        },
+      ],
+      "tag_types": [
+        {
+          "name": "type1",
+        },
+        {
+          "name": "type2",
+        },
+      ],
+      "types": [
+        "type1",
+        "type2",
+      ],
+    },
+  ],
+  "teacher_in_charge_email": "e@mail.com",
+  "teacher_in_charge_name": "teacher1",
+  "tier": null,
+  "upcoming_active_link": false,
+  "user_course_settings_visibilities": [],
+}
+`;
+
+exports[`Course queries course admin returns full course on id and slug 2`] = `
+{
+  "automatic_completions": true,
+  "automatic_completions_eligible_for_ects": true,
+  "completions_handled_by": null,
+  "course_aliases": [
+    {
+      "course_code": "alias",
+      "id": "67000000-0000-0000-0000-000000000001",
+    },
+  ],
+  "course_translations": [
+    {
+      "description": "course1_description_en_US",
+      "id": "00000000-0000-0000-0000-000000000011",
+      "language": "en_US",
+      "link": "http://link.com",
+      "name": "course1_en_US",
+    },
+    {
+      "description": "course1_description_fi_FI",
+      "id": "00000000-0000-0000-0000-000000000012",
+      "language": "fi_FI",
+      "link": "http:/link.fi.com",
+      "name": "course1_fi_FI",
+    },
+  ],
+  "course_variants": [],
+  "ects": null,
+  "end_date": "12/31/2100",
+  "exercise_completions_needed": 1,
+  "exercises": [
+    {
+      "deleted": false,
+      "id": "50000000-0000-0000-0000-000000000003",
+      "name": "exercise 3",
+    },
+  ],
+  "has_certificate": false,
+  "hidden": null,
+  "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+  "inherit_settings_from": null,
+  "name": "course1",
+  "open_university_registration_links": [
+    {
+      "course_code": "alias",
+      "id": "e3eea9b5-1ff1-47f8-94f4-269c7a092d93",
+      "language": "en_US",
+      "link": "avoin-link",
+    },
+  ],
+  "order": null,
+  "photo": {
+    "compressed": "webp",
+    "compressed_mimetype": "image/webp",
+    "id": "00000000-0000-0000-0000-000000001101",
+    "uncompressed": "jpeg",
+    "uncompressed_mimetype": "image/jpeg",
+  },
+  "points_needed": 3,
+  "promote": null,
+  "slug": "course1",
+  "start_date": "01/01/1900",
+  "start_point": null,
+  "status": "Upcoming",
+  "study_module_order": null,
+  "study_module_start_point": null,
+  "study_modules": [
+    {
+      "id": "00000000-0000-0000-0000-000000000101",
+      "name": "module2",
+      "slug": "module2",
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000102",
+      "name": "module1",
+      "slug": "module1",
+    },
+  ],
+  "support_email": null,
+  "tags": [
+    {
+      "description": null,
+      "hidden": false,
+      "id": "tag1",
+      "name": null,
+      "tag_translations": [
+        {
+          "description": "tag1 description",
+          "language": "en_US",
+          "name": "tag1 in english",
+        },
+        {
+          "description": "tag1 kuvaus",
+          "language": "fi_FI",
+          "name": "tag1 suomeksi",
+        },
+      ],
+      "tag_types": [
+        {
+          "name": "type1",
+        },
+      ],
+      "types": [
+        "type1",
+      ],
+    },
+    {
+      "description": null,
+      "hidden": false,
+      "id": "tag2",
+      "name": null,
+      "tag_translations": [
+        {
+          "description": "tag2 description",
+          "language": "en_US",
+          "name": "tag2 in english",
+        },
+        {
+          "description": "tag2 kuvaus ja jotain muuta",
+          "language": "fi_FI",
+          "name": "tag2 suomeksi",
+        },
+      ],
+      "tag_types": [
+        {
+          "name": "type1",
+        },
+        {
+          "name": "type2",
+        },
+      ],
+      "types": [
+        "type1",
+        "type2",
+      ],
+    },
+  ],
+  "teacher_in_charge_email": "e@mail.com",
+  "teacher_in_charge_name": "teacher1",
+  "tier": null,
+  "upcoming_active_link": false,
+  "user_course_settings_visibilities": [],
+}
+`;
+
+exports[`Course queries course admin should include deleted exercises if specified 1`] = `
+{
+  "automatic_completions": true,
+  "automatic_completions_eligible_for_ects": true,
+  "completions_handled_by": null,
+  "course_aliases": [
+    {
+      "course_code": "alias",
+      "id": "67000000-0000-0000-0000-000000000001",
+    },
+  ],
+  "course_translations": [
+    {
+      "description": "course1_description_en_US",
+      "id": "00000000-0000-0000-0000-000000000011",
+      "language": "en_US",
+      "link": "http://link.com",
+      "name": "course1_en_US",
+    },
+    {
+      "description": "course1_description_fi_FI",
+      "id": "00000000-0000-0000-0000-000000000012",
+      "language": "fi_FI",
+      "link": "http:/link.fi.com",
+      "name": "course1_fi_FI",
+    },
+  ],
+  "course_variants": [],
+  "ects": null,
+  "end_date": "12/31/2100",
+  "exercise_completions_needed": 1,
+  "exercises": [
+    {
+      "deleted": false,
+      "id": "50000000-0000-0000-0000-000000000003",
+      "name": "exercise 3",
+    },
+    {
+      "deleted": true,
+      "id": "50000000-0000-0000-0000-000000000004",
+      "name": "deleted exercise 4",
+    },
+  ],
+  "has_certificate": false,
+  "hidden": null,
+  "id": "00000000-0000-0000-0000-000000000002",
+  "inherit_settings_from": null,
+  "name": "course1",
+  "open_university_registration_links": [
+    {
+      "course_code": "alias",
+      "id": "e3eea9b5-1ff1-47f8-94f4-269c7a092d93",
+      "language": "en_US",
+      "link": "avoin-link",
+    },
+  ],
+  "order": null,
+  "photo": {
+    "compressed": "webp",
+    "compressed_mimetype": "image/webp",
+    "id": "00000000-0000-0000-0000-000000001101",
+    "uncompressed": "jpeg",
+    "uncompressed_mimetype": "image/jpeg",
+  },
+  "points_needed": 3,
+  "promote": null,
+  "slug": "course1",
+  "start_date": "01/01/1900",
+  "start_point": null,
+  "status": "Upcoming",
+  "study_module_order": null,
+  "study_module_start_point": null,
+  "study_modules": [
+    {
+      "id": "00000000-0000-0000-0000-000000000101",
+      "name": "module2",
+      "slug": "module2",
+    },
+    {
+      "id": "00000000-0000-0000-0000-000000000102",
+      "name": "module1",
+      "slug": "module1",
+    },
+  ],
+  "support_email": null,
+  "tags": [
+    {
+      "description": null,
+      "hidden": false,
+      "id": "tag1",
+      "name": null,
+      "tag_translations": [
+        {
+          "description": "tag1 description",
+          "language": "en_US",
+          "name": "tag1 in english",
+        },
+        {
+          "description": "tag1 kuvaus",
+          "language": "fi_FI",
+          "name": "tag1 suomeksi",
+        },
+      ],
+      "tag_types": [
+        {
+          "name": "type1",
+        },
+      ],
+      "types": [
+        "type1",
+      ],
+    },
+    {
+      "description": null,
+      "hidden": false,
+      "id": "tag2",
+      "name": null,
+      "tag_translations": [
+        {
+          "description": "tag2 description",
+          "language": "en_US",
+          "name": "tag2 in english",
+        },
+        {
+          "description": "tag2 kuvaus ja jotain muuta",
+          "language": "fi_FI",
+          "name": "tag2 suomeksi",
+        },
+      ],
+      "tag_types": [
+        {
+          "name": "type1",
+        },
+        {
+          "name": "type2",
+        },
+      ],
+      "types": [
+        "type1",
+        "type2",
+      ],
+    },
+  ],
+  "teacher_in_charge_email": "e@mail.com",
+  "teacher_in_charge_name": "teacher1",
+  "tier": null,
+  "upcoming_active_link": false,
+  "user_course_settings_visibilities": [],
+}
+`;
+
+exports[`Course queries course normal user returns correct language 1`] = `
+{
+  "description": "course1_description_en_US",
+  "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+  "link": "http://link.com",
+  "name": "course1_en_US",
+  "slug": "course1",
+}
+`;
+
+exports[`Course queries course normal user returns course on id and slug 1`] = `
+{
+  "description": "",
+  "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+  "link": "",
+  "name": "course1",
+  "slug": "course1",
+}
+`;
+
+exports[`Course queries course normal user returns course on id and slug 2`] = `
+{
+  "description": "",
+  "id": StringMatching /\\[a-f\\\\d\\]\\{8\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{4\\}-\\[a-f\\\\d\\]\\{12\\}/i,
+  "link": "",
+  "name": "course1",
+  "slug": "course1",
+}
+`;
+
+exports[`Course queries courses filters handledBy: courses-hidden-foo 1`] = `[]`;
+
+exports[`Course queries courses filters handledBy: courses-hidden-handler 1`] = `
+[
+  "00000000-0000-0000-0000-000000000667",
+]
+`;
+
+exports[`Course queries courses filters hidden: courses-hidden-false 1`] = `
+[
+  "00000000-0000-0000-0000-000000000001",
+  "00000000-0000-0000-0000-000000000002",
+  "00000000-0000-0000-0000-000000000666",
+]
+`;
+
+exports[`Course queries courses filters hidden: courses-hidden-null 1`] = `
+[
+  "00000000-0000-0000-0000-000000000001",
+  "00000000-0000-0000-0000-000000000002",
+  "00000000-0000-0000-0000-000000000666",
+]
+`;
+
+exports[`Course queries courses filters hidden: courses-hidden-true 1`] = `
+[
+  "00000000-0000-0000-0000-000000000001",
+  "00000000-0000-0000-0000-000000000002",
+  "00000000-0000-0000-0000-000000000666",
+  "00000000-0000-0000-0000-000000000667",
+  "00000000-0000-0000-0000-000000000668",
+]
+`;
+
+exports[`Course queries courses returns courses 1`] = `
+[
+  {
+    "course_translations": [
+      {
+        "id": "00000000-0000-0000-0000-000000000022",
+        "language": "fi_FI",
+        "name": "course2_fi_FI",
+      },
+    ],
+    "description": "",
+    "hidden": null,
+    "id": "00000000-0000-0000-0000-000000000001",
+    "link": "",
+    "name": "course2",
+    "order": null,
+    "photo": null,
+    "promote": null,
+    "slug": "course2",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": [
+      {
+        "id": "00000000-0000-0000-0000-000000000102",
+        "name": "module1",
+        "slug": "module1",
+      },
+    ],
+    "tags": [],
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": [],
+  },
+  {
+    "course_translations": [
+      {
+        "id": "00000000-0000-0000-0000-000000000011",
+        "language": "en_US",
+        "name": "course1_en_US",
+      },
+      {
+        "id": "00000000-0000-0000-0000-000000000012",
+        "language": "fi_FI",
+        "name": "course1_fi_FI",
+      },
+    ],
+    "description": "",
+    "hidden": null,
+    "id": "00000000-0000-0000-0000-000000000002",
+    "link": "",
+    "name": "course1",
+    "order": null,
+    "photo": {
+      "compressed": "webp",
+      "id": "00000000-0000-0000-0000-000000001101",
+      "uncompressed": "jpeg",
+    },
+    "promote": null,
+    "slug": "course1",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": [
+      {
+        "id": "00000000-0000-0000-0000-000000000101",
+        "name": "module2",
+        "slug": "module2",
+      },
+      {
+        "id": "00000000-0000-0000-0000-000000000102",
+        "name": "module1",
+        "slug": "module1",
+      },
+    ],
+    "tags": [
+      {
+        "description": null,
+        "hidden": false,
+        "id": "tag1",
+        "name": null,
+        "types": [
+          "type1",
+        ],
+      },
+      {
+        "description": null,
+        "hidden": false,
+        "id": "tag2",
+        "name": null,
+        "types": [
+          "type1",
+          "type2",
+        ],
+      },
+    ],
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": [],
+  },
+  {
+    "course_translations": [],
+    "description": "",
+    "hidden": false,
+    "id": "00000000-0000-0000-0000-000000000666",
+    "link": "",
+    "name": "handler",
+    "order": null,
+    "photo": null,
+    "promote": null,
+    "slug": "handler",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": [],
+    "tags": [],
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": [],
+  },
+  {
+    "course_translations": [],
+    "description": "",
+    "hidden": true,
+    "id": "00000000-0000-0000-0000-000000000667",
+    "link": "",
+    "name": "handled",
+    "order": null,
+    "photo": null,
+    "promote": null,
+    "slug": "handled",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": [],
+    "tags": [],
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": [],
+  },
+  {
+    "course_translations": [],
+    "description": "",
+    "hidden": true,
+    "id": "00000000-0000-0000-0000-000000000668",
+    "link": "",
+    "name": "inherits",
+    "order": null,
+    "photo": null,
+    "promote": null,
+    "slug": "inherits",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": [],
+    "tags": [],
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": [],
+  },
+]
+`;
+
+exports[`Course queries courses returns courses filtered by language: courses-language-bogus 1`] = `[]`;
+
+exports[`Course queries courses returns courses filtered by language: courses-language-en_US 1`] = `
+[
+  {
+    "course_translations": [
+      {
+        "id": "00000000-0000-0000-0000-000000000011",
+        "language": "en_US",
+        "name": "course1_en_US",
+      },
+      {
+        "id": "00000000-0000-0000-0000-000000000012",
+        "language": "fi_FI",
+        "name": "course1_fi_FI",
+      },
+    ],
+    "description": "course1_description_en_US",
+    "hidden": null,
+    "id": "00000000-0000-0000-0000-000000000002",
+    "link": "http://link.com",
+    "name": "course1_en_US",
+    "order": null,
+    "photo": {
+      "compressed": "webp",
+      "id": "00000000-0000-0000-0000-000000001101",
+      "uncompressed": "jpeg",
+    },
+    "promote": null,
+    "slug": "course1",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": [
+      {
+        "id": "00000000-0000-0000-0000-000000000101",
+        "name": "module2",
+        "slug": "module2",
+      },
+      {
+        "id": "00000000-0000-0000-0000-000000000102",
+        "name": "module1",
+        "slug": "module1",
+      },
+    ],
+    "tags": [
+      {
+        "description": "tag1 description",
+        "hidden": false,
+        "id": "tag1",
+        "name": "tag1 in english",
+        "types": [
+          "type1",
+        ],
+      },
+      {
+        "description": "tag2 description",
+        "hidden": false,
+        "id": "tag2",
+        "name": "tag2 in english",
+        "types": [
+          "type1",
+          "type2",
+        ],
+      },
+    ],
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": [],
+  },
+]
+`;
+
+exports[`Course queries courses returns courses filtered by language: courses-language-fi_FI 1`] = `
+[
+  {
+    "course_translations": [
+      {
+        "id": "00000000-0000-0000-0000-000000000011",
+        "language": "en_US",
+        "name": "course1_en_US",
+      },
+      {
+        "id": "00000000-0000-0000-0000-000000000012",
+        "language": "fi_FI",
+        "name": "course1_fi_FI",
+      },
+    ],
+    "description": "course1_description_fi_FI",
+    "hidden": null,
+    "id": "00000000-0000-0000-0000-000000000002",
+    "link": "http:/link.fi.com",
+    "name": "course1_fi_FI",
+    "order": null,
+    "photo": {
+      "compressed": "webp",
+      "id": "00000000-0000-0000-0000-000000001101",
+      "uncompressed": "jpeg",
+    },
+    "promote": null,
+    "slug": "course1",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": [
+      {
+        "id": "00000000-0000-0000-0000-000000000101",
+        "name": "module2",
+        "slug": "module2",
+      },
+      {
+        "id": "00000000-0000-0000-0000-000000000102",
+        "name": "module1",
+        "slug": "module1",
+      },
+    ],
+    "tags": [
+      {
+        "description": "tag1 kuvaus",
+        "hidden": false,
+        "id": "tag1",
+        "name": "tag1 suomeksi",
+        "types": [
+          "type1",
+        ],
+      },
+      {
+        "description": "tag2 kuvaus ja jotain muuta",
+        "hidden": false,
+        "id": "tag2",
+        "name": "tag2 suomeksi",
+        "types": [
+          "type1",
+          "type2",
+        ],
+      },
+    ],
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": [],
+  },
+  {
+    "course_translations": [
+      {
+        "id": "00000000-0000-0000-0000-000000000022",
+        "language": "fi_FI",
+        "name": "course2_fi_FI",
+      },
+    ],
+    "description": "course2_description_fi_FI",
+    "hidden": null,
+    "id": "00000000-0000-0000-0000-000000000001",
+    "link": "",
+    "name": "course2_fi_FI",
+    "order": null,
+    "photo": null,
+    "promote": null,
+    "slug": "course2",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": [
+      {
+        "id": "00000000-0000-0000-0000-000000000102",
+        "name": "module1",
+        "slug": "module1",
+      },
+    ],
+    "tags": [],
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": [],
+  },
+]
+`;
+
+exports[`Course queries courses returns courses ordered: courses-order-asc 1`] = `
+[
+  {
+    "course_translations": [
+      {
+        "id": "00000000-0000-0000-0000-000000000011",
+        "language": "en_US",
+        "name": "course1_en_US",
+      },
+      {
+        "id": "00000000-0000-0000-0000-000000000012",
+        "language": "fi_FI",
+        "name": "course1_fi_FI",
+      },
+    ],
+    "description": "",
+    "hidden": null,
+    "id": "00000000-0000-0000-0000-000000000002",
+    "link": "",
+    "name": "course1",
+    "order": null,
+    "photo": {
+      "compressed": "webp",
+      "id": "00000000-0000-0000-0000-000000001101",
+      "uncompressed": "jpeg",
+    },
+    "promote": null,
+    "slug": "course1",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": [
+      {
+        "id": "00000000-0000-0000-0000-000000000101",
+        "name": "module2",
+        "slug": "module2",
+      },
+      {
+        "id": "00000000-0000-0000-0000-000000000102",
+        "name": "module1",
+        "slug": "module1",
+      },
+    ],
+    "tags": [
+      {
+        "description": null,
+        "hidden": false,
+        "id": "tag1",
+        "name": null,
+        "types": [
+          "type1",
+        ],
+      },
+      {
+        "description": null,
+        "hidden": false,
+        "id": "tag2",
+        "name": null,
+        "types": [
+          "type1",
+          "type2",
+        ],
+      },
+    ],
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": [],
+  },
+  {
+    "course_translations": [
+      {
+        "id": "00000000-0000-0000-0000-000000000022",
+        "language": "fi_FI",
+        "name": "course2_fi_FI",
+      },
+    ],
+    "description": "",
+    "hidden": null,
+    "id": "00000000-0000-0000-0000-000000000001",
+    "link": "",
+    "name": "course2",
+    "order": null,
+    "photo": null,
+    "promote": null,
+    "slug": "course2",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": [
+      {
+        "id": "00000000-0000-0000-0000-000000000102",
+        "name": "module1",
+        "slug": "module1",
+      },
+    ],
+    "tags": [],
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": [],
+  },
+  {
+    "course_translations": [],
+    "description": "",
+    "hidden": true,
+    "id": "00000000-0000-0000-0000-000000000667",
+    "link": "",
+    "name": "handled",
+    "order": null,
+    "photo": null,
+    "promote": null,
+    "slug": "handled",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": [],
+    "tags": [],
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": [],
+  },
+  {
+    "course_translations": [],
+    "description": "",
+    "hidden": false,
+    "id": "00000000-0000-0000-0000-000000000666",
+    "link": "",
+    "name": "handler",
+    "order": null,
+    "photo": null,
+    "promote": null,
+    "slug": "handler",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": [],
+    "tags": [],
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": [],
+  },
+  {
+    "course_translations": [],
+    "description": "",
+    "hidden": true,
+    "id": "00000000-0000-0000-0000-000000000668",
+    "link": "",
+    "name": "inherits",
+    "order": null,
+    "photo": null,
+    "promote": null,
+    "slug": "inherits",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": [],
+    "tags": [],
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": [],
+  },
+]
+`;
+
+exports[`Course queries courses returns courses ordered: courses-order-desc 1`] = `
+[
+  {
+    "course_translations": [],
+    "description": "",
+    "hidden": true,
+    "id": "00000000-0000-0000-0000-000000000668",
+    "link": "",
+    "name": "inherits",
+    "order": null,
+    "photo": null,
+    "promote": null,
+    "slug": "inherits",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": [],
+    "tags": [],
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": [],
+  },
+  {
+    "course_translations": [],
+    "description": "",
+    "hidden": false,
+    "id": "00000000-0000-0000-0000-000000000666",
+    "link": "",
+    "name": "handler",
+    "order": null,
+    "photo": null,
+    "promote": null,
+    "slug": "handler",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": [],
+    "tags": [],
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": [],
+  },
+  {
+    "course_translations": [],
+    "description": "",
+    "hidden": true,
+    "id": "00000000-0000-0000-0000-000000000667",
+    "link": "",
+    "name": "handled",
+    "order": null,
+    "photo": null,
+    "promote": null,
+    "slug": "handled",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": [],
+    "tags": [],
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": [],
+  },
+  {
+    "course_translations": [
+      {
+        "id": "00000000-0000-0000-0000-000000000022",
+        "language": "fi_FI",
+        "name": "course2_fi_FI",
+      },
+    ],
+    "description": "",
+    "hidden": null,
+    "id": "00000000-0000-0000-0000-000000000001",
+    "link": "",
+    "name": "course2",
+    "order": null,
+    "photo": null,
+    "promote": null,
+    "slug": "course2",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": [
+      {
+        "id": "00000000-0000-0000-0000-000000000102",
+        "name": "module1",
+        "slug": "module1",
+      },
+    ],
+    "tags": [],
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": [],
+  },
+  {
+    "course_translations": [
+      {
+        "id": "00000000-0000-0000-0000-000000000011",
+        "language": "en_US",
+        "name": "course1_en_US",
+      },
+      {
+        "id": "00000000-0000-0000-0000-000000000012",
+        "language": "fi_FI",
+        "name": "course1_fi_FI",
+      },
+    ],
+    "description": "",
+    "hidden": null,
+    "id": "00000000-0000-0000-0000-000000000002",
+    "link": "",
+    "name": "course1",
+    "order": null,
+    "photo": {
+      "compressed": "webp",
+      "id": "00000000-0000-0000-0000-000000001101",
+      "uncompressed": "jpeg",
+    },
+    "promote": null,
+    "slug": "course1",
+    "start_point": null,
+    "status": "Upcoming",
+    "study_module_order": null,
+    "study_module_start_point": null,
+    "study_modules": [
+      {
+        "id": "00000000-0000-0000-0000-000000000101",
+        "name": "module2",
+        "slug": "module2",
+      },
+      {
+        "id": "00000000-0000-0000-0000-000000000102",
+        "name": "module1",
+        "slug": "module1",
+      },
+    ],
+    "tags": [
+      {
+        "description": null,
+        "hidden": false,
+        "id": "tag1",
+        "name": null,
+        "types": [
+          "type1",
+        ],
+      },
+      {
+        "description": null,
+        "hidden": false,
+        "id": "tag2",
+        "name": null,
+        "types": [
+          "type1",
+          "type2",
+        ],
+      },
+    ],
+    "upcoming_active_link": false,
+    "user_course_settings_visibilities": [],
+  },
+]
+`;
+
+exports[`Course queries handlerCourses returns correctly 1`] = `
+[
+  {
+    "handles_completions_for": [
+      {
+        "id": "00000000-0000-0000-0000-000000000667",
+        "name": "handled",
+        "slug": "handled",
+      },
+    ],
+    "id": "00000000-0000-0000-0000-000000000666",
+    "name": "handler",
+    "slug": "handler",
+  },
+]
+`;

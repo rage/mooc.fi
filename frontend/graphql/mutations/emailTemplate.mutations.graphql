@@ -8,6 +8,7 @@ mutation UpdateEmailTemplate(
   $triggered_automatically_by_course_id: String
   $exercise_completions_threshold: Int
   $points_threshold: Int
+  $course_instance_language: String
 ) {
   updateEmailTemplate(
     id: $id
@@ -19,6 +20,7 @@ mutation UpdateEmailTemplate(
     triggered_automatically_by_course_id: $triggered_automatically_by_course_id
     exercise_completions_threshold: $exercise_completions_threshold
     points_threshold: $points_threshold
+    course_instance_language: $course_instance_language
   ) {
     ...EmailTemplateFields
   }
@@ -33,6 +35,7 @@ mutation AddEmailTemplate(
   $triggered_automatically_by_course_id: String
   $exercise_completions_threshold: Int
   $points_threshold: Int
+  $course_instance_language: String
 ) {
   addEmailTemplate(
     name: $name
@@ -43,6 +46,7 @@ mutation AddEmailTemplate(
     triggered_automatically_by_course_id: $triggered_automatically_by_course_id
     exercise_completions_threshold: $exercise_completions_threshold
     points_threshold: $points_threshold
+    course_instance_language: $course_instance_language
   ) {
     ...EmailTemplateFields
   }

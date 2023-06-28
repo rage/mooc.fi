@@ -1,5 +1,5 @@
+import sentryLogger from "../lib/logger"
 import prisma from "../prisma"
-import sentryLogger from "./lib/logger"
 
 // TODO/FIXME:
 // come to think of it, is this really necessary if we check the expires_at against the server date anyway?

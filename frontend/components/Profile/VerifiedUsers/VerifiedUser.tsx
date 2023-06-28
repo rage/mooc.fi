@@ -1,8 +1,8 @@
 // import { ProfileUserOverView_currentUser_verified_users } from "/graphql/generated/ProfileUserOverView"
 import React from "react"
 
-import styled from "@emotion/styled"
 import { Card, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { CardTitle } from "/components/Text/headers"
 
@@ -20,15 +20,13 @@ const VerifiedUserCard = styled(Card)`
 const VerifiedUserCardTitle = styled(CardTitle)`
   display: flex;
   justify-content: space-between;
-`
+` as typeof CardTitle
 
 function VerifiedUser({ data }: VerifiedUserProps) {
   return (
     <VerifiedUserCard>
-      <VerifiedUserCardTitle variant="section">
-        <Typography variant="h3">
-          {data?.organization?.organization_translations[0].name}
-        </Typography>
+      <VerifiedUserCardTitle component="section">
+        <Typography variant="h3">{data?.organization?.name}</Typography>
         <Typography variant="h3">{data?.personal_unique_code}</Typography>
       </VerifiedUserCardTitle>
     </VerifiedUserCard>

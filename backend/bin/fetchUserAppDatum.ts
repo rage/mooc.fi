@@ -1,14 +1,14 @@
 import { DateTime } from "luxon"
 
-import { Course, PrismaClient, UserCourseSetting } from "@prisma/client"
+import { Course, Prisma, UserCourseSetting } from "@prisma/client"
 
 import { CONFIG_NAME } from "../config"
 import { UserInfo } from "../domain/UserInfo"
+import { DatabaseInputError, TMCError } from "../lib/errors"
+import sentryLogger from "../lib/logger"
 import prisma from "../prisma"
 import TmcClient from "../services/tmc"
-import { convertUpdate, isDefined } from "../util"
-import { DatabaseInputError, TMCError } from "./lib/errors"
-import sentryLogger from "./lib/logger"
+import { isDefined } from "../util"
 
 const USER_APP_DATUM_CONFIG_NAME = CONFIG_NAME ?? "userAppDatum"
 
@@ -36,14 +36,13 @@ const fetchUserAppDatum = async () => {
   logger.info(`data length ${tmcData.length}`)
   logger.info("sorting")
 
-  const data = tmcData
-    .sort(
-      (a, b) =>
-        DateTime.fromISO(a.updated_at).toMillis() -
-        DateTime.fromISO(b.updated_at).toMillis(),
-    )
-    .filter(isDefined)
-    .filter((e) => e.user_id !== null)
+  tmcData.sort(
+    (a, b) =>
+      DateTime.fromISO(a.updated_at).toMillis() -
+      DateTime.fromISO(b.updated_at).toMillis(),
+  )
+
+  const data = tmcData.filter(isDefined).filter((e) => e.user_id !== null)
 
   //  logger.info(data)
   // logger.info("sorted")
@@ -90,6 +89,7 @@ const fetchUserAppDatum = async () => {
     }
 
     if (!course) {
+      await prisma.$disconnect()
       process.exit(1)
     }
 
@@ -148,15 +148,16 @@ const fetchUserAppDatum = async () => {
         await saveOther(e)
     }
     if (index % saveInterval == 0) {
-      await saveProgress(prisma, new Date(e.updated_at))
+      await saveProgress(new Date(e.updated_at))
     }
   }
 
-  await saveProgress(prisma, new Date(data[data.length - 1].updated_at))
+  await saveProgress(new Date(data[data.length - 1].updated_at))
 
   const stopTime = new Date().getTime()
   logger.info(`used ${stopTime - startTime} milliseconds`)
 
+  await prisma.$disconnect()
   process.exit(0)
 }
 
@@ -214,7 +215,7 @@ const saveCourseVariant = async (p: any) => {
 }
 
 const saveOther = async (p: any) => {
-  const other: any = old.other ?? {}
+  const other = (old.other as Prisma.JsonObject) ?? {}
   if (p.value == "t") {
     p.value = true
   } else if (p.value == "f") {
@@ -254,7 +255,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: number, tmc: TmcClient) => {
     const result = await prisma.user.upsert({
       where: { upstream_id: details.id },
       create: prismaDetails,
-      update: convertUpdate(prismaDetails), // TODO: remove convertUpdate
+      update: prismaDetails,
     })
 
     return result
@@ -276,7 +277,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: number, tmc: TmcClient) => {
 
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms))
 
-async function saveProgress(prisma: PrismaClient, dateToDB: Date) {
+async function saveProgress(dateToDB: Date) {
   logger.info("saving")
   dateToDB.setMinutes(dateToDB.getMinutes() - 10)
 

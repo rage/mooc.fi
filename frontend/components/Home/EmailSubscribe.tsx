@@ -1,19 +1,21 @@
-import { createRef, useState } from "react"
+import { createRef, useCallback, useState } from "react"
 
-import styled from "@emotion/styled"
 import Send from "@mui/icons-material/Send"
 import SentimentSatisfiedIcon from "@mui/icons-material/SentimentSatisfied"
-import Button from "@mui/material/Button"
-import Card from "@mui/material/Card"
-import CardContent from "@mui/material/CardContent"
-import FormControl from "@mui/material/FormControl"
-import TextField from "@mui/material/TextField"
-import Typography from "@mui/material/Typography"
+import {
+  Button,
+  Card,
+  CardContent,
+  FormControl,
+  TextField,
+  Typography,
+} from "@mui/material"
+import { styled } from "@mui/material/styles"
 
+import { useTranslator } from "/hooks/useTranslator"
 import HomeTranslations from "/translations/home"
-import { useTranslator } from "/util/useTranslator"
 
-const MailingList = styled.div`
+const MailingList = styled("div")`
   height: 20rem;
   display: flex;
   align-items: center;
@@ -31,7 +33,7 @@ const StyledCard = styled(Card)`
   margin: 0 1rem;
 `
 
-const Header = styled(Typography)<any>`
+const Header = styled(Typography)`
   text-align: center;
   margin-bottom: 4rem !important;
 `
@@ -40,7 +42,7 @@ const StyledHeader = styled(Header)`
   margin-bottom: 2rem !important;
 `
 
-const FieldWrapper = styled.div`
+const FieldWrapper = styled("div")`
   display: flex;
   margin-bottom: 1rem;
 `
@@ -61,15 +63,18 @@ function EmailSubscribe() {
   const formRef = createRef<HTMLFormElement>()
   const t = useTranslator(HomeTranslations)
 
-  function handleSubmit() {
-    setSent(true)
-  }
+  const handleSubmit = useCallback(() => {
+    if (formRef?.current) {
+      formRef.current.submit()
+      setSent(true)
+    }
+  }, [formRef?.current])
 
   return (
     <MailingList>
       <StyledCard>
         <CardContent>
-          <StyledHeader variant="h5" component="h4">
+          <StyledHeader variant="h5" as="h4">
             {t("emailHeader")}
           </StyledHeader>
           <div>
@@ -100,12 +105,7 @@ function EmailSubscribe() {
                 <StyledButton
                   variant="contained"
                   color="primary"
-                  onClick={() => {
-                    if (formRef?.current) {
-                      formRef.current.submit()
-                      handleSubmit()
-                    }
-                  }}
+                  onClick={handleSubmit}
                 >
                   {t("emailButton")}
                   <Send />

@@ -8,6 +8,7 @@ import {
 } from "nexus"
 
 import { isAdmin } from "../accessControl"
+import { GraphQLUserInputError } from "../lib/errors"
 
 export const CourseAlias = objectType({
   name: "CourseAlias",
@@ -24,7 +25,7 @@ export const CourseAlias = objectType({
 export const CourseAliasCreateInput = inputObjectType({
   name: "CourseAliasCreateInput",
   definition(t) {
-    t.nullable.id("course")
+    t.id("course")
     t.nonNull.string("course_code")
   },
 })
@@ -32,8 +33,8 @@ export const CourseAliasCreateInput = inputObjectType({
 export const CourseAliasUpsertInput = inputObjectType({
   name: "CourseAliasUpsertInput",
   definition(t) {
-    t.nullable.id("id")
-    t.nullable.id("course")
+    t.id("id")
+    t.id("course")
     t.nonNull.string("course_code")
   },
 })
@@ -57,6 +58,14 @@ export const CourseAliasMutations = extendType({
         course: nonNull(idArg()),
       },
       authorize: isAdmin,
+      validate: async (_, { course_code, course }) => {
+        if (!course_code || !course) {
+          throw new GraphQLUserInputError(
+            "course code and course are both required",
+            ["course_code", "course"],
+          )
+        }
+      },
       resolve: async (_, args, ctx) => {
         const { course_code, course } = args
 

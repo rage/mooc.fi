@@ -1,14 +1,14 @@
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import ModuleNaviCard from "./ModuleNaviCard"
 import Container from "/components/Container"
 import { H2Background } from "/components/Text/headers"
+import { useTranslator } from "/hooks/useTranslator"
 import HomeTranslations from "/translations/home"
-import { useTranslator } from "/util/useTranslator"
 
 import { StudyModuleFieldsFragment } from "/graphql/generated"
 
-const NaviArea = styled.section`
+const NaviArea = styled("section")`
   margin-bottom: 5em;
   margin-top: 5em;
 `
@@ -17,18 +17,11 @@ const NaviTitle = styled(H2Background)`
   margin-top: 1.3em;
   margin-bottom: 1em;
   border-bottom: 5px solid #00281c;
-  @media (max-width: 440px) {
-    font-size: 39px;
-  }
-  @media (max-width: 400px) {
-    font-size: 32px;
-  }
-  @media (max-width: 340px) {
-    font-size: 28px;
-  }
+  font-size: 1.5rem;
 `
+
 // Browsers without css grid support will see the cards below each other
-const Grid = styled.div`
+const Grid = styled("div")`
   @supports (display: grid) {
     display: grid;
     grid-gap: 50px;
@@ -50,11 +43,11 @@ const Grid = styled.div`
 `
 
 interface ModuleNaviProps {
-  modules?: StudyModuleFieldsFragment[]
+  studyModules?: StudyModuleFieldsFragment[]
   loading: boolean
 }
 
-const ModuleNavi = ({ modules, loading }: ModuleNaviProps) => {
+const ModuleNavi = ({ studyModules, loading }: ModuleNaviProps) => {
   const t = useTranslator(HomeTranslations)
 
   return (
@@ -76,8 +69,11 @@ const ModuleNavi = ({ modules, loading }: ModuleNaviProps) => {
               <ModuleNaviCard key="skeletonnavicard2" />
             </>
           ) : (
-            (modules ?? []).map((module) => (
-              <ModuleNaviCard key={`module-${module.name}`} module={module} />
+            studyModules?.map((studyModule) => (
+              <ModuleNaviCard
+                key={studyModule.id ?? studyModule.slug}
+                studyModule={studyModule}
+              />
             ))
           )}
         </Grid>

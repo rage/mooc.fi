@@ -1,16 +1,16 @@
 import { useState } from "react"
 
-import styled from "@emotion/styled"
 import { Button, Grid } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import ModuleSmallCourseCard from "../ModuleSmallCourseCard"
+import { useTranslator } from "/hooks/useTranslator"
 import HomeTranslations from "/translations/home"
-import { useTranslator } from "/util/useTranslator"
 
-import { CourseFieldsFragment, CourseStatus } from "/graphql/generated"
+import { CourseStatus, FrontpageCourseFieldsFragment } from "/graphql/generated"
 
 interface CourseListProps {
-  courses: CourseFieldsFragment[]
+  courses: FrontpageCourseFieldsFragment[]
 }
 
 export const ThreeOrLessCoursesListing = (props: CourseListProps) => {
@@ -18,11 +18,7 @@ export const ThreeOrLessCoursesListing = (props: CourseListProps) => {
   return (
     <Grid container spacing={3}>
       {courses.map((course) => (
-        <ModuleSmallCourseCard
-          key={`module-course-${course.id}`}
-          course={course}
-          showHeader={true}
-        />
+        <ModuleSmallCourseCard key={course.id} course={course} showHeader />
       ))}
     </Grid>
   )
@@ -52,7 +48,7 @@ const ModuleCoursesListing = (props: CourseListProps) => {
       )}
       {activeCourses.length ? (
         <ShowMoreButton
-          fullWidth={true}
+          fullWidth
           variant="contained"
           onClick={() => setShowAll(!showAll)}
         >

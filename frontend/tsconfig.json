@@ -5,29 +5,29 @@
       "/*": [
         "./*"
       ],
-      "@static/*": [
-        "./static/*"
-      ],
       "@pages/*": [
         "pages/*"
       ],
       "@lib/*": [
-        "./lib/*"
+        "../lib/*"
       ],
       "@components/*": [
         "./components/*"
-      ]
+      ],
+      "@mui/material": [
+        "node_modules/@mui/material",
+        "node_modules/@mui/material/styles",
+        "node_modules/@mui/system",
+        "node_modules/@mui/styled-engine",
+      ],
     },
-    "typeRoots": [
-      "node_modules/@types",
-      "types/"
-    ],
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "jsx": "preserve",
     "lib": [
-      "dom",
-      "es2017"
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
     ],
     "module": "esnext",
     "moduleResolution": "node",
@@ -39,21 +39,36 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
+    "strictNullChecks": true,
     "target": "esnext",
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "incremental": true,
-    "maxNodeModuleJsDepth": 10
+    "maxNodeModuleJsDepth": 8,
+    "typeRoots": [
+      "./node_modules/@types",
+      "types",
+      "./node_modules/user-agent-data-types"
+    ],
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "exclude": [
     "node_modules",
-    "schema.graphql"
+    "schema.graphql",
+    "public/images/originals",
+    ".next"
   ],
   "include": [
     "next-env.d.ts",
+    "types/mui.d.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "**/*.js"
   ]
 }

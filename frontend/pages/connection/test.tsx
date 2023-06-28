@@ -7,15 +7,15 @@ import Container from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
 import VerifiedUsers from "/components/Profile/VerifiedUsers/VerifiedUsers"
 import Spinner from "/components/Spinner"
+import { useQueryParameter } from "/hooks/useQueryParameter"
 import withSignedIn from "/lib/with-signed-in"
-import { useQueryParameter } from "/util/useQueryParameter"
 
 import { ConnectionTestDocument } from "/graphql/generated"
 
 function ConnectionTest() {
   const { data, error, loading } = useQuery(ConnectionTestDocument)
-  const connectionSuccess = useQueryParameter("success", false)
-  const connectionError = useQueryParameter("error", false)
+  const connectionSuccess = useQueryParameter("success", { enforce: false })
+  const connectionError = useQueryParameter("error", { enforce: false })
 
   const decodedConnectionError = connectionError
     ? JSON.parse(Buffer.from(connectionError, "base64").toString("ascii"))

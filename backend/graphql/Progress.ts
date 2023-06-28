@@ -3,14 +3,30 @@ import { objectType } from "nexus"
 export const Progress = objectType({
   name: "Progress",
   definition(t) {
-    t.nullable.field("course", { type: "Course" })
     t.field("user", { type: "User" })
+    t.id("course_id")
+    t.id("user_id")
 
-    t.nullable.field("user_course_progress", {
+    t.field("course", {
+      type: "Course",
+      resolve: async (parent, _, ctx) => {
+        const course_id = parent.course_id
+
+        if (!course_id) {
+          return null
+        }
+
+        return ctx.prisma.course.findUnique({
+          where: { id: course_id },
+        })
+      },
+    })
+
+    t.field("user_course_progress", {
       type: "UserCourseProgress",
       resolve: async (parent, _, ctx) => {
-        const course_id = parent.course?.id
-        const user_id = parent.user?.id
+        const course_id = parent.course_id
+        const user_id = parent.user_id
 
         if (!course_id) {
           return null
@@ -32,8 +48,8 @@ export const Progress = objectType({
     t.list.nonNull.field("user_course_service_progresses", {
       type: "UserCourseServiceProgress",
       resolve: async (parent, _, ctx) => {
-        const course_id = parent.course?.id
-        const user_id = parent.user?.id
+        const course_id = parent.course_id
+        const user_id = parent.user_id
 
         if (!course_id) {
           return null

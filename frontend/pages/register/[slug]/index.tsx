@@ -1,26 +1,26 @@
 import { createRef, useEffect, useState } from "react"
 
 import { useMutation, useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import Send from "@mui/icons-material/Send"
 import { Link } from "@mui/material"
 import Button from "@mui/material/Button"
 import Checkbox from "@mui/material/Checkbox"
 import FormControl from "@mui/material/FormControl"
 import FormControlLabel from "@mui/material/FormControlLabel"
+import { styled } from "@mui/material/styles"
 import TextField from "@mui/material/TextField"
 import Tooltip from "@mui/material/Tooltip"
 
 import ErrorMessage from "/components/ErrorMessage"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { useQueryParameter } from "/hooks/useQueryParameter"
+import { useTranslator } from "/hooks/useTranslator"
 import { updateUserDetails } from "/lib/account"
 import withSignedIn from "/lib/with-signed-in"
 import HomeTranslations from "/translations/home"
 import RegistrationTranslations from "/translations/register"
 import notEmpty from "/util/notEmpty"
-import { useQueryParameter } from "/util/useQueryParameter"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   AddUserOrganizationDocument,
@@ -31,12 +31,12 @@ import {
   UserOrganizationWithUserOrganizationJoinConfirmationFieldsFragment,
 } from "/graphql/generated"
 
-const Container = styled.div`
+const Container = styled("div")`
   display: grid;
   justify-items: center;
 `
 
-const FieldWrapper = styled.div`
+const FieldWrapper = styled("div")`
   display: flex;
   margin-bottom: 1rem;
 `
@@ -54,17 +54,17 @@ const StyledButton = styled(Button)`
   }
 `
 
-const Error = styled.div`
+const Error = styled("div")`
   color: red;
   font-weight: bold;
 `
 
-const TextBox = styled.div`
+const TextBox = styled("div")`
   max-width: 710px;
   margin: 1rem;
 `
 
-const StyledForm = styled.form`
+const StyledForm = styled("form")`
   display: grid;
   grid-template-columns: 80% 20%;
 `

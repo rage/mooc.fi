@@ -1,8 +1,12 @@
 import { gql } from "graphql-request"
 
-import { fakeTMCCurrent, getTestContext } from "../../../tests/__helpers"
-import { adminUserDetails, normalUserDetails } from "../../../tests/data"
-import { seed } from "../../../tests/data/seed"
+import {
+  FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+  FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+  getTestContext,
+  setupTMCWithDefaultFakeUsers,
+} from "../../../tests"
+import { seed } from "../../../tests/data"
 
 const recheckMutation = gql`
   mutation RecheckCompletions($course_id: ID, $slug: String) {
@@ -25,21 +29,13 @@ const createRegistrationAttemptDateMutation = gql`
   }
 `
 const ctx = getTestContext()
-const tmc = fakeTMCCurrent({
-  "Bearer normal": [200, normalUserDetails],
-  "Bearer admin": [200, adminUserDetails],
-})
 
 describe("Completion", () => {
   beforeEach(async () => {
     await seed(ctx.prisma)
   })
   describe("mutations", () => {
-    beforeEach(async () => {
-      tmc.setup()
-    })
-
-    afterAll(() => tmc.teardown())
+    setupTMCWithDefaultFakeUsers()
 
     describe("recheckCompletions", () => {
       describe("normal user", () => {
@@ -50,9 +46,7 @@ describe("Completion", () => {
               {
                 slug: "course1",
               },
-              {
-                Authorization: "Bearer normal",
-              },
+              FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
             )
             .then(() => fail())
             .catch(({ response }) => {
@@ -61,10 +55,9 @@ describe("Completion", () => {
         })
       })
       describe("admin", () => {
-        beforeEach(() => ctx.client.setHeader("Authorization", "Bearer admin"))
         it("errors on no course_id nor slug", async () => {
           return ctx.client
-            .request(recheckMutation, {})
+            .request(recheckMutation, {}, FAKE_ADMIN_USER_AUTHORIZATION_HEADERS)
             .then(() => fail())
             .catch(({ response }) => {
               expect(response.errors.length).toBe(1)
@@ -74,7 +67,11 @@ describe("Completion", () => {
 
         it("errors on non-existent course", async () => {
           return ctx.client
-            .request(recheckMutation, { slug: "bogus" })
+            .request(
+              recheckMutation,
+              { slug: "bogus" },
+              FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+            )
             .then(() => fail())
             .catch(({ response }) => {
               expect(response.errors.length).toBe(1)
@@ -92,9 +89,13 @@ describe("Completion", () => {
             "create",
           )
 
-          const res = await ctx.client.request(recheckMutation, {
-            course_id: "00000000000000000000000000000002",
-          })
+          const res = await ctx.client.request<any>(
+            recheckMutation,
+            {
+              course_id: "00000000000000000000000000000002",
+            },
+            FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+          )
 
           expect(res.recheckCompletions).toEqual("1 users rechecked")
           expect(progressUpdateSpy).toHaveBeenCalledTimes(1)
@@ -116,12 +117,6 @@ describe("Completion", () => {
     })
 
     describe("createRegistrationAttemptDate", () => {
-      beforeEach(async () => {
-        tmc.setup()
-      })
-
-      afterAll(() => tmc.teardown())
-
       describe("user", () => {
         it("errors on creating attempt date on completion not owned", async () => {
           return ctx.client
@@ -131,9 +126,7 @@ describe("Completion", () => {
                 id: "12400000-0000-0000-0000-000000000001",
                 completion_registration_attempt_date: new Date(),
               },
-              {
-                Authorization: "Bearer normal",
-              },
+              FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
             )
             .then(() => fail())
             .catch(({ response }) => {
@@ -151,7 +144,7 @@ describe("Completion", () => {
             },
           })
 
-          const res = await ctx.client.request(
+          const res = await ctx.client.request<any>(
             createRegistrationAttemptDateMutation,
             {
               id: "30000000-0000-0000-0000-000000000102",
@@ -159,9 +152,7 @@ describe("Completion", () => {
                 "2021-01-01T10:00:00.00+02:00",
               ),
             },
-            {
-              Authorization: "Bearer normal",
-            },
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
           )
 
           expect(
@@ -188,7 +179,7 @@ describe("Completion", () => {
             },
           })
 
-          const res = await ctx.client.request(
+          const res = await ctx.client.request<any>(
             createRegistrationAttemptDateMutation,
             {
               id: "30000000-0000-0000-0000-000000000103",
@@ -196,9 +187,7 @@ describe("Completion", () => {
                 "2022-02-01T10:00:00.00+02:00",
               ),
             },
-            {
-              Authorization: "Bearer normal",
-            },
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
           )
 
           expect(
@@ -224,7 +213,7 @@ describe("Completion", () => {
             },
           })
 
-          const res = await ctx.client.request(
+          const res = await ctx.client.request<any>(
             createRegistrationAttemptDateMutation,
             {
               id: "30000000-0000-0000-0000-000000000102",
@@ -232,9 +221,7 @@ describe("Completion", () => {
                 "2021-01-01T10:00:00.00+02:00",
               ),
             },
-            {
-              Authorization: "Bearer admin",
-            },
+            FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
           )
 
           expect(

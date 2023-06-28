@@ -5,15 +5,18 @@ import { ApolloError } from "@apollo/client"
 import {
   CourseStatus,
   EditorCoursesQuery,
-  EditorCoursesQueryVariables,
   HandlerCoursesQuery,
 } from "/graphql/generated"
 
+export interface SearchVariables {
+  search: string | undefined
+  hidden?: boolean
+  handledBy?: string | null
+  status?: Array<CourseStatus>
+}
 export interface FilterContext {
-  searchVariables: EditorCoursesQueryVariables
-  setSearchVariables: React.Dispatch<
-    React.SetStateAction<EditorCoursesQueryVariables>
-  >
+  searchVariables: SearchVariables
+  setSearchVariables: React.Dispatch<React.SetStateAction<SearchVariables>>
   loading: boolean
   error?: ApolloError
   coursesData?: EditorCoursesQuery
@@ -22,8 +25,8 @@ export interface FilterContext {
 }
 
 export const FilterContext = React.createContext<FilterContext>({
-  searchVariables: {},
-  setSearchVariables: () => {},
+  searchVariables: {} as SearchVariables,
+  setSearchVariables: () => void 0,
   loading: false,
 })
 

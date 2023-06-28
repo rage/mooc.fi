@@ -1,4 +1,3 @@
-import { UserInputError } from "apollo-server-express"
 import { omit } from "lodash"
 import {
   arg,
@@ -7,19 +6,19 @@ import {
   idArg,
   list,
   nonNull,
-  nullable,
   stringArg,
 } from "nexus"
 
 import { Course, CourseTranslation, Prisma } from "@prisma/client"
 
-import { isAdmin, isUser, or, Role } from "../../accessControl"
-import { filterNullFields, getCourseOrAlias, isDefined } from "../../util"
+import { isAdmin, isUser, or } from "../../accessControl"
+import { GraphQLUserInputError } from "../../lib/errors"
+import { filterNullRecursive, isDefined } from "../../util"
 
 export const CourseQueries = extendType({
   type: "Query",
   definition(t) {
-    t.nullable.field("course", {
+    t.field("course", {
       type: "Course",
       args: {
         slug: stringArg(),
@@ -32,83 +31,95 @@ export const CourseQueries = extendType({
         const { slug, id, language, translationFallback } = args
 
         if (!slug && !id) {
-          throw new UserInputError("must provide id or slug", {
-            argumentName: ["id", "slug"],
-          })
+          throw new GraphQLUserInputError("must provide id or slug", [
+            "id",
+            "slug",
+          ])
         }
 
-        const courseQuery: Prisma.CourseFindUniqueArgs = {
+        const query = {
           where: {
-            ...filterNullFields({
-              id,
-              slug,
+            id: id ?? undefined,
+            slug: slug ?? undefined,
+          },
+          include: {
+            tags: true,
+            ...(language && {
+              course_translations: {
+                where: {
+                  language,
+                },
+              },
             }),
           },
-          // TODO: limit these in the model
-          ...(ctx.role !== Role.ADMIN && {
+        }
+
+        // TODO: limit these in the model
+        /*...(ctx.role !== Role.ADMIN && {
             select: {
               id: true,
               slug: true,
               name: true,
             },
-          }),
-        }
-
-        const course = await getCourseOrAlias(ctx)(courseQuery)
+          }),*/
+        const course = await ctx.prisma.course.findUniqueOrAlias(query)
 
         if (!course) {
           return null
         }
 
-        let description = ""
-        let link = ""
-        let name = course.name
+        const returnedCourse = {
+          ...course,
+          description: "",
+          link: "",
+        }
 
         if (language) {
-          const course_translation =
-            await ctx.prisma.courseTranslation.findFirst({
-              where: {
-                course_id: course.id,
-                language,
-              },
-            })
+          const { course_translations } = course as typeof course & {
+            course_translations?: Array<CourseTranslation>
+          }
+          const course_translation = course_translations?.[0]
 
           if (!course_translation) {
             if (!translationFallback) {
               return Promise.resolve(null)
             }
           } else {
-            description = course_translation.description ?? ""
-            link = course_translation.link ?? ""
-            name = course_translation.name
+            returnedCourse.description = course_translation.description ?? ""
+            returnedCourse.link = course_translation.link ?? ""
+            returnedCourse.name = course_translation.name
           }
         }
 
-        return {
-          ...course,
-          name,
-          description,
-          link,
-        }
+        return returnedCourse
       },
-    })
-
-    t.crud.courses({
-      ordering: true,
     })
 
     t.list.nonNull.field("courses", {
       type: "Course",
       args: {
-        orderBy: arg({ type: "CourseOrderByInput" }),
+        orderBy: arg({
+          type: "CourseOrderByWithRelationAndSearchRelevanceInput",
+        }),
         language: stringArg(),
-        search: nullable(stringArg()),
-        hidden: nullable(booleanArg({ default: true })),
-        handledBy: nullable(stringArg()),
-        status: nullable(list(nonNull(arg({ type: "CourseStatus" })))),
+        search: stringArg(),
+        hidden: booleanArg({ default: true }),
+        handledBy: stringArg(),
+        status: list(nonNull(arg({ type: "CourseStatus" }))),
+        tags: list(nonNull(stringArg())),
+        tag_types: list(nonNull(stringArg())),
       },
       resolve: async (_, args, ctx) => {
-        const { orderBy, language, search, hidden, handledBy, status } = args
+        const {
+          orderBy,
+          language,
+          search,
+          hidden,
+          handledBy,
+          status,
+          tags,
+          tag_types,
+        } = args
 
         const searchQuery: Prisma.Enumerable<Prisma.CourseWhereInput> = []
 
@@ -147,6 +158,7 @@ export const CourseQueries = extendType({
             ],
           })
         }
+
         if (!hidden) {
           // somehow NOT: { hidden: true } doesn't work
           // neither does { hidden: { not: true }}
@@ -171,20 +183,95 @@ export const CourseQueries = extendType({
             status: { in: status },
           })
         }
+        // TODO: if we want a filter that is strict (i.e. all tags must be present)
+        // then we may need a raw query or just do that filtering in the frontend
+        if (tags) {
+          searchQuery.push({
+            OR: [
+              {
+                tags: {
+                  some: {
+                    tag_translations: {
+                      some: {
+                        language: language ?? undefined,
+                        name: { in: tags },
+                      },
+                    },
+                  },
+                },
+              },
+              {
+                handles_completions_for: {
+                  some: {
+                    tags: {
+                      some: {
+                        tag_translations: {
+                          some: {
+                            language: language ?? undefined,
+                            name: { in: tags },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            ],
+          })
+        }
 
-        const courses: (Course & {
-          course_translations?: CourseTranslation[]
-        })[] = await ctx.prisma.course.findMany({
-          orderBy: filterNullFields(orderBy),
-          where: {
-            AND: searchQuery,
-          },
+        if (tag_types) {
+          searchQuery.push({
+            OR: [
+              {
+                tags: {
+                  some: {
+                    tag_types: {
+                      some: {
+                        name: { in: tag_types },
+                      },
+                    },
+                  },
+                },
+              },
+              {
+                handles_completions_for: {
+                  some: {
+                    tags: {
+                      some: {
+                        tag_types: {
+                          some: {
+                            name: { in: tag_types },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            ],
+          })
+        }
+
+        const courses: Array<
+          Course & {
+            course_translations?: Array<CourseTranslation>
+          }
+        > = await ctx.prisma.course.findMany({
+          orderBy: filterNullRecursive(orderBy) ?? undefined,
+          ...(searchQuery.length > 0
+            ? {
+                where: {
+                  AND: searchQuery,
+                },
+              }
+            : {}),
           ...(language
             ? {
                 include: {
                   course_translations: {
                     where: {
-                      language: { equals: language },
+                      language,
                     },
                   },
                 },
@@ -197,16 +284,30 @@ export const CourseQueries = extendType({
             if (language && !course.course_translations?.length) {
               return null
             }
+
             return {
-              ...omit(course, "course_translations"),
+              ...omit(course, [
+                "course_translations",
+                "tags",
+                "handles_completions_for",
+              ]),
               description: course?.course_translations?.[0]?.description ?? "",
               link: course?.course_translations?.[0]?.link ?? "",
+              name:
+                (language
+                  ? course?.course_translations?.[0]?.name ?? course?.name
+                  : course?.name) ?? "",
             }
           })
           .filter(isDefined)
 
         // TODO: (?) provide proper typing
-        return filtered as (Course & { description: string; link: string })[]
+        return filtered as Array<
+          Course & {
+            description: string
+            link: string
+          }
+        >
       },
     })
 
@@ -234,7 +335,7 @@ export const CourseQueries = extendType({
         const { slug } = args
 
         return Boolean(
-          await getCourseOrAlias(ctx)({
+          await ctx.prisma.course.findUniqueOrAlias({
             where: {
               slug,
             },

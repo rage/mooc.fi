@@ -1,7 +1,11 @@
-import { AuthenticationError, UserInputError } from "apollo-server-express"
 import { arg, extendType, inputObjectType, nonNull, objectType } from "nexus"
 
 import { Context } from "../context"
+import {
+  GraphQLAuthenticationError,
+  GraphQLForbiddenError,
+  GraphQLUserInputError,
+} from "../lib/errors"
 
 export const VerifiedUser = objectType({
   name: "VerifiedUser",
@@ -50,22 +54,22 @@ export const VerifiedUserMutations = extendType({
         const { user: currentUser } = ctx
 
         if (!currentUser) {
-          throw new AuthenticationError("not logged in")
+          throw new GraphQLAuthenticationError("not logged in")
         }
 
         const organization = await ctx.prisma.organization.findUnique({
           where: { id: organization_id },
         })
 
-        if (!organization || !organization?.secret_key) {
-          throw new UserInputError(
-            "no organization found or no organization secret set",
-            { argumentName: "organization_id" },
+        if (!organization?.secret_key) {
+          throw new GraphQLUserInputError(
+            "no organization or organization secret found",
+            "organization_id",
           )
         }
 
         if (organization.secret_key !== organization_secret) {
-          throw new AuthenticationError("invalid organization secret key")
+          throw new GraphQLForbiddenError("wrong organization secret key")
         }
 
         return ctx.prisma.verifiedUser.create({

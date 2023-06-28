@@ -4,7 +4,6 @@ import {
   ExerciseCompletionRequiredAction,
   User,
   UserCourseServiceProgress,
-  UserCourseSetting,
 } from "@prisma/client"
 
 import {
@@ -12,13 +11,13 @@ import {
   LanguageAbbreviation,
 } from "../../../config/languageConfig"
 import { BaseContext } from "../../../context"
+import { DatabaseInputError } from "../../../lib/errors"
 import {
   emptyOrNullToUndefined,
   ensureDefinedArray,
   isNullish,
 } from "../../../util"
 import { MessageType, pushMessageToClient } from "../../../wsServer"
-import { DatabaseInputError } from "../../lib/errors"
 import {
   ExerciseCompletionPart,
   ServiceProgressPartType,
@@ -39,15 +38,16 @@ export const getCombinedUserCourseProgress = async ({
   course,
   context: { prisma },
 }: GetCombinedUserCourseProgressArgs): Promise<CombinedUserCourseProgress> => {
-  const userCourseServiceProgresses = await prisma.user
-    .findUnique({ where: { id: user.id } })
-    .user_course_service_progresses({
-      where: {
-        course_id: course.id,
-      },
-      distinct: ["course_id", "service_id"],
-      orderBy: { created_at: "asc" },
-    })
+  const userCourseServiceProgresses =
+    (await prisma.user
+      .findUnique({ where: { id: user.id } })
+      .user_course_service_progresses({
+        where: {
+          course_id: course.id,
+        },
+        distinct: ["course_id", "service_id"],
+        orderBy: { created_at: "asc" },
+      })) ?? []
 
   /*
    * Get rid of everything we dont neeed. After this the array looks like this:
@@ -58,7 +58,7 @@ export const getCombinedUserCourseProgress = async ({
     (entry: UserCourseServiceProgress) => entry.progress as any, // type error otherwise
   )
 
-  let combined = new CombinedUserCourseProgress()
+  const combined = new CombinedUserCourseProgress()
   progresses.forEach((entry) => {
     const entries = ensureDefinedArray(entry)
 
@@ -90,7 +90,10 @@ export const checkRequiredExerciseCompletions = async ({
       .andWhereNot("exercise.deleted", true)
       .andWhereNot("exercise.max_points", 0)
 
-    return exercise_completions[0].count >= course.exercise_completions_needed
+    return (
+      Number(exercise_completions[0].count) >=
+      course.exercise_completions_needed
+    )
   }
   return true
 }
@@ -117,8 +120,8 @@ export const getExerciseCompletionsForCourses = async ({
     )
     .distinctOn("ec.exercise_id")
     .join("exercise as e", { "ec.exercise_id": "e.id" })
+    .where("ec.user_id", user.id)
     .whereIn("e.course_id", courseIds)
-    .andWhere("ec.user_id", user.id)
     .andWhere("ec.completed", true)
     .andWhereNot("e.max_points", 0)
     .andWhereNot("e.deleted", true)
@@ -221,53 +224,6 @@ export const pruneOrphanedExerciseCompletionRequiredActions = async ({
   return deleted
 }
 
-interface GetUserCourseSettingsArgs extends WithBaseContext {
-  user_id: string
-  course_id: string
-}
-
-export const getUserCourseSettings = async ({
-  user_id,
-  course_id,
-  context: { prisma },
-}: GetUserCourseSettingsArgs): Promise<UserCourseSetting | null> => {
-  // - if the course inherits user course settings from some course, get settings from that one
-  // - if not, get from the course itself or null if none exists
-  const result = await prisma.course.findUnique({
-    where: {
-      id: course_id,
-    },
-    include: {
-      user_course_settings: {
-        where: {
-          user_id,
-        },
-        orderBy: {
-          created_at: "asc",
-        },
-      },
-      inherit_settings_from: {
-        include: {
-          user_course_settings: {
-            where: {
-              user_id,
-            },
-            orderBy: {
-              created_at: "asc",
-            },
-          },
-        },
-      },
-    },
-  })
-
-  return (
-    result?.inherit_settings_from?.user_course_settings?.[0] ??
-    result?.user_course_settings?.[0] ??
-    null
-  )
-}
-
 interface CheckCompletionArgs extends WithBaseContext {
   user: User
   course: Course
@@ -328,33 +284,36 @@ export const createCompletion = async ({
 }: CreateCompletionArgs) => {
   const { logger, prisma } = context
 
-  const userCourseSettings = await getUserCourseSettings({
-    user_id: user.id,
-    course_id: course.id,
-    context,
+  const userCourseSettings = await prisma.user.findUserCourseSettings({
+    where: {
+      user_id: user.id,
+      course_id: course.id,
+    },
   })
 
   const handlerCourse = handler ?? course
 
-  const completions = await prisma.user
-    .findUnique({
-      where: {
-        id: user.id,
-      },
-    })
-    .completions({
-      where: {
-        course_id: handlerCourse.id,
-      },
-      orderBy: {
-        created_at: "asc",
-      },
-    })
+  const completions =
+    (await prisma.user
+      .findUnique({
+        where: {
+          id: user.id,
+        },
+      })
+      .completions({
+        where: {
+          course_id: handlerCourse.id,
+        },
+        orderBy: {
+          created_at: "asc",
+        },
+      })) ?? []
 
   if (completions.length < 1) {
     logger.info("No existing completion found, creating new...")
 
-    const { language } = userCourseSettings ?? {}
+    // take course instance language first; then from user course settings
+    const language = course?.language ?? userCourseSettings?.language
     const completion_language =
       completionLanguageMap[language as LanguageAbbreviation] ?? null
 
@@ -375,13 +334,9 @@ export const createCompletion = async ({
       },
     })
 
-    if (!userCourseSettings) {
+    if (language && !completion_language) {
       logger.warn(
-        `No user course settings found for user ${user.id} on course ${course.id} (handler ${handlerCourse.id}), created completion ${newCompletion.id} anyway; completion_language will be null`,
-      )
-    } else if (language && !completion_language) {
-      logger.warn(
-        `Didn't recognize language ${language} for user_upstream_id ${user.upstream_id}, created completion with id ${newCompletion.id} anyway`,
+        `Didn't recognize language ${language} for user_upstream_id ${user.upstream_id}, created completion with id ${newCompletion.id} anyway, completion_language is null`,
       )
     }
 
@@ -407,17 +362,12 @@ export const createCompletion = async ({
     const eligible_for_ects =
       tier === 1 ? false : handlerCourse.automatic_completions_eligible_for_ects
     try {
-      const updated = await prisma.$queryRaw<Array<number>>(
-        `
+      const updated = await prisma.$queryRaw<Array<number>>`
         UPDATE
           completion 
-        SET tier=$1, eligible_for_ects=$2, updated_at=now()
-        WHERE id=$3 AND COALESCE(tier, 0) < $1
-        RETURNING tier;`,
-        tier,
-        eligible_for_ects,
-        completions[0]!.id,
-      )
+        SET tier=${tier}, eligible_for_ects=${eligible_for_ects}, updated_at=now()
+        WHERE id=${completions[0].id}::uuid AND COALESCE(tier, 0) < ${tier}
+        RETURNING tier;`
       if (updated.length > 0) {
         logger.info("Existing completion found, updated tier")
       }
@@ -437,7 +387,7 @@ export class CombinedUserCourseProgress {
   public addProgress(newProgress: ServiceProgressPartType) {
     this.total_max_points += newProgress.max_points
     this.total_n_points += newProgress.n_points
-    let index = this.groupIndex(newProgress.group)
+    const index = this.groupIndex(newProgress.group)
     if (index < 0) {
       this.progress.push(newProgress)
     } else {

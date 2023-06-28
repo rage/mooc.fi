@@ -1,22 +1,14 @@
-import { UserInputError } from "apollo-server-express"
 import { chunk, difference, groupBy } from "lodash"
-import {
-  arg,
-  extendType,
-  idArg,
-  intArg,
-  list,
-  nonNull,
-  nullable,
-  stringArg,
-} from "nexus"
+import { arg, extendType, idArg, intArg, list, nonNull, stringArg } from "nexus"
 import { v4 as uuidv4 } from "uuid"
 
 import { Completion } from "@prisma/client"
+import { User } from "@sentry/node"
 
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
-import { filterNullFields, getCourseOrAlias, isDefined } from "../../util"
+import { GraphQLUserInputError } from "../../lib/errors"
+import { isDefined } from "../../util"
 import { ConflictError } from "../common"
 
 export const CompletionMutations = extendType({
@@ -31,7 +23,7 @@ export const CompletionMutations = extendType({
         user: nonNull(idArg()),
         course: nonNull(idArg()),
         completion_language: stringArg(),
-        tier: nullable(intArg()),
+        tier: intArg(),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
@@ -74,14 +66,23 @@ export const CompletionMutations = extendType({
         })
 
         if (!course) {
-          throw new UserInputError("course not found", {
-            argumentName: "course_id",
-          })
+          throw new GraphQLUserInputError("course not found", "course_id")
         }
         const completions = (args.completions ?? []).filter(isDefined)
 
         const foundUsers = await ctx.knex
-          .select([
+          .select<
+            Array<
+              Pick<
+                User,
+                | "id"
+                | "email"
+                | "upstream_id"
+                | "student_number"
+                | "real_student_number"
+              >
+            >
+          >([
             "id",
             "email",
             "upstream_id",
@@ -108,18 +109,18 @@ export const CompletionMutations = extendType({
             created_at: new Date(),
             updated_at: new Date(),
             user_upstream_id: o.user_id ? parseInt(o.user_id) : null,
-            email: databaseUser.email,
+            email: databaseUser.email ?? "",
             student_number:
               databaseUser.real_student_number || databaseUser.student_number,
             completion_language: null,
             course_id: course.completions_handled_by_id ?? course_id,
-            user_id: databaseUser.id,
+            user_id: databaseUser.id ?? null,
             grade: o.grade ?? null,
             completion_date: o.completion_date ?? null,
             certificate_id: null,
             eligible_for_ects: true,
             tier: o.tier ?? null,
-            completion_registration_attempt_date: null, // TODO: some date here?
+            completion_registration_attempt_date: null,
           }
         })
 
@@ -161,27 +162,24 @@ export const CompletionMutations = extendType({
       authorize: isAdmin,
       resolve: async (_, { course_id: id, slug }, ctx) => {
         if ((!id && !slug) || (id && slug)) {
-          throw new UserInputError(
+          throw new GraphQLUserInputError(
             "must provide exactly one of course_id or slug!",
-            {
-              argumentName: ["course_id", "slug"],
-            },
+            ["course_id", "slug"],
           )
         }
 
-        const course = await getCourseOrAlias(ctx)({
+        const course = await ctx.prisma.course.findUniqueOrAlias({
           where: {
-            ...filterNullFields({
-              id,
-              slug,
-            }),
+            id: id ?? undefined,
+            slug: slug ?? undefined,
           },
         })
 
         if (!course) {
-          throw new UserInputError("course not found", {
-            argumentName: ["course_id", "slug"],
-          })
+          throw new GraphQLUserInputError("course not found", [
+            "course_id",
+            "slug",
+          ])
         }
 
         // find users on course with points
@@ -205,19 +203,20 @@ export const CompletionMutations = extendType({
           .filter((key) => key !== "null")
 
         // find users with completions
-        const completions = await ctx.prisma.course
-          .findUnique({
-            where: {
-              id: course.completions_handled_by_id ?? course.id,
-            },
-          })
-          .completions({
-            where: {
-              user_id: { in: userIds },
-            },
-            distinct: ["user_id", "course_id"],
-            orderBy: { created_at: "asc" },
-          })
+        const completions =
+          (await ctx.prisma.course
+            .findUnique({
+              where: {
+                id: course.completions_handled_by_id ?? course.id,
+              },
+            })
+            .completions({
+              where: {
+                user_id: { in: userIds },
+              },
+              distinct: ["user_id", "course_id"],
+              orderBy: { created_at: "asc" },
+            })) ?? []
 
         // filter users without completions
         const userIdsWithoutCompletions = difference(
@@ -272,7 +271,7 @@ export const CompletionMutations = extendType({
         const existing = await ctx.prisma.completion.findFirst({
           where: {
             id,
-            ...(ctx.role !== Role.ADMIN && { user_id: ctx.user?.id }),
+            ...(ctx.role !== Role.ADMIN ? { user_id: ctx.user?.id } : {}),
           },
         })
 

@@ -1,26 +1,25 @@
 import { useEffect, useState } from "react"
 
-import axios from "axios"
-import { NextSeo } from "next-seo"
+import fetch from "isomorphic-unfetch"
 import { useRouter } from "next/router"
 
 import { useMutation, useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import { Paper, SvgIcon, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import RegisterCompletion from "/components/Home/RegisterCompletion"
 import ImportantNotice from "/components/ImportantNotice"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
+import OutboundLink from "/components/OutboundLink"
 import RegisterCompletionText from "/components/RegisterCompletionText"
 import Spinner from "/components/Spinner"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
-import useSubtitle from "/hooks/useSubtitle"
-import { getAccessToken } from "/lib/authentication"
+import { useQueryParameter } from "/hooks/useQueryParameter"
+import { useTranslator } from "/hooks/useTranslator"
 import withSignedIn from "/lib/with-signed-in"
 import RegisterCompletionTranslations from "/translations/register-completion"
-import { useQueryParameter } from "/util/useQueryParameter"
-import { useTranslator } from "/util/useTranslator"
+import { getCookie } from "/util/cookie"
 
 import {
   CourseFromSlugDocument,
@@ -37,9 +36,16 @@ const StyledPaper = styled(Paper)`
   padding: 1em;
   margin: 1em;
 `
+
 const StyledPaperRow = styled(Paper)`
   padding: 1em;
   margin: 1em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`
+
+const Row = styled("span")`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -52,23 +58,62 @@ const StyledPaperColumn = styled(Paper)`
   flex-direction: column;
   align-items: center;
 `
+
 const StyledIcon = styled(SvgIcon)`
   width: 30px;
   height: 30px;
   margin: 0.5em;
 `
-const StyledText = styled(Typography)<any>`
+
+const StyledText = styled(Typography)`
   margin-top: 0px;
   margin-left: 1em;
+` as typeof Typography
+
+const CompletionLinkText = styled(Typography)`
+  display: flex;
+  flex-flow: wrap;
+  justify-content: center;
 `
 
+function CompletionLinkColumn() {
+  const t = useTranslator(RegisterCompletionTranslations)
+
+  return (
+    <StyledPaperColumn>
+      <CompletionLinkText variant="body1">
+        {t("see_completion_link")}{" "}
+        <OutboundLink
+          href="https://opintopolku.fi/oma-opintopolku/"
+          label={t("see_completion_link")}
+          rel="noopener noreferrer"
+        >
+          opintopolku.fi/oma-opintopolku/
+        </OutboundLink>
+      </CompletionLinkText>
+      <Row>
+        <StyledIcon color="primary">
+          <path d="M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20Z" />
+        </StyledIcon>
+
+        <Typography
+          variant="body2"
+          dangerouslySetInnerHTML={{ __html: t("see_completion_NB") }}
+        />
+      </Row>
+    </StyledPaperColumn>
+  )
+}
+
 function RegisterCompletionPage() {
-  const accessToken = getAccessToken(undefined)
+  const accessToken = getCookie("access_token")
   const { currentUser } = useLoginStateContext()
   const [instructions, setInstructions] = useState("")
   const [tiers, setTiers] = useState([])
 
-  const courseSlug = (useQueryParameter("slug") ?? "").replace(/\./g, "")
+  const courseSlug = encodeURIComponent(
+    useQueryParameter("slug") ?? "",
+  ).replace(/\./g, "")
 
   const t = useTranslator(RegisterCompletionTranslations)
   const {
@@ -111,33 +156,59 @@ function RegisterCompletionPage() {
   }
 
   useEffect(() => {
-    if (locale) {
-      axios
-        .get<{}, any>(
-          `${BASE_URL}/api/completionInstructions/${courseSlug}/${locale}`,
-        )
-        .then((res) => res.data)
-        .then((json) => {
-          setInstructions(json)
-        })
-        .catch((error) => {
-          setInstructions(error.response.data)
-        })
-
-      axios({
-        method: "GET",
-        url: `${BASE_URL}/api/completionTiers/${courseSlug}`,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
-        .then((res) => res.data)
-        .then((json: any) => {
-          setTiers(json.tierData)
-        })
+    if (!locale) {
+      return
     }
-  }, [locale])
+    const controller = new AbortController()
+    fetch(`${BASE_URL}/api/completionInstructions/${courseSlug}/${locale}`, {
+      signal: controller?.signal,
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json()
+        }
+        return Promise.reject(res)
+      })
+      .then((json) => {
+        setInstructions(json)
+      })
+      .catch((res) => {
+        if (controller?.signal.aborted) {
+          return
+        }
+        res.json().then((json: any) => setInstructions(json))
+      })
+
+    return () => controller.abort()
+  }, [courseSlug, locale])
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    fetch(`${BASE_URL}/api/completionTiers/${courseSlug}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      signal: controller?.signal,
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json()
+        }
+        return Promise.reject(res)
+      })
+      .then((json) => {
+        setTiers(json.tierData)
+      })
+      .catch(() => {
+        /* Do nothing */
+      })
+
+    return () => {
+      controller?.abort()
+    }
+  }, [courseSlug])
 
   useBreadcrumbs([
     {
@@ -150,7 +221,7 @@ function RegisterCompletionPage() {
       href: `/register-completion/${courseSlug}`,
     },
   ])
-  const title = useSubtitle(courseData?.course?.name)
+  const title = courseData?.course?.name ?? "..."
 
   if (courseLoading || userLoading) {
     return <Spinner />
@@ -166,36 +237,31 @@ function RegisterCompletionPage() {
 
   if (!currentUser) {
     return (
-      <>
-        <NextSeo title={title} />
-        <RegisterCompletion title={t("error")}>
-          <Typography>{t("notLoggedIn")}</Typography>
-        </RegisterCompletion>
-      </>
+      <RegisterCompletion
+        pageTitle={title}
+        title={t("error")}
+        message={t("notLoggedIn")}
+      />
     )
   }
 
   if (!course_exists) {
     return (
-      <>
-        <NextSeo title={title} />
-        <RegisterCompletion title={t("course_not_found_title")}>
-          <Typography>
-            {t("course_not_found", { course: courseSlug })}
-          </Typography>
-        </RegisterCompletion>
-      </>
+      <RegisterCompletion
+        pageTitle={title}
+        title={t("course_not_found_title")}
+        message={t("course_not_found", { course: courseSlug })}
+      />
     )
   }
 
   if (!completion?.eligible_for_ects) {
     return (
-      <>
-        <NextSeo title={title} />
-        <RegisterCompletion title={t("course_completion_not_found_title")}>
-          <Typography>{t("course_completion_not_found")}</Typography>
-        </RegisterCompletion>
-      </>
+      <RegisterCompletion
+        pageTitle={title}
+        title={t("course_completion_not_found_title")}
+        message={t("course_completion_not_found")}
+      />
     )
   }
 
@@ -206,28 +272,13 @@ function RegisterCompletionPage() {
 
   if (registeredCompletion) {
     return (
-      <>
-        <NextSeo title={title} />
-        <RegisterCompletion
-          title={t("course_completion_already_registered_title")}
-        >
-          <Typography>{t("course_completion_already_registered")}</Typography>
-          <StyledPaperColumn>
-            <Typography variant="body1">
-              {t("see_completion_link")}
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href="https://opintopolku.fi/oma-opintopolku/"
-              >
-                {" "}
-                opintopolku.fi/oma-opintopolku/
-              </a>
-            </Typography>
-            <Typography variant="body1">{t("see_completion_NB")}</Typography>
-          </StyledPaperColumn>
-        </RegisterCompletion>
-      </>
+      <RegisterCompletion
+        pageTitle={title}
+        title={t("course_completion_already_registered_title")}
+        message={t("course_completion_already_registered")}
+      >
+        <CompletionLinkColumn />
+      </RegisterCompletion>
     )
   }
 
@@ -237,69 +288,48 @@ function RegisterCompletionPage() {
 
   if (!courseLinkWithLanguage) {
     return (
-      <>
-        <NextSeo title={title} />
-        <RegisterCompletion title={t("title")}>
-          <StyledPaper>
-            <Typography variant="body1" paragraph>
-              {t("open_university_registration_not_open")}{" "}
-              <strong>{completion.course?.name}</strong> (
-              {completion.completion_language}).
-            </Typography>
-          </StyledPaper>
-        </RegisterCompletion>
-      </>
+      <RegisterCompletion pageTitle={title} title={t("title")}>
+        <StyledPaper>
+          <Typography paragraph>
+            {t("open_university_registration_not_open")}{" "}
+            <strong>{completion.course?.name}</strong> (
+            {t(completion.completion_language as any)}).
+          </Typography>
+        </StyledPaper>
+      </RegisterCompletion>
     )
   }
 
   return (
-    <>
-      <NextSeo title={title} />
-      <RegisterCompletion title={t("title")}>
-        <StyledText>
-          {t("course", { course: completion.course?.name })}
+    <RegisterCompletion pageTitle={title} title={t("title")}>
+      <StyledText variant="h3">
+        {t("course", { course: completion.course?.name })}
+      </StyledText>
+      {completion.course?.ects && (
+        <StyledText variant="h6" paragraph gutterBottom>
+          {t("credits", { ects: completion.course?.ects })}
         </StyledText>
-        {completion.course?.ects && (
-          <StyledText variant="h6" component="p" gutterBottom={true}>
-            {t("credits", { ects: completion.course?.ects })}
-          </StyledText>
-        )}
-        {instructions && (
-          <StyledPaper>
-            <Typography variant="body1" paragraph>
-              {instructions}
-            </Typography>
-          </StyledPaper>
-        )}
-        <ImportantNotice email={completion.email} />
-        <RegisterCompletionText
-          email={completion.email}
-          link={courseLinkWithLanguage}
-          tiers={tiers}
-          onRegistrationClick={onRegistrationClick}
-        />
-        <StyledPaperColumn>
-          <Typography variant="body1">
-            {t("see_completion_link")}
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              href="https://opintopolku.fi/oma-opintopolku/"
-            >
-              {" "}
-              opintopolku.fi/oma-opintopolku/
-            </a>
-          </Typography>
-          <Typography variant="body1">{t("see_completion_NB")}</Typography>
-        </StyledPaperColumn>
-        <StyledPaperRow>
-          <StyledIcon color="primary">
-            <path d="M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20Z" />
-          </StyledIcon>
-          <Typography variant="body1">{t("NB")}</Typography>
-        </StyledPaperRow>
-      </RegisterCompletion>
-    </>
+      )}
+      {instructions && (
+        <StyledPaper>
+          <Typography paragraph>{instructions}</Typography>
+        </StyledPaper>
+      )}
+      <ImportantNotice email={completion.email} />
+      <RegisterCompletionText
+        email={completion.email}
+        link={courseLinkWithLanguage}
+        tiers={tiers}
+        onRegistrationClick={onRegistrationClick}
+      />
+      <CompletionLinkColumn />
+      <StyledPaperRow>
+        <StyledIcon color="primary">
+          <path d="M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20Z" />
+        </StyledIcon>
+        <Typography dangerouslySetInnerHTML={{ __html: t("NB") }} />
+      </StyledPaperRow>
+    </RegisterCompletion>
   )
 }
 

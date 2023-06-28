@@ -1,8 +1,10 @@
 import { PropsWithChildren } from "react"
 
-import styled from "@emotion/styled"
+import { MDXComponents } from "mdx/types"
+
 import { MDXProvider } from "@mdx-js/react"
 import { Paper } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import {
   ModuleCardText,
@@ -28,14 +30,14 @@ const Background = styled(Paper)`
   }
 `
 
-const ContentArea = styled.div`
+const ContentArea = styled("div")`
   padding: 1rem 1rem 2rem 1rem;
   flex-direction: column;
   display: flex;
   flex: 1;
 `
 
-const CustomModuleContainer = styled.div`
+const CustomModuleContainer = styled("div")`
   margin-top: calc(2rem - 24px);
   margin-left: calc(2rem - 24px);
   padding-top: 1rem;
@@ -48,16 +50,12 @@ const CustomModuleContainer = styled.div`
   justify-content: center;
 `
 
-interface CustomModuleContentProps {}
-
-const components = {
-  h3: ModuleCardTitle,
-  p: ModuleCardText,
+const components: MDXComponents = {
+  h3: ModuleCardTitle as (props: any) => React.JSX.Element,
+  p: ModuleCardText as (props: any) => React.JSX.Element,
 }
 
-export const CustomModuleContent = ({
-  children,
-}: PropsWithChildren<CustomModuleContentProps>) => {
+export const CustomModuleContent = ({ children }: PropsWithChildren) => {
   return (
     <MDXProvider components={components}>
       <CustomModuleContainer>

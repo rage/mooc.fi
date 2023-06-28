@@ -1,5 +1,5 @@
-import styled from "@emotion/styled"
-import ButtonBase from "@mui/material/ButtonBase"
+import { ButtonBase, EnhancedButtonBase } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 export const ClickableButtonBase = styled(ButtonBase)`
   background-color: white;
@@ -11,9 +11,9 @@ export const ClickableButtonBase = styled(ButtonBase)`
     transition-duration: 0.4s;
     cursor: pointer;
   }
-`
+` as EnhancedButtonBase
 
-export const ShadowedDiv = styled.div`
+export const ShadowedDiv = styled("div")`
   position: relative;
   box-shadow: 18px 7px 28px -12px rgba(0, 0, 0, 0.41);
 `

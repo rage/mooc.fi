@@ -1,10 +1,9 @@
 import { Request, Response } from "express"
 import { intersection, omit } from "lodash"
 
-import { User, UserCourseSettingsVisibility } from "@prisma/client"
+import { UserCourseSettingsVisibility } from "@prisma/client"
 
 import { redisify } from "../../services/redis"
-import { err, ok } from "../../util"
 import { ApiContext, Controller } from "../types"
 
 type UserCourseSettingsCountResult =
@@ -25,7 +24,7 @@ export class UserCourseSettingsController extends Controller {
   }
 
   get = async (req: Request<{ slug: string }>, res: Response) => {
-    const { logger } = this.ctx
+    const { logger, prisma } = this.ctx
     const { slug } = req.params
 
     if (!slug) {
@@ -40,12 +39,22 @@ export class UserCourseSettingsController extends Controller {
 
     const { user } = getUserResult.value
 
-    const courseAndSettingsResult = await this.getCourseAndSettings(user, slug)
+    const course = await prisma.course.findUniqueOrAlias({
+      where: {
+        slug,
+      },
+    })
 
-    if (courseAndSettingsResult.isErr()) {
-      return res.status(404).json({ message: courseAndSettingsResult.error })
+    if (!course) {
+      return res.status(404).json({ message: "course not found" })
     }
-    const { userCourseSettings } = courseAndSettingsResult.value
+
+    const userCourseSettings = await prisma.user.findUserCourseSettings({
+      where: {
+        user_id: user.id,
+        course_slug: slug,
+      },
+    })
 
     const overwrittenKeys = intersection(
       Object.keys(omit(userCourseSettings, "other") ?? {}),
@@ -93,12 +102,22 @@ export class UserCourseSettingsController extends Controller {
 
     const { user } = getUserResult.value
 
-    const courseAndSettingsResult = await this.getCourseAndSettings(user, slug)
+    const course = await prisma.course.findUniqueOrAlias({
+      where: {
+        slug,
+      },
+    })
 
-    if (courseAndSettingsResult.isErr()) {
-      return res.status(404).json({ message: courseAndSettingsResult.error })
+    if (!course) {
+      return res.status(404).json({ message: "course not found" })
     }
-    const { course, userCourseSettings } = courseAndSettingsResult.value
+
+    const userCourseSettings = await prisma.user.findUserCourseSettings({
+      where: {
+        user_id: user.id,
+        course_slug: slug,
+      },
+    })
 
     const permittedFields = [
       "country",
@@ -198,13 +217,11 @@ export class UserCourseSettingsController extends Controller {
           return { course: slug, language, error: true }
         }
 
-        let { count } = (
-          await knex("user_course_setting")
-            .countDistinct("user_id as count")
-            .where({ course_id, language })
-        )?.[0]
+        const settings = await knex("user_course_setting")
+          .countDistinct("user_id as count")
+          .where({ course_id, language })
 
-        count = Number(count)
+        let count = Number(settings?.[0]?.count ?? "0")
 
         if (count < 100) {
           count = -1
@@ -225,7 +242,7 @@ export class UserCourseSettingsController extends Controller {
       },
     )
 
-    if (resObject && "error" in resObject && resObject.error) {
+    if (isError(resObject)) {
       return res.status(403).json({
         message: "Course not found or user count not set to visible",
       })
@@ -233,50 +250,7 @@ export class UserCourseSettingsController extends Controller {
 
     return res.status(200).json(resObject)
   }
-
-  private async getCourseAndSettings(user: User, slug: string) {
-    const course = await this.getCourse({ where: { slug } })
-
-    if (!course) {
-      return err(
-        `course with slug or course alias with course code ${slug} doesn't exist`,
-      )
-    }
-
-    try {
-      const courseWithSettings = await this.ctx.prisma.course.findUnique({
-        where: {
-          id: course.id,
-        },
-        include: {
-          user_course_settings: {
-            where: {
-              user_id: user.id,
-            },
-            orderBy: { created_at: "asc" },
-            take: 1,
-          },
-          inherit_settings_from: {
-            include: {
-              user_course_settings: {
-                where: {
-                  user_id: user.id,
-                },
-                orderBy: { created_at: "asc" },
-                take: 1,
-              },
-            },
-          },
-        },
-      })
-
-      const userCourseSettings =
-        courseWithSettings?.inherit_settings_from?.user_course_settings?.[0] ??
-        courseWithSettings?.user_course_settings?.[0]
-
-      return ok({ course, userCourseSettings })
-    } catch (e) {
-      return err(e instanceof Error ? e.message : e)
-    }
-  }
 }
+
+const isError = (res: any): res is { error: true } =>
+  "error" in res && res.error

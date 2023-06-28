@@ -1,0 +1,114 @@
+import {ContentBox} from "/pages/installation/[id]"
+import StartingProgrammingGuide from "/public/md_pages/installation/ohjelmoinnin_aloittaminen_vscode_fi.mdx"
+import TableOfContents from "/public/md_pages/installation/sisallysluettelo_vscode_fi.mdx"
+
+<ContentBox>
+
+## Asentaminen Linuxiin
+
+---
+
+<TableOfContents />
+
+</ContentBox>
+
+<ContentBox>
+Seuraa alla olevia ohjeita asentaaksesi Visual Studio Coden (VS Code) ja TestMyCode (TMC) -laajennuksen VS Codeen. 
+
+Tarvitset järjestelmävalvojaoikeudet tietokoneellesi asentaaksesi tarvittavat ohjelmat.  
+Mikäli sinulla on käytössäsi Tietojenkäsittelytieteen osaston laite, voit siirtyä suoraan [TestMyCode -laajennuksen asentamiseen](#TestMyCode-asentaminen).
+
+###  Visual Studio Coden asentaminen <a name="VSCoden-asentaminen"></a>
+
+Ubuntussa sen voi tehdä komentoriviltä seuraavalla komennolla:
+
+> `sudo apt-get install code`
+
+Mikäli komento ei toimi, lue Visual Studio Code asennusohjeet Linuxille osoitteessa [https://code.visualstudio.com/docs/setup/linux](https://code.visualstudio.com/docs/setup/linux)
+
+### TestMyCode-laajennuksen asentaminen VS Codeen <a name="TestMyCode-asentaminen"></a>
+
+1. Avaa Visual Studio Code ohjelma kirjoittamalla komentoriville `code`. 
+2. Ohjelman vasemmassa sivupalkissa näkyy ikoneita, valitse sieltä Extensions -näkymä (kuvassa kohta 1).  
+3. Kirjoita hakukenttään **TestMyCode** (kuvassa kohta 2).  
+4. Valitse **TestMyCode** hakutuloksesta.
+5. Paina "Install" -painiketta (kuvassa kohta 3).
+
+Ensimmäisen käynnistyksen yhteydessä laajennus lataa sen tarvitsemat komponentit toimiakseen (tässä menee hetki).
+
+![TMC-laajennuksen asentaminen VS Codeen](vscode/download_extension.webp)
+
+</ContentBox>
+
+<ContentBox>
+
+### Python-ympäristön asentaminen <a name="python-asentaminen"></a>
+
+Python-ohjelmointikursseilla tulet tarvitsemaan Python3:a ja Python laajennusta Visual Studio Codeen suorittaaksesi lähdekoodia.
+Saat asennettua nämä käyttöösi seuraamalla näitä ohjeita.
+
+#### Pythonin asentaminen <a name="python3"></a>
+
+Python3:n asentamisen voi tehdä komentoriviltä seuraavalla komennolla (Ubuntu):
+
+> `sudo apt-get install python3`
+
+#### Python-laajennuksen asentaminen VS Codeen <a name="python-laajennus"></a>
+
+1. Aukaise Visual Studio Code
+2. Paina vasemmassa palkissa olevaa "Extensions" välilehteä (kuvassa 1).
+3. Hakukenttään kirjoita `Python` ja valitse Microsoftin Python-laajennus (kuvassa 2).
+4. Paina `Install` painiketta (kuvassa 3).
+
+![Python-laajennuksen asentaminen VS Codeen](vscode/vscode_python_extension.webp)
+
+</ContentBox>
+
+<ContentBox>
+
+### Java-ympäristön asentaminen <a name="javan-asentaminen"></a>
+
+Java-ohjelmointikursseilla tarvitset Java-kehitys- ja suoritusympäristön, Java-laajennuksen Visual Studio Codeen sekä Mavenin.  
+Saat asennettua nämä käyttöösi seuraamalla näitä ohjeita.
+
+#### Javan asentaminen <a name="adopt-open-jdk"></a>
+
+##### 1. Asenna OpenJDK-paketti.
+
+Ubuntussa sen voi tehdä komentoriviltä seuraavalla komennolla:
+
+> `sudo apt-get install openjdk-11-jdk`
+
+##### 2. Vaihda Javan aktiivinen versio
+
+Käytä komentoa:
+
+> `sudo update-alternatives --config java`
+
+Kirjoita komentoriville sen vaihtoehdon numero, jossa lukee Java 11 (esim. kirjoittajan koneella "/usr/lib/jvm/java-11-openjdk-amd64/bin/java"), ja paina Enter.
+
+Jos Java 11 on listalla useampaan otteeseen, sekä statuksella "auto mode" että "manual mode", valitse mieluummin "manual mode".
+
+
+#### Java-laajennuksen asentaminen VS Codeen <a name="java-laajennus"></a>
+
+Tarvitset Java-laajennuksen Visual Studio Codeen, jotta voit kääntää ja suorittaa kirjoittamaasi Java-koodia.
+
+1. Aukaise Visual Studio Code
+2. Paina vasemmassa palkissa olevaa "Extensions"-välilehteä (kuvassa 1).
+3. Hakukenttään kirjoita `Java Extension Pack` ja valitse tämä (kuvassa 2).
+4. Paina `Install` painiketta (kuvassa 3).
+
+![Java-laajennuksien asennus VS Codeen](vscode/vscode_java_extension_pack.webp)
+
+
+#### Mavenin asentaminen ja asetusten määrittäminen <a name="maven-ja-asetukset"></a>
+
+Ubuntussa sen voi tehdä komentoriviltä seuraavalla komennolla:
+> `sudo apt-get install maven`
+
+Ubuntussa asetukset määrittyvät automaattisesti.
+
+</ContentBox>
+
+<StartingProgrammingGuide />

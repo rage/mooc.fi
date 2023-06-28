@@ -1,4 +1,6 @@
-import { Prisma, PrismaClient } from "@prisma/client"
+import { Prisma } from "@prisma/client"
+
+import { type ExtendedPrismaClient } from "../prisma"
 
 export const DEFAULT_JOIN_ORGANIZATION_EMAIL_TEMPLATE_ID =
   "99999999-9998-9997-9996-999999999995"
@@ -20,7 +22,7 @@ If you did not request to join this organization, please ignore this email.`,
   name: "___default_join_organization",
 }
 
-export const createDefaultData = (prisma: PrismaClient) => {
+export const createDefaultData = (prisma: ExtendedPrismaClient) => {
   return prisma.emailTemplate.upsert({
     where: {
       id: DEFAULT_JOIN_ORGANIZATION_EMAIL_TEMPLATE_ID,

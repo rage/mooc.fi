@@ -1,22 +1,25 @@
-import { UserInputError } from "apollo-server-express"
-import { omit } from "lodash"
+/* eslint-disable complexity */
+import { omit, uniqBy } from "lodash"
 import { arg, extendType, idArg, nonNull, stringArg } from "nexus"
+import { NexusGenInputs } from "nexus-typegen"
 
-import { Course, Prisma } from "@prisma/client"
+import { Course, CourseSponsor, Prisma, StudyModule, Tag } from "@prisma/client"
 
 import { isAdmin } from "../../accessControl"
 import { Context } from "../../context"
+import { GraphQLUserInputError } from "../../lib/errors"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import { invalidate } from "../../services/redis"
+import { emptyOrNullToUndefined, isDefined } from "../../util"
 import {
-  convertUpdate,
-  emptyOrNullToUndefined,
-  filterNullFields,
-  isDefined,
-  isNotNull,
-} from "../../util"
-import { ConflictError } from "../common"
+  connectOrDisconnect,
+  createCourseMutations,
+  getIds,
+} from "../../util/courseMutationHelpers"
 import { deleteImage, uploadImage } from "../Image"
+
+// @ts-ignore: not used for now
+const hasId = <T>(value: any): value is T & { id: string } => Boolean(value?.id)
 
 export const CourseMutations = extendType({
   type: "Mutation",
@@ -34,10 +37,7 @@ export const CourseMutations = extendType({
       resolve: async (_, { course }, ctx: Context) => {
         const {
           // slug,
-          new_photo,
-          base64,
           course_translations,
-          open_university_registration_links,
           course_variants,
           course_aliases,
           study_modules,
@@ -46,41 +46,43 @@ export const CourseMutations = extendType({
           user_course_settings_visibilities,
           completion_email_id,
           course_stats_email_id,
+          language,
+          sponsors,
         } = course
+        let tags = course.tags ?? []
 
-        let photo = null
-
-        if (new_photo) {
-          const newImage = await uploadImage({
-            ctx,
-            file: new_photo,
-            base64: base64 ?? false,
-          })
-
-          photo = newImage.id
-        }
+        const photo = await updatePossibleNewPhoto(course, ctx)
 
         if (study_modules?.some((s) => !s?.id && !s?.slug)) {
-          throw new UserInputError("study modules must have id or slug", {
-            argumentName: { course: { study_modules: ["id", "slug"] } },
-          })
+          throw new GraphQLUserInputError("study modules must have id or slug")
         }
+
+        if (language) {
+          tags = uniqBy((tags ?? []).concat({ id: language }), "id")
+        }
+
+        const open_university_registration_links =
+          course.open_university_registration_links?.map((link) => ({
+            ...link,
+            tiers: link.tiers ?? Prisma.JsonNull,
+          })) ?? undefined
 
         const newCourse = await ctx.prisma.course.create({
           data: {
             ...omit(course, [
               "base64",
               "new_photo",
-              "study_modules",
-              "inherit_settings_from",
+              "tags",
               "completions_handled_by",
+              "inherit_settings_from",
+              "study_modules",
               "completion_email_id",
               "course_stats_email_id",
             ]),
             start_date: course.start_date.toISOString(),
             end_date: course.end_date?.toISOString() ?? undefined,
             name: course.name ?? "",
-            photo: !!photo ? { connect: { id: photo } } : undefined,
+            photo: photo ? { connect: { id: photo } } : undefined,
             course_translations: {
               create: course_translations?.filter(isDefined),
             },
@@ -96,24 +98,42 @@ export const CourseMutations = extendType({
             },
             course_variants: { create: course_variants?.filter(isDefined) },
             course_aliases: { create: course_aliases?.filter(isDefined) },
-            ...(!!inherit_settings_from && {
-              inherit_settings_from: { connect: { id: inherit_settings_from } },
-            }),
-            ...(!!completions_handled_by && {
-              completions_handled_by: {
-                connect: { id: completions_handled_by },
-              },
-            }),
+            ...(inherit_settings_from
+              ? {
+                  inherit_settings_from: {
+                    connect: { id: inherit_settings_from },
+                  },
+                }
+              : {}),
+            ...(completions_handled_by
+              ? {
+                  completions_handled_by: {
+                    connect: { id: completions_handled_by },
+                  },
+                }
+              : {}),
             user_course_settings_visibilities: {
               create: user_course_settings_visibilities?.filter(isDefined),
             },
             // don't think these will be passed by parameter, but let's be sure
-            ...(!!completion_email_id && {
-              completion_email: { connect: { id: completion_email_id } },
-            }),
-            ...(!!course_stats_email_id && {
-              course_stats_email: { connect: { id: course_stats_email_id } },
-            }),
+            ...(completion_email_id
+              ? {
+                  completion_email: { connect: { id: completion_email_id } },
+                }
+              : {}),
+            ...(course_stats_email_id
+              ? {
+                  course_stats_email: {
+                    connect: { id: course_stats_email_id },
+                  },
+                }
+              : {}),
+            tags: { connect: (tags ?? []).map((tag) => ({ id: tag.id })) },
+            sponsors: {
+              create: (sponsors ?? []).map((sponsor) => ({
+                sponsor: { connect: { id: sponsor.id } },
+              })),
+            },
           },
         })
 
@@ -143,52 +163,44 @@ export const CourseMutations = extendType({
       resolve: async (_, { course }, ctx: Context) => {
         const {
           id,
-          new_photo,
           slug,
           new_slug,
-          base64,
-          course_translations,
-          open_university_registration_links,
-          course_variants,
-          course_aliases,
           study_modules,
           completion_email_id,
           status,
           delete_photo,
           inherit_settings_from,
           completions_handled_by,
-          user_course_settings_visibilities,
           course_stats_email_id,
+          tags,
+          sponsors,
         } = course
         let { end_date } = course
 
         if (!slug) {
-          throw new UserInputError("slug required for update course", {
-            argumentName: { course: "slug" },
-          })
+          throw new GraphQLUserInputError("slug required for update course")
         }
 
-        let photo = course.photo
-
-        if (new_photo) {
-          const newImage = await uploadImage({
-            ctx,
-            file: new_photo,
-            base64: base64 ?? false,
-          })
-          if (photo && photo !== newImage.id) {
-            // TODO: do something with return value
-            await deleteImage({ ctx, id: photo })
-          }
-          photo = newImage.id
-        }
+        let photo = await updatePossibleNewPhoto(course, ctx)
 
         const existingCourse = await ctx.prisma.course.findUnique({
           where: { slug },
+          include: {
+            study_modules: true,
+            completions_handled_by: true,
+            inherit_settings_from: true,
+            user_course_settings_visibilities: true,
+            tags: true,
+            sponsors: true,
+          },
         })
 
+        if (!existingCourse) {
+          throw new GraphQLUserInputError("course not found")
+        }
+
         if (
-          existingCourse?.status != status &&
+          existingCourse.status !== status &&
           status === "Ended" &&
           !end_date
         ) {
@@ -200,126 +212,44 @@ export const CourseMutations = extendType({
           photo = null
         }
 
-        // FIXME: I know there's probably a better way to do this
-        const translationMutation:
-          | Prisma.CourseTranslationUpdateManyWithoutCourseInput
-          | undefined = await createMutation({
+        const updatedFields = await createCourseMutations(
           ctx,
           slug,
-          data: course_translations,
-          field: "course_translations",
-        })
+        )([
+          "course_translations",
+          "open_university_registration_links",
+          "course_variants",
+          "course_aliases",
+          "user_course_settings_visibilities",
+        ])(omit(course, "sponsors"))
 
-        const registrationLinkMutation:
-          | Prisma.OpenUniversityRegistrationLinkUpdateManyWithoutCourseInput
-          | undefined = await createMutation({
-          ctx,
-          slug,
-          data: open_university_registration_links,
-          field: "open_university_registration_links",
-        })
-
-        const courseVariantMutation:
-          | Prisma.CourseVariantUpdateManyWithoutCourseInput
-          | undefined = await createMutation({
-          ctx,
-          slug,
-          data: course_variants,
-          field: "course_variants",
-        })
-
-        const courseAliasMutation:
-          | Prisma.CourseAliasUpdateManyWithoutCourseInput
-          | undefined = await createMutation({
-          ctx,
-          slug,
-          data: course_aliases,
-          field: "course_aliases",
-        })
-
-        const userCourseSettingsVisibilityMutation:
-          | Prisma.UserCourseSettingsVisibilityUpdateManyWithoutCourseInput
-          | undefined = await createMutation({
-          ctx,
-          slug,
-          data: user_course_settings_visibilities,
-          field: "user_course_settings_visibilities",
-        })
-
-        const existingVisibilities = await ctx.prisma.course
-          .findUnique({ where: { slug } })
-          .user_course_settings_visibilities()
-        for (const visibility of existingVisibilities) {
+        for (const visibility of existingCourse.user_course_settings_visibilities ??
+          []) {
           await invalidate(
             "usercoursesettingscount",
             `${slug}-${visibility.language}`,
           )
         }
 
-        // this had different logic so it's not done with the same helper
-        const existingStudyModules = await ctx.prisma.course
-          .findUnique({ where: { slug } })
-          .study_modules()
-        //const addedModules: StudyModuleWhereUniqueInput[] = pullAll(study_modules, existingStudyModules.map(module => module.id))
-        const removedModuleIds =
-          existingStudyModules
-            ?.filter((module) => !getIds(study_modules).includes(module.id))
-            .map((module) => ({ id: module.id })) ?? []
-        const connectModules =
-          study_modules
-            ?.filter(isNotNull)
-            .map(({ id, slug }) =>
-              filterNullFields({
-                id,
-                slug,
-              }),
-            )
-            .filter(isDefined) ?? []
-
         const studyModuleMutation:
-          | Prisma.StudyModuleUpdateManyWithoutCoursesInput
-          | undefined = study_modules
-          ? {
-              connect: connectModules.length ? connectModules : undefined,
-              disconnect: removedModuleIds.length
-                ? removedModuleIds
-                : undefined,
-            }
-          : undefined
-
-        const existingInherit = await ctx.prisma.course
-          .findUnique({ where: { slug } })
-          .inherit_settings_from()
-        const inheritMutation = inherit_settings_from
-          ? {
-              connect: { id: inherit_settings_from },
-            }
-          : existingInherit
-          ? {
-              disconnect: true, // { id: existingInherit.id },
-            }
-          : undefined
-        const existingHandled = await ctx.prisma.course
-          .findUnique({ where: { slug } })
-          .completions_handled_by()
-        const handledMutation = completions_handled_by
-          ? {
-              connect: { id: completions_handled_by },
-            }
-          : existingHandled
-          ? {
-              disconnect: true, // { id: existingHandled.id },
-            }
-          : undefined
-
+          | Prisma.StudyModuleUpdateManyWithoutCoursesNestedInput
+          | undefined = getStudyModuleMutation(existingCourse, study_modules)
+        const inheritMutation = connectOrDisconnect(
+          inherit_settings_from,
+          existingCourse.inherit_settings_from,
+        )
+        const handledMutation = connectOrDisconnect(
+          completions_handled_by,
+          existingCourse.completions_handled_by,
+        )
+        const tagsMutation = getTagMutation(course, existingCourse, tags)
+        const sponsorsMutation = getSponsorMutation(existingCourse, sponsors)
         const updatedCourse = await ctx.prisma.course.update({
           where: {
-            ...filterNullFields({
-              id,
-              slug,
-            }),
+            id: id ?? undefined,
+            slug: slug ?? undefined,
           },
-          data: convertUpdate({
+          data: {
             ...omit(course, [
               "id",
               "photo",
@@ -329,27 +259,25 @@ export const CourseMutations = extendType({
               "delete_photo",
               "completion_email_id",
               "course_stats_email_id",
+              "tags",
             ]),
             slug: new_slug ?? slug,
             end_date,
             // FIXME: disconnect removed photos?
-            photo: !!photo ? { connect: { id: photo } } : undefined,
-            course_translations: translationMutation,
+            ...updatedFields,
+            photo: photo ? { connect: { id: photo } } : undefined,
             study_modules: studyModuleMutation,
-            open_university_registration_links: registrationLinkMutation,
-            course_variants: courseVariantMutation,
-            course_aliases: courseAliasMutation,
+            completion_email: completion_email_id
+              ? { connect: { id: completion_email_id } }
+              : undefined,
+            course_stats_email: course_stats_email_id
+              ? { connect: { id: course_stats_email_id } }
+              : undefined,
             inherit_settings_from: inheritMutation,
             completions_handled_by: handledMutation,
-            user_course_settings_visibilities:
-              userCourseSettingsVisibilityMutation,
-            ...(completion_email_id && {
-              completion_email: { connect: { id: completion_email_id } },
-            }),
-            ...(course_stats_email_id && {
-              course_stats_email: { connect: { id: course_stats_email_id } },
-            }),
-          }),
+            tags: tagsMutation,
+            sponsors: sponsorsMutation,
+          },
         })
 
         return updatedCourse
@@ -363,34 +291,31 @@ export const CourseMutations = extendType({
         slug: stringArg(),
       },
       authorize: isAdmin,
-      resolve: async (_, args, ctx: Context) => {
-        const { id, slug } = args
-
+      validate: (_, { id, slug }) => {
         if (!id && !slug) {
-          throw new UserInputError("must provide id or slug")
+          throw new GraphQLUserInputError("must provide id or slug")
         }
+      },
+      resolve: async (_, { id, slug }, ctx: Context) => {
+        const existing = await ctx.prisma.course.findUnique({
+          where: {
+            id: id ?? undefined,
+            slug: slug ?? undefined,
+          },
+          include: {
+            photo: true,
+            tags: true,
+          },
+        })
 
-        const photo = await ctx.prisma.course
-          .findUnique({
-            where: {
-              ...filterNullFields({
-                id,
-                slug,
-              }),
-            },
-          })
-          .photo()
-
-        if (photo) {
-          await deleteImage({ ctx, id: photo.id })
+        if (existing?.photo) {
+          await deleteImage({ ctx, id: existing?.photo.id })
         }
 
         const deletedCourse = await ctx.prisma.course.delete({
           where: {
-            ...filterNullFields({
-              id,
-              slug,
-            }),
+            id: id ?? undefined,
+            slug: slug ?? undefined,
           },
         })
 
@@ -400,66 +325,135 @@ export const CourseMutations = extendType({
   },
 })
 
-type WithIdOrNull = { id?: string | null; [key: string]: any } | null
-const getIds = (arr?: WithIdOrNull[] | null) => arr?.map((t) => t?.id) ?? []
+async function updatePossibleNewPhoto(
+  course: NexusGenInputs["CourseCreateArg"] | NexusGenInputs["CourseUpsertArg"],
+  ctx: Context,
+) {
+  const { photo, new_photo, base64 } = course
 
-function filterNotIncluded(arr1: WithIdOrNull[], arr2: WithIdOrNull[]) {
-  const ids1 = getIds(arr1)
-  const ids2 = getIds(arr2)
-
-  const filtered = ids1.filter((id) => !ids2.includes(id)).filter(isDefined)
-
-  return filtered.map((id) => ({ id }))
-}
-
-interface ICreateMutation<T> {
-  ctx: Context
-  slug: string
-  data?: T[] | null
-  field: keyof Prisma.Prisma__CourseClient<Course>
-}
-
-const createMutation = async <T extends WithIdOrNull>({
-  ctx,
-  slug,
-  data,
-  field,
-}: ICreateMutation<T>) => {
-  if (!data) {
-    return undefined
+  if (!new_photo) {
+    return course.photo
   }
 
-  let existing: T[] | undefined
+  const newImage = await uploadImage({
+    ctx,
+    file: new_photo,
+    base64: base64 ?? false,
+  })
+  if (photo && photo !== newImage.id) {
+    // TODO: do something with return value
+    await deleteImage({ ctx, id: photo })
+  }
+  return newImage.id
+}
 
-  try {
-    // @ts-ignore: can't be arsed to do the typing, works
-    existing = await ctx.prisma.course.findUnique({ where: { slug } })[field]()
-  } catch (error: any) {
-    throw new ConflictError("error creating mutation", {
-      field,
-      slug,
-      error,
-    })
+function getTagMutation<C extends Course>(
+  course: NexusGenInputs["CourseCreateArg"] | NexusGenInputs["CourseUpsertArg"],
+  existingCourse: C & { tags: Array<Tag> },
+  tags?:
+    | (
+        | NexusGenInputs["CourseCreateArg"]
+        | NexusGenInputs["CourseUpsertArg"]
+      )["tags"]
+    | null,
+): Prisma.TagUpdateManyWithoutCoursesNestedInput | undefined {
+  const languageTags = (tags ?? []).filter((tag) =>
+    tag.types?.includes("language"),
+  )
+  if (course.language) {
+    if (languageTags.every((tag) => tag.id !== course.language)) {
+      tags = [
+        ...(tags ?? []),
+        { id: course.language, hidden: false, types: ["language"] },
+      ]
+    }
+  }
+  if (existingCourse.language !== course.language) {
+    tags = tags?.filter((tag) => tag.id !== existingCourse.language)
   }
 
-  const newOnes = (data || [])
-    .filter(hasNotId) // (t) => !t.id
-    .map((t) => ({ ...t, id: undefined }))
-  const updated = (data || [])
-    .filter(hasId) // (t) => !!t.id)
-    .map((t) => ({
-      where: { id: t.id },
-      data: t, //{ ...t, id: undefined },
-    }))
-  const removed = filterNotIncluded(existing!, data)
+  if (!tags) {
+    return
+  }
+
+  const removedTagIds =
+    existingCourse.tags
+      ?.filter(
+        (existingTag) =>
+          !(tags ?? []).map((tag) => tag.id).includes(existingTag.id),
+      )
+      .map((tag) => ({
+        id: tag.id,
+      })) ?? []
+  const connectTags = (tags ?? []).map((t) => ({ id: t.id }))
 
   return {
-    create: newOnes.length ? newOnes : undefined,
-    updateMany: updated.length ? updated : undefined,
-    deleteMany: removed.length ? removed : undefined,
+    connect: connectTags.length ? connectTags : undefined,
+    disconnect: removedTagIds.length ? removedTagIds : undefined,
   }
 }
 
-const hasId = <T extends WithIdOrNull>(data: T): data is T & { id: string } =>
-  Boolean(data?.id)
-const hasNotId = <T extends WithIdOrNull>(data: T) => !hasId(data)
+function getSponsorMutation<C extends Course>(
+  existingCourse: C & { sponsors: Array<CourseSponsor> },
+  sponsors?:
+    | (
+        | NexusGenInputs["CourseCreateArg"]
+        | NexusGenInputs["CourseUpsertArg"]
+      )["sponsors"]
+    | null,
+): Prisma.CourseSponsorUpdateManyWithoutCourseNestedInput | undefined {
+  const sponsorIds = getIds(sponsors ?? [])
+  const newSponsorIds = sponsorIds?.filter(
+    (id) =>
+      !existingCourse.sponsors.some(
+        (courseSponsor) => id === courseSponsor.sponsor_id,
+      ),
+  )
+  const removedSponsorIds =
+    existingCourse.sponsors
+      ?.filter(
+        (courseSponsor) => !sponsorIds.includes(courseSponsor.sponsor_id),
+      )
+      .map((courseSponsor) => courseSponsor.sponsor_id) ?? []
+
+  return {
+    create: newSponsorIds.length
+      ? newSponsorIds.map((id) => ({ sponsor: { connect: { id } } }))
+      : undefined,
+    deleteMany: removedSponsorIds.length
+      ? { sponsor_id: { in: removedSponsorIds } }
+      : undefined,
+  }
+}
+
+function getStudyModuleMutation<
+  C extends Course & { study_modules: Array<StudyModule> },
+>(
+  existingCourse: C,
+  study_modules?:
+    | (
+        | NexusGenInputs["CourseCreateArg"]
+        | NexusGenInputs["CourseUpsertArg"]
+      )["study_modules"]
+    | null,
+): Prisma.StudyModuleUpdateManyWithoutCoursesNestedInput | undefined {
+  if (!study_modules) {
+    return
+  }
+
+  const removedModuleIds =
+    existingCourse.study_modules
+      ?.filter((module) => !getIds(study_modules ?? []).includes(module.id))
+      .map((module) => ({ id: module.id })) ?? []
+  const connectModules =
+    study_modules?.map((s) => ({
+      ...s,
+      id: emptyOrNullToUndefined(s?.id),
+      slug: emptyOrNullToUndefined(s?.slug),
+    })) ?? []
+
+  return {
+    connect: connectModules.length ? connectModules : undefined,
+    disconnect: removedModuleIds.length ? removedModuleIds : undefined,
+  }
+}

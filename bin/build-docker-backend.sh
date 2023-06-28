@@ -27,15 +27,16 @@ docker pull eu.gcr.io/moocfi/moocfi-backend:latest || true
 
 echo Building "$TAG"
 
-docker build . --cache-from eu.gcr.io/moocfi/moocfi-backend:latest -f Dockerfile -t "$TAG" --build-arg=GIT_COMMIT="$(git rev-parse --short HEAD)"
+docker build . --cache-from eu.gcr.io/moocfi/moocfi-backend:latest -f Dockerfile -t "$TAG" --load --progress=plain --build-arg=GIT_COMMIT="$(git rev-parse --short HEAD)"
 
 echo "Successfully built image: $TAG"
 
-echo "Copying sourcemap from container to host"
+echo "Copying sourcemap and npm cache from container to host"
 docker create -ti --name tmpcontainer "$TAG" sh
 docker cp tmpcontainer:/app/sourcemap sourcemap
+docker cp tmpcontainer:/home/node/.npm /mnt/ramdisk/backend/.npm
 docker rm -f tmpcontainer
-echo "Sourcemap copied from container!"
+echo "Sourcemap and npm cache copied from container!"
 
 cd ..
 

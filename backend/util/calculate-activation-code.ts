@@ -1,30 +1,27 @@
 import {
   Organization,
-  PrismaClient,
   User,
   UserOrganization,
   UserOrganizationJoinConfirmation,
 } from "@prisma/client"
 
 import { OrphanedEntityError } from "../graphql/common"
+import { type ExtendedPrismaClient } from "../prisma"
 import { err, ok, Result } from "../util"
 
 const crypto = require("crypto")
 
 interface CalculateActivationCodeArgs {
-  prisma: PrismaClient
+  prisma: ExtendedPrismaClient
   userOrganizationJoinConfirmation: UserOrganizationJoinConfirmation &
-    (
-      | {
-          user_organization:
-            | (UserOrganization & {
-                user: User | null
-                organization: Organization | null
-              })
-            | null
-        }
-      | {}
-    )
+    {
+      user_organization:
+        | (UserOrganization & {
+            user: User | null
+            organization: Organization | null
+          })
+        | null
+    }
 }
 
 export const calculateActivationCode = async ({

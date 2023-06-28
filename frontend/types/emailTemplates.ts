@@ -1,10 +1,8 @@
-export type EmailTemplateType = (
+export type EmailTemplateType =
   | "completion"
   | "course-stats"
   | "threshold"
   | "join-organization"
-) &
-  string
 
 export const emailTemplateNames: Record<EmailTemplateType, string> = {
   "course-stats": "Course stats",

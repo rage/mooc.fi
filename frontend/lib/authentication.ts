@@ -1,10 +1,12 @@
-import axios from "axios"
+import fetch from "isomorphic-unfetch"
 import { NextPageContext as NextContext } from "next"
 import Router from "next/router"
 import nookies from "nookies"
 import TmcClient from "tmc-client-js"
 
 import { type ApolloClient } from "@apollo/client"
+
+import { getCookie } from "/util/cookie"
 
 const tmcClient = new TmcClient(
   "59a09eef080463f90f8c2f29fbf63014167d13580e1de3562e57b9e6e4515182",
@@ -69,7 +71,10 @@ export const signIn = async ({
   return details
 }
 
-export const signOut = async (apollo: ApolloClient<object>, cb: Function) => {
+export const signOut = async (
+  apollo: ApolloClient<object>,
+  cb: (...args: any[]) => any,
+) => {
   document.cookie =
     "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
   document.cookie = "admin" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
@@ -82,31 +87,6 @@ export const signOut = async (apollo: ApolloClient<object>, cb: Function) => {
   }, 100)
 }
 
-const getCookie = (key: string) => {
-  if (typeof document === "undefined" || !document || !document?.cookie) {
-    return
-  }
-
-  const vals = document.cookie
-    .split("; ")
-    .reduce<{ [key: string]: string }>((acc, curr) => {
-      try {
-        const [key, value] = curr.split("=")
-
-        return {
-          ...acc,
-          [key]: value,
-        }
-      } catch (e) {
-        //
-      }
-
-      return acc
-    }, {})
-
-  return vals[key] || ""
-}
-
 export const getAccessToken = (ctx: NextContext | undefined) => {
   if (!ctx) {
     return getCookie("access_token")
@@ -115,22 +95,25 @@ export const getAccessToken = (ctx: NextContext | undefined) => {
   return nookies.get(ctx)["access_token"]
 }
 
-export async function userDetails(accessToken: string) {
-  const res = await axios.get<
-    {},
+interface UserInfo {
+  id: string
+  username: string
+  mail: string
+  administrator: boolean
+}
+
+export async function userDetails(accessToken: string): Promise<UserInfo> {
+  const res = await fetch(
+    `https://tmc.mooc.fi/api/v8/users/current?show_user_fields=true`,
     {
-      data: {
-        id: string
-        username: string
-        mail: string
-        administrator: boolean
-      }
-    }
-  >(`https://tmc.mooc.fi/api/v8/users/current?show_user_fields=true`, {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
     },
-  })
-  return res.data
+  )
+  if (res.ok) {
+    return res.json()
+  }
+  return {} as UserInfo
 }

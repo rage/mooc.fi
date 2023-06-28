@@ -1,20 +1,28 @@
-import { useCallback } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 
-import { FormikHelpers } from "formik"
-import Router from "next/router"
+import { useRouter } from "next/router"
+import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
 
 import {
-  type PureQueryOptions,
   useApolloClient,
   useMutation,
+  type PureQueryOptions,
 } from "@apollo/client"
+import { yupResolver } from "@hookform/resolvers/yup"
+import { useEventCallback } from "@mui/material/utils"
 
+import EditorContainer from "../EditorContainer"
 import CourseEditForm from "./CourseEditForm"
-import courseEditSchema from "./form-validation"
-import { fromCourseForm, toCourseForm } from "./serialization"
+import { useCourseEditorData } from "./CourseEditorDataContext"
+import courseEditSchema, { CourseEditSchemaType } from "./form-validation"
+import { fromCourseForm } from "./serialization"
 import { CourseFormValues } from "./types"
+import { EditorContextProvider } from "/components/Dashboard/Editor/EditorContext"
+import { useSnackbarMethods } from "/contexts/SnackbarContext"
+import { useAnchors } from "/hooks/useAnchors"
+import { useTranslator } from "/hooks/useTranslator"
+import CommonTranslations from "/translations/common"
 import CoursesTranslations from "/translations/courses"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   AddCourseDocument,
@@ -23,22 +31,55 @@ import {
   CoursesDocument,
   CourseUpsertArg,
   DeleteCourseDocument,
-  EditorCourseDetailedFieldsFragment,
-  EditorCourseOtherCoursesFieldsFragment,
   EditorCoursesDocument,
-  EmailTemplateEditorCoursesDocument,
-  StudyModuleDetailedFieldsFragment,
   UpdateCourseDocument,
 } from "/graphql/generated"
 
-interface CourseEditProps {
-  course?: EditorCourseDetailedFieldsFragment
-  courses?: EditorCourseOtherCoursesFieldsFragment[]
-  modules?: StudyModuleDetailedFieldsFragment[]
-}
+const anchors = {}
 
-const CourseEdit = ({ course, modules, courses }: CourseEditProps) => {
-  const t = useTranslator(CoursesTranslations)
+function CourseEditor() {
+  const { course, defaultValues, isClone } = useCourseEditorData()
+  const t = useTranslator(CoursesTranslations, CommonTranslations)
+  const [tab, setTab] = useState(0)
+  const { addAnchor, scrollFirstErrorIntoView } = useAnchors(anchors)
+  const client = useApolloClient()
+  const router = useRouter()
+  const { locale } = router
+
+  const { addSnackbar } = useSnackbarMethods()
+
+  const validationSchema = useMemo(
+    () =>
+      courseEditSchema({
+        client,
+        initialSlug: course?.slug && course.slug !== "" ? course.slug : null,
+        t,
+      }),
+    [course, client, t, locale],
+  )
+  const methods = useForm({
+    defaultValues,
+    resolver: yupResolver<CourseEditSchemaType>(validationSchema), //useCustomValidationResolver(validationSchema),
+    mode: "onBlur",
+    reValidateMode: "onBlur",
+    shouldFocusError: false,
+    shouldUnregister: false,
+  })
+  const { trigger } = methods
+
+  useEffect(() => {
+    // validate on load
+    trigger()
+    /*reset(
+      {},
+      {
+        keepValues: true,
+        keepErrors: true,
+        keepDirty: false,
+        keepDefaultValues: true,
+      },
+    )*/
+  }, [])
 
   const [addCourse] = useMutation(AddCourseDocument)
   const [updateCourse] = useMutation(UpdateCourseDocument)
@@ -47,97 +88,104 @@ const CourseEdit = ({ course, modules, courses }: CourseEditProps) => {
       { query: CoursesDocument },
       { query: EditorCoursesDocument },
       { query: CourseEditorOtherCoursesDocument },
-      { query: EmailTemplateEditorCoursesDocument },
     ],
   })
 
-  const client = useApolloClient()
-
-  const initialValues = toCourseForm({ course, modules })
-
-  const validationSchema = courseEditSchema({
-    client,
-    initialSlug: course?.slug && course.slug !== "" ? course.slug : null,
-    t,
-  })
-
   const onSubmit = useCallback(
-    async (
-      values: CourseFormValues,
-      { setSubmitting, setStatus }: FormikHelpers<CourseFormValues>,
-    ): Promise<void> => {
-      const newCourse = !values.id
+    async (values: CourseFormValues) => {
+      const isNewCourse = !values.id
 
-      const mutationVariables = fromCourseForm({ values, initialValues })
-
+      const mutationVariables = fromCourseForm({
+        values,
+        defaultValues,
+      })
       // - if we create a new course, we refetch all courses so the new one is on the list
       // - if we update, we also need to refetch that course with a potentially updated slug
-      const refetchQueries = [
+      const refetchQueries: PureQueryOptions[] = [
         { query: CoursesDocument },
         { query: EditorCoursesDocument },
         { query: CourseEditorOtherCoursesDocument },
-        { query: EmailTemplateEditorCoursesDocument },
-        !newCourse
-          ? {
-              query: CourseFromSlugDocument,
-              variables: { slug: values.new_slug },
-            }
-          : undefined,
-      ].filter((v) => !!v) as PureQueryOptions[]
+      ]
+
+      if (!isNewCourse) {
+        refetchQueries.push({
+          query: CourseFromSlugDocument,
+          variables: { slug: values.new_slug },
+        })
+      }
 
       try {
-        setStatus({ message: t("statusSaving") })
+        addSnackbar({ message: t("statusSaving") })
 
-        // TODO/FIXME: return value?
-        if (newCourse) {
+        if (isNewCourse) {
           await addCourse({
-            variables: {
-              course: mutationVariables,
-            },
+            variables: { course: mutationVariables },
             refetchQueries: () => refetchQueries,
           })
         } else {
           await updateCourse({
-            variables: {
-              course: mutationVariables as CourseUpsertArg,
-            },
+            variables: { course: mutationVariables as CourseUpsertArg },
             refetchQueries: () => refetchQueries,
           })
         }
-
-        setStatus({ message: null })
-        Router.push(`/courses`, undefined, { shallow: true })
+        addSnackbar({ message: t("statusSavingSuccess"), severity: "success" })
       } catch (err: any) {
-        setStatus({ message: err.message, error: true })
-        console.error(err)
-        setSubmitting(false)
+        console.error("error saving", JSON.stringify(err.message, null, 2))
+        addSnackbar({ message: t("statusSavingError"), severity: "error" })
       }
     },
+    [t],
+  )
+
+  const onError: SubmitErrorHandler<CourseFormValues> = useCallback(
+    (errors) => {
+      addSnackbar({ message: t("statusValidationErrors"), severity: "warning" })
+      scrollFirstErrorIntoView({ errors, tab, setTab })
+    },
+    [t, tab, setTab],
+  )
+
+  const onCancel = useEventCallback(() => {
+    router.push("/courses", undefined, { shallow: true })
+  })
+
+  const onDelete = useCallback(async (id: string) => {
+    await deleteCourse({ variables: { id } })
+  }, [])
+
+  const editorContextValue = useMemo(
+    () => ({
+      tab,
+      anchors,
+      isClone,
+    }),
+    [tab, anchors, isClone],
+  )
+  const editorMethodContextValue = useMemo(
+    () => ({
+      setTab,
+      onSubmit,
+      onError,
+      onCancel,
+      onDelete,
+      addAnchor,
+      scrollFirstErrorIntoView,
+    }),
     [],
   )
 
-  const onDelete = useCallback(async (values: CourseFormValues) => {
-    if (values.id) {
-      await deleteCourse({ variables: { id: values.id } })
-      Router.push(`/courses`, undefined, { shallow: true })
-    }
-  }, [])
-
-  const onCancel = useCallback(() => {
-    Router.push(`/courses`, undefined, { shallow: true })
-  }, [])
-
   return (
-    <CourseEditForm
-      course={initialValues}
-      studyModules={modules}
-      courses={courses}
-      validationSchema={validationSchema}
-      onSubmit={onSubmit}
-      onCancel={onCancel}
-      onDelete={onDelete}
-    />
+    <FormProvider {...methods}>
+      <EditorContextProvider
+        value={editorContextValue}
+        methods={editorMethodContextValue}
+      >
+        <EditorContainer>
+          <CourseEditForm />
+        </EditorContainer>
+      </EditorContextProvider>
+    </FormProvider>
   )
 }
 
-export default CourseEdit
+export default CourseEditor

@@ -1,8 +1,12 @@
-import styled from "@emotion/styled"
 import { ButtonBase, Tooltip } from "@mui/material"
+import { styled } from "@mui/material/styles"
+
+import ContainedImage from "../Images/ContainedImage"
+import { useTranslator } from "/hooks/useTranslator"
+import CoursesTranslations from "/translations/courses"
 
 const CloseButton = styled(ButtonBase)`
-  position: relative;
+  position: absolute;
   top: -10px;
   right: 20px;
   border-radius: 10em;
@@ -33,38 +37,49 @@ const CloseButton = styled(ButtonBase)`
   }
 `
 
-interface ImagePreviewProps {
+const ImagePreviewContainer = styled("div")`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  position: absolute;
+`
+
+interface ImagePreviewProps
+  extends React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  > {
   file: string | undefined
-  onClose:
+  onImageRemove:
     | ((event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void)
     | null
   height?: number
-  [key: string]: any
 }
 
 const ImagePreview = ({
   file,
-  onClose = null,
-  height = 250,
+  onImageRemove = null,
+  height,
   ...rest
 }: ImagePreviewProps) => {
+  const t = useTranslator(CoursesTranslations)
   if (!file) {
     return null
   }
 
   return (
-    <div {...rest}>
-      <img
+    <ImagePreviewContainer {...rest}>
+      <ContainedImage
         src={file}
-        height={height}
-        alt={file} // TODO: might be gibberish if base64 image
+        alt={file.length > 64 ? t("coursePhotoPreview") : file} // don't spout gibberish if it's a base64
+        fill
       />
-      {onClose && (
-        <Tooltip title="Remove picture">
-          <CloseButton onClick={onClose}>&times;</CloseButton>
+      {onImageRemove && (
+        <Tooltip title={t("courseRemovePhoto")}>
+          <CloseButton onClick={onImageRemove}>&times;</CloseButton>
         </Tooltip>
       )}
-    </div>
+    </ImagePreviewContainer>
   )
 }
 

@@ -1,5 +1,3 @@
-import { ApolloError, ForbiddenError, UserInputError } from "apollo-server-core"
-
 import {
   EmailDelivery,
   EmailTemplate,
@@ -13,6 +11,11 @@ import {
 import { Role } from "../../accessControl"
 import { DEFAULT_JOIN_ORGANIZATION_EMAIL_TEMPLATE_ID } from "../../config/defaultData"
 import { Context } from "../../context"
+import {
+  GraphQLForbiddenError,
+  GraphQLGenericError,
+  GraphQLUserInputError,
+} from "../../lib/errors"
 import {
   emptyOrNullToUndefined,
   ensureDefinedArray,
@@ -30,7 +33,7 @@ export function assertUserIdOnlyForAdmin(ctx: Context, id?: User["id"] | null) {
   const { user, role } = ctx
 
   if (!user || (user && user.id !== id && role !== Role.ADMIN)) {
-    throw new ForbiddenError("invalid credentials to do that")
+    throw new GraphQLForbiddenError("invalid credentials to do that")
   }
 }
 
@@ -43,7 +46,7 @@ export async function assertUserOrganizationCredentials(
   })
 
   if (!userOrganization?.user_id) {
-    throw new UserInputError(
+    throw new GraphQLUserInputError(
       "no such user/organization relation or no user in relation",
     )
   }
@@ -57,7 +60,7 @@ export const checkEmailValidity = (
 ): Result<boolean, Error> => {
   if (!email) {
     return err(
-      new UserInputError(
+      new GraphQLUserInputError(
         "no email specified and no email found in user profile",
       ),
     )
@@ -67,7 +70,7 @@ export const checkEmailValidity = (
     const emailRegex = new RegExp(requiredPattern)
     if (!emailRegex.test(email)) {
       return err(
-        new UserInputError(
+        new GraphQLUserInputError(
           "given email does not fulfill organization email requirements",
         ),
       )
@@ -169,7 +172,7 @@ export const joinUserOrganization = async ({
     if (e instanceof Error) return err(e)
 
     return err(
-      new ApolloError(
+      new GraphQLGenericError(
         (e as string) ?? "Unknown error creating user organization",
       ),
     )
@@ -243,7 +246,9 @@ export const createUserOrganizationJoinConfirmation = async ({
     if (e instanceof Error) return err(e)
 
     return err(
-      new ApolloError((e as string) ?? "Unknown error creating confirmation"),
+      new GraphQLGenericError(
+        (e as string) ?? "Unknown error creating confirmation",
+      ),
     )
   }
 }

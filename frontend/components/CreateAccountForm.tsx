@@ -1,15 +1,20 @@
 import { Component } from "react"
 
-import Link from "next/link"
 import { NextRouter, withRouter } from "next/router"
 
-import styled from "@emotion/styled"
-import { CircularProgress, Paper, TextField, Typography } from "@mui/material"
+import {
+  CircularProgress,
+  Link,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import { createAccount } from "/lib/account"
 import { signIn as authenticate } from "/lib/authentication"
-import getTranslator from "/translations"
+import getTranslator, { LanguageKey } from "/translations"
 import SignUpTranslations from "/translations/sign-up"
 
 const StyledPaper = styled(Paper)`
@@ -20,25 +25,25 @@ const StyledPaper = styled(Paper)`
   margin-top: 2em;
   margin-bottom: 2em;
 `
-const Row = styled.div`
+const Row = styled("div")`
   margin-bottom: 1.5rem;
 `
-const Form = styled.form`
+const Form = styled("form")`
   width: 100%;
 `
-const Header = styled(Typography)<any>`
+const Header = styled(Typography)`
   margin: 1em;
-`
+` as typeof Typography
 
-const InfoBox = styled.div`
+const InfoBox = styled("div")`
   margin-bottom: 2rem;
 `
 
-const StyledTypography = styled(Typography)<any>`
+const StyledTypography = styled(Typography)`
   margin-bottom: 2rem;
-`
+` as typeof Typography
 
-interface state {
+interface State {
   email?: string
   password?: string
   password_confirmation?: string
@@ -54,12 +59,12 @@ interface state {
   last_name?: string
 }
 
-export function capitalizeFirstLetter(string: String) {
+export function capitalizeFirstLetter(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
 export interface CreateAccountFormProps {
-  onComplete: Function
+  onComplete: (...args: any[]) => any
   router: NextRouter
 }
 
@@ -88,7 +93,10 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
   onClick = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault()
 
-    const t = getSignUpTranslator(this.props.router.locale ?? "fi")
+    const t = getSignUpTranslator(
+      (this.props.router.locale ?? "fi") as LanguageKey,
+      this.props.router,
+    )
 
     this.setState({ submitting: true, triedSubmitting: true })
 
@@ -153,9 +161,11 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
   }
 
   validate = () => {
-    const t = getSignUpTranslator(this.props.router.locale ?? "fi")
+    const t = getSignUpTranslator(
+      (this.props.router.locale ?? "fi") as LanguageKey,
+    )
 
-    let newState: state = {
+    const newState: State = {
       error: "",
       errorObj: {},
     }
@@ -201,7 +211,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
     return !newState.error
   }
 
-  state: state = {
+  state: State = {
     email: "",
     password: "",
     password_confirmation: "",
@@ -217,11 +227,13 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
   }
 
   render() {
-    const t = getSignUpTranslator(this.props.router.locale ?? "fi")
+    const t = getSignUpTranslator(
+      (this.props.router.locale ?? "fi") as LanguageKey,
+    )
 
     return (
       <StyledPaper>
-        <Header component="h1" variant="h4" gutterBottom={true} align="center">
+        <Header component="h1" variant="h4" gutterBottom align="center">
           {t("signupTitle")}
         </Header>
         <Form onChange={this.validate}>
@@ -326,11 +338,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
         </Form>
 
         <Row>
-          <Link href={`/sign-in`} passHref>
-            {/*Link passes href*/}
-            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
-            <a>{t("signIn")}</a>
-          </Link>
+          <Link href={`/sign-in`}>{t("signIn")}</Link>
         </Row>
 
         {this.state.error && (

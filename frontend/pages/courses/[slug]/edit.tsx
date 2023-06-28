@@ -1,46 +1,50 @@
-import { useEffect } from "react"
+import { useCallback, useEffect } from "react"
 
 import { NextSeo } from "next-seo"
-import Link from "next/link"
-import { SingletonRouter, withRouter } from "next/router"
+import dynamic from "next/dynamic"
+import { useRouter } from "next/router"
 
-import styled from "@emotion/styled"
-import Paper from "@mui/material/Paper"
-import Typography from "@mui/material/Typography"
+import { Link, Paper, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
+import FormSkeleton from "../../../components/Dashboard/EditorLegacy/FormSkeleton"
 import { WideContainer } from "/components/Container"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
-import CourseEdit2 from "/components/Dashboard/Editor2/Course"
-import CourseEdit from "/components/Dashboard/Editor/Course"
-import FormSkeleton from "/components/Dashboard/Editor/FormSkeleton"
+import { CourseEditorDataProvider } from "/components/Dashboard/Editor/Course/CourseEditorDataContext"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1Background } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useEditorCourses } from "/hooks/useEditorCourses"
-import useSubtitle from "/hooks/useSubtitle"
+import { useQueryParameter } from "/hooks/useQueryParameter"
+import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
 import CoursesTranslations from "/translations/courses"
-import notEmpty from "/util/notEmpty"
-import { useQueryParameter } from "/util/useQueryParameter"
-import { useTranslator } from "/util/useTranslator"
 
 const ErrorContainer = styled(Paper)`
   padding: 1em;
 `
 
-interface EditCourseProps {
-  router: SingletonRouter
-}
+const ContainerBackground = styled("section")`
+  background-color: #e9fef8;
+`
+const CourseEdit = dynamic(
+  () => import("../../../components/Dashboard/Editor/Course"),
+  { loading: () => <FormSkeleton /> },
+)
+const LegacyCourseEdit = dynamic(
+  () => import("../../../components/Dashboard/EditorLegacy/Course"),
+  { loading: () => <FormSkeleton /> },
+)
 
-const EditCourse = ({ router }: EditCourseProps) => {
+const EditCourse = () => {
   const t = useTranslator(CoursesTranslations)
   const slug = useQueryParameter("slug") ?? ""
-  const beta = useQueryParameter("beta", false)
-
-  const { loading, error, courseData, studyModulesData, coursesData } =
-    useEditorCourses({
-      slug,
-    })
+  const legacy = useQueryParameter("legacy", { enforce: false })
+  const router = useRouter()
+  const { loading, error, data } = useEditorCourses({
+    slug,
+  })
+  const { course, studyModules, courses, tags } = data ?? {}
 
   useEffect(() => {
     let redirectTimeout: NodeJS.Timeout | null = null
@@ -49,9 +53,9 @@ const EditCourse = ({ router }: EditCourseProps) => {
       return
     }
 
-    if (!loading && !courseData?.course) {
+    if (!loading && !course) {
       redirectTimeout = setTimeout(
-        () => router.push(listLink, undefined, { shallow: true }),
+        () => router.push("/courses", undefined, { shallow: true }),
         5000,
       )
     }
@@ -61,7 +65,7 @@ const EditCourse = ({ router }: EditCourseProps) => {
         clearTimeout(redirectTimeout)
       }
     }
-  }, [loading, courseData])
+  }, [loading, course])
 
   useBreadcrumbs([
     {
@@ -69,7 +73,7 @@ const EditCourse = ({ router }: EditCourseProps) => {
       href: `/courses`,
     },
     {
-      label: courseData?.course?.name,
+      label: error || (!loading && !course) ? slug : course?.name,
       href: `/courses/${slug}`,
     },
     {
@@ -77,63 +81,60 @@ const EditCourse = ({ router }: EditCourseProps) => {
       href: `/courses/${slug}/edit`,
     },
   ])
-  const title = useSubtitle(courseData?.course?.name)
+
+  const title = !loading && !course ? slug : course?.name ?? "..."
+
+  const EditorComponent = useCallback(() => {
+    if (!course) {
+      return null
+    }
+
+    if (legacy) {
+      return (
+        <LegacyCourseEdit
+          course={course}
+          courses={courses}
+          modules={studyModules}
+        />
+      )
+    }
+
+    return <CourseEdit />
+  }, [course, courses, studyModules, tags, legacy])
 
   if (error) {
     return <ModifiableErrorMessage errorMessage={JSON.stringify(error)} />
   }
 
-  const listLink = "/courses"
-
   return (
     <>
       <NextSeo title={title} />
-      <section style={{ backgroundColor: "#E9FEF8" }}>
+      <ContainerBackground>
         <DashboardTabBar slug={slug} selectedValue={3} />
         <WideContainer>
           <H1Background component="h1" variant="h1" align="center">
             {t("editCourse")}
           </H1Background>
-          {loading ? (
-            <FormSkeleton />
-          ) : courseData?.course ? (
-            beta ? (
-              <CourseEdit2
-                course={courseData.course}
-                courses={coursesData?.courses?.filter(notEmpty)}
-                studyModules={studyModulesData?.study_modules?.filter(notEmpty)}
-              />
-            ) : (
-              <CourseEdit
-                course={courseData.course}
-                courses={coursesData?.courses?.filter(notEmpty)}
-                modules={
-                  studyModulesData?.study_modules?.filter(notEmpty) ?? []
-                }
-              />
-            )
-          ) : (
+          {loading && <FormSkeleton />}
+          <CourseEditorDataProvider value={data}>
+            {!loading && course && <EditorComponent />}
+          </CourseEditorDataProvider>
+          {!loading && !course && (
             <ErrorContainer elevation={2}>
-              <Typography
-                variant="body1"
-                dangerouslySetInnerHTML={{
-                  __html: t("courseWithIdNotFound", { slug }),
-                }}
-              />
+              <Typography variant="body1">
+                {t("courseWithIdNotFound", { slug })}
+              </Typography>
               <Typography variant="body2">
                 {t("redirectMessagePre")}
-                <Link href="/courses" passHref>
-                  {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                  <a>{t("redirectLinkText")}</a>
-                </Link>
+                <Link href="/courses">{t("redirectLinkText")}</Link>
                 {t("redirectMessagePost")}
               </Typography>
             </ErrorContainer>
           )}
         </WideContainer>
-      </section>
+      </ContainerBackground>
     </>
   )
 }
 
-export default withRouter(withAdmin(EditCourse) as any)
+export default withAdmin(EditCourse)

@@ -1,14 +1,14 @@
 import { createContext } from "react"
 
-import { userOsType } from "/util/getUserOS"
+import { UserOSType } from "/util/getUserOS"
 
 interface UserOS {
-  OS: userOsType
-  changeOS: (OS: userOsType) => void
+  OS: UserOSType
+  changeOS: (OS: UserOSType) => void
 }
 const UserOSContext = createContext<UserOS>({
   OS: "OS",
-  changeOS: (OS: userOsType) => console.log(OS),
+  changeOS: (OS: UserOSType) => console.log(OS),
 })
 
 export default UserOSContext

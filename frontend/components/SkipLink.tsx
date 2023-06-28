@@ -1,10 +1,10 @@
-import styled from "@emotion/styled"
 import { Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
+import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
 
-const SkipLinkContainer = styled.a`
+const SkipLinkContainer = styled("a")`
   left: -999;
   position: absolute;
   top: auto;
@@ -50,7 +50,7 @@ function SkipLink() {
   const t = useTranslator(CommonTranslations)
 
   return (
-    <SkipLinkContainer href="#main">
+    <SkipLinkContainer id="skiplink" href="#main">
       <Typography variant="body1">{t("skiplink")}</Typography>
     </SkipLinkContainer>
   )

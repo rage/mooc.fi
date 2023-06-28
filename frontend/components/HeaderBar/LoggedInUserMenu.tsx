@@ -1,52 +1,55 @@
-import Link from "next/link"
-
-import styled from "@emotion/styled"
-import {
-  faChalkboardTeacher,
-  faEnvelope,
-  faList,
-  faSearch,
-} from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import Button from "@mui/material/Button"
-import Typography from "@mui/material/Typography"
+import ChalkboardTeacherIcon from "@fortawesome/fontawesome-free/svgs/solid/chalkboard-user.svg?icon"
+import EnvelopeIcon from "@fortawesome/fontawesome-free/svgs/solid/envelope.svg?icon"
+import ListIcon from "@fortawesome/fontawesome-free/svgs/solid/list.svg?icon"
+import SearchIcon from "@fortawesome/fontawesome-free/svgs/solid/magnifying-glass.svg?icon"
+import { Button, EnhancedButton, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { useActiveTab } from "/components/HeaderBar/Header"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
+import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
 
-interface ButtonProps {
-  active: any
+interface StyledButtonProps {
+  active?: boolean
 }
 
-const StyledButton = styled(Button)<ButtonProps>`
-  margin: 1rem;
-  font-size: 22px;
+const StyledButton = styled(Button, {
+  shouldForwardProp: (prop) => prop !== "active",
+})<StyledButtonProps>`
+  margin: 0.5rem 1rem;
+  font-size: 20px;
   border-radius: 0px;
   display: inline-flex;
   flex-direction: column;
   text-align: center;
   gap: 0.5rem;
+  padding-bottom: ${(props) =>
+    props.active ? "calc(0.5rem - 1px)" : "0.5rem"};
 
   @media (max-width: 510px) {
-    font-size: 20px;
+    font-size: 18px;
     margin: 0.75rem;
   }
   @media (max-width: 480px) {
-    font-size: 16px;
+    font-size: 14px;
     margin: 0.5rem;
   }
   @media (max-width: 450px) {
-    font-size: 12px;
+    font-size: 10px;
     margin: 0.2rem;
   }
   color: ${(props) => (props.active ? "#378170" : "black")};
   border-bottom: ${(props) => (props.active ? "1px solid #378170" : "")};
-`
+` as EnhancedButton<"button", StyledButtonProps>
 
-const ButtonLabel = styled(Typography)<any>`
-  font-family: Open Sans Condensed !important;
+const MarginStyledButton = styled(StyledButton)`
+  margin-left: 1em;
+` as typeof StyledButton
+
+const ButtonLabel = styled(Typography)`
+  font-family: var(--header-font) !important;
+  font-weight: 200;
   font-size: 18px;
   @media (max-width: 600px) {
     font-size: 14px;
@@ -63,54 +66,50 @@ const UserMenu = () => {
   const active = useActiveTab()
 
   return (
-    <nav role="navigation">
+    <>
       {admin && (
         <>
-          <Link href={`/courses`} passHref>
-            <StyledButton
-              color="inherit"
-              variant="text"
-              active={active == "courses" ? 1 : null}
-              style={{ marginLeft: "1em" }}
-            >
-              <FontAwesomeIcon icon={faChalkboardTeacher} />
-              <ButtonLabel>{t("courses")}</ButtonLabel>
-            </StyledButton>
-          </Link>
+          <MarginStyledButton
+            href="/courses"
+            color="inherit"
+            variant="text"
+            active={active === "courses"}
+          >
+            <ChalkboardTeacherIcon />
+            <ButtonLabel>{t("courses")}</ButtonLabel>
+          </MarginStyledButton>
 
-          <Link href={`/study-modules`} passHref>
-            <StyledButton
-              color="inherit"
-              variant="text"
-              active={active == "study-modules" ? 1 : null}
-            >
-              <FontAwesomeIcon icon={faList} />
-              <ButtonLabel>{t("modules")}</ButtonLabel>
-            </StyledButton>
-          </Link>
-          <Link href={`/users/search`} passHref>
-            <StyledButton
-              color="inherit"
-              variant="text"
-              active={active == "users" ? 1 : null}
-            >
-              <FontAwesomeIcon icon={faSearch} />
-              <ButtonLabel>{t("userSearch")}</ButtonLabel>
-            </StyledButton>
-          </Link>
-          <Link href={`/email-templates`} passHref>
-            <StyledButton
-              color="inherit"
-              variant="text"
-              active={active == "email-templates" ? 1 : null}
-            >
-              <FontAwesomeIcon icon={faEnvelope} />
-              <ButtonLabel>{t("emailTemplates")}</ButtonLabel>
-            </StyledButton>
-          </Link>
+          <StyledButton
+            href="/study-modules"
+            color="inherit"
+            variant="text"
+            active={active === "study-modules"}
+          >
+            <ListIcon />
+            <ButtonLabel>{t("modules")}</ButtonLabel>
+          </StyledButton>
+          <StyledButton
+            href="/users/search"
+            color="inherit"
+            variant="text"
+            prefetch={false}
+            active={active === "users"}
+          >
+            <SearchIcon />
+            <ButtonLabel>{t("userSearch")}</ButtonLabel>
+          </StyledButton>
+          <StyledButton
+            href="/email-templates"
+            color="inherit"
+            variant="text"
+            active={active === "email-templates"}
+          >
+            <EnvelopeIcon />
+            <ButtonLabel>{t("emailTemplates")}</ButtonLabel>
+          </StyledButton>
         </>
       )}
-    </nav>
+    </>
   )
 }
 

@@ -1,6 +1,7 @@
 import * as winston from "winston"
 
 import { isProduction, NEW_RELIC_LICENSE_KEY, NEXUS_REFLECTION } from "./config"
+import { ServerContext } from "./context"
 import prisma from "./prisma"
 import server from "./server"
 import knex from "./services/knex"
@@ -27,21 +28,24 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
-const startApp = async () => {
-  const { app } = await server({
-    prisma,
-    logger,
-    knex,
-  })
+const ctx: ServerContext = { prisma, logger, knex }
 
-  attachPrismaEvents({ prisma, logger })
+const startApp = async () => {
+  const { httpServer } = await server(ctx)
+
+  attachPrismaEvents(ctx)
 
   if (!NEXUS_REFLECTION) {
-    app.listen(4000, () => {
+    await ctx.prisma.$connect()
+    httpServer.listen(4000, () => {
       console.log("server running on port 4000")
     })
+
     wsListen()
   }
 }
 
-startApp()
+startApp().catch((e) => {
+  logger.error(e)
+  process.exit(1)
+})

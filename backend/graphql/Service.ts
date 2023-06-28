@@ -1,7 +1,7 @@
-import { UserInputError } from "apollo-server-express"
 import { extendType, idArg, nonNull, objectType, stringArg } from "nexus"
 
 import { isAdmin } from "../accessControl"
+import { GraphQLUserInputError } from "../lib/errors"
 
 export const Service = objectType({
   name: "Service",
@@ -20,7 +20,7 @@ export const Service = objectType({
 export const ServiceQueries = extendType({
   type: "Query",
   definition(t) {
-    t.nullable.field("service", {
+    t.field("service", {
       type: "Service",
       args: {
         id: idArg(),
@@ -29,13 +29,14 @@ export const ServiceQueries = extendType({
       authorize: isAdmin,
       resolve: async (_, { id, service_id }, ctx) => {
         if (service_id && id) {
-          throw new UserInputError(
+          throw new GraphQLUserInputError(
             "service_id parameter will be deprecated, use id in the future; don't use both",
+            ["service_id"],
           )
         }
 
         if (!id && !service_id) {
-          throw new UserInputError("no id provided", { argumentName: "id" })
+          throw new GraphQLUserInputError("no id provided", "id")
         }
 
         return ctx.prisma.service.findUnique({
@@ -85,7 +86,7 @@ export const ServiceMutations = extendType({
         const { url, name, id } = args
 
         if (!url && !name) {
-          throw new UserInputError("no fields to update")
+          throw new GraphQLUserInputError("no fields to update")
         }
 
         return ctx.prisma.service.update({

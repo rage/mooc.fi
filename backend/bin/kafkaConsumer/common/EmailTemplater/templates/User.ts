@@ -1,4 +1,4 @@
-import { EmailTemplaterError } from "../../../../lib/errors"
+import { EmailTemplaterError } from "../../../../../lib/errors"
 import Template from "../types/Template"
 import { TemplateParams } from "../types/TemplateParams"
 

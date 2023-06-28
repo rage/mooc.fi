@@ -3,7 +3,7 @@ import { arg, objectType, stringArg } from "nexus"
 
 import { Course, CourseTranslation } from "@prisma/client"
 
-import { filterNullFields } from "../../util"
+import { filterNullRecursive } from "../../util"
 
 export const StudyModule = objectType({
   name: "StudyModule",
@@ -22,7 +22,9 @@ export const StudyModule = objectType({
     t.list.nonNull.field("courses", {
       type: "Course",
       args: {
-        orderBy: arg({ type: "CourseOrderByInput" }),
+        orderBy: arg({
+          type: "CourseOrderByWithRelationAndSearchRelevanceInput",
+        }),
         language: stringArg(),
       },
       resolve: async (parent, args, ctx) => {
@@ -30,22 +32,25 @@ export const StudyModule = objectType({
 
         const courses: (Course & {
           course_translations?: CourseTranslation[]
-        })[] = await ctx.prisma.studyModule
-          .findUnique({
-            where: { id: parent.id },
-          })
-          .courses({
-            orderBy: filterNullFields(orderBy),
-            ...(language && {
-              include: {
-                course_translations: {
-                  where: {
-                    language: { equals: language },
-                  },
-                },
-              },
-            }),
-          })
+        })[] =
+          (await ctx.prisma.studyModule
+            .findUnique({
+              where: { id: parent.id },
+            })
+            .courses({
+              orderBy: filterNullRecursive(orderBy),
+              ...(language
+                ? {
+                    include: {
+                      course_translations: {
+                        where: {
+                          language,
+                        },
+                      },
+                    },
+                  }
+                : {}),
+            })) ?? []
 
         const coursesWithDescriptionAndLink = courses.map((course) => ({
           ...omit(course, "course_translations"),

@@ -6,17 +6,17 @@
     },
     "rootDir": ".",
     "lib": ["es2016", "esnext"],
+    "target": "es6",
     "module": "commonjs",
     "outDir": "./dist",
     "strict": true,
+    "strictNullChecks": true,
     "noEmit": false,
     "noImplicitAny": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "plugins": [{ "name": "nexus/typescript-language-service" }],
-    // "typeRoots": ["node_modules/@types", "types"],
     "sourceMap": true,
     "inlineSources": true,
     "noEmitHelpers": true,
@@ -24,6 +24,6 @@
     "resolveJsonModule": true,
     "sourceRoot": "/"
   },
-  "include": [".", "types.d.ts"],
-  "exclude": ["__mocks__"]
+  "include": [".", "./types", "types.d.ts"],
+  "exclude": ["node_modules", "__mocks__"]
 }

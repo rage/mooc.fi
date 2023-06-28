@@ -1,8 +1,9 @@
-import { UserInputError } from "apollo-server-express"
-import { Knex } from "knex"
-import { omit } from "lodash"
+import fs from "fs"
+import path from "path"
 
-import { Course, Prisma, PrismaClient } from "@prisma/client"
+import { Knex } from "knex"
+
+import { Course, Prisma } from "@prisma/client"
 
 import { EXTENSION_PATH } from "../config"
 import { BaseContext } from "../context"
@@ -15,30 +16,145 @@ import {
   Optional,
 } from "./guards"
 
-const flatten = <T>(arr: T[]) =>
-  arr.reduce<T[]>((acc, val) => acc.concat(val), [])
-const titleCase = (s?: string) =>
-  s && s.length > 0
-    ? s.toLowerCase()[0].toUpperCase() + s.toLowerCase().slice(1)
-    : undefined
+const getNameCombinations = (search: string) => {
+  const parts = search.match(/[^\s\n]+/g) ?? []
+  const combinations = []
+  for (let i = 1; i < parts.length; i++) {
+    combinations.push({
+      first_name: parts.slice(0, i).join(" "),
+      last_name: parts.slice(i).join(" "),
+    })
+  }
+  return combinations
+}
 
-export const buildSearch = (fields: string[], search?: string) =>
-  search
-    ? flatten(
-        fields.map((f) => [
-          { [f]: { contains: search } },
-          { [f]: { contains: titleCase(search) } },
-          { [f]: { contains: search.toLowerCase() } },
-        ]),
-      )
-    : undefined
+const defaultFields: Array<keyof Prisma.UserWhereInput | "full_name"> = [
+  "full_name",
+  "upstream_id",
+  "email",
+  "last_name",
+  "first_name",
+  "username",
+  "student_number",
+  "real_student_number",
+]
 
-export const filterNull = <T>(o: T): T | undefined =>
+export const buildUserSearch = (
+  search?: string | null,
+  fields: Array<keyof Prisma.UserWhereInput | "full_name"> = defaultFields,
+): Array<Prisma.UserWhereInput> => {
+  if (!isDefined(search)) {
+    return []
+  }
+
+  const userSearchQuery: Array<Prisma.UserWhereInput> = []
+
+  if (fields && fields.length === 0) {
+    fields = defaultFields
+  }
+
+  for (const field of fields) {
+    if (field === "full_name") {
+      const possibleNameCombinations = getNameCombinations(search)
+
+      if (possibleNameCombinations.length) {
+        possibleNameCombinations.forEach(({ first_name, last_name }) => {
+          userSearchQuery.push({
+            first_name: { contains: first_name, mode: "insensitive" },
+            last_name: { contains: last_name, mode: "insensitive" },
+          })
+        })
+      }
+    } else if (field === "upstream_id") {
+      const searchAsNumber = parseInt(search)
+
+      if (!isNaN(searchAsNumber)) {
+        userSearchQuery.push({
+          upstream_id: searchAsNumber,
+        })
+      }
+    } else if (["student_number", "real_student_number"].includes(field)) {
+      userSearchQuery.push({
+        [field]: { contains: search },
+      })
+    } else {
+      userSearchQuery.push({
+        [field]: { contains: search, mode: "insensitive" },
+      })
+    }
+  }
+
+  return userSearchQuery
+}
+
+interface ConvertPaginationInput {
+  first?: number | null
+  last?: number | null
+  before?: string | null
+  after?: string | null
+  skip?: number | null
+}
+
+interface ConvertPaginationOptions {
+  field?: string
+}
+
+interface ConvertPaginationOutput {
+  skip?: number
+  cursor?: { [key: string]: string }
+  take?: number
+}
+
+export const convertPagination = (
+  { first, last, before, after, skip: skipValue }: ConvertPaginationInput,
+  options?: ConvertPaginationOptions,
+): ConvertPaginationOutput => {
+  const { field = "id" } = options ?? {}
+
+  if (!first && !last) {
+    throw new Error("first or last must be defined")
+  }
+
+  let skip = skipValue ?? 0
+  let take = 0
+  let cursor = undefined
+
+  if (isDefined(before)) {
+    skip += 1
+    cursor = { [field]: before }
+  } else if (isDefined(after)) {
+    cursor = { [field]: after }
+  }
+  if (isDefined(last)) {
+    take = -(last ?? 0)
+  } else if (isDefined(first)) {
+    take = first
+  }
+
+  return {
+    skip,
+    take,
+    cursor,
+  }
+}
+
+type NullFiltered<T> = T extends null
+  ? Exclude<T, null>
+  : T extends Array<infer R>
+  ? Array<NullFiltered<R>>
+  : T extends Record<string | symbol | number, unknown>
+  ? {
+      [K in keyof T]: NullFiltered<T[K]>
+    }
+  : T
+
+export const filterNull = <T extends Record<string | symbol | number, unknown>>(
+  o?: T | null,
+): NullFiltered<T> | undefined =>
   o
-    ? Object.entries(o).reduce(
-        (acc, [k, v]) => ({ ...acc, [k]: v == null ? undefined : v }),
-        {} as T,
-      )
+    ? (Object.fromEntries(
+        Object.entries(o).map(([k, v]) => [k, v === null ? undefined : v]),
+      ) as NullFiltered<T>)
     : undefined
 
 export const ensureDefinedArray = <T>(
@@ -49,33 +165,36 @@ export const ensureDefinedArray = <T>(
 
   return [value]
 }
+export const filterNullRecursive = <
+  T extends Record<string | symbol | number, unknown>,
+>(
+  o?: T | null,
+): NullFiltered<T> | undefined => {
+  if (!o) {
+    return undefined
+  }
 
-// helper function to convert to atomicNumberOperations
-// https://github.com/prisma/prisma/issues/3491#issuecomment-689542237
-export const convertUpdate = <T extends object>(input: {
-  [key: string]: any
-}): T =>
-  Object.entries(input).reduce(
-    (acc: any, [key, value]: [string, any]) => ({
-      ...acc,
-      [key]: Array.isArray(value)
-        ? value.map(convertUpdate)
-        : typeof value === "object" &&
-          value !== null &&
-          !(value instanceof Date)
-        ? typeof value === "object" && convertUpdate(value)
-        : value instanceof Date
-        ? value.toISOString()
-        : typeof value === "number"
-        ? Number.isNaN(value)
-          ? undefined
-          : { set: value }
-        : typeof value === "boolean"
-        ? { set: value }
-        : value,
+  const filtered = filterNull(o)
+
+  if (!filtered) {
+    return undefined
+  }
+
+  return Object.fromEntries(
+    Object.entries(filtered).map(([k, v]) => {
+      if (Array.isArray(v)) {
+        return [k, v.map(filterNullRecursive)]
+      }
+      if (typeof v === "object" && v !== null) {
+        return [
+          k,
+          filterNullRecursive(v as Record<string | symbol | number, unknown>),
+        ]
+      }
+      return [k, v === null ? undefined : v]
     }),
-    {},
-  )
+  ) as NullFiltered<T>
+}
 
 type NonNullable<T> = T extends null ? Exclude<T, null> : T
 
@@ -117,19 +236,23 @@ export function filterNullFields<T extends Record<string, any>>(
 
   return ret as NonNullFields<T>
 }
-
 export const createExtensions = async (knex: Knex) => {
+  /*if (CIRCLECI) {
+    return
+  }*/
+  const extensions = fs
+    .readFileSync(path.resolve(__dirname, "../db/extensions"))
+    .toString()
+    .split("\n")
+    .filter(Boolean)
+
   try {
     await knex.raw(`CREATE SCHEMA IF NOT EXISTS "${EXTENSION_PATH}";`)
-    await knex.raw(
-      `CREATE EXTENSION IF NOT EXISTS "uuid-ossp" SCHEMA "${EXTENSION_PATH}";`,
-    )
-    await knex.raw(
-      `CREATE EXTENSION IF NOT EXISTS "pg_trgm" SCHEMA "${EXTENSION_PATH}";`,
-    )
-    await knex.raw(
-      `CREATE EXTENSION IF NOT EXISTS "btree_gin" SCHEMA "${EXTENSION_PATH}";`,
-    )
+    for (const extension of extensions) {
+      await knex.raw(
+        `CREATE EXTENSION IF NOT EXISTS "${extension}" SCHEMA "${EXTENSION_PATH}";`,
+      )
+    }
   } catch (error) {
     console.warn(
       "Error creating extensions. Ignore if this didn't fall on next hurdle",
@@ -140,13 +263,11 @@ export const createExtensions = async (knex: Knex) => {
   try {
     // if extensions already exist, but in another schema
     await knex.raw(`CREATE SCHEMA IF NOT EXISTS "${EXTENSION_PATH}";`)
-    await knex.raw(
-      `ALTER EXTENSION "uuid-ossp" SET SCHEMA "${EXTENSION_PATH}";`,
-    )
-    await knex.raw(`ALTER EXTENSION "pg_trgm" SET SCHEMA "${EXTENSION_PATH}";`)
-    await knex.raw(
-      `ALTER EXTENSION "btree_gin" SET SCHEMA "${EXTENSION_PATH}";`,
-    )
+    for (const extension of extensions) {
+      await knex.raw(
+        `ALTER EXTENSION "${extension}" SET SCHEMA "${EXTENSION_PATH}";`,
+      )
+    }
   } catch {
     // we can probably ignore this
   }
@@ -156,7 +277,7 @@ export const createExtensions = async (knex: Knex) => {
 type A<T extends string> = T extends `${infer U}ScalarFieldEnum` ? U : never
 type Entity = A<keyof typeof Prisma>
 type Keys<T extends Entity> = Extract<
-  keyof typeof Prisma[keyof Pick<typeof Prisma, `${T}ScalarFieldEnum`>],
+  keyof (typeof Prisma)[keyof Pick<typeof Prisma, `${T}ScalarFieldEnum`>],
   string
 >
 
@@ -190,6 +311,7 @@ export function includeFields<T extends Entity, K extends Keys<T>>(
 export function emptyOrNullToUndefined<T>(value: T | Nullish): T | undefined {
   return isNullishOrEmpty(value) ? undefined : value
 }
+
 interface GetCourseInput {
   id?: string
   slug?: string
@@ -204,9 +326,8 @@ interface GetCourseInput {
 export const getCourseOrAliasKnex =
   ({ knex }: BaseContext) =>
   async ({ id, slug }: GetCourseInput) => {
-    // TODO: actually accept both id and slug?
-    if ((!id && !slug) || (id && slug)) {
-      throw new Error("provide exactly one of id or slug")
+    if (!id && !slug) {
+      throw new Error("provide at least one of id or slug")
     }
 
     if (id) {
@@ -225,100 +346,3 @@ export const getCourseOrAliasKnex =
 
     return slugCourse ?? courses?.[0]
   }
-
-type InferPrismaClientGlobalReject<C extends PrismaClient> =
-  C extends PrismaClient<any, any, infer GlobalReject> ? GlobalReject : never
-
-type FindUniqueCourseType<ClientType extends PrismaClient> =
-  Prisma.CourseDelegate<InferPrismaClientGlobalReject<ClientType>>["findUnique"]
-
-/**
- * Get course by id or slug, or course_alias course_code provided by slug.
- *
- * If slug is given, we also try to find a `course_alias` with that `course_code`.
- * Course found with slug is preferred to course found with course_code.
- */
-export const getCourseOrAlias = <T extends Prisma.CourseFindUniqueArgs>(
-  ctx: BaseContext,
-) =>
-  ((args: Prisma.SelectSubset<T, Prisma.CourseFindUniqueArgs>) => {
-    const { id, slug } = args?.where ?? {}
-    const { select, include } = args ?? {}
-
-    if (!id && !slug) {
-      throw new UserInputError("You must provide either an id or a slug")
-    }
-
-    if (include && select) {
-      throw new UserInputError("Only provide one of include or select")
-    }
-
-    if (id) {
-      return ctx.prisma.course.findUnique({
-        where: {
-          id,
-          slug: slug ?? undefined,
-        },
-        ...omit(args, "where"),
-      })
-    }
-
-    const course = ctx.prisma.course.findUnique({
-      where: {
-        slug,
-      },
-      ...omit(args, "where"),
-    })
-
-    if (course) {
-      return course
-    }
-
-    const selectOrInclude: {
-      select?: Prisma.CourseSelect | null
-      include?: Prisma.CourseInclude | null
-    } = include ? { include } : { select }
-
-    const alias = ctx.prisma.courseAlias
-      .findUnique({
-        where: {
-          course_code: slug,
-        },
-      })
-      .course({
-        ...selectOrInclude,
-      })
-
-    return alias
-  }) as FindUniqueCourseType<typeof ctx["prisma"]>
-// we're telling TS that this is a course findUnique when in reality
-// it isn't strictly speaking. But it's close enough for our purposes
-// to get the type inference we want.
-
-export const getCourseOrCompletionHandlerCourse =
-  (ctx: BaseContext) =>
-  async ({ id, slug }: Prisma.CourseWhereUniqueInput) => {
-    if (!id && !slug) {
-      throw new UserInputError("must provide id and/or slug", {
-        argumentName: ["id", "slug"],
-      })
-    }
-
-    const course = await ctx.prisma.course.findUnique({
-      where: {
-        id,
-        slug,
-      },
-      include: {
-        completions_handled_by: true,
-      },
-    })
-
-    return course?.completions_handled_by ?? course
-  }
-
-export type PromiseReturnType<T> = T extends (
-  ...args: any[]
-) => Promise<infer R>
-  ? R
-  : never

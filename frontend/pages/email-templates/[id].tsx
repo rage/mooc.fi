@@ -1,11 +1,10 @@
 import React, { Reducer, useEffect, useReducer, useState } from "react"
 
-import { omit } from "lodash"
 import { NextSeo } from "next-seo"
 import Router, { useRouter } from "next/router"
+import { omit } from "remeda"
 
 import { useMutation, useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import {
   Button,
   Card,
@@ -15,21 +14,22 @@ import {
   TextField,
   Typography,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import CollapseButton from "/components/Buttons/CollapseButton"
 import { WideContainer } from "/components/Container"
 import CustomSnackbar from "/components/CustomSnackbar"
+import ErrorMessage from "/components/ErrorMessage"
 import Spinner from "/components/Spinner"
 import { CardTitle } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
-import useSubtitle from "/hooks/useSubtitle"
+import { useQueryParameter } from "/hooks/useQueryParameter"
 import withAdmin from "/lib/with-admin"
 import {
   emailTemplateDescriptions,
   emailTemplateNames,
   EmailTemplateType,
 } from "/types/emailTemplates"
-import { useQueryParameter } from "/util/useQueryParameter"
 
 import {
   DeleteEmailTemplateDocument,
@@ -38,27 +38,28 @@ import {
   UpdateEmailTemplateDocument,
 } from "/graphql/generated"
 
-const TemplateList = styled.div`
+const TemplateList = styled("div")`
   * + * {
     margin-top: 0.5rem;
   }
 `
 
-const TemplateForm = styled.form`
+const TemplateForm = styled("form")`
   display: flex;
   flex-direction: column;
   gap: 1rem;
 `
 
-const Row = styled.div`
+const Row = styled("div")`
   display: flex;
   gap: 1rem;
   width: 100%;
 `
 
-const Stretch = styled.div`
+const Stretch = styled("div")`
   width: 100%;
 `
+
 interface SnackbarData {
   type: "error" | "success" | "warning"
   message: string
@@ -113,6 +114,7 @@ const defaultState: EmailTemplateState = {
   triggered_automatically_by_course_id: null,
   created_at: "",
   updated_at: "",
+  course_instance_language: null,
 }
 
 const EmailTemplateView = () => {
@@ -154,14 +156,18 @@ const EmailTemplateView = () => {
       href: `/email-templates/${id}`,
     },
   ])
-  const pageTitle = useSubtitle(data?.email_template?.name ?? "")
+  const pageTitle = data?.email_template?.name ?? ""
 
   if (loading) {
     return <Spinner />
   }
-  //TODO fix error message
-  if (error || !data) {
-    return <p>Error has occurred</p>
+
+  if (error) {
+    return <ErrorMessage />
+  }
+
+  if (!data) {
+    return <div>No template found</div>
   }
 
   const filteredDescriptions = emailTemplateDescriptions.filter((value) => {
@@ -221,7 +227,7 @@ const EmailTemplateView = () => {
                 label="Email HTML Body (disabled)"
                 multiline
                 rows="4"
-                disabled={true}
+                disabled
                 value={state.html_body ?? ""}
                 variant="outlined"
                 onChange={setField}
@@ -253,6 +259,18 @@ const EmailTemplateView = () => {
                   />
                 </>
               ) : null}
+              {state.template_type === "course-stats" ? (
+                <>
+                  <TextField
+                    label="Course instance language (used if course is handled by a parent course; short code like fi, sv, fr-be)"
+                    fullWidth
+                    autoComplete="off"
+                    variant="outlined"
+                    value={state.course_instance_language ?? ""}
+                    onChange={setField}
+                  />
+                </>
+              ) : null}
               <Row>
                 <Typography variant="body2">
                   Created at{" "}
@@ -277,7 +295,8 @@ const EmailTemplateView = () => {
 
                       try {
                         const { data } = await updateEmailTemplateMutation({
-                          variables: omit(state, "__typename"),
+                          // FIXME: some weird typing thing
+                          variables: omit(state, "__typename" as any) as any,
                         })
                         console.log(data)
                         setSnackbarData({

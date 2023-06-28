@@ -1,7 +1,9 @@
+import assert from "assert"
+
 import { Course, User } from "@prisma/client"
 
-import { getTestContext } from "../../../../../tests/__helpers"
-import { seed } from "../../../../../tests/data/seed"
+import { getTestContext } from "../../../../../tests"
+import { seed } from "../../../../../tests/data"
 import { KafkaContext } from "../../../common/kafkaContext"
 import { getCombinedUserCourseProgress } from "../../userFunctions"
 import { checkAndSendThresholdEmail } from "../checkAndSendThresholdEmail"
@@ -130,14 +132,17 @@ describe("Email threshold", () => {
       })
       expect(emailDeliveries.length).toEqual(1)
 
+      assert(user)
+      assert(course)
+
       const combined = await getCombinedUserCourseProgress({
-        user: user!,
-        course: course!,
+        user,
+        course,
         context: kafkaContext,
       })
       await checkAndSendThresholdEmail({
-        user: user!,
-        course: course!,
+        user,
+        course,
         combinedUserCourseProgress: combined,
         context: kafkaContext,
       })

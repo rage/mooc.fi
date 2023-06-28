@@ -1,7 +1,7 @@
-import { UserInputError } from "apollo-server-express"
 import { arg, extendType, idArg, nonNull, objectType } from "nexus"
 
 import { isAdmin } from "../accessControl"
+import { GraphQLUserInputError } from "../lib/errors"
 
 export const UserCourseServiceProgress = objectType({
   name: "UserCourseServiceProgress",
@@ -31,6 +31,18 @@ export const UserCourseServiceProgress = objectType({
         return (res?.progress as any) ?? [] // errors without any typing - JSON value thing
       },
     })*/
+
+    t.nonNull.list.nonNull.field("points_by_group", {
+      type: "PointsByGroup",
+      resolve: async (parent, _args, ctx) => {
+        const res = await ctx.prisma.userCourseServiceProgress.findUnique({
+          where: { id: parent.id },
+          select: { progress: true },
+        })
+
+        return (res?.progress as any) ?? [] // errors without any typing - JSON value thing
+      },
+    })
   },
 })
 
@@ -39,7 +51,7 @@ export const UserCourseServiceProgress = objectType({
 export const UserCourseServiceProgressQueries = extendType({
   type: "Query",
   definition(t) {
-    t.nullable.field("userCourseServiceProgress", {
+    t.field("userCourseServiceProgress", {
       type: "UserCourseServiceProgress",
       args: {
         user_id: idArg(),
@@ -66,8 +78,9 @@ export const UserCourseServiceProgressQueries = extendType({
           })
         }
         if (!baseQuery) {
-          throw new UserInputError(
+          throw new GraphQLUserInputError(
             "provide at least one of user_id, course_id, service_id",
+            ["user_id", "course_id", "service_id"],
           )
         }
 
@@ -78,9 +91,10 @@ export const UserCourseServiceProgressQueries = extendType({
             user_id,
           },
           orderBy: { created_at: "asc" },
+          take: 1,
         })
 
-        return progresses?.[0]
+        return progresses?.[0] ?? null
       },
     })
 
@@ -107,41 +121,6 @@ export const UserCourseServiceProgressQueries = extendType({
         )
       },
     })
-    /*t.list.field("UserCourseServiceProgresses", {
-      type: "user_course_service_progress",
-      args: {
-        user_id: schema.idArg(),
-        course_id: schema.idArg(),
-        service_id: schema.idArg(),
-        first: schema.intArg(),
-        after: schema.idArg(),
-        last: schema.intArg(),
-        before: schema.idArg(),
-      },
-      resolve: (_, args, ctx) => {
-        checkAccess(ctx)
-        const {
-          user_id,
-          course_id,
-          service_id,
-          first,
-          last,
-          before,
-          after,
-        } = args
-        return ctx.prisma.user_course_service_progress.findMany({
-          where: {
-            user: user_id,
-            course: course_id,
-            service: service_id,
-          },
-          first,
-          last,
-          before: { id: before },
-          after: { id: after },
-        })
-      },
-    })*/
   },
 })
 
@@ -153,7 +132,7 @@ export const UserCourseServiceProgressMutations = extendType({
     t.field("addUserCourseServiceProgress", {
       type: "UserCourseServiceProgress",
       args: {
-        progress: nonNull(arg({ type: "PointsByGroup" })),
+        progress: nonNull(arg({ type: "PointsByGroupInput" })),
         service_id: nonNull(idArg()),
         user_course_progress_id: nonNull(idArg()),
       },
@@ -171,7 +150,7 @@ export const UserCourseServiceProgressMutations = extendType({
           })) ?? {}
 
         if (!course_id || !user_id) {
-          throw new UserInputError(
+          throw new GraphQLUserInputError(
             "user course progress not found or not connected to course or user",
           )
         }
@@ -181,7 +160,7 @@ export const UserCourseServiceProgressMutations = extendType({
             course: {
               connect: { id: course_id },
             },
-            progress: progress,
+            progress,
             service: {
               connect: { id: service_id },
             },

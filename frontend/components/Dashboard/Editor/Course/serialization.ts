@@ -1,9 +1,10 @@
-import { getIn } from "formik"
-import { omit } from "lodash"
+/* eslint-disable complexity */
 import { DateTime } from "luxon"
+import { omit } from "remeda"
 
 import { initialValues } from "./form-validation"
 import { CourseFormValues, CourseTranslationFormValues } from "./types"
+import { filterNullRecursive } from "/util/filterNull"
 import notEmpty from "/util/notEmpty"
 
 import {
@@ -12,25 +13,26 @@ import {
   CourseUpsertArg,
   EditorCourseDetailedFieldsFragment,
   StudyModuleDetailedFieldsFragment,
+  TagCoreFieldsFragment,
 } from "/graphql/generated"
 
 const isProduction = process.env.NODE_ENV === "production"
 
 interface ToCourseFormArgs {
   course?: EditorCourseDetailedFieldsFragment
-  modules?: StudyModuleDetailedFieldsFragment[]
+  modules?: Array<StudyModuleDetailedFieldsFragment>
+  tags?: Array<TagCoreFieldsFragment>
 }
 
 export const toCourseForm = ({
   course,
-  modules,
 }: ToCourseFormArgs): CourseFormValues => {
   if (!course) {
     return initialValues
   }
 
-  const courseStudyModules =
-    course?.study_modules?.map((module) => module.id) ?? []
+  const study_modules =
+    course?.study_modules?.map((studyModule) => studyModule.id) ?? []
 
   return {
     ...omit(course, [
@@ -41,13 +43,11 @@ export const toCourseForm = ({
       "created_at",
       "updated_at",
     ]),
-    slug: course?.slug ?? "",
-    name: course.name ?? "",
-    teacher_in_charge_name: course.teacher_in_charge_name ?? "",
-    teacher_in_charge_email: course.teacher_in_charge_email ?? "",
+    language: course.language ?? "",
     support_email: course.support_email ?? "",
+    // @ts-expect-error: expected to be invalid initially
     start_date: course.start_date ? DateTime.fromISO(course.start_date) : "",
-    end_date: course.end_date ? DateTime.fromISO(course.end_date) : "",
+    end_date: course.end_date ? DateTime.fromISO(course.end_date) : undefined,
     start_point: course.start_point ?? false,
     promote: course.promote ?? false,
     hidden: course.hidden ?? false,
@@ -55,52 +55,62 @@ export const toCourseForm = ({
     order: course.order ?? undefined,
     study_module_order: course.study_module_order ?? undefined,
     status: course.status ?? CourseStatus.Upcoming,
-    course_translations: (course.course_translations || []).map(
-      (course_translation) => ({
-        ...omit(course_translation, [
-          "__typename",
-          "course_id",
-          "created_at",
-          "updated_at",
-        ]),
-        link: course_translation.link || "",
-        open_university_course_link:
+    // @ts-expect-error: language is expected to be invalid initially
+    course_translations: (course.course_translations ?? []).map(
+      (course_translation) => {
+        const open_university_course_link =
           course?.open_university_registration_links?.find(
             (link) => link.language === course_translation.language,
-          ),
-        instructions: course_translation.instructions ?? undefined,
-      }),
+          )
+
+        return {
+          ...omit(course_translation, [
+            "__typename",
+            "id",
+            "course_id",
+            "created_at",
+            "updated_at",
+          ]),
+          _id: course_translation.id ?? undefined,
+          link: course_translation.link ?? "",
+          open_university_course_link: {
+            ...(open_university_course_link
+              ? omit(open_university_course_link, ["__typename", "id"])
+              : undefined),
+            _id: open_university_course_link?.id,
+            link: open_university_course_link?.link ?? "",
+            language: course_translation.language ?? "",
+            course_code: open_university_course_link?.course_code ?? "",
+          },
+          description: course_translation.description ?? "",
+          instructions: course_translation.instructions ?? "",
+        }
+      },
     ),
-    study_modules: modules?.reduce(
-      (acc, module) => ({
-        ...acc,
-        [module.id]: courseStudyModules.includes(module.id),
-      }),
-      {},
-    ),
+    study_modules,
     course_variants:
       course?.course_variants?.map((course_variant) => ({
-        ...omit(course_variant, ["__typename", "created_at", "updated_at"]),
-        slug: course_variant.slug ?? "",
+        ...omit(course_variant, ["__typename", "id"]),
+        _id: course_variant.id,
         description: course_variant.description ?? undefined,
       })) ?? [],
     course_aliases:
       course?.course_aliases?.map((course_alias) => ({
-        ...omit(course_alias, ["__typename", "created_at", "updated_at"]),
-        course_code: course_alias.course_code ?? undefined,
+        ...omit(course_alias, ["__typename", "id"]),
+        _id: course_alias.id,
       })) ?? [],
     new_slug: course.slug,
     thumbnail: course?.photo?.compressed,
     ects: course.ects ?? undefined,
     import_photo: "",
-    inherit_settings_from: course.inherit_settings_from?.id,
-    completions_handled_by: course.completions_handled_by?.id,
+    inherit_settings_from: course.inherit_settings_from?.id ?? "",
+    completions_handled_by: course.completions_handled_by?.id ?? "",
     has_certificate: course?.has_certificate ?? false,
     user_course_settings_visibilities:
       course?.user_course_settings_visibilities?.map((visibility) => ({
-        ...omit(visibility, ["__typename", "created_at", "updated_at"]),
-        language: visibility.language ?? undefined,
-      })),
+        ...omit(visibility, ["__typename", "id"]),
+        _id: visibility.id ?? undefined,
+      })) ?? [],
     upcoming_active_link: course?.upcoming_active_link ?? false,
     tier: course?.tier ?? undefined,
     automatic_completions: course?.automatic_completions ?? false,
@@ -109,47 +119,97 @@ export const toCourseForm = ({
     exercise_completions_needed:
       course?.exercise_completions_needed ?? undefined,
     points_needed: course?.points_needed ?? undefined,
+    new_photo: null,
+    photo: course?.photo ?? "",
+    open_university_registration_links:
+      course?.open_university_registration_links?.map((link) => ({
+        ...omit(link, ["__typename", "id"]),
+        _id: link.id ?? undefined,
+      })) ?? [],
+    tags: (course?.tags ?? []).map((tag) =>
+      filterNullRecursive({
+        ...omit(tag, ["__typename", "id"]),
+        _id: tag.id,
+        hidden: tag.hidden ?? false,
+        types: tag.types ?? [],
+        tag_translations: tag.tag_translations?.map((tagTranslation) => ({
+          ...omit(tagTranslation, ["__typename"]),
+          _id: `${tagTranslation.tag_id}:${tagTranslation.language}`,
+        })),
+      }),
+    ),
+    sponsors: (course?.sponsors ?? []).map((sponsor) =>
+      filterNullRecursive({
+        ...omit(sponsor, ["__typename", "id"]),
+        _id: sponsor.id,
+        translations: (sponsor.translations ?? []).map((translation) => ({
+          ...omit(translation, ["__typename"]),
+          _id: `${translation.sponsor_id}:${translation.language}`,
+        })),
+        images: (sponsor.images ?? []).map((image) => ({
+          ...omit(image, ["__typename"]),
+          _id: `${image.sponsor_id}:${image.type}`,
+        })),
+      }),
+    ),
   }
 }
 
 interface FromCourseFormArgs {
   values: CourseFormValues
-  initialValues: CourseFormValues
+  defaultValues: CourseFormValues
 }
 
 export const fromCourseForm = ({
   values,
-  initialValues,
+  defaultValues,
 }: FromCourseFormArgs): CourseCreateArg | CourseUpsertArg => {
   const newCourse = !values.id
 
-  const course_translations =
-    values?.course_translations?.map(
-      (course_translation: CourseTranslationFormValues) => ({
-        ...omit(course_translation, "open_university_course_link"),
-        link: course_translation.link || "",
-        id:
-          !course_translation.id || course_translation.id === ""
-            ? undefined
-            : course_translation.id,
-      }),
-    ) ?? []
+  const course_translations = (values?.course_translations ?? []).map(
+    (course_translation: CourseTranslationFormValues) => ({
+      ...omit(course_translation, ["open_university_course_link", "_id"]),
+      language: course_translation.language,
+      name: course_translation.name,
+      link: course_translation.link ?? "",
+      description: course_translation.description ?? "",
+      instructions: course_translation.instructions ?? null,
+      id:
+        !course_translation._id || course_translation._id === ""
+          ? undefined
+          : course_translation._id,
+    }),
+  ) as
+    | CourseCreateArg["course_translations"]
+    | CourseUpsertArg["course_translations"]
 
   const course_variants = (values?.course_variants ?? []).map(
-    (course_variant) => omit(course_variant, ["__typename"]),
-  )
+    (course_variant) => ({
+      ...omit(course_variant, ["__typename", "_id"]),
+      id:
+        !course_variant._id || course_variant._id === ""
+          ? undefined
+          : course_variant._id,
+    }),
+  ) as CourseCreateArg["course_variants"] | CourseUpsertArg["course_variants"]
 
   const course_aliases = (values?.course_aliases ?? []).map((course_alias) => ({
-    ...omit(course_alias, ["__typename"]),
+    ...omit(course_alias, ["__typename", "_id"]),
+    id: course_alias._id ?? undefined,
     course_code: course_alias.course_code ?? undefined,
-  }))
+  })) as CourseCreateArg["course_aliases"] | CourseUpsertArg["course_aliases"]
 
   const user_course_settings_visibilities = (
     values?.user_course_settings_visibilities ?? []
-  ).map((visibility) => omit(visibility, ["__typename"]))
+  ).map((visibility) => ({
+    ...omit(visibility, ["__typename", "_id"]),
+    id: !visibility._id || visibility._id === "" ? undefined : visibility._id,
+  })) as
+    | CourseCreateArg["user_course_settings_visibilities"]
+    | CourseUpsertArg["user_course_settings_visibilities"]
 
-  const open_university_registration_links = values?.course_translations
-    ?.map((course_translation: CourseTranslationFormValues) => {
+  const open_university_registration_links = (values?.course_translations ?? [])
+    .map((course_translation: CourseTranslationFormValues) => {
       if (
         !course_translation.open_university_course_link ||
         (course_translation.open_university_course_link?.course_code === "" &&
@@ -158,7 +218,7 @@ export const fromCourseForm = ({
         return
       }
 
-      const prevLink = initialValues?.open_university_registration_links?.find(
+      const prevLink = defaultValues?.open_university_registration_links?.find(
         (link) => link.language === course_translation.language,
       )
 
@@ -168,22 +228,45 @@ export const fromCourseForm = ({
           id: undefined,
           link: course_translation.open_university_course_link.link?.trim(),
           course_code:
-            course_translation.open_university_course_link.course_code?.trim(),
+            course_translation.open_university_course_link.course_code?.trim() ??
+            "",
         }
       }
 
       return {
-        ...omit(prevLink, ["__typename"]),
+        ...omit(prevLink, ["__typename", "_id"]),
+        id: !prevLink._id || prevLink._id === "" ? undefined : prevLink._id,
         link: course_translation.open_university_course_link.link?.trim(),
         course_code:
-          course_translation.open_university_course_link.course_code.trim(),
+          course_translation.open_university_course_link.course_code.trim() ??
+          "",
       }
     })
-    .filter(notEmpty)
+    .filter(notEmpty) as
+    | CourseCreateArg["open_university_registration_links"]
+    | CourseUpsertArg["open_university_registration_links"]
 
-  const study_modules = Object.keys(values.study_modules || {})
-    .filter((key) => values?.study_modules?.[key])
-    .map((id) => ({ id }))
+  const study_modules = (values.study_modules ?? [])
+    .filter(notEmpty)
+    .map((id) => ({ id })) as
+    | CourseCreateArg["study_modules"]
+    | CourseUpsertArg["study_modules"]
+
+  const tags = values?.tags?.map((tag) => ({
+    ...omit(tag, [
+      "__typename",
+      "_id",
+      "name",
+      "abbreviation",
+      "tag_translations",
+    ]),
+    id: tag._id,
+  }))
+
+  const sponsors = values?.sponsors?.map((sponsor) => ({
+    ...omit(sponsor, ["__typename", "_id", "name", "translations", "images"]),
+    id: sponsor._id,
+  }))
 
   const formValues = newCourse
     ? omit(values, [
@@ -198,22 +281,15 @@ export const fromCourseForm = ({
         new_slug: values.new_slug.trim(),
       }
 
-  const status =
-    values.status === "Active"
-      ? CourseStatus.Active
-      : values.status === "Ended"
-      ? CourseStatus.Ended
-      : values.status === "Upcoming"
-      ? CourseStatus.Upcoming
-      : undefined
-
   const c = {
     ...formValues,
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    language: values.language || null,
     name: values.name ?? "",
     slug: !newCourse ? values.slug : values.new_slug.trim(),
     ects: values.ects?.trim() ?? undefined,
     base64: !isProduction,
-    photo: getIn(values, "photo.id"),
+    photo: typeof values?.photo === "string" ? values.photo : values?.photo?.id,
     // despite orders being numbers in the field typings,
     // these come back as an empty string without TS yelling at you
     order: (values.order as unknown) === "" ? null : values.order,
@@ -234,10 +310,12 @@ export const fromCourseForm = ({
       values.end_date instanceof DateTime
         ? values.end_date.toISO()
         : values.end_date,
-    inherit_settings_from: values.inherit_settings_from,
-    completions_handled_by: values.completions_handled_by,
+    inherit_settings_from: values.inherit_settings_from ?? null,
+    completions_handled_by: values.completions_handled_by ?? null,
     user_course_settings_visibilities,
-    status, //values.status as CourseStatus
+    teacher_in_charge_email: values.teacher_in_charge_email ?? "",
+    teacher_in_charge_name: values.teacher_in_charge_name ?? "",
+    status: values.status,
     upcoming_active_link: values.upcoming_active_link ?? false,
     automatic_completions: values.automatic_completions ?? false,
     automatic_completions_eligible_for_ects:
@@ -248,6 +326,8 @@ export const fromCourseForm = ({
         : values.exercise_completions_needed,
     points_needed:
       (values.points_needed as unknown) == "" ? null : values.points_needed,
+    tags,
+    sponsors,
   }
 
   return newCourse ? (c as CourseCreateArg) : (c as CourseUpsertArg)

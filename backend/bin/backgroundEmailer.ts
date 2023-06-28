@@ -1,11 +1,11 @@
 import { EmailDelivery } from "@prisma/client"
 
 import { isProduction } from "../config"
+import { EmailTemplaterError } from "../lib/errors"
+import sentryLogger from "../lib/logger"
 import prisma from "../prisma"
 import { emptyOrNullToUndefined } from "../util"
 import { sendEmailTemplateToUser } from "./kafkaConsumer/common/EmailTemplater/sendEmailTemplate"
-import { EmailTemplaterError } from "./lib/errors"
-import sentryLogger from "./lib/logger"
 
 const BATCH_SIZE = 100
 
@@ -101,4 +101,7 @@ const main = async () => {
   }
 }
 
-main()
+main().catch((e) => {
+  logger.error(e)
+  process.exit(1)
+})

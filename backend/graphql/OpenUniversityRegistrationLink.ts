@@ -8,6 +8,7 @@ import {
 } from "nexus"
 
 import { isAdmin } from "../accessControl"
+import { GraphQLUserInputError } from "../lib/errors"
 
 export const OpenUniversityRegistrationLink = objectType({
   name: "OpenUniversityRegistrationLink",
@@ -31,7 +32,7 @@ export const OpenUniversityRegistrationLink = objectType({
           where: { id: parent.id },
           select: { tiers: true },
         })
-        return (res?.tiers as any) || []
+        return (res?.tiers as any) ?? []
       },
     })*/
   },
@@ -42,8 +43,8 @@ export const OpenUniversityRegistrationLinkCreateInput = inputObjectType({
   definition(t) {
     t.nonNull.string("course_code")
     t.nonNull.string("language")
-    t.nullable.string("link")
-    t.nullable.json("tiers")
+    t.string("link")
+    t.list.nonNull.json("tiers")
     t.datetime("start_date")
     t.datetime("stop_date")
   },
@@ -52,11 +53,11 @@ export const OpenUniversityRegistrationLinkCreateInput = inputObjectType({
 export const OpenUniversityRegistrationLinkUpsertInput = inputObjectType({
   name: "OpenUniversityRegistrationLinkUpsertInput",
   definition(t) {
-    t.nullable.id("id")
+    t.id("id")
     t.nonNull.string("course_code")
     t.nonNull.string("language")
-    t.nullable.string("link")
-    t.nullable.json("tiers")
+    t.string("link")
+    t.list.nonNull.json("tiers")
     t.datetime("start_date")
     t.datetime("stop_date")
   },
@@ -65,7 +66,7 @@ export const OpenUniversityRegistrationLinkUpsertInput = inputObjectType({
 export const OpenUniversityRegistrationLinkQueries = extendType({
   type: "Query",
   definition(t) {
-    t.nullable.field("openUniversityRegistrationLink", {
+    t.field("openUniversityRegistrationLink", {
       type: "OpenUniversityRegistrationLink",
       args: {
         id: nonNull(idArg()),
@@ -80,13 +81,6 @@ export const OpenUniversityRegistrationLinkQueries = extendType({
     t.crud.openUniversityRegistrationLinks({
       authorize: isAdmin,
     })
-    /*t.list.field("openUniversityRegistrationLinks", {
-      type: "open_university_registration_link",
-      resolve: (_, __, ctx) => {
-        checkAccess(ctx)
-        return ctx.prisma.open_university_registration_link.findMany()
-      },
-    })*/
   },
 })
 
@@ -102,6 +96,14 @@ export const OpenUniversityRegistrationLinkMutations = extendType({
         link: stringArg(),
       },
       authorize: isAdmin,
+      validate: async (_, { course_code, course }) => {
+        if (!course_code || !course) {
+          throw new GraphQLUserInputError(
+            "course_code and course are both required",
+            ["course_code", "course"],
+          )
+        }
+      },
       resolve: async (_, args, ctx) => {
         const { course_code, course, language, link } = args
 
@@ -136,13 +138,12 @@ export const OpenUniversityRegistrationLinkMutations = extendType({
           where: {
             id,
           },
-          // TODO/FIXME: this deletes the old values?
           data: {
             course: {
               connect: { id: course },
             },
-            course_code: course_code ?? "",
-            language: language ?? "",
+            ...(course_code && { course_code }),
+            ...(language && { language }),
             link,
           },
         })

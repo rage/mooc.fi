@@ -6,7 +6,8 @@ import { BaseContext } from "../context"
 import { UserInfo } from "../domain/UserInfo"
 import { redisify } from "../services/redis"
 import TmcClient from "../services/tmc"
-import { err, ok, Result } from "../util"
+import { hashUserToken } from "../util/hashUser"
+import { err, ok, Result } from "../util/result"
 
 interface GetUserReturn {
   user: User
@@ -42,7 +43,7 @@ export function requireCourseOwnership({
         .limit(1)
     )?.[0]
 
-    if (!Boolean(ownership)) {
+    if (!ownership) {
       return err(
         res.status(401).json({ message: "no ownership for this course" }),
       )
@@ -85,11 +86,11 @@ export function getUser({ knex, logger }: BaseContext) {
     try {
       const client = new TmcClient(rawToken)
       details = await redisify<UserInfo>(
-        async () => client.getCurrentUserDetails(),
+        async () => await client.getCurrentUserDetails(),
         {
           prefix: "userdetails",
           expireTime: 3600,
-          key: rawToken,
+          key: hashUserToken(rawToken),
         },
         {
           logger,

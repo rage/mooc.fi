@@ -1,4 +1,4 @@
-import { Request, Response } from "express-serve-static-core"
+import { Request, Response } from "express"
 import { omit } from "lodash"
 
 import { ApiContext, Controller } from "../types"
@@ -10,7 +10,7 @@ export class StoredDataController extends Controller {
   }
 
   post = async (
-    req: Request<{ slug: string }, {}, { data: string }>,
+    req: Request<{ slug: string }, any, { data: string }>,
     res: Response,
   ) => {
     const { prisma } = this.ctx
@@ -27,7 +27,7 @@ export class StoredDataController extends Controller {
     if (!data) {
       return res.status(400).json({ message: "must provide data" })
     }
-    const course = await this.getCourse({ where: { slug } })
+    const course = await prisma.course.findUniqueOrAlias({ where: { slug } })
 
     if (!course) {
       return res.status(401).json({
@@ -38,9 +38,9 @@ export class StoredDataController extends Controller {
     try {
       const existingStoredData = await prisma.storedData.findUnique({
         where: {
-          user_id_course_id: {
-            user_id: user.id,
+          course_id_user_id: {
             course_id: course.id,
+            user_id: user.id,
           },
         },
       })
@@ -59,9 +59,9 @@ export class StoredDataController extends Controller {
 
       await prisma.storedData.update({
         where: {
-          user_id_course_id: {
-            user_id: user.id,
+          course_id_user_id: {
             course_id: course.id,
+            user_id: user.id,
           },
         },
         data: {
@@ -81,7 +81,7 @@ export class StoredDataController extends Controller {
     const { prisma } = this.ctx
     const { slug } = req.params
 
-    const course = await this.getCourse({ where: { slug } })
+    const course = await prisma.course.findUniqueOrAlias({ where: { slug } })
 
     if (!course) {
       return res
@@ -98,25 +98,26 @@ export class StoredDataController extends Controller {
       return ownershipResult.error
     }
 
-    const storedData = await prisma.course
-      .findUnique({
-        where: { id: course.id },
-      })
-      .stored_data({
-        include: {
-          user: {
-            include: {
-              completions: {
-                where: {
-                  course_id: course.completions_handled_by_id ?? course.id,
+    const storedData =
+      (await prisma.course
+        .findUnique({
+          where: { id: course.id },
+        })
+        .stored_data({
+          include: {
+            user: {
+              include: {
+                completions: {
+                  where: {
+                    course_id: course.completions_handled_by_id ?? course.id,
+                  },
+                  orderBy: { created_at: "asc" },
+                  take: 1,
                 },
-                orderBy: { created_at: "asc" },
-                take: 1,
               },
             },
           },
-        },
-      })
+        })) ?? []
 
     const mappedStoredData = storedData.map((data) => ({
       user: omit(data.user, "completions"),

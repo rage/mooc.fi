@@ -1,17 +1,12 @@
-import styled from "@emotion/styled"
 import DoneIcon from "@mui/icons-material/Done"
-import Button from "@mui/material/Button"
-import Grid from "@mui/material/Grid"
-import Typography from "@mui/material/Typography"
+import { Button, Grid, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
-import {
-  formatDateTime,
-  mapLangToLanguage,
-} from "/components/DataFormatFunctions"
 import { ClickableDiv } from "/components/Surfaces/ClickableCard"
+import { useTranslator } from "/hooks/useTranslator"
 import CompletionsTranslations from "/translations/completions"
 import ProfileTranslations from "/translations/profile"
-import { useTranslator } from "/util/useTranslator"
+import { formatDateTime, mapLangToLanguage } from "/util/dataFormatFunctions"
 
 import {
   CompletionDetailedFieldsFragment,
@@ -28,20 +23,31 @@ const Background = styled(ClickableDiv)`
   width: 100%;
 `
 
-const CourseTitle = styled(Typography)<any>`
+const CourseTitle = styled(Typography)`
   margin: 0.5rem;
   padding-left: 1rem;
-`
-const CardText = styled(Typography)<any>`
+` as typeof Typography
+
+const CardText = styled(Typography)`
   margin: 0.5rem;
   padding-top: 0.2rem;
 `
-const RegistrationDetails = styled.div`
+const RegistrationDetails = styled("div")`
   display: flex;
   flex-direction: column;
   @media (min-width: 600px) {
     flex-direction: row;
   }
+`
+
+const StyledDoneIcon = styled(DoneIcon)`
+  color: green;
+  margin-top: 0.5rem;
+`
+
+const RegisterButton = styled(Button)`
+  color: red;
+  margin-right: 0.5rem;
 `
 
 interface CourseCardProps {
@@ -65,7 +71,7 @@ function CompletedCourseCard(props: CourseCardProps) {
   return (
     <Grid item xs={12}>
       <Background>
-        <CourseTitle component="h3" variant="h6" gutterBottom={true}>
+        <CourseTitle component="h3" variant="h6" gutterBottom>
           {completion.course?.name}
         </CourseTitle>
         <CardText>
@@ -77,7 +83,7 @@ function CompletedCourseCard(props: CourseCardProps) {
         </CardText>
         {isRegistered ? (
           registeredCompletions.map((r) => (
-            <RegistrationDetails>
+            <RegistrationDetails key={r.id}>
               <CardText>
                 {t("registeredDate")} {formatDateTime(r.created_at)}
               </CardText>
@@ -85,19 +91,15 @@ function CompletedCourseCard(props: CourseCardProps) {
                 {r.organization ? r.organization.slug : "Unknown organization"}
               </CardText>
 
-              <DoneIcon style={{ color: "green", marginTop: "0.5rem" }} />
+              <StyledDoneIcon />
             </RegistrationDetails>
           ))
         ) : (
-          <Button
+          <RegisterButton
             href={`/register-completion/${completion.course?.slug}`}
-            style={{
-              color: "red",
-              marginRight: "0.5rem",
-            }}
           >
             {t("registerButtonText")}
-          </Button>
+          </RegisterButton>
         )}
       </Background>
     </Grid>

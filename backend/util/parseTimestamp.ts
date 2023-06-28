@@ -1,20 +1,19 @@
 import { DateTime } from "luxon"
 
 type DateTimeKeys = keyof typeof DateTime
-// DateTime functions with pattern `from*` and signature (timestamp: string) => DateTime
 type DateTimeFromStringFunctions = {
-  [K in DateTimeKeys]: K extends `from${infer _}`
-    ? typeof DateTime[K] extends (text: string) => DateTime
-      ? typeof DateTime[K]
+  [K in DateTimeKeys]: K extends `from${infer Type}`
+    ? (typeof DateTime)[K] extends (text: string) => DateTime
+      ? `from${Type}`
       : never
     : never
 }[DateTimeKeys]
 
 const functions: Array<DateTimeFromStringFunctions> = [
-  DateTime.fromISO,
-  DateTime.fromSQL,
-  DateTime.fromHTTP,
-  DateTime.fromRFC2822,
+  "fromISO",
+  "fromSQL",
+  "fromHTTP",
+  "fromRFC2822",
 ]
 
 export const parseTimestamp = (timestamp: string) => {
@@ -22,7 +21,7 @@ export const parseTimestamp = (timestamp: string) => {
 
   for (const fn of functions) {
     try {
-      parsed = fn(timestamp)
+      parsed = DateTime[fn](timestamp)
     } catch {}
 
     if (parsed?.isValid) {

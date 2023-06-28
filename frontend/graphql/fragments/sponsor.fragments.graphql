@@ -1,0 +1,36 @@
+fragment SponsorFields on Sponsor {
+  id
+  name
+}
+
+fragment SponsorTranslationFields on SponsorTranslation {
+  sponsor_id
+  language
+  name
+  description
+  link
+  link_text
+}
+
+fragment SponsorImageFields on SponsorImage {
+  sponsor_id
+  type
+  width
+  height
+  uri
+} 
+
+fragment SponsorCoreFields on Sponsor {
+  ...SponsorFields
+  translations {
+    ...SponsorTranslationFields
+  }
+  images {
+    ...SponsorImageFields
+  }
+}
+
+fragment CourseSponsorFields on Sponsor {
+  ...SponsorCoreFields
+  order
+}

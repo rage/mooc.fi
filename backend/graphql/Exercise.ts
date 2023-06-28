@@ -1,17 +1,19 @@
-import { AuthenticationError } from "apollo-server-express"
 import {
   arg,
+  booleanArg,
   extendType,
   idArg,
   intArg,
   nonNull,
-  nullable,
   objectType,
   stringArg,
 } from "nexus"
 
+import { Prisma } from "@prisma/client"
+
 import { isAdmin, Role } from "../accessControl"
-import { filterNullFields } from "../util"
+import { GraphQLAuthenticationError } from "../lib/errors"
+import { filterNullFields, isDefined } from "../util"
 import { Context } from "/context"
 
 export const Exercise = objectType({
@@ -35,21 +37,20 @@ export const Exercise = objectType({
     t.list.nonNull.field("exercise_completions", {
       type: "ExerciseCompletion",
       args: {
-        orderBy: nullable(
-          arg({
-            // FIXME?
-            type: "ExerciseCompletionOrderByInput",
-          }),
-        ),
-        user_id: nullable(idArg()),
+        orderBy: arg({
+          type: "ExerciseCompletionOrderByWithRelationAndSearchRelevanceInput",
+        }),
+        user_id: idArg(),
+        completed: booleanArg(),
+        attempted: booleanArg(),
       },
       resolve: async (parent, args, ctx: Context) => {
-        const { orderBy, user_id: user_id_arg } = args
+        const { orderBy, user_id: user_id_arg, completed, attempted } = args
         const isAdmin = ctx.role === Role.ADMIN
         const user_id = isAdmin && user_id_arg ? user_id_arg : ctx?.user?.id
 
         if (!user_id) {
-          throw new AuthenticationError("not logged in")
+          throw new GraphQLAuthenticationError("not logged in")
         }
 
         return ctx.prisma.exercise
@@ -57,13 +58,17 @@ export const Exercise = objectType({
           .exercise_completions({
             where: {
               user_id,
+              ...(completed && { completed: true }),
+              ...(attempted && { attempted: true }),
             },
             distinct: ["user_id", "exercise_id"],
-            orderBy: {
-              timestamp: "desc",
-              updated_at: "desc",
-              ...filterNullFields(orderBy),
-            },
+            orderBy: [
+              { timestamp: "desc" },
+              { updated_at: "desc" },
+              filterNullFields(orderBy),
+            ].filter(
+              isDefined,
+            ) as Prisma.Enumerable<Prisma.ExerciseCompletionOrderByWithRelationAndSearchRelevanceInput>,
           })
       },
     })
@@ -73,7 +78,7 @@ export const Exercise = objectType({
 export const ExerciseQueries = extendType({
   type: "Query",
   definition(t) {
-    t.nullable.field("exercise", {
+    t.field("exercise", {
       type: "Exercise",
       args: {
         id: nonNull(idArg()),
@@ -88,14 +93,6 @@ export const ExerciseQueries = extendType({
     t.crud.exercises({
       authorize: isAdmin,
     })
-
-    /*t.list.field("exercises", {
-      type: "exercise",
-      resolve: (_, __, ctx) => {
-        checkAccess(ctx)
-        return ctx.prisma.exercise.findMany()
-      },
-    })*/
   },
 })
 

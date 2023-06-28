@@ -103,7 +103,7 @@ export async function updateUserDetails(fieldName: string, fieldValue: any) {
     organizational_id: existingUser.organizational_id,
   }
 
-  let extraFields: { [key: string]: any } = {}
+  const extraFields: { [key: string]: any } = {}
   extraFields[fieldName] = fieldValue
 
   const body = {

@@ -3,7 +3,9 @@ fragment UserCourseServiceProgressCoreFields on UserCourseServiceProgress {
   course_id
   service_id
   user_id
-  progress
+  points_by_group {
+    ...PointsByGroupFields
+  }
   service {
     name
     id

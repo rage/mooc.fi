@@ -1,14 +1,15 @@
 import { DateTime } from "luxon"
 
 import {
+  Prisma,
   User,
   UserCourseProgress,
   UserCourseServiceProgress,
 } from "@prisma/client"
 
+import { DatabaseInputError, TMCError } from "../../../../lib/errors"
 import { err, ok, parseTimestamp, Result } from "../../../../util"
 import { MessageType, pushMessageToClient } from "../../../../wsServer"
-import { DatabaseInputError, TMCError } from "../../../lib/errors"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 import { KafkaContext } from "../kafkaContext"
 import { generateUserCourseProgress } from "./generateUserCourseProgress"
@@ -63,8 +64,8 @@ export const saveToDatabase = async (
   const userCourseProgresses = await knex<any, UserCourseProgress[]>(
     "user_course_progress",
   )
-    .where("user_id", user.id)
     .where("course_id", message.course_id)
+    .andWhere("user_id", user.id)
     .orderBy("created_at", "asc")
 
   let userCourseProgress = userCourseProgresses[0]
@@ -76,7 +77,7 @@ export const saveToDatabase = async (
           connect: { id: message.course_id },
         },
         user: { connect: { id: user.id } },
-        progress: message.progress as any, // type error without any
+        progress: message.progress ?? Prisma.JsonNull, // type error without any
       },
     })
   } else if (userCourseProgresses.length > 1) {
@@ -91,12 +92,12 @@ export const saveToDatabase = async (
     any,
     UserCourseServiceProgress[]
   >("user_course_service_progress")
-    .where("user_id", user.id)
-    .where("course_id", message.course_id)
     .where("service_id", message.service_id)
+    .andWhere("course_id", message.course_id)
+    .andWhere("user_id", user.id)
     .orderBy("created_at", "asc")
 
-  let userCourseServiceProgress = userCourseServiceProgresses[0]
+  const userCourseServiceProgress = userCourseServiceProgresses[0]
 
   if (userCourseServiceProgress) {
     if (userCourseServiceProgresses.length > 1) {
@@ -109,7 +110,6 @@ export const saveToDatabase = async (
         },
       })
     }
-    // FIXME: weird
     const oldTimestamp = DateTime.fromISO(
       userCourseServiceProgress?.timestamp?.toISOString() ?? "",
     )
@@ -122,7 +122,7 @@ export const saveToDatabase = async (
         id: userCourseServiceProgress.id,
       },
       data: {
-        progress: message.progress as any, // type error without any
+        progress: message.progress ?? Prisma.JsonNull, // type error without any
         timestamp: { set: timestamp.toJSDate() },
       },
     })
@@ -136,7 +136,7 @@ export const saveToDatabase = async (
         service: {
           connect: { id: message.service_id },
         },
-        progress: message.progress as any, // type error without any
+        progress: message.progress ?? Prisma.JsonNull, // type error without any
         user_course_progress: {
           connect: { id: userCourseProgress.id },
         },

@@ -1,7 +1,6 @@
 import { randomBytes } from "crypto"
 import { promisify } from "util"
 
-import { UserInputError } from "apollo-server-express"
 import {
   arg,
   booleanArg,
@@ -15,9 +14,10 @@ import {
 
 import { Prisma } from "@prisma/client"
 
-import { isAdmin, Role } from "../accessControl"
+import { isAdmin, isSameOrganization, or, Role } from "../accessControl"
 import { Context } from "../context"
-import { filterNullFields } from "../util"
+import { GraphQLUserInputError } from "../lib/errors"
+import { filterNullFields, filterNullRecursive } from "../util"
 
 export const Organization = objectType({
   name: "Organization",
@@ -26,12 +26,15 @@ export const Organization = objectType({
     t.model.contact_information()
     t.model.created_at()
     t.model.disabled()
+    t.model.disabled_reason()
     t.model.email()
     t.model.hidden()
+    t.model.information()
     t.model.logo_content_type()
     t.model.logo_file_name()
     t.model.logo_file_size()
     t.model.logo_updated_at()
+    t.model.name()
     t.model.phone()
     t.model.pinned()
     t.model.slug()
@@ -44,16 +47,16 @@ export const Organization = objectType({
     t.model.creator_id()
     t.model.creator()
     t.model.completions_registered({
-      authorize: isAdmin, // TODO: should this be something else?
+      authorize: or(isAdmin, isSameOrganization),
     })
     t.model.courses()
     t.model.course_organizations()
     t.model.organization_translations()
     t.model.user_organizations({
-      authorize: isAdmin,
+      authorize: or(isAdmin, isSameOrganization),
     })
     t.model.verified_users({
-      authorize: isAdmin,
+      authorize: or(isAdmin, isSameOrganization),
     })
     t.model.required_confirmation({
       description:
@@ -82,7 +85,7 @@ const organizationQueryHiddenOrDisabledPermission = (
 export const OrganizationQueries = extendType({
   type: "Query",
   definition(t) {
-    t.nullable.field("organization", {
+    t.field("organization", {
       type: "Organization",
       description:
         "Get organization by id or slug. Admins can also query hidden/disabled courses. Fields that can be queried is more limited on normal users.",
@@ -95,15 +98,16 @@ export const OrganizationQueries = extendType({
       authorize: organizationQueryHiddenOrDisabledPermission,
       resolve: async (_, { id, slug, hidden, disabled }, ctx) => {
         if ((!id && !slug) || (id && slug)) {
-          throw new UserInputError("must provide either id or slug")
+          throw new GraphQLUserInputError("must provide either id or slug", [
+            "id",
+            "slug",
+          ])
         }
 
         return ctx.prisma.organization.findFirst({
           where: {
-            ...filterNullFields({
-              id,
-              slug,
-            }),
+            id: id ?? undefined,
+            slug: slug ?? undefined,
             ...(!hidden && { hidden: { not: true } }),
             ...(!disabled && {
               OR: [
@@ -120,13 +124,6 @@ export const OrganizationQueries = extendType({
       },
     })
 
-    // just to create types
-    t.crud.organizations({
-      ordering: true,
-      pagination: true,
-      authorize: organizationQueryHiddenOrDisabledPermission,
-    })
-
     t.list.nonNull.field("organizations", {
       type: "Organization",
       args: {
@@ -134,7 +131,7 @@ export const OrganizationQueries = extendType({
         skip: intArg(),
         cursor: arg({ type: "OrganizationWhereUniqueInput" }),
         orderBy: arg({
-          type: "OrganizationOrderByInput",
+          type: "OrganizationOrderByWithRelationAndSearchRelevanceInput",
         }),
         hidden: booleanArg(),
         disabled: booleanArg(),
@@ -173,7 +170,7 @@ export const OrganizationQueries = extendType({
               id: cursor.id,
             },
           }),
-          orderBy: filterNullFields(orderBy),
+          orderBy: filterNullRecursive(orderBy),
           where,
         })
       },
@@ -210,12 +207,7 @@ export const OrganizationMutations = extendType({
           data: {
             slug,
             secret_key,
-            organization_translations: {
-              create: {
-                name: name ?? "",
-                language: "fi_FI",
-              },
-            },
+            name: name ?? "",
           },
         })
       },
@@ -231,17 +223,16 @@ export const OrganizationMutations = extendType({
       authorize: isAdmin,
       resolve: async (_, { id, slug, email_template_id }, ctx) => {
         if (!id && !slug) {
-          throw new UserInputError("must provide either id or slug", {
-            argumentNames: ["id", "slug"],
-          })
+          throw new GraphQLUserInputError("must provide either id or slug", [
+            "id",
+            "slug",
+          ])
         }
 
         return ctx.prisma.organization.update({
           where: {
-            ...filterNullFields({
-              id,
-              slug,
-            }),
+            id: id ?? undefined,
+            slug: slug ?? undefined,
           },
           data: {
             join_organization_email_template_id: email_template_id,

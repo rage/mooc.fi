@@ -4,6 +4,24 @@ query StudyModules($language: String) {
   }
 }
 
+query StudyModulesWithCourses($language: String) {
+  study_modules(orderBy: { id: asc }, language: $language) {
+    ...StudyModuleFields
+    courses(language: $language) {
+      ...CourseFields
+    }
+  }
+}
+
+query NewStudyModulesWithCourses($language: String) {
+  study_modules(orderBy: { id: asc }, language: $language) {
+    ...StudyModuleFields
+    courses(language: $language) {
+      ...NewCourseFields
+    }
+  }
+}
+
 query EditorStudyModules {
   study_modules(orderBy: { id: asc }) {
     ...StudyModuleDetailedFields

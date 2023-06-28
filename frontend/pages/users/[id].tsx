@@ -1,18 +1,33 @@
 import { useState } from "react"
 
 import { useApolloClient, useQuery } from "@apollo/client"
-import { CircularProgress, Grid } from "@mui/material"
-import Button from "@mui/material/Button"
+import { Button, CircularProgress, Grid } from "@mui/material"
 
 import Container from "/components/Container"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { useQueryParameter } from "/hooks/useQueryParameter"
+import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
 import CommonTranslations from "/translations/common"
-import { useQueryParameter } from "/util/useQueryParameter"
-import { useTranslator } from "/util/useTranslator"
+import notEmpty from "/util/notEmpty"
 
-import { UserProfileUserCourseSettingsDocument } from "/graphql/generated"
+import {
+  UserProfileUserCourseSettingsDocument,
+  UserProfileUserCourseSettingsQueryNodeFieldsFragment,
+} from "/graphql/generated"
+
+function hasNode<T>(data: { node?: T | null } | null): data is { node: T } {
+  return notEmpty(data) && notEmpty(data?.node)
+}
+
+const filterEdges = (
+  edges?: Array<{
+    node: UserProfileUserCourseSettingsQueryNodeFieldsFragment | null
+  } | null> | null,
+) => {
+  return (edges ?? []).filter(hasNode).filter(notEmpty) ?? []
+}
 
 const UserPage = () => {
   const id = useQueryParameter("id")
@@ -20,7 +35,10 @@ const UserPage = () => {
   const t = useTranslator(CommonTranslations)
 
   // TODO: typing, this "more" isn't actually used anywhere?
-  const [more, setMore] = useState<any[]>([])
+  // @ts-ignore: not used
+  const [more, setMore] = useState<
+    Array<{ node: UserProfileUserCourseSettingsQueryNodeFieldsFragment }>
+  >([])
 
   const { loading, error, data } = useQuery(
     UserProfileUserCourseSettingsDocument,
@@ -38,7 +56,6 @@ const UserPage = () => {
   ])
 
   // TODO: edit query to get username for title?
-
   if (error) {
     return (
       <ModifiableErrorMessage
@@ -57,9 +74,6 @@ const UserPage = () => {
     )
   }
 
-  // TODO: this doesn't work
-  // data?.userCourseSettings?.edges?.push(...more)
-
   return (
     <>
       <Container>
@@ -73,9 +87,10 @@ const UserPage = () => {
               query: UserProfileUserCourseSettingsDocument,
               variables: { upstream_id: Number(id) },
             })
-            let newData = more
-            newData.push(...(data?.userCourseSettings?.edges ?? []))
-            setMore(newData)
+            setMore((existing) => [
+              ...existing,
+              ...filterEdges(data?.userCourseSettings?.edges),
+            ])
           }}
           disabled={false}
         >

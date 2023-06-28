@@ -1,6 +1,6 @@
 import { Knex } from "knex"
 
-export async function up(knex: Knex): Promise<any> {
+export async function up(knex: Knex): Promise<Knex.SchemaBuilder> {
   return knex.schema
     .hasColumn("course", "upcoming_active_link")
     .then((exists) => {
@@ -13,7 +13,7 @@ export async function up(knex: Knex): Promise<any> {
     })
 }
 
-export async function down(knex: Knex): Promise<any> {
+export async function down(knex: Knex): Promise<Knex.SchemaBuilder> {
   return knex.schema.alterTable("course", function (table) {
     table.dropColumn("upcoming_active_link")
   })

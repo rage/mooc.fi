@@ -1,8 +1,7 @@
 import { User } from "@prisma/client"
 
 import { BaseContext } from "../../../context"
-import { TMCError } from "../../lib/errors"
-import getUserFromTMCAndCreate from "./getUserFromTMC"
+import { TMCError } from "../../../lib/errors"
 
 export async function getUserWithRaceCondition(
   context: BaseContext,
@@ -15,7 +14,7 @@ export async function getUserWithRaceCondition(
 
   if (!user) {
     try {
-      user = await getUserFromTMCAndCreate(prisma, user_id)
+      user = await prisma.user.createFromTMC(user_id)
     } catch (e) {
       try {
         user = (await knex("user").where("upstream_id", user_id).limit(1))[0]

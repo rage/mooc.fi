@@ -1,13 +1,13 @@
-import { ChangeEvent, PropsWithChildren } from "react"
+import { PropsWithChildren, SyntheticEvent } from "react"
 
 import { Tab, Tabs } from "@mui/material"
 
+import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
-import { useTranslator } from "/util/useTranslator"
 
 interface ProfileTabsProps {
   selected: number
-  onChange: (_: ChangeEvent<{}>, __: number) => void
+  onChange: (_: SyntheticEvent<Element, Event>, __: number) => void
 }
 
 function ProfileTabs({

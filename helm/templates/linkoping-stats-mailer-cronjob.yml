@@ -5,8 +5,8 @@ metadata:
   labels:
     {{- include "helm.labels" . | nindent 4 }}
 spec:
-  # 16th day of month at 12:00pm
-  schedule: "0 12 16 * *"
+  # 16th and 25th day of month at 12:00pm
+  schedule: "0 12 16,25 * *"
   startingDeadlineSeconds: 3600
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 1
@@ -31,5 +31,5 @@ spec:
                 - name: REDIS_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: redis
+                      name: new-redis
                       key: redis-password

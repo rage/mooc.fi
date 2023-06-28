@@ -1,6 +1,5 @@
-import { useMemo, useState } from "react"
+import { useCallback, useMemo } from "react"
 
-import styled from "@emotion/styled"
 import { Clear, Search } from "@mui/icons-material"
 import {
   Button,
@@ -10,18 +9,22 @@ import {
   IconButton,
   InputAdornment,
   MenuItem,
+  Select,
+  SelectChangeEvent,
   TextField,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
+import { useEventCallback } from "@mui/material/utils"
 
 import { useFilterContext } from "/contexts/FilterContext"
 import { useSearch } from "/hooks/useSearch"
+import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
 import notEmpty from "/util/notEmpty"
-import { useTranslator } from "/util/useTranslator"
 
 import { CourseStatus } from "/graphql/generated"
 
-const Container = styled.div`
+const Container = styled("div")`
   background-color: white;
   padding: 0.5rem;
   display: flex;
@@ -29,7 +32,7 @@ const Container = styled.div`
   min-width: 300px;
 `
 
-const Row = styled.section`
+const Row = styled("section")`
   display: grid;
   grid-gap: 0.5rem;
   margin: 0.5rem;
@@ -52,11 +55,41 @@ const Row = styled.section`
   }
 `
 
+const SearchTextField = styled(TextField)`
+  grid-column: span 6;
+`
+
+const HiddenFormControl = styled(FormControl)`
+  grid-area: hidden;
+`
+
+const StatusFormControl = styled(FormControl)`
+  grid-area: status;
+`
+
+const HandledByFormControl = styled(FormControl)`
+  grid-area: handled-by;
+`
+
+const ActionRow = styled(Row)`
+  display: flex;
+  flex-direction: row-reverse;
+`
+
+const MarginButton = styled(Button)`
+  margin-left: 0.5rem;
+`
+
+const StatusContainer = styled("div")`
+  display: flex;
+`
+
 interface FilterFields {
   hidden: boolean
   status: boolean
   handler: boolean
 }
+
 interface FilterProps {
   fields?: FilterFields
   label?: string
@@ -77,33 +110,23 @@ export default function FilterMenu({ fields, label }: FilterProps) {
     status: showStatus = true,
     handler: showHandler = true,
   } = fields ?? {}
-  const {
-    search: initialSearch,
-    hidden: initialHidden,
-    handledBy: initialHandledBy,
-  } = searchVariables
+  const { search: initialSearch, hidden, handledBy, status } = searchVariables
 
   const { search, setSearch } = useSearch({ search: initialSearch ?? "" })
-  const [hidden, setHidden] = useState(
-    initialHidden === null ? true : initialHidden,
-  )
-  const [handledBy, setHandledBy] = useState(initialHandledBy ?? "")
 
   /*const inputLabel = useRef<any>(null)
   const [labelWidth, setLabelWidth] = useState(0)
 
   useEffect(() => setLabelWidth(inputLabel?.current?.offsetWidth ?? 0), [])*/
 
-  const onSubmit = () => {
-    setSearchVariables({
-      ...searchVariables,
+  const onSubmit = useCallback(() => {
+    setSearchVariables((previousSearchVariables) => ({
+      ...previousSearchVariables,
       search,
-      hidden,
-      handledBy,
-    })
-  }
+    }))
+  }, [search])
 
-  const handleStatusChange =
+  const handleStatusChange = useCallback(
     (value: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
       const newStatus = (
         e.target.checked
@@ -113,51 +136,76 @@ export default function FilterMenu({ fields, label }: FilterProps) {
             ) ?? []
       ) as CourseStatus[]
 
-      setSearchVariables({
-        ...searchVariables,
+      setSearchVariables((previousSearchVariables) => ({
+        ...previousSearchVariables,
         status: newStatus,
-      })
-    }
+      }))
+    },
+    [searchVariables],
+  )
 
-  const handleHiddenChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setHidden(e.target.checked)
-    setSearchVariables({
-      ...searchVariables,
-      hidden: e.target.checked,
-    })
-  }
+  const handleHiddenChange = useEventCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchVariables((previousSearchVariables) => ({
+        ...previousSearchVariables,
+        hidden: e.target.checked,
+      }))
+    },
+  )
 
-  const handleHandledByChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setHandledBy(e.target.value)
+  const handleHandledByChange = useEventCallback(
+    (e: SelectChangeEvent<string>) => {
+      setSearchVariables((previousSearchVariables) => ({
+        ...previousSearchVariables,
+        handledBy: e.target.value,
+      }))
+    },
+  )
+
+  const onSearchChange = useEventCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearch(e.target.value)
+    },
+  )
+  const onSearchKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") {
+        onSubmit()
+      }
+    },
+    [onSubmit],
+  )
+  const onSearchReset = useEventCallback(() => {
+    setSearch("")
+  })
+  const onFormReset = useEventCallback(() => {
     setSearchVariables({
-      ...searchVariables,
-      handledBy: e.target.value,
+      search: "",
+      hidden: true,
+      handledBy: null,
+      status: [CourseStatus.Active, CourseStatus.Upcoming],
     })
-  }
+  })
 
   return (
     <Container>
       <Row>
-        <TextField
+        <SearchTextField
           id="searchString"
           label={label ?? t("search")}
           value={search}
           autoComplete="off"
           variant="outlined"
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setSearch(e.target.value)
-          }
-          onKeyDown={(e) => e.key === "Enter" && onSubmit()}
+          onChange={onSearchChange}
+          onKeyDown={onSearchKeyDown}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
                 <IconButton
-                  onClick={() => {
-                    setSearch("")
-                  }}
+                  onClick={onSearchReset}
                   disabled={search === ""}
                   edge="end"
-                  aria-label="clear search"
+                  title={t("reset")}
                   size="large"
                 >
                   <Clear />
@@ -165,28 +213,27 @@ export default function FilterMenu({ fields, label }: FilterProps) {
               </InputAdornment>
             ),
           }}
-          style={{ gridColumn: "span 6" }}
         />
       </Row>
       {(showHidden || showHandler || showStatus) && (
         <Row>
-          {showHidden && (
-            <FormControl disabled={loading} style={{ gridArea: "hidden" }}>
+          {showHidden ? (
+            <HiddenFormControl disabled={loading}>
               <FormControlLabel
                 label={t("showHidden")}
                 control={
                   <Checkbox
                     id="hidden"
-                    checked={hidden}
+                    checked={hidden || false}
                     onChange={handleHiddenChange}
                   />
                 }
               />
-            </FormControl>
-          )}
-          {showStatus && (
-            <FormControl disabled={loading} style={{ gridArea: "status" }}>
-              <div style={{ display: "flex" }}>
+            </HiddenFormControl>
+          ) : null}
+          {showStatus ? (
+            <StatusFormControl disabled={loading}>
+              <StatusContainer>
                 {["Active", "Upcoming", "Ended"].map((value) => (
                   <FormControlLabel
                     label={t(value as any)}
@@ -194,70 +241,55 @@ export default function FilterMenu({ fields, label }: FilterProps) {
                     control={
                       <Checkbox
                         id={value}
-                        checked={searchVariables?.status?.includes(
-                          value as CourseStatus,
-                        )}
+                        checked={(status ?? []).includes(value as CourseStatus)}
                         onChange={handleStatusChange(value)}
                       />
                     }
                   />
                 ))}
-              </div>
-            </FormControl>
-          )}
-          {showHandler && (
-            <FormControl disabled={loading} style={{ gridArea: "handled-by" }}>
-              <TextField
-                id="handledBy"
-                select
-                value={handledBy}
+              </StatusContainer>
+            </StatusFormControl>
+          ) : null}
+          {showHandler ? (
+            <HandledByFormControl disabled={loading}>
+              <Select
+                value={loading ? "" : handledBy ?? ""}
+                variant="outlined"
                 onChange={handleHandledByChange}
                 label={t("handledBy")}
-                variant="outlined"
               >
                 <MenuItem value="" key="handleempty">
                   &nbsp;
                 </MenuItem>
                 {handlerCourses?.map((course) => (
-                  <MenuItem key={`handled-${course.id}`} value={course.slug}>
+                  <MenuItem key={course.id} value={course.slug}>
                     {course.name}
                   </MenuItem>
                 ))}
-              </TextField>
-            </FormControl>
-          )}
+              </Select>
+            </HandledByFormControl>
+          ) : null}
         </Row>
       )}
-      <Row style={{ display: "flex", flexDirection: "row-reverse" }}>
-        <Button
+      <ActionRow>
+        <MarginButton
           disabled={loading}
           onClick={onSubmit}
           color="primary"
           variant="contained"
-          style={{ marginLeft: "0.5rem" }}
           startIcon={<Search />}
         >
           {t("search")}
-        </Button>
+        </MarginButton>
         <Button
           disabled={loading}
           color="secondary"
           variant="contained"
-          onClick={() => {
-            setHidden(true)
-            setHandledBy("")
-            setSearchVariables({
-              search: "",
-              hidden: true,
-              handledBy: null,
-              status: [CourseStatus.Active, CourseStatus.Upcoming],
-            })
-          }}
-          style={{ marginLeft: "0.5rem" }}
+          onClick={onFormReset}
         >
           {t("reset")}
         </Button>
-      </Row>
+      </ActionRow>
     </Container>
   )
 }

@@ -1,10 +1,10 @@
 import { Knex } from "knex"
 import * as winston from "winston"
 
-import { PrismaClient } from "@prisma/client"
+import { ExtendedPrismaClient } from "../../../../../prisma"
 
 export type TemplateContext = {
-  prisma: PrismaClient
+  prisma: ExtendedPrismaClient
   logger?: winston.Logger
   knex?: Knex
   test?: boolean

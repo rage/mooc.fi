@@ -1,17 +1,20 @@
+import parseJSON from "json-parse-even-better-errors"
 import { Message as KafkaMessage } from "node-rdkafka"
 import * as yup from "yup"
 
-import { Result } from "../../../util"
 import {
   DatabaseInputError,
   KafkaMessageError,
   ValidationError,
-} from "../../lib/errors"
+  Warning,
+} from "../../../lib/errors"
+import { Result } from "../../../util"
+import { stringifyWithIndent } from "../../../util/json"
 import config from "../kafkaConfig"
 import { KafkaContext } from "./kafkaContext"
 
 // Each partition has their own commit counter
-let commitCounterMap = new Map<number, number>()
+const commitCounterMap = new Map<number, number>()
 
 const commitInterval = config.commit_interval
 
@@ -22,7 +25,7 @@ interface HandleMessageArgs<Message extends { timestamp: string }> {
   saveToDatabase: (
     context: KafkaContext,
     message: Message,
-  ) => Promise<Result<string, Error>>
+  ) => Promise<Result<string | Warning, Error>>
 }
 
 export const handleMessage = async <Message extends { timestamp: string }>({
@@ -45,7 +48,7 @@ export const handleMessage = async <Message extends { timestamp: string }>({
   let message: Message
 
   try {
-    message = JSON.parse(kafkaMessage?.value?.toString("utf8") ?? "")
+    message = parseJSON(kafkaMessage?.value?.toString("utf8") ?? "") as Message
   } catch (error: any) {
     logger.error(new KafkaMessageError("invalid message", kafkaMessage, error))
     await commit(context, kafkaMessage)
@@ -65,14 +68,22 @@ export const handleMessage = async <Message extends { timestamp: string }>({
   }
 
   try {
-    logger.info("Saving message", { message: JSON.stringify(message) })
+    logger.info("Saving message", { message: stringifyWithIndent(message) })
 
     const saveResult = await saveToDatabase(context, message)
 
     if (saveResult.isOk()) {
-      if (saveResult.hasValue()) logger.info(saveResult.value)
+      if (saveResult.hasValue()) {
+        logger.info(saveResult.value)
+      }
+    } else if (saveResult.isWarning()) {
+      if (saveResult.hasValue()) {
+        logger.warn(saveResult.value.message)
+      }
     } else {
-      if (saveResult.hasError()) logger.error(saveResult.error)
+      if (saveResult.isErr()) {
+        logger.error(saveResult.error)
+      }
     }
   } catch (error: any) {
     logger.error(
@@ -93,6 +104,7 @@ export const handleMessage = async <Message extends { timestamp: string }>({
 const commit = async (kafkaContext: KafkaContext, message: KafkaMessage) => {
   const { logger, consumer } = kafkaContext
 
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const commitCounter = commitCounterMap.get(message.partition) || 0
   commitCounterMap.set(message.partition, commitCounter + 1)
 
@@ -118,7 +130,7 @@ const reportQueueLength = (
     5000,
     (err, offsets) => {
       if (err) {
-        ctx.logger.error(
+        ctx.logger.warn(
           `Could not get offsets for topic ${ctx.topic_name} partition ${partition_id}`,
         )
         return

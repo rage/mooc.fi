@@ -2,11 +2,16 @@ import { useState } from "react"
 
 import { useConfirm } from "material-ui-confirm"
 import { NextSeo } from "next-seo"
-import Link from "next/link"
 
 import { useApolloClient, useMutation, useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
-import { Button, Paper, Typography } from "@mui/material"
+import {
+  Button,
+  EnhancedLink,
+  Link as MUILink,
+  Paper,
+  Typography,
+} from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { WideContainer } from "/components/Container"
 import CreateEmailTemplateDialog from "/components/CreateEmailTemplateDialog"
@@ -16,11 +21,10 @@ import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import Spinner from "/components/Spinner"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
-import useSubtitle from "/hooks/useSubtitle"
+import { useQueryParameter } from "/hooks/useQueryParameter"
+import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
 import CoursesTranslations from "/translations/courses"
-import { useQueryParameter } from "/util/useQueryParameter"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   CourseDashboardDocument,
@@ -32,9 +36,11 @@ import {
   UserCourseStatsUnsubscribeDocument,
 } from "/graphql/generated"
 
-const Title = styled(Typography)<any>`
+const Link = MUILink as EnhancedLink
+
+const Title = styled(Typography)`
   margin-bottom: 0.7em;
-`
+` as typeof Typography
 
 const Row = styled(Paper)`
   padding: 0.5rem;
@@ -72,7 +78,7 @@ const Course = () => {
       href: `/courses/${slug}`,
     },
   ])
-  const title = useSubtitle(data?.course?.name)
+  const title = data?.course?.name ?? "..."
 
   const [recheckCompletions] = useMutation(RecheckCompletionsDocument, {
     variables: {
@@ -133,9 +139,10 @@ const Course = () => {
           ? UserCourseStatsSubscribeDocument
           : UserCourseStatsUnsubscribeDocument,
         variables: {
-          id: !isSubscribed
-            ? data?.course?.course_stats_email?.id!
-            : subscription!.id!,
+          id:
+            (!isSubscribed
+              ? data?.course?.course_stats_email?.id
+              : subscription?.id) ?? "",
         },
         refetchQueries: [{ query: CurrentUserStatsSubscriptionsDocument }],
       })
@@ -156,12 +163,7 @@ const Course = () => {
           <H1NoBackground component="h1" variant="h1" align="center">
             {data.course?.name}
           </H1NoBackground>
-          <Title
-            component="p"
-            variant="subtitle2"
-            align="center"
-            gutterBottom={true}
-          >
+          <Title component="p" variant="subtitle2" align="center" gutterBottom>
             {data.course?.id}
           </Title>
           <SubtitleNoBackground

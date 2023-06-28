@@ -1,12 +1,12 @@
-import styled from "@emotion/styled"
 import { Grid } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { FullCoverTextBackground } from "/components/Images/CardBackgroundFullCover"
 import OutboundLink from "/components/OutboundLink"
 import { ShadowedDiv } from "/components/Surfaces/ClickableCard"
 import { CardTitle } from "/components/Text/headers"
+import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
 
 const NaviItemBase = styled(ShadowedDiv)`
   width: 100%;
@@ -39,7 +39,7 @@ const FlagBackground = styled(FullCoverTextBackground)`
 `
 
 // @ts-ignore: not used for now
-const WaveOverlay = styled.div`
+const WaveOverlay = styled("div")`
   overflow: hidden;
   &:after {
     z-index: -1;
@@ -64,7 +64,7 @@ const WaveOverlay = styled.div`
   }
 `
 
-const InfoContainer = styled.div`
+const InfoContainer = styled("div")`
   display: flex;
   flex-direction: column;
   z-index: 1;
@@ -79,6 +79,10 @@ const InfoContainer = styled.div`
   }
 `
 
+const InfoTitle = styled(CardTitle)`
+  margin-top: 0;
+` as typeof CardTitle
+
 function UkraineInfo() {
   const t = useTranslator(CommonTranslations)
 
@@ -87,21 +91,18 @@ function UkraineInfo() {
       <NaviItemBase>
         <FlagBackground>
           <InfoContainer>
-            <CardTitle component="h3" variant="h3" style={{ marginTop: 0 }}>
+            <InfoTitle component="h3" variant="h3">
               {t("ukraineText")}
-            </CardTitle>
-            <OutboundLink eventLabel="custom: ukraina" to={t("ukraineLink")}>
+            </InfoTitle>
+            <OutboundLink href={t("ukraineLink")}>
               {t("ukraineLinkText")}
             </OutboundLink>
           </InfoContainer>
           <InfoContainer>
-            <CardTitle component="h3" variant="h3" style={{ marginTop: 0 }}>
+            <InfoTitle component="h3" variant="h3">
               {t("ukraineHyText")}
-            </CardTitle>
-            <OutboundLink
-              eventLabel="custom: ukrainaHy"
-              to={t("ukraineHyLink")}
-            >
+            </InfoTitle>
+            <OutboundLink href={t("ukraineHyLink")}>
               {t("ukraineHyLinkText")}
             </OutboundLink>
           </InfoContainer>

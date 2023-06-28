@@ -1,19 +1,20 @@
-import styled from "@emotion/styled"
 import { Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { RegularContainer as Container } from "/components/Container"
 import { CompletionListItem } from "/components/Home/Completions"
+import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
-import { useTranslator } from "/util/useTranslator"
+import { completionHasCourse } from "/util/guards"
 
 import { CompletionDetailedFieldsWithCourseFragment } from "/graphql/generated"
 
 export interface CompletionsProps {
-  completions: CompletionDetailedFieldsWithCourseFragment[]
+  completions?: CompletionDetailedFieldsWithCourseFragment[] | null
 }
 
-const Title = styled(Typography)<any>`
-  font-family: "Open Sans Condensed", sans-serif !important;
+const Title = styled(Typography)`
+  font-family: var(--header-font), sans-serif !important;
   margin-top: 7rem;
   margin-left: 2rem;
   margin-bottom: 1rem;
@@ -26,9 +27,13 @@ const Title = styled(Typography)<any>`
   @media (min-width: 960px) {
     font-size: 72px;
   }
+` as typeof Typography
+
+const CompletionsContainer = styled(Container)`
+  max-width: 900px;
 `
 
-export const Completions = ({ completions = [] }: CompletionsProps) => {
+export const Completions = ({ completions }: CompletionsProps) => {
   const t = useTranslator(ProfileTranslations)
 
   return (
@@ -37,15 +42,20 @@ export const Completions = ({ completions = [] }: CompletionsProps) => {
         {t("completionsTitle")}
       </Title>
 
-      <Container style={{ maxWidth: 900 }}>
-        {completions?.map((completion) => (
+      <CompletionsContainer>
+        {completions?.filter(completionHasCourse).map((completion) => (
           <CompletionListItem
-            key={`completion-${completion.id}`}
-            course={completion.course!}
+            key={completion.id}
+            course={completion.course}
             completion={completion}
           />
-        )) ?? <Typography>{t("nocompletionsText")}</Typography>}
-      </Container>
+        ))}
+        {!(completions?.length ?? 0) && (
+          <Typography sx={{ textAlign: "center" }} variant="body2">
+            {t("nocompletionsText")}
+          </Typography>
+        )}
+      </CompletionsContainer>
     </section>
   )
 }

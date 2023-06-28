@@ -1,24 +1,36 @@
-import Link from "next/link"
+import Image from "next/image"
 import { useRouter } from "next/router"
 
-import styled from "@emotion/styled"
-import {
-  faFacebook,
-  faTwitter,
-  faYoutube,
-} from "@fortawesome/free-brands-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import Facebook from "@fortawesome/fontawesome-free/svgs/brands/facebook.svg?icon"
+import Twitter from "@fortawesome/fontawesome-free/svgs/brands/twitter.svg?icon"
+import Youtube from "@fortawesome/fontawesome-free/svgs/brands/youtube.svg?icon"
+import { Link as MUILink, type EnhancedLink } from "@mui/material"
+import { css, styled } from "@mui/material/styles"
 
+import { useTranslator } from "/hooks/useTranslator"
+import uhLogo from "/public/images/logos/uh-logo.webp"
 import HomeTranslations from "/translations/home"
-import { useTranslator } from "/util/useTranslator"
 
-const StyledIcon = styled(FontAwesomeIcon)`
-  color: white;
+const IconBaseStyle = css`
+  fill: white;
   margin-bottom: 1rem;
   margin: 1rem;
+  font-size: 48px;
 `
 
-const FooterBar = styled.footer`
+const TwitterIcon = styled(Twitter)`
+  ${IconBaseStyle.styles};
+`
+
+const FacebookIcon = styled(Facebook)`
+  ${IconBaseStyle.styles};
+`
+
+const YoutubeIcon = styled(Youtube)`
+  ${IconBaseStyle.styles};
+`
+
+const FooterBar = styled("footer")`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -29,27 +41,27 @@ const FooterBar = styled.footer`
   text-align: center;
 `
 
-const SocialContainer = styled.div`
+const SocialContainer = styled("div")`
   padding: 1.5rem 0;
 `
 
-const EmailContainer = styled.div`
+const EmailContainer = styled("div")`
   padding-top: 2rem;
 `
 
-const MaintainedContainer = styled.div`
+const MaintainedContainer = styled("div")`
   a {
     color: white;
   }
 `
 
-const BottomRowContainer = styled.div`
+const BottomRowContainer = styled("div")`
   padding: 1.5rem 0;
   display: flex;
   flex-direction: row;
   padding: 2rem 0;
 `
-const PolicyContainer = styled.div`
+const PolicyContainer = styled("div")`
   :before {
     content: "|";
     margin-right: 0.5rem;
@@ -60,27 +72,17 @@ const PolicyContainer = styled.div`
   }
 `
 
-const LogoImage = styled.img`
-  height: 75;
-`
+const Link = MUILink as EnhancedLink
 
 function UniversityLogo() {
   return (
-    <picture>
-      <source
-        srcSet={require(`../static/images/uh-logo.png?webp`)}
-        type="image/webp"
-      />
-      <source
-        srcSet={require(`../static/images/uh-logo.png`)}
-        type="image/png"
-      />
-      <LogoImage
-        alt="Logo of the University of Helsinki"
-        src={require(`../static/images/uh-logo.png`)}
-        loading="lazy"
-      />
-    </picture>
+    <Image
+      src={uhLogo}
+      alt="Logo of the University of Helsinki"
+      placeholder="blur"
+      width={188}
+      height={75}
+    />
   )
 }
 
@@ -93,47 +95,49 @@ function Footer() {
       <EmailContainer>mooc@cs.helsinki.fi</EmailContainer>
       <UniversityLogo />
       <SocialContainer>
-        <a
+        <Link
           aria-label="MOOC.fi twitter"
           href="https://twitter.com/moocfi"
           target="_blank"
           rel="noopener noreferrer"
         >
-          <StyledIcon icon={faTwitter} size="3x" />
-        </a>
-        <a
+          <TwitterIcon />
+        </Link>
+        <Link
           aria-label="MOOC.fi Facebook"
           href="https://www.facebook.com/Moocfi"
           target="_blank"
           rel="noopener noreferrer"
         >
-          <StyledIcon icon={faFacebook} size="3x" />
-        </a>
-        <a
+          <FacebookIcon />
+        </Link>
+        <Link
           aria-label="MOOC.fi Youtube channel"
           href="https://www.youtube.com/channel/UCkHoQ5p9skFdyjrV3_tnUrA"
           target="_blank"
           rel="noopener noreferrer"
         >
-          <StyledIcon icon={faYoutube} size="3x" />
-        </a>
+          <YoutubeIcon />
+        </Link>
       </SocialContainer>
       <BottomRowContainer>
         <MaintainedContainer>
           This site is maintained by the{" "}
-          <a
+          <Link
             aria-label="Rage research group homepage"
             href="https://www.helsinki.fi/en/researchgroups/data-driven-education"
             target="_blank"
             rel="noopener noreferrer"
           >
             RAGE research group
-          </a>
+          </Link>
           .
         </MaintainedContainer>
         {locale === "fi" && (
           <PolicyContainer>
-            <Link href={t("privacyPolicyLink")}>{t("privacyPolicy")}</Link>
+            <Link href={t("privacyPolicyLink")} prefetch={false}>
+              {t("privacyPolicy")}
+            </Link>
           </PolicyContainer>
         )}
       </BottomRowContainer>

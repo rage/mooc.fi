@@ -1,7 +1,10 @@
-import { UserInputError } from "apollo-server-express"
-import { booleanArg, intArg, nullable, objectType, stringArg } from "nexus"
+import { uniqBy } from "lodash"
+import { booleanArg, intArg, list, nonNull, objectType, stringArg } from "nexus"
+
+import { Prisma } from "@prisma/client"
 
 import { isAdmin } from "../../accessControl"
+import { GraphQLForbiddenError, GraphQLUserInputError } from "../../lib/errors"
 import { filterNullFields } from "../../util"
 
 export const Course = objectType({
@@ -57,8 +60,10 @@ export const Course = objectType({
     t.model.upcoming_active_link()
     t.model.tier()
     t.model.handles_completions_for()
+    t.model.handles_settings_for()
     t.model.course_stats_email_id()
     t.model.course_stats_email()
+    t.model.language()
 
     t.string("description")
     t.string("instructions")
@@ -67,21 +72,19 @@ export const Course = objectType({
     t.list.nonNull.field("completions", {
       type: "Completion",
       args: {
-        user_id: nullable(stringArg()),
-        user_upstream_id: nullable(intArg()),
+        user_id: stringArg(),
+        user_upstream_id: intArg(),
       },
       authorize: isAdmin,
-      resolve: async (
-        parent,
-        { user_id: id, user_upstream_id: upstream_id },
-        ctx,
-      ) => {
-        if (!id && !upstream_id) {
-          throw new UserInputError("needs user_id or user_upstream_id", {
-            argumentName: ["user_id", "user_upstream_id"],
-          })
+      validate: (_, { user_id, user_upstream_id }) => {
+        if (!user_id && !user_upstream_id) {
+          throw new GraphQLUserInputError("needs user_id or user_upstream_id", [
+            "user_id",
+            "user_upstream_id",
+          ])
         }
-
+      },
+      resolve: async (parent, { user_id, user_upstream_id }, ctx) => {
         return ctx.prisma.course
           .findUnique({
             where: {
@@ -92,8 +95,8 @@ export const Course = objectType({
             where: {
               user: {
                 ...filterNullFields({
-                  id,
-                  upstream_id,
+                  id: user_id,
+                  upstream_id: user_upstream_id,
                 }),
               },
             },
@@ -107,20 +110,144 @@ export const Course = objectType({
       type: "Exercise",
       args: {
         includeDeleted: booleanArg({ default: false }),
+        includeNoPointsAwarded: booleanArg({ default: true }),
       },
-      resolve: async (parent, args, ctx) => {
-        const { includeDeleted } = args
+      resolve: async (
+        parent,
+        { includeDeleted, includeNoPointsAwarded },
+        ctx,
+      ) => {
+        const exerciseCondition: Prisma.ExerciseWhereInput = {}
+
+        if (!includeNoPointsAwarded) {
+          exerciseCondition.max_points = { gt: 0 }
+        }
+        if (!includeDeleted) {
+          exerciseCondition.OR = [{ deleted: false }, { deleted: null }]
+        }
 
         return ctx.prisma.course
           .findUnique({
             where: { id: parent.id },
           })
           .exercises({
-            ...(!includeDeleted && {
-              // same here: { deleted: { not: true } } will skip null
-              where: { OR: [{ deleted: false }, { deleted: null }] },
-            }),
+            where: exerciseCondition,
           })
+      },
+    })
+
+    t.nonNull.list.nonNull.field("tags", {
+      type: "Tag",
+      args: {
+        language: stringArg(),
+        types: list(nonNull(stringArg())),
+        search: stringArg(),
+        includeHidden: booleanArg(),
+      },
+      validate: (_, { includeHidden }, ctx) => {
+        if (includeHidden && !isAdmin({}, {}, ctx, {})) {
+          throw new GraphQLForbiddenError("no admin rights")
+        }
+      },
+      resolve: async (
+        parent,
+        { language, types, search, includeHidden },
+        ctx,
+      ) => {
+        const tagsWhere = {} as Prisma.TagWhereInput
+
+        if (language) {
+          tagsWhere.tag_translations = {
+            some: {
+              language,
+            },
+          }
+        }
+        if (types) {
+          tagsWhere.tag_types = {
+            some: {
+              name: { in: types },
+            },
+          }
+        }
+        if (search) {
+          tagsWhere.tag_translations = {
+            some: {
+              ...(language && { language }),
+              OR: [
+                {
+                  name: { contains: search, mode: "insensitive" },
+                },
+                {
+                  description: { contains: search, mode: "insensitive" },
+                },
+              ],
+            },
+          }
+        }
+        if (!includeHidden) {
+          tagsWhere.OR = [{ hidden: false }, { hidden: { not: true } }]
+        }
+
+        const res = await ctx.prisma.course.findUnique({
+          where: { id: parent.id },
+          include: {
+            tags: { where: tagsWhere },
+            handles_completions_for: {
+              include: {
+                tags: {
+                  where: tagsWhere,
+                },
+              },
+            },
+          },
+        })
+
+        const tags = uniqBy(
+          (res?.tags ?? []).concat(
+            res?.handles_completions_for?.flatMap((c) => c.tags ?? []) ?? [],
+          ),
+          "id",
+        )
+
+        return tags.map((t) => ({ ...t, language }))
+      },
+    })
+
+    t.nonNull.list.nonNull.field("sponsors", {
+      type: "Sponsor",
+      args: {
+        language: stringArg(),
+      },
+      resolve: async (parent, { language }, ctx) => {
+        const sponsors = await ctx.prisma.course
+          .findUnique({
+            where: {
+              id: parent.id,
+            },
+          })
+          .sponsors({
+            ...(language && {
+              where: {
+                sponsor: {
+                  translations: {
+                    some: {
+                      language,
+                    },
+                  },
+                },
+              },
+            }),
+            include: {
+              sponsor: true,
+            },
+          })
+
+        return (sponsors ?? []).flatMap(({ sponsor, order }) => ({
+          ...sponsor,
+          order,
+          language,
+        }))
       },
     })
   },

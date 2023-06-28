@@ -1,34 +1,35 @@
 {{- if .Values.email.enabled }}
+{{- $deploymentname := "background-emailer" -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: background-emailer
+  name: {{ $deploymentname }}
   labels:
     {{- include "helm.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app: background-emailer
+      app: {{ $deploymentname }}
       {{- include "helm.selectorLabels" . | nindent 6 }}
   replicas: 1
   template:
     metadata:
       labels:
-        app: background-emailer
+        app: {{ $deploymentname }}
         {{- include "helm.selectorLabels" . | nindent 8 }}
     spec:
       containers:
-        - name: background-emailer
+        - name: {{ $deploymentname }}
           image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
           command: ["sh", "-c", "npm run background-emailer"]
           imagePullPolicy: Always
           resources:
             limits:
-              memory: 512Mi
-              cpu: 100m
+              memory: 400Mi
+              cpu: 30m
             requests:
-              memory: 256Mi
-              cpu: 50m
+              memory: 150Mi
+              cpu: 10m
           envFrom:
           - secretRef:
               name: backend-secret
@@ -36,8 +37,12 @@ spec:
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: redis
+                  name: new-redis
                   key: redis-password
+            - name: CONNECTION_LIMIT
+              value: "1"
+            - name: APPLICATION_NAME
+              value: "{{ $deploymentname }}"
           volumeMounts:
             - name: google-cloud-storage-serviceaccount
               mountPath: "/etc/gcs"

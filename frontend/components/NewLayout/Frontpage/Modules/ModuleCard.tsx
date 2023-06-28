@@ -1,5 +1,5 @@
-import styled from "@emotion/styled"
 import { Button, Skeleton } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import {
   CardBody,
@@ -7,9 +7,12 @@ import {
   CardHeader,
   CardHeaderBackground,
   CardHeaderBackgroundSkeleton,
+  CardImageHeaderBackground,
   CardTitle,
   CardWrapper,
 } from "/components/NewLayout/Common/Card"
+import { useTranslator } from "/hooks/useTranslator"
+import HomeTranslations from "/translations/home"
 
 import { StudyModuleFieldsFragment } from "/graphql/generated"
 
@@ -17,40 +20,47 @@ interface ModuleCardProps {
   module: StudyModuleFieldsFragment
   hue?: number
   brightness?: number
+  variant?: "small" | "large"
 }
 
 const ModuleButton = styled(Button)<{ hue?: number; brightness?: number }>`
-  filter: hue-rotate(${(props) => props.hue ?? 0}deg)
-    brightness(${(props) => props.brightness ?? 1});
+  /*filter: hue-rotate(${(props) => props.hue ?? 0}deg)
+    brightness(${(props) => props.brightness ?? 1});*/
 `
 
-const CardActionArea = styled.div`
+const CardActions = styled("div")`
   display: flex;
   justify-content: flex-end;
 `
 
 export const ModuleCard = ({
-  module: { name, image, description },
-  hue,
-  brightness,
+  module: { name, slug, image, description },
 }: ModuleCardProps) => {
+  const t = useTranslator(HomeTranslations)
+
   return (
     <CardWrapper>
       <CardHeader>
-        <CardTitle>{name}</CardTitle>
-        <CardHeaderBackground
-          hue={hue}
-          brightness={brightness}
-          image={image ?? ""}
-        />
+        <CardTitle variant="h4" component="h2">
+          {name}
+        </CardTitle>
+        {image ? (
+          <CardImageHeaderBackground
+            src={require(`/public/images/modules/${image}`)}
+            alt=""
+            placeholder="blur"
+          />
+        ) : (
+          <CardHeaderBackground />
+        )}
       </CardHeader>
       <CardBody>
         <CardDescription>{description}</CardDescription>
-        <CardActionArea>
-          <ModuleButton hue={hue} brightness={brightness}>
-            Kokonaisuuden tiedot
+        <CardActions>
+          <ModuleButton href={`/_new/study-modules/#${slug}`}>
+            {t("moduleInformation")}
           </ModuleButton>
-        </CardActionArea>
+        </CardActions>
       </CardBody>
     </CardWrapper>
   )
@@ -69,12 +79,20 @@ export const ModuleCardSkeleton = () => {
           <Skeleton />
           <Skeleton width="30%" />
         </CardDescription>
-        <CardActionArea>
-          <ModuleButton disabled={true} style={{ width: "40%" }}>
+        <CardActions>
+          <ModuleButton disabled style={{ width: "40%" }}>
             <Skeleton width="100%" />
           </ModuleButton>
-        </CardActionArea>
+        </CardActions>
       </CardBody>
     </CardWrapper>
   )
 }
+
+/*const SmallModuleCard = ({
+  module: { name, slug, image, description },
+  hue,
+  brightness,
+}: ModuleCardProps) => {
+
+}*/

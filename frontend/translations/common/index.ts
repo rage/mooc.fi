@@ -1,15 +1,15 @@
-// generated Tue Apr 13 2021 16:34:47 GMT+0300 (GMT+03:00)
+// generated Mon Jun 26 2023 18:20:38 GMT+0300 (Itä-Euroopan kesäaika)
 
-import en from "./en.json"
-import fi from "./fi.json"
-import se from "./se.json"
+import en from "./en"
+import fi from "./fi"
+import se from "./se"
 import { TranslationDictionary } from "/translations"
 
-export type CommonTranslations = typeof en & typeof fi & typeof se
-const CommonTranslations: TranslationDictionary<CommonTranslations> = {
-  en,
-  fi,
-  se,
-}
+export type Common = typeof en | typeof fi | typeof se
+
+const CommonTranslations = { en, fi, se } as TranslationDictionary<
+  Common,
+  { en: typeof en; fi: typeof fi; se: typeof se }
+>
 
 export default CommonTranslations

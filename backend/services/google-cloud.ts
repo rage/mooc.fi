@@ -88,7 +88,7 @@ export const uploadStorageImage = async ({
 export const deleteStorageImage = async (
   filename: string,
 ): Promise<boolean> => {
-  if (!filename || filename === "") {
+  if (!filename) {
     return Promise.resolve(false)
   }
 
@@ -101,5 +101,8 @@ export const deleteStorageImage = async (
   return file
     .delete()
     .then(() => true)
-    .catch((err: any) => (console.error("image delete error", err), false))
+    .catch((err: any) => {
+      console.error("image delete error", err)
+      return false
+    })
 }

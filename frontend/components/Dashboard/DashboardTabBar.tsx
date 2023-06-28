@@ -1,17 +1,15 @@
-import { ChangeEvent, useState } from "react"
+import { SyntheticEvent, useCallback, useState } from "react"
 
-import { useRouter } from "next/router"
+import Router from "next/router"
 
-import styled from "@emotion/styled"
 import DashboardIcon from "@mui/icons-material/Dashboard"
 import EditIcon from "@mui/icons-material/Edit"
 import ScatterplotIcon from "@mui/icons-material/ScatterPlot"
 import ViewListIcon from "@mui/icons-material/ViewList"
-import AppBar from "@mui/material/AppBar"
-import Tab from "@mui/material/Tab"
-import Tabs from "@mui/material/Tabs"
+import { AppBar, Tab, Tabs } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
-const TabBarContainer = styled.div`
+const TabBarContainer = styled("div")`
   flex-grow: 1;
   background-color: inherit;
 `
@@ -20,18 +18,19 @@ const StyledTabs = styled(Tabs)`
   box-shadow: 0 0 0 0;
 `
 
-function a11yProps(index: any) {
-  return {
-    id: `nav-tab-${index}`,
-    "aria-controls": `nav-tabpanel-${index}`,
-  }
-}
-
-const TabContainer = styled.div`
+const TabContainer = styled("div")`
   width: 100%;
   max-width: 700px;
   margin: 0 auto;
 `
+
+const TabBar = styled(AppBar)`
+  box-shadow: 0 0 0 0;
+`
+
+const StyledTab = styled(Tab)`
+  margin-top: 1rem;
+` as typeof Tab
 
 interface DashboardTabsProps {
   slug: string
@@ -40,7 +39,7 @@ interface DashboardTabsProps {
 
 interface Route {
   label: string
-  icon: JSX.Element
+  icon: React.JSX.Element
   path: string
 }
 
@@ -67,40 +66,45 @@ const routes: Route[] = [
   },
 ]
 
-export default function DashboardTabBar(props: DashboardTabsProps) {
+function DashboardTabBar(props: DashboardTabsProps) {
   const { slug, selectedValue } = props
   const [value, setValue] = useState(selectedValue)
-  const router = useRouter()
 
-  function handleChange(_: ChangeEvent<{}>, newValue: number) {
-    setValue(newValue)
-    router.push(`/courses/${slug}${routes[newValue].path}`)
-  }
+  const handleChange = useCallback(
+    (_: SyntheticEvent<Element, Event>, newValue: number) => {
+      setValue(newValue)
+      Router.push(`/courses/${slug}${routes[newValue].path}`)
+    },
+    [slug],
+  )
 
   return (
     <TabBarContainer>
-      <AppBar position="static" style={{ boxShadow: "0 0 0 0" }}>
+      <TabBar position="static">
         <TabContainer>
           <StyledTabs
             variant="fullWidth"
             value={value}
             onChange={handleChange}
+            textColor="inherit"
             indicatorColor="secondary"
             aria-label="course dashboard navi"
           >
             {routes.map(({ label, icon }, index) => (
-              <Tab
-                key={index}
+              <StyledTab
+                key={label}
                 value={index}
                 label={label}
                 icon={icon}
-                style={{ marginTop: "1rem", color: "unset" }}
-                {...a11yProps(index)}
+                id={`nav-tab-${index}`}
+                aria-controls={`nav-tabpanel-${index}`}
               />
             ))}
           </StyledTabs>
         </TabContainer>
-      </AppBar>
+      </TabBar>
     </TabBarContainer>
   )
 }
+
+export default DashboardTabBar

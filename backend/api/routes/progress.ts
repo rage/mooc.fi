@@ -16,12 +16,13 @@ interface ExerciseCompletionResult {
   section: number
   max_points: number
   completed: boolean
+  attempted: boolean
   quizzes_id: string
 }
 
 const isId = (idOrSlug: string) =>
-  Boolean(idOrSlug.match(/^[0-9a-fA-F]{32}$/)) ||
-  Boolean(idOrSlug.match(/^[0-9a-fA-F-]{36}$/))
+  Boolean(RegExp(/^[0-9a-fA-F]{32}$/).exec(idOrSlug)) ||
+  Boolean(RegExp(/^[0-9a-fA-F-]{36}$/).exec(idOrSlug))
 
 export class ProgressController extends Controller {
   constructor(override readonly ctx: ApiContext) {
@@ -65,6 +66,7 @@ export class ProgressController extends Controller {
         "section",
         "max_points",
         "completed",
+        knex.raw("coalesce(attempted, false) as attempted"),
         "custom_id as quizzes_id",
       )
       .distinctOn("ec.exercise_id")
@@ -77,16 +79,11 @@ export class ProgressController extends Controller {
         { column: "ec.updated_at", order: "desc" },
       ])
 
-    const resObject = (exercise_completions ?? []).reduce(
-      (acc, curr) => ({
-        ...acc,
-        [curr.exercise_id]: {
-          ...curr,
-          // tier: baiCourseTiers[curr.quizzes_id],
-        },
-      }),
-      {},
-    )
+    const resObject: Record<string, ExerciseCompletionResult> = {}
+
+    for (const completion of exercise_completions) {
+      resObject[completion.exercise_id] = completion
+    }
 
     return res.json({
       data: resObject,
@@ -94,7 +91,7 @@ export class ProgressController extends Controller {
   }
 
   progressV2 = async (
-    req: Request<{ idOrSlug: string }, {}, {}, { deleted?: string }>,
+    req: Request<{ idOrSlug: string }, any, any, { deleted?: string }>,
     res: Response,
   ) => {
     const { knex } = this.ctx
@@ -134,6 +131,7 @@ export class ProgressController extends Controller {
         "section",
         "max_points",
         "completed",
+        knex.raw("coalesce(attempted, false) as attempted"),
         "custom_id as quizzes_id",
       )
       .distinctOn("ec.exercise_id")
@@ -158,16 +156,13 @@ export class ProgressController extends Controller {
       .andWhere("user_id", user.id)
       .orderBy("created_at", "asc")
 
-    const exercise_completions_map = (exercise_completions ?? []).reduce(
-      (acc, curr) => ({
-        ...acc,
-        [curr.exercise_id]: {
-          ...curr,
-          // tier: baiCourseTiers[curr.quizzes_id],
-        },
-      }),
-      {},
-    )
+    const exercise_completions_map: Record<string, ExerciseCompletionResult> =
+      {}
+
+    for (const exerciseCompletion of exercise_completions) {
+      exercise_completions_map[exerciseCompletion.exercise_id] =
+        exerciseCompletion
+    }
 
     return res.json({
       data: {
@@ -260,7 +255,7 @@ export class ProgressController extends Controller {
 
     const { user } = getUserResult.value
 
-    const course = await this.getCourse({
+    const course = await prisma.course.findUniqueOrAlias({
       where: { slug },
     })
 
@@ -316,37 +311,39 @@ export class ProgressController extends Controller {
     }
 
     logger.info("Querying existing progresses and completions")
-    const beforeParentProgresses = await prisma.course
-      .findUnique({
-        where: {
-          id: BAIParentCourse,
-        },
-      })
-      .user_course_progresses({
-        distinct: ["user_id"],
-        orderBy: {
-          created_at: "asc",
-        },
-        include: {
-          user: true,
-        },
-      })
+    const beforeParentProgresses =
+      (await prisma.course
+        .findUnique({
+          where: {
+            id: BAIParentCourse,
+          },
+        })
+        .user_course_progresses({
+          distinct: ["user_id"],
+          orderBy: {
+            created_at: "asc",
+          },
+          include: {
+            user: true,
+          },
+        })) ?? []
 
-    const beforeCompletions = await prisma.course
-      .findUnique({
-        where: {
-          id: BAIParentCourse,
-        },
-      })
-      .completions({
-        distinct: ["user_id"],
-        orderBy: {
-          created_at: "asc",
-        },
-        include: {
-          user: true,
-        },
-      })
+    const beforeCompletions =
+      (await prisma.course
+        .findUnique({
+          where: {
+            id: BAIParentCourse,
+          },
+        })
+        .completions({
+          distinct: ["user_id"],
+          orderBy: {
+            created_at: "asc",
+          },
+          include: {
+            user: true,
+          },
+        })) ?? []
 
     const getUsers = (arr: Array<object & { user: User | null }>) =>
       arr?.map((e) => e.user).filter(isDefined) ?? []
@@ -389,7 +386,11 @@ export class ProgressController extends Controller {
       const updated = after.filter((entry) => {
         const beforeEntry = beforeMap[entry.id]?.[0]
 
-        return beforeEntry && entry.updated_at! > beforeEntry.updated_at!
+        return (
+          beforeEntry &&
+          (entry.updated_at ?? new Date(0)) >
+            (beforeEntry.updated_at ?? new Date(0))
+        )
       })
       const updatedUsers = getUsers(updated)
 
@@ -419,19 +420,20 @@ export class ProgressController extends Controller {
       advancedBAICourse,
     ]) {
       logger.info(`Handling ${course.slug}`)
-      const userCourseProgresses = await prisma.course
-        .findUnique({
-          where: {
-            id: course.id,
-          },
-        })
-        .user_course_progresses({
-          distinct: ["user_id"],
-          orderBy: { created_at: "asc" },
-          include: {
-            user: true,
-          },
-        })
+      const userCourseProgresses =
+        (await prisma.course
+          .findUnique({
+            where: {
+              id: course.id,
+            },
+          })
+          .user_course_progresses({
+            distinct: ["user_id"],
+            orderBy: { created_at: "asc" },
+            include: {
+              user: true,
+            },
+          })) ?? []
 
       if (userCourseProgresses.length) {
         logger.info(
@@ -480,37 +482,39 @@ export class ProgressController extends Controller {
     }
 
     logger.info("Querying updated progresses and completions")
-    const afterParentProgresses = await prisma.course
-      .findUnique({
-        where: {
-          id: BAIParentCourse,
-        },
-      })
-      .user_course_progresses({
-        distinct: ["user_id"],
-        orderBy: {
-          created_at: "asc",
-        },
-        include: {
-          user: true,
-        },
-      })
+    const afterParentProgresses =
+      (await prisma.course
+        .findUnique({
+          where: {
+            id: BAIParentCourse,
+          },
+        })
+        .user_course_progresses({
+          distinct: ["user_id"],
+          orderBy: {
+            created_at: "asc",
+          },
+          include: {
+            user: true,
+          },
+        })) ?? []
 
-    const afterCompletions = await prisma.course
-      .findUnique({
-        where: {
-          id: BAIParentCourse,
-        },
-      })
-      .completions({
-        distinct: ["user_id"],
-        orderBy: {
-          created_at: "asc",
-        },
-        include: {
-          user: true,
-        },
-      })
+    const afterCompletions =
+      (await prisma.course
+        .findUnique({
+          where: {
+            id: BAIParentCourse,
+          },
+        })
+        .completions({
+          distinct: ["user_id"],
+          orderBy: {
+            created_at: "asc",
+          },
+          include: {
+            user: true,
+          },
+        })) ?? []
 
     const result = {
       progresses: {
@@ -522,7 +526,7 @@ export class ProgressController extends Controller {
       },
     }
 
-    logger.info(`Done! Result: ${JSON.stringify(result, null, 2)}`)
+    logger.info(`Done!`)
 
     return res.status(200).json({
       message: "ok",

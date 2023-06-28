@@ -1,115 +1,45 @@
-import { useState } from "react"
+import { useMediaQuery } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
-import { sortBy } from "lodash"
+import { useUserPointsSummaryContext } from "./contexts"
+import { useCollapseContext } from "./contexts/CollapseContext"
+import { CourseEntry, CourseEntrySkeleton } from "./Course"
+import CourseSelectList from "./CourseSelectList"
 
-import styled from "@emotion/styled"
-import BuildIcon from "@mui/icons-material/Build"
-import { Button, Dialog, Paper } from "@mui/material"
+const UserPointsSummaryContainer = styled("div")(
+  ({ theme }) => `
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
 
-import CourseEntry from "./CourseEntry"
-import CollapseButton from "/components/Buttons/CollapseButton"
-import {
-  ActionType,
-  CollapsablePart,
-  useCollapseContext,
-} from "/components/Dashboard/Users/Summary/CollapseContext"
-import RawView from "/components/Dashboard/Users/Summary/RawView"
-import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
-
-import {
-  EditorCoursesQueryVariables,
-  UserCourseSummaryCoreFieldsFragment,
-} from "/graphql/generated"
-
-const DataPlaceholder = styled.div`
-  margin-bottom: 0.5rem;
-  padding: 0.5rem;
-`
-
-interface UserPointsSummaryProps {
-  data?: UserCourseSummaryCoreFieldsFragment[]
-  search?: EditorCoursesQueryVariables["search"]
-}
-
-export default function UserPointsSummary({
-  data,
-  search,
-}: UserPointsSummaryProps) {
-  const t = useTranslator(CommonTranslations)
-  const { state, dispatch } = useCollapseContext()
-  const [rawViewOpen, setRawViewOpen] = useState(false)
-
-  if (!data) {
-    return (
-      <>
-        <CourseEntry key="skeleton-course-1" />
-        <CourseEntry key="skeleton-course-2" />
-        <CourseEntry key="skeleton-course-3" />
-      </>
-    )
+  ${theme.breakpoints.down("lg")} {
+    flex-direction: column;
   }
+`,
+)
 
-  // TODO: add search from other fields?
-  const filteredData =
-    search && search !== ""
-      ? data.filter((stats) =>
-          stats?.course?.name
-            .trim()
-            .toLocaleLowerCase()
-            .includes(search.toLocaleLowerCase()),
-        )
-      : data
-  const coursesClosed = !Object.values(state).some((s) => s.open)
+function UserPointsSummary() {
+  const { loading } = useUserPointsSummaryContext()
+  const { state } = useCollapseContext()
+  const isNarrow = useMediaQuery("(max-width: 800px)")
 
   return (
-    <>
-      <Paper
-        style={{
-          marginBottom: "0.5rem",
-          display: "flex",
-          justifyContent: "flex-end",
-          flexDirection: "row",
-          gap: "0.5rem",
-          padding: "0.5rem",
-        }}
-      >
-        <Button
-          variant="outlined"
-          startIcon={<BuildIcon />}
-          onClick={() => setRawViewOpen(!rawViewOpen)}
-        >
-          Raw view
-        </Button>
-        <CollapseButton
-          onClick={() =>
-            dispatch({
-              type: coursesClosed ? ActionType.OPEN_ALL : ActionType.CLOSE_ALL,
-              collapsable: CollapsablePart.COURSE,
-            })
-          }
-          open={!coursesClosed}
-          label={coursesClosed ? t("showAll") : t("hideAll")}
-        />
-      </Paper>
-      {filteredData.length === 0 ? (
-        <DataPlaceholder>{t("noResults")}</DataPlaceholder>
-      ) : null}
-      {sortBy(filteredData, (stats) => stats?.course?.name).map(
-        (entry, index) => (
-          <CourseEntry key={entry.course?.id ?? index} data={entry} />
-        ),
+    <UserPointsSummaryContainer>
+      {!isNarrow && <CourseSelectList />}
+      {loading || state.loading ? (
+        <CourseEntrySkeleton />
+      ) : (
+        /*data?.length === 0 ? (
+        <Typography variant="h3" margin="0.5rem" p="0.5rem">
+          {t("noResults")}
+        </Typography>
+      ) : */ <CourseEntry />
       )}
-      <Dialog
-        fullWidth
-        maxWidth="md"
-        open={rawViewOpen}
-        onClose={() => setRawViewOpen(false)}
-      >
-        <div style={{ overflowY: "hidden" }}>
-          <RawView value={JSON.stringify(data, undefined, 2)} />
-        </div>
-      </Dialog>
-    </>
+      {/*filteredData.map((entry, index) => (
+            <CourseEntry key={entry.course?.id ?? index} data={entry} />
+          ))*/}
+    </UserPointsSummaryContainer>
   )
 }
+
+export default UserPointsSummary

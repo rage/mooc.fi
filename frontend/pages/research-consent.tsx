@@ -3,15 +3,15 @@ import { useEffect, useState } from "react"
 import Router from "next/router"
 
 import { useMutation, useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import { CircularProgress, Paper } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import ResearchConsent from "/components/Dashboard/ResearchConsent"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { useTranslator } from "/hooks/useTranslator"
 import withSignedIn from "/lib/with-signed-in"
-import SignupTranslations from "/translations/sign-up"
-import { useTranslator } from "/util/useTranslator"
+import SignUpTranslations from "/translations/sign-up"
 
 import {
   CurrentUserDetailedDocument,
@@ -27,19 +27,19 @@ const StyledPaper = styled(Paper)`
   margin-top: 2em;
   margin-bottom: 2em;
 `
-const Row = styled.div`
+const Row = styled("div")`
   margin-bottom: 1.5rem;
 `
-const Form = styled.form`
+const Form = styled("form")`
   width: 100%;
 `
 
-const InfoBox = styled.div`
+const InfoBox = styled("div")`
   margin-bottom: 2rem;
 `
 
 function useResearchConsent() {
-  const t = useTranslator(SignupTranslations)
+  const t = useTranslator(SignUpTranslations)
 
   useBreadcrumbs([
     {
@@ -96,7 +96,7 @@ function useResearchConsent() {
 }
 
 const ResearchConsentPage = () => {
-  const t = useTranslator(SignupTranslations)
+  const t = useTranslator(SignUpTranslations)
 
   const { loading, research, handleInput, onSubmit, formError, submitting } =
     useResearchConsent()

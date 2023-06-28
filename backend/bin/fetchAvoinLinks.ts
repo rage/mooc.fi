@@ -5,9 +5,9 @@ import { DateTime } from "luxon"
 import { OpenUniversityRegistrationLink } from "@prisma/client"
 
 import { AVOIN_COURSE_URL, AVOIN_TOKEN } from "../config"
+import { AvoinError } from "../lib/errors"
+import sentryLogger from "../lib/logger"
 import prisma from "../prisma"
-import { AvoinError } from "./lib/errors"
-import sentryLogger from "./lib/logger"
 
 const logger = sentryLogger({ service: "fetch-avoin-links" })
 
@@ -43,7 +43,7 @@ const processLink = async (p: OpenUniversityRegistrationLink) => {
     })
     .filter((link) => Boolean(link.link))
 
-  let openLinks = alternatives.filter(
+  const openLinks = alternatives.filter(
     (o) => o.startTime < now && o.stopDate > now,
   )
 
@@ -90,6 +90,7 @@ const fetch = async () => {
     }
   }
   logger.info("Done")
+  await prisma.$disconnect()
   process.exit(0)
 }
 
@@ -122,5 +123,5 @@ fetch().catch((error) => {
   } else {
     logger.error(new AvoinError("Error fetching", {}, error))
   }
-  throw error
+  process.exit(1)
 })

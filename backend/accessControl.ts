@@ -1,21 +1,20 @@
+import { FieldAuthorizeResolver } from "nexus/dist/plugins/fieldAuthorizePlugin"
+
 import { Organization, User } from "@prisma/client"
 
 import { Context } from "./context"
 
 export enum Role {
-  USER,
-  ADMIN,
-  ORGANIZATION, //for automated scripts, not for accounts
-  VISITOR,
+  VISITOR = 0,
+  USER = 1,
+  ADMIN = 2,
+  ORGANIZATION = 3, //for automated scripts, not for accounts
 }
 // TODO: caching?
 
-type AuthorizeFunction = (
-  root: any,
-  args: any,
-  ctx: Context,
-  info: any,
-) => boolean | Promise<boolean>
+type AuthorizeFunction = <TypeName extends string, FieldName extends string>(
+  ...args: Parameters<FieldAuthorizeResolver<TypeName, FieldName>>
+) => ReturnType<FieldAuthorizeResolver<TypeName, FieldName>>
 
 export const isAdmin: AuthorizeFunction = (
   _root,
@@ -46,6 +45,16 @@ export const isVisitor: AuthorizeFunction = (
   _info,
 ): ctx is Context & { user: undefined; organization: undefined } =>
   ctx.role === Role.VISITOR
+export const isSameOrganization: FieldAuthorizeResolver<
+  "Organization",
+  string
+> = async (root, args, ctx, info) => {
+  if (!isOrganization(root, args, ctx, info) || !ctx.organization?.id) {
+    return false
+  }
+  return root.id === ctx.organization.id
+}
+
 export const isCourseOwner =
   (course_id: string): AuthorizeFunction =>
   async (root, args, ctx, info) => {

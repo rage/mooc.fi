@@ -1,17 +1,15 @@
 import { ClickableDiv } from "components/Surfaces/ClickableCard"
 import { CardTitle } from "components/Text/headers"
-import Link from "next/link"
 
-import styled from "@emotion/styled"
-import { Button } from "@mui/material"
-import Grid from "@mui/material/Grid"
+import { Button, EnhancedLink, Grid, Link } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
+import ContainedImage from "../Images/ContainedImage"
 import {
   BackgroundImage,
   FullCoverTextBackground,
 } from "/components/Images/CardBackgroundFullCover"
 import { CardText } from "/components/Text/paragraphs"
-import { mime } from "/util/imageUtils"
 
 const NaviItemBase = styled(ClickableDiv)`
   width: 100%;
@@ -22,18 +20,20 @@ const NaviItemBase = styled(ClickableDiv)`
   align-items: flex-start;
 `
 
-const StyledLink = styled.a`
+const StyledLink = styled(Link)`
   color: black;
   text-decoration: none;
-`
+` as EnhancedLink
 
 type NaviItem = {
   title?: string
   text: string
   linkText: string
   img?: string
+  imgDimensions?: { width: number; height: number }
   link: string
   titleImg?: string
+  titleImgDimensions?: { width: number; height: number }
 }
 
 interface NaviCardProps {
@@ -42,14 +42,39 @@ interface NaviCardProps {
 
 const Background = styled(FullCoverTextBackground)`
   width: 100%;
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
+  grid-template-areas: "title text button";
+  grid-gap: 1rem;
   align-items: center;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-areas: "title title title" "text text button";
+  }
 `
 
-const TitleImage = styled.img`
-  width: 70%;
-  max-width: 20vh;
+const TitleImageContainer = styled("div")`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-area: title;
+`
+
+const WideNaviCardTitle = styled(CardTitle)`
+  max-width: 70%;
+  grid-area: title;
+` as typeof CardTitle
+
+const WideNaviCardText = styled(CardText)`
+  max-width: 70%;
+  grid-area: text;
+`
+
+const WideNaviCardbutton = styled(Button)`
+  grid-area: button;
+  max-height: 37px;
 `
 
 function WideNaviCard(props: NaviCardProps) {
@@ -57,72 +82,48 @@ function WideNaviCard(props: NaviCardProps) {
 
   return (
     <Grid item xs={12}>
-      <Link href={item.link} passHref prefetch={false}>
-        <StyledLink aria-label={item.linkText}>
-          <NaviItemBase>
-            {item.img && (
-              <picture>
-                <source
-                  srcSet={require(`../../static/images/${item.img}?webp`)}
-                  type="image/webp"
+      <StyledLink href={item.link} prefetch={false} aria-label={item.linkText}>
+        <NaviItemBase>
+          {item.img && (
+            <BackgroundImage
+              src={require(`/public/images/navi/${item.img}`)}
+              placeholder="blur"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              alt=""
+              aria-hidden
+              {...(item.imgDimensions ?? { fill: true })}
+            />
+          )}
+          <Background>
+            {item.titleImg ? (
+              <TitleImageContainer>
+                <ContainedImage
+                  src={require(`/public/images/navi/${item.titleImg}`)}
+                  placeholder="blur"
+                  alt={item.title ?? ""}
+                  {...(item.titleImgDimensions ?? {
+                    sizes:
+                      "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
+                    fill: true,
+                  })}
                 />
-                <source
-                  srcSet={require(`../../static/images/${item.img}`)}
-                  type={mime(item.img)}
-                />
-                <BackgroundImage
-                  src={require(`../../static/images/${item.img}`)}
-                  loading="lazy"
-                  alt=""
-                />
-              </picture>
+              </TitleImageContainer>
+            ) : (
+              <WideNaviCardTitle component="h2" variant="h3" align="left">
+                {item.title}
+              </WideNaviCardTitle>
             )}
-            <Background>
-              <CardTitle
-                component="h2"
-                variant="h3"
-                align="left"
-                style={{ maxWidth: "70%" }}
-              >
-                {item.titleImg ? (
-                  <picture>
-                    <source
-                      srcSet={require(`../../static/images/${item.titleImg}?webp`)}
-                      type="image/webp"
-                    />
-                    <source
-                      srcSet={require(`../../static/images/${item.titleImg}`)}
-                      type={mime(item.titleImg)}
-                    />
-                    <TitleImage
-                      src={require(`../../static/images/${item.titleImg}`)}
-                      alt={item.title}
-                    />
-                  </picture>
-                ) : (
-                  item.title
-                )}
-              </CardTitle>
-              <CardText
-                component="p"
-                variant="body1"
-                align="left"
-                style={{ minWidth: "70%", flex: 1 }}
-              >
-                {item.text}
-              </CardText>
-              {item.linkText && (
-                <Button
-                  aria-disabled="true"
-                  style={{ width: "20%", maxHeight: "37px" }}
-                >
-                  {item.linkText}
-                </Button>
-              )}
-            </Background>
-          </NaviItemBase>
-        </StyledLink>
-      </Link>
+            <WideNaviCardText paragraph variant="body1" align="left">
+              {item.text}
+            </WideNaviCardText>
+            {item.linkText && (
+              <WideNaviCardbutton aria-disabled>
+                {item.linkText}
+              </WideNaviCardbutton>
+            )}
+          </Background>
+        </NaviItemBase>
+      </StyledLink>
     </Grid>
   )
 }

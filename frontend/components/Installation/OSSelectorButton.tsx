@@ -1,13 +1,10 @@
-import { useContext } from "react"
+import React, { useCallback, useContext } from "react"
 
-import styled from "@emotion/styled"
-import { IconProp } from "@fortawesome/fontawesome-svg-core"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import ButtonBase from "@mui/material/ButtonBase"
-import Typography from "@mui/material/Typography"
+import { ButtonBase, Typography, type SvgIconProps } from "@mui/material"
+import { css, styled } from "@mui/material/styles"
 
 import UserOSContext from "/contexts/UserOSContext"
-import { userOsType } from "/util/getUserOS"
+import { UserOSType } from "/util/getUserOS"
 
 interface ButtonProps {
   selected: boolean
@@ -20,28 +17,34 @@ const StyledButtonBase = styled(ButtonBase)<ButtonProps>`
   ${(props) => props.selected && `border-bottom: 4px solid #00D2FF;`}
   padding: 1 em;
 `
-const StyledIcon = styled(FontAwesomeIcon)`
+
+const iconStyle = css`
+  font-size: max(2rem, 4.5vw);
+  width: max(2rem, 4.5vw);
   margin-top: 0.5rem;
   margin-left: 0.7rem;
   margin-right: 0.7rem;
   margin-bottom: 0.25rem;
 `
 
-const StyledTypography = styled(Typography)<any>`
+const StyledTypography = styled(Typography)`
   margin-bottom: 0.3rem;
 `
+
 interface OSSelectorButtonProps {
-  OSName: userOsType
-  Icon: IconProp
+  OSName: UserOSType
+  Icon: React.FunctionComponent<SvgIconProps & { css?: typeof iconStyle }>
   active: boolean
 }
 
 const OSSelectorButton = (props: OSSelectorButtonProps) => {
   const { OSName, Icon, active } = props
   const { changeOS } = useContext(UserOSContext)
+  const onClick = useCallback(() => changeOS(OSName), [changeOS, OSName])
+
   return (
-    <StyledButtonBase onClick={() => changeOS(OSName)} selected={active}>
-      <StyledIcon icon={Icon} size="4x" />
+    <StyledButtonBase onClick={onClick} selected={active}>
+      <Icon css={iconStyle} />
       <StyledTypography>{OSName}</StyledTypography>
     </StyledButtonBase>
   )

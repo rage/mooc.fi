@@ -1,12 +1,13 @@
 import { Grid } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import NaviCard from "./NaviCard"
 import Container from "/components/Container"
 import UkraineInfo from "/components/Home/UkraineInfo"
 import WideNaviCard from "/components/Home/WideNaviCard"
 import PartnerDivider from "/components/PartnerDivider"
+import { useTranslator } from "/hooks/useTranslator"
 import NaviTranslations from "/translations/navi"
-import { useTranslator } from "/util/useTranslator"
 
 type NaviItem = {
   title: string
@@ -16,28 +17,32 @@ type NaviItem = {
   link: string
 }
 
+const NaviCardGrid = styled(Grid)`
+  margin-bottom: 3em;
+`
+
 function NaviCardList() {
   const t = useTranslator(NaviTranslations)
 
-  const items = t("naviItems") as NaviItem[]
-  const customItems = t("customNaviItems") as NaviItem[]
+  const items = t("naviItems") as readonly NaviItem[]
+  const customItems = t("customNaviItems") as readonly NaviItem[]
 
   return (
     <Container>
-      <Grid container spacing={3} style={{ marginBottom: "3em" }}>
+      <NaviCardGrid container spacing={3}>
         <UkraineInfo />
         {items.map((item) => (
           <NaviCard
-            key={`navi-${item.title}`}
+            key={item.title ?? item.text}
             item={item}
             count={items.length}
           />
         ))}
         {customItems.length ? <PartnerDivider /> : null}
         {customItems.map((item) => (
-          <WideNaviCard key={`navi-${item.title}`} item={item} />
+          <WideNaviCard key={item.title ?? item.text} item={item} />
         ))}
-      </Grid>
+      </NaviCardGrid>
     </Container>
   )
 }

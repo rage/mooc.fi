@@ -1,4 +1,3 @@
-import { UserInputError } from "apollo-server-express"
 import {
   extendType,
   idArg,
@@ -9,6 +8,7 @@ import {
 } from "nexus"
 
 import { isAdmin } from "../accessControl"
+import { GraphQLUserInputError } from "../lib/errors"
 
 export const EmailTemplate = objectType({
   name: "EmailTemplate",
@@ -26,6 +26,7 @@ export const EmailTemplate = objectType({
     t.model.triggered_automatically_by_course_id()
     t.model.exercise_completions_threshold()
     t.model.points_threshold()
+    t.model.course_instance_language()
     t.model.course_stats_subscriptions()
     t.model.joined_organizations()
   },
@@ -34,7 +35,7 @@ export const EmailTemplate = objectType({
 export const EmailTemplateQueries = extendType({
   type: "Query",
   definition(t) {
-    t.nullable.field("email_template", {
+    t.field("email_template", {
       type: "EmailTemplate",
       args: {
         id: nonNull(idArg()),
@@ -70,6 +71,7 @@ export const EmailTemplateMutations = extendType({
         triggered_automatically_by_course_id: stringArg(),
         exercise_completions_threshold: intArg(),
         points_threshold: intArg(),
+        course_instance_language: stringArg(),
       },
       authorize: isAdmin,
       resolve: (_, args, ctx) => {
@@ -82,11 +84,10 @@ export const EmailTemplateMutations = extendType({
           triggered_automatically_by_course_id,
           exercise_completions_threshold,
           points_threshold,
+          course_instance_language,
         } = args
 
-        if (name === "") {
-          throw new UserInputError("name is empty", { argumentName: "name" })
-        }
+        if (name == "") throw new GraphQLUserInputError("name is empty", "name")
 
         return ctx.prisma.emailTemplate.create({
           data: {
@@ -98,6 +99,7 @@ export const EmailTemplateMutations = extendType({
             triggered_automatically_by_course_id,
             exercise_completions_threshold,
             points_threshold,
+            course_instance_language,
           },
         })
       },
@@ -115,6 +117,7 @@ export const EmailTemplateMutations = extendType({
         triggered_automatically_by_course_id: stringArg(),
         exercise_completions_threshold: intArg(),
         points_threshold: intArg(),
+        course_instance_language: stringArg(),
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
@@ -128,6 +131,7 @@ export const EmailTemplateMutations = extendType({
           triggered_automatically_by_course_id,
           exercise_completions_threshold,
           points_threshold,
+          course_instance_language,
         } = args
 
         return ctx.prisma.emailTemplate.update({
@@ -143,6 +147,7 @@ export const EmailTemplateMutations = extendType({
             triggered_automatically_by_course_id,
             exercise_completions_threshold,
             points_threshold,
+            course_instance_language,
           },
         })
       },

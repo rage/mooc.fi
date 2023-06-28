@@ -1,34 +1,79 @@
-import Link from "next/link"
+import React from "react"
+
 import { useRouter } from "next/router"
 
-import styled from "@emotion/styled"
 import LanguageIcon from "@mui/icons-material/Language"
-import { Button } from "@mui/material"
+import {
+  Button,
+  ButtonGroup,
+  ButtonGroupProps,
+  ButtonProps,
+  EnhancedButton,
+} from "@mui/material"
+import { styled } from "@mui/material/styles"
 
-const LanguageSwitchContainer = styled((props: any) => (
-  <Button component="div" disableRipple={true} {...props} />
-))`
-  gap: 0.5rem;
-`
+import { useTranslator } from "/hooks/useTranslator"
+import { KeyOfTranslationDictionary } from "/translations"
+import CommonTranslations from "/translations/common"
 
-const Language = styled.a<{ active: boolean }>`
+const LanguageSwitchButton = (buttonProps: ButtonProps<"div">) => (
+  <Button {...buttonProps} component="div" tabIndex={-1} />
+)
+
+const StyledButtonGroup = styled(ButtonGroup)`
+  cursor: unset;
+  max-height: 8vh;
+` as typeof ButtonGroup
+
+const LanguageSwitchContainer = (props: ButtonGroupProps & ButtonProps) => (
+  <StyledButtonGroup
+    component={LanguageSwitchButton}
+    disableRipple
+    disableFocusRipple
+    disableTouchRipple
+    {...props}
+    tabIndex={-1}
+  />
+)
+
+interface LanguageButtonProps {
+  active: boolean
+}
+const Language = styled(Button, {
+  shouldForwardProp: (prop) => prop !== "active",
+})<LanguageButtonProps>`
+  border: 0;
   text-decoration: none;
   color: inherit;
   font-weight: ${({ active }) => (active ? "600" : "300")};
-`
 
-const locales = ["en", "fi"]
+  &:hover {
+    border: 0;
+  }
+` as EnhancedButton<"button", LanguageButtonProps>
 
 const LanguageSwitch = () => {
-  const { locale: currentLocale, asPath } = useRouter()
+  const t = useTranslator(CommonTranslations)
+  const { locale: currentLocale, locales, asPath } = useRouter()
 
   return (
     <LanguageSwitchContainer>
       <LanguageIcon />
-      {locales.map((locale) => (
-        <Link href={asPath} locale={locale} passHref key={`switch-${locale}`}>
-          <Language active={currentLocale === locale}>{locale}</Language>
-        </Link>
+      {locales?.map((locale) => (
+        <Language
+          key={locale}
+          href={asPath}
+          locale={locale}
+          active={currentLocale === locale}
+          title={t(
+            locale as KeyOfTranslationDictionary<typeof CommonTranslations>,
+          )}
+          aria-label={t(
+            locale as KeyOfTranslationDictionary<typeof CommonTranslations>,
+          )}
+        >
+          {locale}
+        </Language>
       ))}
     </LanguageSwitchContainer>
   )

@@ -1,31 +1,26 @@
 import { BackgroundImage } from "/components/Images/CardBackgroundFullCover"
-import { mime } from "/util/imageUtils"
 
 import { StudyModuleFieldsFragment } from "/graphql/generated"
 
 interface ModuleImageProps {
-  module: StudyModuleFieldsFragment
+  image: StudyModuleFieldsFragment["image"]
+  slug: StudyModuleFieldsFragment["slug"]
 }
-const ModuleImage = ({ module }: ModuleImageProps) => {
-  const imageUrl = module?.image ?? (module ? `${module.slug}.jpg` : "")
-
+const ModuleImage = ({ image, slug }: ModuleImageProps) => {
   try {
+    const imageSrc = image
+      ? require(`/public/images/modules/${image}`)
+      : require(`/public/images/modules/${slug}.jpg`)
+
     return (
-      <picture>
-        <source
-          srcSet={require(`../../static/images/${imageUrl}?webp`)}
-          type="image/webp"
-        />
-        <source
-          srcSet={require(`../../static/images/${imageUrl}`)}
-          type={mime(imageUrl)}
-        />
-        <BackgroundImage
-          src={require(`../../static/images/${imageUrl}`)}
-          loading="lazy"
-          alt=""
-        />
-      </picture>
+      <BackgroundImage
+        src={imageSrc}
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        alt=""
+        {...(imageSrc && { placeholder: "blur" })}
+        fill
+        aria-hidden
+      />
     )
   } catch (e) {
     return null

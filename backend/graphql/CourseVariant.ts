@@ -25,28 +25,28 @@ export const CourseVariant = objectType({
 export const CourseVariantCreateInput = inputObjectType({
   name: "CourseVariantCreateInput",
   definition(t) {
-    t.nullable.id("course")
+    t.id("course")
     t.nonNull.string("slug")
-    t.nullable.string("description")
-    t.nullable.string("instructions")
+    t.string("description")
+    t.string("instructions")
   },
 })
 
 export const CourseVariantUpsertInput = inputObjectType({
   name: "CourseVariantUpsertInput",
   definition(t) {
-    t.nullable.id("id")
-    t.nullable.id("course")
+    t.id("id")
+    t.id("course")
     t.nonNull.string("slug")
-    t.nullable.string("description")
-    t.nullable.string("instructions")
+    t.string("description")
+    t.string("instructions")
   },
 })
 
 export const CourseVariantQueries = extendType({
   type: "Query",
   definition(t) {
-    t.nullable.field("courseVariant", {
+    t.field("courseVariant", {
       type: "CourseVariant",
       args: {
         id: nonNull(idArg()),

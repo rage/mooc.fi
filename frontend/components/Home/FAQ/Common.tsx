@@ -1,12 +1,19 @@
 import React from "react"
 
-import { range } from "lodash"
+import { MDXComponents } from "mdx/types"
 import dynamic from "next/dynamic"
+import { range } from "remeda"
 
-import styled from "@emotion/styled"
-import { Skeleton, Typography } from "@mui/material"
+import { MDXProvider } from "@mdx-js/react"
+import {
+  EnhancedLink,
+  Link as MUILink,
+  Skeleton,
+  Typography,
+} from "@mui/material"
+import { styled } from "@mui/material/styles"
 
-export const Background = styled.section`
+export const Background = styled("section")`
   padding-top: 2em;
   padding-left: 1em;
   padding-right: 1em;
@@ -14,11 +21,11 @@ export const Background = styled.section`
   background-color: #ffc107;
 `
 
-export const Content = styled.div`
+export const Content = styled("div")`
   position: relative;
 `
 
-export const ContentBox = styled.div`
+export const ContentBox = styled("div")`
   background-color: white;
   max-width: 39em;
   border: 3px solid black;
@@ -32,21 +39,21 @@ export const ContentBox = styled.div`
   h2 {
     font-size: 37px;
     line-height: 64px;
-    font-family: Open Sans Condensed, sans serif !important;
+    font-family: var(--header-font), sans-serif !important;
     padding: 0.5rem;
     margin-top: 1rem;
   }
   h3 {
     font-size: 29px;
     line-height: 53px;
-    font-family: Open Sans Condensed, sans serif !important;
+    font-family: var(--header-font), sans-serif !important;
     text-decoration: underline;
     text-decoration-color: #00d2ff;
   }
   h4 {
     font-size: 23px;
     line-height: 44px;
-    font-family: Open Sans Condensed, sans serif !important;
+    font-family: var(--header-font), sans-serif !important;
   }
   code {
     background-color: #e6f4f1;
@@ -60,12 +67,12 @@ export const ContentBox = styled.div`
   }
 `
 
-export const Title = styled(Typography)<any>`
+export const Title = styled(Typography)`
   margin-bottom: 0.4em;
   padding: 1rem;
-`
+` as typeof Typography
 
-export const TitleBackground = styled.div`
+export const TitleBackground = styled("div")`
   background-color: white;
   max-width: 75%;
   margin-left: auto;
@@ -73,48 +80,40 @@ export const TitleBackground = styled.div`
   margin-bottom: 1em;
 `
 
-export const SectionBox = styled.div`
+export const IngressBackground = styled(TitleBackground)`
+  margin-bottom: 4em;
+  width: 45%;
+`
+
+export const SectionBox = styled("div")`
   margin-bottom: 6rem;
 `
 
-export const Note = styled.section`
+export const Note = styled("section")`
   padding: 1em;
   background-color: #eeeeee;
 `
 
-export const Loader = () => (
-  <Background>
-    <Title>
-      <Skeleton />
-    </Title>
-    <TitleBackground>
-      <Title component="h1" variant="h1" align="center">
-        <Skeleton />
-      </Title>
-    </TitleBackground>
-    <TitleBackground style={{ width: "45%", marginBottom: "8em" }}>
-      <Title component="p" variant="subtitle1" align="center">
-        <Skeleton />
-      </Title>
-    </TitleBackground>
-    <Content>
-      {range(20).map((i) => (
-        <Skeleton key={`content-skeleton-${i}`} />
-      ))}
-    </Content>
-  </Background>
-)
+export const Link = styled(MUILink)`
+  color: default;
+` as EnhancedLink
 
 type DynamicImportType = <T>() => Promise<React.ComponentType<T>>
 
 interface FAQComponentProps {
   mdxImport?: DynamicImportType
   onSuccess: <T>(mdx: React.ComponentType<T>) => React.ComponentType<T>
-  onError: () => void
+  onError: <C>(
+    errorComponent?: React.ComponentType<C>,
+  ) => React.ComponentType<C> | null
+}
+
+function DummyPromiseComponent() {
+  return Promise.resolve(() => <React.Fragment />)
 }
 
 export function FAQComponent({
-  mdxImport = () => Promise.resolve(() => <React.Fragment />),
+  mdxImport = DummyPromiseComponent,
   onSuccess,
   onError,
 }: FAQComponentProps) {
@@ -123,42 +122,85 @@ export function FAQComponent({
       return mdxImport()
         .then(onSuccess)
         .catch((error: unknown) => {
-          console.log("error", error)
+          console.error("Error importing MDX component", error)
           onError()
-          return () => <React.Fragment />
+          return () => null //<ErrorMessage />
         })
     },
-    { loading: () => <Loader /> },
+    {
+      loading: ({ error }) => {
+        if (error) {
+          return null // <ErrorMessage />
+        }
+        return <Loader />
+      },
+    },
   )
 }
 
 interface FAQPageProps {
   error: boolean
-  title: string
-  ingress: string
-  content: JSX.Element
+  meta?: {
+    title?: React.JSX.Element | string
+    ingress?: React.JSX.Element | string
+  }
 }
 
-export function FAQPage({ error, title, ingress, content }: FAQPageProps) {
+const mdxComponents: MDXComponents = {
+  a: Link as (
+    props: React.DetailedHTMLProps<
+      React.HTMLAttributes<HTMLAnchorElement>,
+      HTMLAnchorElement
+    >,
+  ) => React.JSX.Element,
+}
+
+export function FAQPage({
+  error,
+  meta = {},
+  children,
+}: React.PropsWithChildren<FAQPageProps>) {
+  const { title, ingress } = meta
+
   return (
     <Background>
-      {!error && (
-        <>
-          <TitleBackground>
-            <Title component="h1" variant="h1" align="center">
-              {title}
-            </Title>
-          </TitleBackground>
-          {ingress && (
-            <TitleBackground style={{ width: "45%", marginBottom: "4em" }}>
-              <Title component="p" variant="subtitle1" align="center">
-                {ingress}
+      <MDXProvider components={mdxComponents}>
+        {!error && (
+          <>
+            <TitleBackground>
+              <Title component="h1" variant="h1" align="center">
+                {title}
               </Title>
             </TitleBackground>
-          )}
-        </>
-      )}
-      <Content>{content}</Content>
+            {ingress && (
+              <IngressBackground>
+                <Title component="p" variant="subtitle1" align="center">
+                  {ingress}
+                </Title>
+              </IngressBackground>
+            )}
+          </>
+        )}
+        <Content>{children}</Content>
+      </MDXProvider>
     </Background>
   )
 }
+
+export const Loader = () => (
+  <FAQPage
+    error={false}
+    meta={{
+      title: <Skeleton variant="text" width="100%" />,
+      ingress: <Skeleton variant="text" width="100%" />,
+    }}
+  >
+    <ContentBox>
+      <SectionBox>
+        {range(0, 20).map((i) => (
+          <Skeleton key={`content-skeleton-${i}`} />
+        ))}
+      </SectionBox>
+    </ContentBox>
+  </FAQPage>
+)

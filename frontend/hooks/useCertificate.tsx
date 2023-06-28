@@ -98,10 +98,10 @@ interface UseCertificateOptions {
 export const useCertificate = ({
   course,
   completion,
-  onUpdateNameSuccess = () => {},
-  onUpdateNameError = () => {},
-  onReceiveGeneratedCertificateSuccess = () => {},
-  onReceiveGeneratedCertificateError = () => {},
+  onUpdateNameSuccess,
+  onUpdateNameError,
+  onReceiveGeneratedCertificateSuccess,
+  onReceiveGeneratedCertificateError,
 }: UseCertificateOptions) => {
   const initialState = useRef<CertificateState>({
     status: "IDLE",
@@ -141,6 +141,10 @@ export const useCertificate = ({
 
     if (isNameChanged) {
       try {
+        if (!currentUser) {
+          throw new Error("No current user")
+        }
+
         dispatch({ type: "UPDATE_NAME" })
         const res = await updateAccount(firstName, lastName)
         await updateUserName({
@@ -149,15 +153,20 @@ export const useCertificate = ({
             last_name: lastName,
           },
         })
+
         updateUser({
-          user: { ...currentUser!, first_name: firstName, last_name: lastName },
+          user: {
+            ...currentUser,
+            first_name: firstName,
+            last_name: lastName,
+          },
           admin,
         })
-        onUpdateNameSuccess()
+        onUpdateNameSuccess?.()
         dispatch({ type: "UPDATED_NAME", payload: res })
       } catch (e) {
         dispatch({ type: "ERROR", payload: e })
-        onUpdateNameError()
+        onUpdateNameError?.()
         dispatch({ type: "RESET", payload: initialState })
         return
       }
@@ -167,14 +176,14 @@ export const useCertificate = ({
       dispatch({ type: "GENERATE_CERTIFICATE" })
       const res = await createCertificate(course.slug)
       dispatch({ type: "RECEIVE_GENERATED_CERTIFICATE", payload: res })
-      onReceiveGeneratedCertificateSuccess()
+      onReceiveGeneratedCertificateSuccess?.()
       initialState.current = {
         ...initialState.current,
         certificateId: res?.id ?? undefined,
       }
     } catch (e) {
       dispatch({ type: "ERROR", payload: e })
-      onReceiveGeneratedCertificateError()
+      onReceiveGeneratedCertificateError?.()
       dispatch({ type: "RESET", payload: initialState })
     }
   }

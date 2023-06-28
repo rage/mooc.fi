@@ -1,31 +1,30 @@
 import { useEffect, useState } from "react"
 
-import { range } from "lodash"
+import { range } from "remeda"
 
 import { useMutation, useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
-import CancelIcon from "@mui/icons-material/Cancel"
 import {
   Button,
   Card,
   CardContent,
   Container,
+  ContainerProps,
   Grid,
-  IconButton,
-  InputAdornment,
+  GridProps,
   Skeleton,
   TextField,
   Typography,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { WideContainer } from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import useDebounce from "/hooks/useDebounce"
+import { useTranslator } from "/hooks/useTranslator"
 import withSignedIn from "/lib/with-signed-in"
 import RegistrationTranslations from "/translations/register"
 import notEmpty from "/util/notEmpty"
-import useDebounce from "/util/useDebounce"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   AddUserOrganizationDocument,
@@ -35,13 +34,13 @@ import {
   OrganizationsDocument,
 } from "/graphql/generated"
 
-const Header = styled(Typography)<any>`
+const Header = styled(Typography)`
   margin-top: 1em;
-`
+` as typeof Typography
 
-const FormContainer = styled((props: any) => (
+const FormContainer = (props: ContainerProps & GridProps) => (
   <Container spacing={4} {...props} />
-))``
+)
 
 interface OrganizationCardProps {
   name: string
@@ -137,7 +136,6 @@ function useRegisterOrganization(searchFilter: string) {
     ],
   })
 
-  // const [updateUserOrganization] = useMutation(UpdateUserOrganizationMutation)
   const [deleteUserOrganization] = useMutation(DeleteUserOrganizationDocument, {
     refetchQueries: [
       {
@@ -169,23 +167,14 @@ function useRegisterOrganization(searchFilter: string) {
       return
     }
 
-    const sortedOrganizations =
-      organizationsData?.organizations
-        ?.filter((o) => o?.organization_translations?.length)
-        .sort((a, b) =>
-          a!.organization_translations![0].name.localeCompare(
-            b!.organization_translations![0].name,
-            "fi-FI",
-          ),
-        ) ?? []
-
-    const orgs = sortedOrganizations.filter(notEmpty).reduce(
-      (acc, curr) => ({
-        ...acc,
-        [curr.id]: curr,
-      }),
-      {},
+    const sortedOrganizations = (organizationsData?.organizations ?? []).sort(
+      (a, b) => a.name.localeCompare(b.name, "fi-FI"),
     )
+    const orgs = {} as Record<string, OrganizationCoreFieldsFragment>
+
+    for (const org of sortedOrganizations) {
+      orgs[org.id] = org
+    }
 
     setOrganizations(orgs)
     setFilteredOrganizations(orgs)
@@ -202,22 +191,18 @@ function useRegisterOrganization(searchFilter: string) {
       return
     }
 
-    setFilteredOrganizations(
-      Object.entries(organizations).reduce((acc, [key, value]) => {
-        if (
-          !value!
-            .organization_translations![0].name.toLowerCase()
-            .includes(searchFilter.toLowerCase())
-        ) {
-          return acc
-        }
+    const newFilteredOrganizations = {} as Record<
+      string,
+      OrganizationCoreFieldsFragment
+    >
 
-        return {
-          ...acc,
-          [key]: value,
-        }
-      }, {}),
-    )
+    for (const [id, org] of Object.entries(organizations)) {
+      if (!org.name.toLowerCase().includes(searchFilter.toLowerCase())) {
+        continue
+      }
+      newFilteredOrganizations[id] = org
+    }
+    setFilteredOrganizations(newFilteredOrganizations)
   }, [searchFilter, organizations])
 
   const toggleMembership = (id: string) => async () => {
@@ -246,7 +231,7 @@ function useRegisterOrganization(searchFilter: string) {
   }
 
   return {
-    error: organizationsError || userOrganizationsError,
+    error: organizationsError ?? userOrganizationsError,
     loading: organizationsLoading,
     organizations,
     filteredOrganizations,
@@ -255,71 +240,73 @@ function useRegisterOrganization(searchFilter: string) {
   }
 }
 
-const Register = () => {
+const OrganizationItems = () => {
   const t = useTranslator(RegistrationTranslations)
-  const { searchFilter, cancelFilterDebounce, searchBox, setSearchBox } =
-    useSearchBox()
+
+  const { searchFilter } = useSearchBox()
   const {
     error,
-    loading,
-    toggleMembership,
     organizations,
+    loading,
     filteredOrganizations,
     memberships,
+    toggleMembership,
   } = useRegisterOrganization(searchFilter)
 
-  if (error /*organizationsError || userOrganizationsError*/) {
+  if (error) {
     return <ErrorMessage />
   }
 
+  if (loading) {
+    return (
+      <>
+        {range(0, 5).map((i) => (
+          <SkeletonCard key={`skeleton-${i}`} />
+        ))}
+      </>
+    )
+  }
+
+  if (!organizations || Object.keys(organizations).length === 0) {
+    return <div>{t("noResults", { search: searchFilter })}</div>
+  }
+
+  return (
+    <>
+      {Object.entries(filteredOrganizations).map(([id, organization]) => (
+        <OrganizationCard
+          key={id}
+          name={organization.name}
+          isMember={memberships.includes(id)}
+          onToggle={toggleMembership(id)}
+        />
+      ))}
+    </>
+  )
+}
+
+const Register = () => {
+  const t = useTranslator(RegistrationTranslations)
+  const { cancelFilterDebounce, searchBox, setSearchBox } = useSearchBox()
+
   return (
     <WideContainer>
-      <Header component="h1" variant="h2" gutterBottom={true} align="center">
+      <Header component="h1" variant="h2" gutterBottom align="center">
         {t("title")}
       </Header>
       <FormContainer maxWidth="md">
         <TextField
           style={{ marginBottom: "0.5rem" }}
           name="search"
-          type="text"
+          type="search"
           variant="outlined"
           value={searchBox}
           autoComplete="off"
           onChange={(e) => setSearchBox(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && cancelFilterDebounce()}
           placeholder={t("search")}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  onClick={() => {
-                    cancelFilterDebounce("")
-                    setSearchBox("")
-                  }}
-                  size="large"
-                >
-                  <CancelIcon />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
         />
-        <>
-          {loading || !Object.keys(organizations).length ? (
-            range(5).map((i) => <SkeletonCard key={`skeleton-${i}`} />)
-          ) : Object.keys(filteredOrganizations).length ? (
-            Object.entries(filteredOrganizations).map(([id, organization]) => (
-              <OrganizationCard
-                key={`card-${id}`}
-                name={organization!.organization_translations![0].name}
-                isMember={memberships.includes(id)}
-                onToggle={toggleMembership(id)}
-              />
-            ))
-          ) : (
-            <div>{t("noResults", { search: searchFilter })}</div>
-          )}
-        </>
+        <OrganizationItems />
       </FormContainer>
     </WideContainer>
   )

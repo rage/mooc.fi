@@ -2,8 +2,8 @@ import { useEffect, useRef } from "react"
 
 import { useMutation } from "@apollo/client"
 
+import { useQueryParameter } from "/hooks/useQueryParameter"
 import withSignedIn from "/lib/with-signed-in"
-import { useQueryParameter } from "/util/useQueryParameter"
 
 import {
   ConfirmUserOrganizationJoinDocument,
@@ -13,7 +13,7 @@ import {
 const OrganizationMembershipActivationPage = () => {
   const joinConfirmationId = useQueryParameter("id")
   const slug = useQueryParameter("slug")
-  const code = useQueryParameter("code", false)
+  const code = useQueryParameter("code", { enforce: false })
 
   const loaded = useRef(false)
 

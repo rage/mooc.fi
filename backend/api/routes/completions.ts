@@ -1,4 +1,5 @@
 import { Request, Response } from "express"
+import JSONStream from "JSONStream"
 import { chunk, omit } from "lodash"
 import * as yup from "yup"
 
@@ -13,8 +14,6 @@ import {
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
 import { err, isDefined } from "../../util"
 import { ApiContext, Controller } from "../types"
-
-const JSONStream = require("JSONStream")
 
 const languageMap: Record<string, string> = {
   en: "en_US",
@@ -167,7 +166,7 @@ export class CompletionController extends Controller {
     const tierData: Array<TierData> = []
 
     if (tiers) {
-      const t: Array<Tier> = tiers.filter(isDefined)
+      const t = tiers.filter(isDefined)
 
       for (const element of t) {
         if (element.tier === completion.tier) {
@@ -207,9 +206,9 @@ export class CompletionController extends Controller {
       {
         slug: string
       },
-      {},
+      any,
       {
-        user_upstream_id: number
+        user_upstream_id: number | string
         certificate_id: string
       }
     >,
@@ -227,7 +226,7 @@ export class CompletionController extends Controller {
 
     const user = await prisma.user.findUnique({
       where: {
-        upstream_id: user_upstream_id,
+        upstream_id: Number(user_upstream_id),
       },
     })
 
@@ -235,7 +234,7 @@ export class CompletionController extends Controller {
       return res.status(404).json({ message: "user not found" })
     }
 
-    const course = await this.getCourse({
+    const course = await prisma.course.findUniqueOrAlias({
       where: {
         slug,
       },
@@ -268,26 +267,28 @@ export class CompletionController extends Controller {
     user: User,
   ): Promise<Completion | null> => {
     return (
-      await this.ctx.prisma.user
-        .findUnique({
-          where: {
-            id: user.id,
-          },
-        })
-        .completions({
-          where: {
-            course_id: course.completions_handled_by_id ?? course.id,
-          },
-          orderBy: { created_at: "asc" },
-          take: 1,
-        })
-    )?.[0]
+      (
+        await this.ctx.prisma.user
+          .findUnique({
+            where: {
+              id: user.id,
+            },
+          })
+          .completions({
+            where: {
+              course_id: course.completions_handled_by_id ?? course.id,
+            },
+            orderBy: { created_at: "asc" },
+            take: 1,
+          })
+      )?.[0] ?? null
+    )
   }
 
   recheckCompletion = async (
     req: Request<
-      {},
-      {},
+      any,
+      any,
       {
         course_id?: string
         slug?: string
@@ -328,7 +329,7 @@ export class CompletionController extends Controller {
       })
     }
 
-    const course = await this.getCourse({
+    const course = await prisma.course.findUniqueOrAlias({
       where: {
         id: course_id ?? undefined,
         slug: slug ?? undefined,
@@ -402,8 +403,8 @@ export class CompletionController extends Controller {
 
   registerCompletions = async (
     req: Request<
-      {},
-      {},
+      any,
+      any,
       {
         completions: RegisterCompletionInput[]
       }
@@ -421,7 +422,7 @@ export class CompletionController extends Controller {
 
     const { completions } = req.body ?? {}
 
-    if (!completions) {
+    if (!completions || !(completions instanceof Array)) {
       return res
         .status(400)
         .json({ message: "must provide completions in post message body" })

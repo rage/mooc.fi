@@ -3,16 +3,15 @@ import { ConsumerGlobalConfig } from "node-rdkafka"
 import { v4 } from "uuid"
 import winston from "winston"
 
-import type { PrismaClient } from "@prisma/client"
-
 import {
   KAFKA_CONSUMER_GROUP,
   KAFKA_DEBUG_CONTEXTS,
   KAFKA_HOST,
   KAFKA_TOP_OF_THE_QUEUE,
 } from "../../../config"
-import { attachPrismaEvents } from "../../../util"
-import { KafkaError } from "../../lib/errors"
+import { KafkaError } from "../../../lib/errors"
+import { type ExtendedPrismaClient } from "../../../prisma"
+import { attachPrismaEvents } from "../../../util/prismaLogger"
 import checkConnectionInInterval from "./connectedChecker"
 
 const logCommit =
@@ -29,7 +28,7 @@ const logCommit =
 
 interface CreateKafkaConsumerArgs {
   logger: winston.Logger
-  prisma?: PrismaClient
+  prisma?: ExtendedPrismaClient
 }
 
 export const createKafkaConsumer = ({
@@ -67,7 +66,7 @@ export const createKafkaConsumer = ({
   })
 
   consumer.on("connection.failure", (err, metrics) => {
-    logger.info("Connection failed with " + err)
+    logger.info("Connection failed with " + err.message)
     logger.info("Metrics: " + JSON.stringify(metrics))
     consumer.connect()
   })

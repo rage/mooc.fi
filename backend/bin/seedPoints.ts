@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import * as faker from "faker"
 
 import { Prisma } from "@prisma/client"
@@ -151,7 +152,7 @@ const addUserCourseSettingses = async (courseId: string) => {
         research: true,
         marketing: false,
         course_variant: null,
-        other: null,
+        other: Prisma.JsonNull,
       }
       return prisma.userCourseSetting.create({ data: ucs })
     }),

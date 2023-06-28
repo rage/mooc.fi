@@ -1,3 +1,4 @@
+import parseJSON from "json-parse-even-better-errors"
 import { Message as KafkaMessage } from "node-rdkafka"
 import * as yup from "yup"
 
@@ -45,13 +46,13 @@ const handleNullProgressImpl = (value: Message) => ({
   })),
 })
 
-export const handleNullProgress = (message: KafkaMessage) => ({
-  ...message,
-  value: Buffer.from(
-    JSON.stringify(
-      handleNullProgressImpl(
-        JSON.parse(message?.value?.toString("utf8") ?? ""),
-      ),
-    ),
-  ),
-})
+export const handleNullProgress = (message: KafkaMessage) => {
+  const parsedMessage = parseJSON(
+    message?.value?.toString("utf8") ?? "",
+  ) as Message
+
+  return {
+    ...message,
+    value: Buffer.from(JSON.stringify(handleNullProgressImpl(parsedMessage))),
+  }
+}

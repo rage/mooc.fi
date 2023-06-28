@@ -3,67 +3,59 @@ import React, { useEffect, useState } from "react"
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import { WideContainer } from "/components/Container"
 import CourseGrid from "/components/Dashboard/CourseGrid"
 import FilterMenu from "/components/FilterMenu"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1Background } from "/components/Text/headers"
-import { FilterContext } from "/contexts/FilterContext"
+import { FilterContext, SearchVariables } from "/contexts/FilterContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { useQueryParameter } from "/hooks/useQueryParameter"
+import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
 import CoursesTranslations from "/translations/courses"
+import { notEmptyOrEmptyString } from "/util/guards"
 import notEmpty from "/util/notEmpty"
-import { useQueryParameter } from "/util/useQueryParameter"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   CourseStatus,
   EditorCoursesDocument,
-  EditorCoursesQueryVariables,
   HandlerCoursesDocument,
 } from "/graphql/generated"
 
-const Background = styled.section`
+const Background = styled("section")`
   background-color: #61baad;
 `
-
-const notEmptyOrEmptyString = (value: any): value is string | true | number =>
-  notEmpty(value) && value !== "" && value !== false
 
 function useCourseSearch() {
   const router = useRouter()
 
-  const statusParam = useQueryParameter("status", false) ?? []
-  const status = (
-    Array.isArray(statusParam)
-      ? statusParam.filter(notEmptyOrEmptyString)
-      : [
-          ...decodeURIComponent(statusParam)
-            .split(",")
-            .filter(notEmptyOrEmptyString),
-        ]
-  ) as CourseStatus[] // compatibility with old links
+  useBreadcrumbs([
+    {
+      translation: "courses",
+      href: "/courses",
+    },
+  ])
 
-  const initialSearchVariables: EditorCoursesQueryVariables = {
-    search: useQueryParameter("search", false),
-    hidden:
-      useQueryParameter("hidden", false).toLowerCase() !== "false" ?? true,
-    handledBy: useQueryParameter("handledBy", false) || null,
-    status: status.length
-      ? status
-      : [CourseStatus.Active, CourseStatus.Upcoming],
-  }
+  const initialSearchVariables = createInitialSearchVariables({
+    search: useQueryParameter("search", { enforce: false }),
+    hidden: useQueryParameter("hidden", { enforce: false }),
+    handledBy: useQueryParameter("handledBy", { enforce: false }),
+    status: useQueryParameter("status", { enforce: false }),
+  })
 
-  const [searchVariables, setSearchVariables] = useState(initialSearchVariables)
+  const [searchVariables, setSearchVariables] = useState<
+    typeof initialSearchVariables
+  >(initialSearchVariables)
 
   const {
     loading: coursesLoading,
     error: coursesError,
     data: coursesData,
   } = useQuery(EditorCoursesDocument, {
-    variables: searchVariables || initialSearchVariables,
+    variables: searchVariables ?? initialSearchVariables,
   })
   const {
     loading: handlerCoursesLoading,
@@ -96,7 +88,7 @@ function useCourseSearch() {
         searchVariables.status.includes(CourseStatus.Upcoming)
       )
     ) {
-      ;(searchVariables.status as CourseStatus[])
+      searchVariables.status
         .filter(notEmpty)
         .forEach((s) => searchParams.append("status", s))
     }
@@ -109,7 +101,11 @@ function useCourseSearch() {
     if (router?.asPath !== href) {
       router.push(href, undefined, { shallow: true })
     }
-  }, [searchVariables])
+  }, [
+    searchVariables.search,
+    searchVariables.handledBy,
+    searchVariables.status,
+  ])
 
   const onStatusClick = (value: CourseStatus | null) => (_: any) => {
     setSearchVariables({
@@ -163,6 +159,35 @@ function Courses() {
       </WideContainer>
     </Background>
   )
+}
+
+interface CreateInitialSearchVariableArgs {
+  search?: string
+  handledBy?: string
+  hidden?: string
+  status?: string
+}
+
+const createInitialSearchVariables = ({
+  search,
+  handledBy,
+  hidden,
+  status,
+}: CreateInitialSearchVariableArgs): SearchVariables => {
+  const statusParam = (decodeURIComponent(status ?? "")
+    ?.split(",")
+    .filter(notEmptyOrEmptyString) ?? []) as CourseStatus[]
+
+  const initialSearchVariables = {
+    search,
+    hidden: (hidden ?? "").toLowerCase() !== "false" ?? true,
+    handledBy: handledBy ?? null,
+    status: statusParam.length
+      ? statusParam.filter(notEmptyOrEmptyString)
+      : [CourseStatus.Active, CourseStatus.Upcoming],
+  }
+
+  return initialSearchVariables
 }
 
 export default withAdmin(Courses)

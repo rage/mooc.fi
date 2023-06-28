@@ -384,7 +384,7 @@ const seed = async () => {
         ...module,
         study_module_translations: module.study_module_translations
           ? {
-              create: (module.study_module_translations || []).map((t) => ({
+              create: (module.study_module_translations ?? []).map((t) => ({
                 ...t,
                 id: undefined,
               })),
@@ -408,13 +408,16 @@ const seed = async () => {
         teacher_in_charge_email: "",
         start_date: "",
         status: course.status as CourseStatus,
-        course_translations: course.course_translations && {
-          create: course.course_translations.map((t) => ({
-            ...t,
-            id: undefined,
-            link: t.link || "",
-          })),
-        },
+        course_translations: course.course_translations
+          ? {
+              create:
+                course?.course_translations?.map((t) => ({
+                  ...t,
+                  id: undefined,
+                  link: t.link ?? "",
+                })) ?? undefined,
+            }
+          : undefined,
         study_modules: undefined,
       }
 

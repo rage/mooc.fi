@@ -1,13 +1,18 @@
-import { useMemo } from "react"
+import React, { useMemo } from "react"
 
-import AnchorContext, { Anchor } from "/contexts/AnchorContext"
+import { PropsOf } from "@emotion/react"
 
-const withEnumeratingAnchors =
-  <T,>(Component: any) =>
-  (props: any) => {
+import LegacyAnchorContext, {
+  LegacyAnchor,
+} from "/components/Dashboard/EditorLegacy/LegacyAnchorContext"
+
+const withEnumeratingAnchors = <C extends React.ElementType = any>(
+  Component: C,
+): C =>
+  ((props: PropsOf<C>) => {
     let anchorId = 0
-    const anchors: Record<string, Anchor> = {}
-    const addAnchor = (anchor: string, tab: number = 0) => {
+    const anchors: Record<string, LegacyAnchor> = {}
+    const addAnchor = (anchor: string, tab = 0) => {
       if (!anchors[anchor]) {
         anchors[anchor] = {
           id: anchorId++,
@@ -19,10 +24,10 @@ const withEnumeratingAnchors =
     const contextValue = useMemo(() => ({ anchors, addAnchor }), [anchors])
 
     return (
-      <AnchorContext.Provider value={contextValue}>
-        <Component {...(props as T)}>{props.children}</Component>
-      </AnchorContext.Provider>
+      <LegacyAnchorContext.Provider value={contextValue}>
+        <Component {...props} />
+      </LegacyAnchorContext.Provider>
     )
-  }
+  }) as C
 
 export default withEnumeratingAnchors

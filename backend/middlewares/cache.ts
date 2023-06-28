@@ -2,20 +2,13 @@ import { createHash } from "crypto"
 
 import { plugin } from "nexus"
 
-import { Context } from "../context"
 import { redisify } from "../services/redis"
 
 export const cachePlugin = () =>
   plugin({
     name: "CachePlugin",
-    onCreateFieldResolver(_: any) {
-      return async (
-        root: any,
-        args: Record<string, any>,
-        context: Context,
-        info: any,
-        next: Function,
-      ) => {
+    onCreateFieldResolver() {
+      return async (root, args, context, info, next) => {
         let rawToken: string | undefined = undefined
         if (context.req?.headers) {
           rawToken = context?.req?.headers?.authorization
@@ -44,6 +37,51 @@ export const cachePlugin = () =>
           },
         )
         return res
+      }
+    },
+    onCreateFieldSubscribe() {
+      return async (root, args, ctx, info, next) => {
+        const key = `${info.fieldName}-${JSON.stringify(
+          info.fieldNodes,
+        )}-${JSON.stringify(args)}-${ctx.role}`
+
+        const hash = createHash("sha512").update(key).digest("hex")
+
+        const res = await redisify<any>(
+          async () => {
+            const subscriptionRes = []
+            const maybeSubscription = await next(root, args, ctx, info) // NOSONAR: is async
+
+            if (
+              maybeSubscription &&
+              typeof maybeSubscription[Symbol.asyncIterator] === "function"
+            ) {
+              for await (const item of maybeSubscription) {
+                subscriptionRes.push(item)
+              }
+            } else {
+              return maybeSubscription
+            }
+
+            return subscriptionRes
+          },
+          {
+            prefix: "graphql-subscription",
+            expireTime: 60,
+            key: hash,
+            retry: false,
+            throwOnError: true,
+          },
+          {
+            logger: ctx.logger,
+          },
+        )
+
+        return (async function* () {
+          for (const item of res) {
+            yield item
+          }
+        })()
       }
     },
   })

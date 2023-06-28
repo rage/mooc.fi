@@ -20,7 +20,7 @@ export const CourseCreateArg = inputObjectType({
     t.nonNull.datetime("start_date")
     t.datetime("end_date")
     t.list.nonNull.field("study_modules", {
-      type: "StudyModuleWhereUniqueInput",
+      type: "CourseStudyModuleUniqueInput",
     })
     t.list.nonNull.field("course_translations", {
       type: "CourseTranslationCreateInput",
@@ -39,28 +39,35 @@ export const CourseCreateArg = inputObjectType({
     t.int("points_needed")
     t.boolean("automatic_completions")
     t.boolean("automatic_completions_eligible_for_ects")
-    t.nullable.id("completion_email_id")
-    t.nullable.id("inherit_settings_from")
-    t.nullable.id("completions_handled_by")
-    t.nullable.boolean("has_certificate")
+    t.id("completion_email_id")
+    t.id("inherit_settings_from")
+    t.id("completions_handled_by")
+    t.boolean("has_certificate")
     t.list.nonNull.field("user_course_settings_visibilities", {
       type: "UserCourseSettingsVisibilityCreateInput",
     })
-    t.nullable.boolean("upcoming_active_link")
+    t.boolean("upcoming_active_link")
     t.int("tier")
     t.int("exercise_completions_needed")
     t.int("points_needed")
-    t.nullable.id("course_stats_email_id")
+    t.id("course_stats_email_id")
+    t.list.nonNull.field("tags", {
+      type: "TagCreateInput",
+    })
+    t.list.nonNull.field("sponsors", {
+      type: "SponsorUniqueInput",
+    })
+    t.string("language")
   },
 })
 
 export const CourseUpsertArg = inputObjectType({
   name: "CourseUpsertArg",
   definition(t) {
-    t.nullable.id("id")
+    t.id("id")
     t.nonNull.string("name")
     t.nonNull.string("slug")
-    t.nullable.string("new_slug")
+    t.string("new_slug")
     t.string("ects")
     t.nullable.id("photo")
     t.nullable.upload("new_photo")
@@ -77,7 +84,7 @@ export const CourseUpsertArg = inputObjectType({
     t.nonNull.datetime("start_date")
     t.datetime("end_date")
     t.list.nonNull.field("study_modules", {
-      type: "StudyModuleWhereUniqueInput",
+      type: "CourseStudyModuleUniqueInput",
     })
     t.list.nonNull.field("course_translations", {
       type: "CourseTranslationUpsertInput",
@@ -96,17 +103,54 @@ export const CourseUpsertArg = inputObjectType({
     t.int("points_needed")
     t.boolean("automatic_completions")
     t.boolean("automatic_completions_eligible_for_ects")
-    t.nullable.id("completion_email_id")
-    t.nullable.id("inherit_settings_from")
-    t.nullable.id("completions_handled_by")
-    t.nullable.boolean("has_certificate")
+    t.id("completion_email_id")
+    t.id("inherit_settings_from")
+    t.id("completions_handled_by")
+    t.boolean("has_certificate")
     t.list.nonNull.field("user_course_settings_visibilities", {
       type: "UserCourseSettingsVisibilityUpsertInput",
     })
-    t.nullable.boolean("upcoming_active_link")
+    t.boolean("upcoming_active_link")
     t.int("tier")
     t.int("exercise_completions_needed")
     t.int("points_needed")
-    t.nullable.id("course_stats_email_id")
+    t.id("course_stats_email_id")
+    t.list.nonNull.field("tags", {
+      type: "TagUpsertInput",
+    })
+    t.list.nonNull.field("sponsors", {
+      type: "SponsorUniqueInput",
+    })
+    t.string("language")
+  },
+})
+
+export const CourseOrderByInput = inputObjectType({
+  name: "CourseOrderByInput",
+  definition(t) {
+    t.field("id", { type: "SortOrder" })
+    t.field("name", { type: "SortOrder" })
+    t.field("slug", { type: "SortOrder" })
+    t.field("ects", { type: "SortOrder" })
+    t.field("start_date", { type: "SortOrder" })
+    t.field("end_date", { type: "SortOrder" })
+    t.field("order", { type: "SortOrder" })
+    t.field("study_module_order", { type: "SortOrder" })
+    t.field("points_needed", { type: "SortOrder" })
+    t.field("exercise_completions_needed", { type: "SortOrder" })
+    t.field("tier", { type: "SortOrder" })
+    t.field("teacher_in_charge_name", { type: "SortOrder" })
+    t.field("teacher_in_charge_email", { type: "SortOrder" })
+    t.field("support_email", { type: "SortOrder" })
+    t.field("created_at", { type: "SortOrder" })
+    t.field("updated_at", { type: "SortOrder" })
+  },
+})
+
+export const CourseStudyModuleUniqueInput = inputObjectType({
+  name: "CourseStudyModuleUniqueInput",
+  definition(t) {
+    t.id("id")
+    t.string("slug")
   },
 })

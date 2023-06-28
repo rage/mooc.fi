@@ -1,7 +1,7 @@
-import { AuthenticationError } from "apollo-server-express"
 import { extendType, idArg, nonNull, objectType } from "nexus"
 
 import { isAdmin, isUser, or, Role } from "../accessControl"
+import { GraphQLAuthenticationError } from "../lib/errors"
 
 export const CourseStatsSubscription = objectType({
   name: "CourseStatsSubscription",
@@ -54,7 +54,7 @@ export const CourseStatsSubscriptionMutations = extendType({
             })
 
           if (!ownsSubscription) {
-            throw new AuthenticationError(
+            throw new GraphQLAuthenticationError(
               "this course stats subscription requires ownership",
             )
           }

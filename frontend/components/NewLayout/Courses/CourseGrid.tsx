@@ -1,155 +1,536 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
+import dynamic from "next/dynamic"
 import { useRouter } from "next/router"
+import { difference, sort } from "remeda"
 
 import { useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
-import { Button, TextField } from "@mui/material"
+import ClearIcon from "@mui/icons-material/Clear"
+import {
+  Button,
+  ButtonProps,
+  Checkbox,
+  FormControlLabel,
+  Skeleton,
+  TextField,
+  Typography,
+  useMediaQuery,
+} from "@mui/material"
+import { styled, Theme } from "@mui/material/styles"
+import { useEventCallback } from "@mui/material/utils"
 
-import CourseCard from "./CourseCard"
+import {
+  allowedLanguages,
+  courseStatuses,
+  sortByDifficulty,
+  sortByLanguage,
+} from "./common"
+import CourseCard, { CourseCardSkeleton } from "./CourseCard"
+import BorderedSection from "/components/BorderedSection"
+import { useQueryParameter } from "/hooks/useQueryParameter"
+import { useTranslator } from "/hooks/useTranslator"
+import CourseTranslations from "/translations/_new/courses"
 import CommonTranslations from "/translations/common"
+import { notEmptyOrEmptyString } from "/util/guards"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
-import { useTranslator } from "/util/useTranslator"
 
-import { CoursesDocument } from "/graphql/generated"
+import {
+  CourseCatalogueTagsDocument,
+  CourseStatus,
+  NewCourseFieldsFragment,
+  NewCoursesDocument,
+  TagCoreFieldsFragment,
+} from "/graphql/generated"
 
-const Container = styled.div`
+/*  Coming in a later PR for better mobile view
+  const Container = styled.div`
   display: grid;
-  max-width: 1200px;
+  max-width: 600px;
+
+  @media (min-width: 960px) {
+    max-width: 960px;
+  }
+
+  @media (min-width: 1440px) {
+    max-width: 1440px;
+  }
 `
 
 const CardContainer = styled.div`
   display: grid;
   grid-gap: 2rem;
-  grid-template-columns: 50% 50%;
+  grid-template-columns: 100%;
+
+  @media (min-width: 960px) {
+    grid-template-columns: 50% 50%;
+  }
+
+  @media (min-width: 1440px) {
+    grid-template-columns: 33% 33% 33%;
+  }
+` */
+
+const Container = styled("div")(
+  ({ theme }) => `
+  display: grid;
+  width: 90%;
+  margin: 0 auto;
+  max-width: 1536px;
+  padding: 1rem;
+
+  ${theme.breakpoints.down("sm")} {
+    width: 98%;
+  }
+`,
+)
+
+const CardsContainer = styled("ul")(
+  ({ theme }) => `
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-gap: 1.5rem;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 1rem;
+  width: 100%;
+
+  ${theme.breakpoints.down("lg")} {
+    grid-template-columns: 1fr;
+    grid-gap: 2rem;
+  }
+`,
+)
+
+const FiltersContainer = styled("div")`
+  background: #f5f6f7;
+  padding-bottom: 0.5rem;
 `
 
 const SearchBar = styled(TextField)`
-  margin: 0.5rem 0;
+  margin-bottom: 0.5rem 0;
 `
 
-const Filters = styled.div`
-  margin: 0 0 1rem 1rem;
-  display: flex;
+const Filters = styled("div")(
+  ({ theme }) => `
+  margin: 1rem 0 1rem 0;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: 10fr 6fr 4fr;
+  grid-gap: 1rem;
+  width: 100%;
+
+  ${theme.breakpoints.down("md")} {
+    grid-template-columns: 1fr;
+    grid-auto-flow: row;
+  }
+`,
+)
+
+const Statuses = styled("div")`
+  justify-self: end;
 `
 
-const FilterLabel = styled.div`
-  align-self: center;
-  margin-right: 1rem;
-`
-
-const TagButton = styled(Button)`
-  border-radius: 2rem;
-  margin: 0 0.2rem;
+const ResetFiltersButton = styled(Button, {
+  shouldForwardProp: (prop) => prop !== "variant",
+})<ButtonProps & { variant: string }>`
+  border-radius: 1rem;
   font-weight: bold;
   border-width: 0.15rem;
+  max-height: 2.5rem;
+  color: ${({ variant }) => (variant === "contained" ? "#F5F6F7" : "#378170")};
+  background-color: ${({ variant }) =>
+    variant === "contained" ? "#378170" : "#F5F6F7"};
+
+  &:hover {
+    border-width: 0.15rem;
+    background-color: ${({ variant }) =>
+      variant === "contained" ? "#378170" : "#F5F6F7"};
+  }
 `
 
-function CourseGrid() {
-  const t = useTranslator(CommonTranslations)
-  const { locale = "fi" } = useRouter()
-  const language = mapNextLanguageToLocaleCode(locale)
-  const { loading, data } = useQuery(CoursesDocument, {
-    variables: { language },
-  })
-  const [searchString, setSearchString] = useState<string>("")
-  const [tags, setTags] = useState<string[]>([])
-  const [activeTags, setActiveTags] = useState<string[]>([])
-  const [hardcodedTags, setHardcodedTags] = useState<{
-    [key: string]: string[]
-  }>({})
+const DynamicTagSelectButtons = dynamic(() => import("./TagSelectButtons"), {
+  loading: () => <Skeleton variant="rectangular" width="100%" height={96} />,
+})
 
-  // TODO: set tags on what tags are found from courses in db? or just do a hard-coded list of tags?
+const DynamicTagSelectDropdowns = dynamic(
+  () => import("./TagSelectDropdowns"),
+  {
+    loading: () => (
+      <>
+        <Skeleton variant="rectangular" width="100%" height={56} />
+        <Skeleton variant="rectangular" width="100%" height={56} />
+        <Skeleton variant="rectangular" width="100%" height={56} />
+      </>
+    ),
+  },
+)
 
-  useEffect(() => {
-    setTags([
-      "beginner",
-      "intermediate",
-      "pro",
-      "AI",
-      "programming",
-      "cloud",
-      "cyber security",
-    ])
+const StyledBorderedSection = styled(BorderedSection)`
+  margin: 1rem 0;
+`
 
-    const hardcoded: { [key: string]: string[] } = {}
-    data?.courses?.map((course) =>
-      course?.slug != null
-        ? (hardcoded[course?.slug] = [...tags]
-            .sort(() => 0.5 - Math.random())
-            .slice(0, 4))
-        : "undefined",
-    )
-    setHardcodedTags(hardcoded)
-  }, [])
+const joinWithCustomLastSeparator = (arr: Array<string>, separator = "or") => {
+  if (arr.length === 0) {
+    return ""
+  }
+  if (arr.length === 1) {
+    return arr[0]
+  }
+  return `${arr.slice(0, -1).join(", ")} ${separator} ${arr.slice(-1)}`
+}
 
-  const handleClick = (tag: string) => {
-    if (activeTags.includes(tag)) {
-      setActiveTags(activeTags.filter((t) => t !== tag))
-    } else {
-      setActiveTags([...activeTags, tag])
-    }
+interface SearchResultStatusProps {
+  tags?: Array<TagCoreFieldsFragment>
+  statuses?: Array<CourseStatus>
+  count: number
+}
+
+const SearchResultStatus = ({
+  tags,
+  statuses,
+  count,
+}: SearchResultStatusProps) => {
+  const t = useTranslator(CourseTranslations)
+  const statusResultStatus = joinWithCustomLastSeparator(
+    (statuses ?? []).map(
+      (s) =>
+        "<strong>" +
+        t(`result${s}${count !== 1 ? "Plural" : ""}`) +
+        "</strong>",
+    ),
+    t("resultOr"),
+  )
+  const languageTagResultStatus = joinWithCustomLastSeparator(
+    (tags ?? [])
+      .filter((tag) => tag.types?.includes("language"))
+      .map((tag) => "<strong>" + tag.name + "</strong>")
+      .filter(notEmptyOrEmptyString),
+    t("resultOr"),
+  )
+  const difficultyTagResultStatus = joinWithCustomLastSeparator(
+    (tags ?? [])
+      .filter((tag) => tag.types?.includes("difficulty"))
+      .sort(sortByDifficulty)
+      .map((tag) => "<strong>" + tag.name + "</strong>")
+      .filter(notEmptyOrEmptyString),
+    t("resultOr"),
+  )
+  const moduleTagResultStatus = joinWithCustomLastSeparator(
+    (tags ?? [])
+      .filter((tag) => tag.types?.includes("module"))
+      .map((tag) => "<strong>" + tag.name + "</strong>")
+      .filter(notEmptyOrEmptyString),
+    t("resultOr"),
+  )
+
+  let result = t("resultShowing", { count })
+  if (statusResultStatus) {
+    result += ` ${statusResultStatus}`
+  }
+  if (count !== 1) {
+    result += " " + t("resultCoursePlural")
+  } else {
+    result += " " + t("resultCourse")
+  }
+  if (moduleTagResultStatus) {
+    result += " " + t("resultModuleTags", { tags: moduleTagResultStatus })
+  }
+  if (difficultyTagResultStatus) {
+    result +=
+      " " + t("resultDifficultyTags", { tags: difficultyTagResultStatus })
+  }
+  if (languageTagResultStatus) {
+    result += " " + t("resultLanguageTags", { tags: languageTagResultStatus })
   }
 
   return (
-    <Container>
-      <SearchBar
-        id="searchCourses"
-        label={t("search")}
-        value={searchString}
-        autoComplete="off"
-        variant="outlined"
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setSearchString(e.target.value)
+    <Typography
+      variant="caption"
+      dangerouslySetInnerHTML={{ __html: result }}
+    />
+  )
+}
+
+const courseHasTag = (
+  course: NewCourseFieldsFragment | null,
+  tag: TagCoreFieldsFragment,
+) => {
+  if (!course) {
+    return false
+  }
+  return course.tags.some((courseTag) => courseTag.name === tag.name)
+}
+
+const compareCourses = (
+  course1: NewCourseFieldsFragment,
+  course2: NewCourseFieldsFragment,
+) => {
+  if (course1.study_modules.length == 0) {
+    return 1
+  } else if (course2.study_modules.length == 0) {
+    return -1
+  } else if (course1.study_modules[0].name < course2.study_modules[0].name) {
+    return -1
+  } else if (course1.study_modules[0].name >= course2.study_modules[0].name) {
+    return 1
+  } else {
+    return 0
+  }
+}
+
+function areEqual<T>(a: Array<T>, b: Array<T>) {
+  return a.length === b.length && !difference(a, b).length
+}
+
+function CourseGrid() {
+  const t = useTranslator(CommonTranslations)
+  const router = useRouter()
+  const { locale = "fi" } = router
+  const language = mapNextLanguageToLocaleCode(locale)
+  const isNarrow = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"))
+  const initialActiveTags = useQueryParameter("tag", {
+    enforce: false,
+    array: true,
+  })
+  const initialStatuses = useQueryParameter("status", {
+    enforce: false,
+    array: true,
+  }) as CourseStatus[]
+
+  const { loading: coursesLoading, data: coursesData } = useQuery(
+    NewCoursesDocument,
+    {
+      variables: { language },
+      ssr: false,
+    },
+  )
+
+  const { loading: tagsLoading, data: tagsData } = useQuery(
+    CourseCatalogueTagsDocument,
+    {
+      variables: { language },
+      ssr: false,
+      onCompleted(data) {
+        if (initialActiveTags) {
+          setActiveTags(
+            data.tags?.filter((tag) => initialActiveTags.includes(tag.id)) ??
+              [],
+          )
         }
-      />
-      <Filters>
-        <FilterLabel>{t("filter")}:</FilterLabel>
-        {tags.map((tag) => (
-          <TagButton
-            id=""
-            variant={activeTags.includes(tag) ? "contained" : "outlined"}
-            onClick={() => handleClick(tag)}
-            size="small"
-          >
-            {tag}
-          </TagButton>
-        ))}
-      </Filters>
-      {loading ? (
-        <CardContainer>
-          <CourseCard />
-          <CourseCard />
-          <CourseCard />
-          <CourseCard />
-        </CardContainer>
-      ) : (
-        <CardContainer>
-          {data?.courses &&
-            data.courses
-              .filter(
-                (course) =>
-                  (course?.name
-                    .toLowerCase()
-                    .includes(searchString.toLowerCase()) ||
-                    course?.description
-                      ?.toLowerCase()
-                      .includes(searchString.toLowerCase())) &&
-                  (activeTags.length > 0
-                    ? activeTags.every((tag) =>
-                        hardcodedTags[course?.slug].includes(tag),
-                      )
-                    : true),
-              )
-              .map((course) => (
-                <CourseCard
-                  course={course}
-                  tags={
-                    course?.slug ? hardcodedTags[course?.slug] : ["undefined"]
+      },
+    },
+  )
+
+  let initialFilteredStatuses = [CourseStatus.Active, CourseStatus.Upcoming]
+  if (initialStatuses && initialStatuses.length > 0) {
+    initialFilteredStatuses = initialStatuses
+  }
+
+  const [searchString, setSearchString] = useState<string>("")
+  const [activeTags, setActiveTags] = useState<Array<TagCoreFieldsFragment>>([])
+  const [filteredStatuses, setFilteredStatuses] = useState<CourseStatus[]>(
+    initialFilteredStatuses,
+  )
+
+  const tags = useMemo(() => {
+    const res = (tagsData?.tags ?? []).reduce((acc, curr) => {
+      curr?.types?.forEach((t) => {
+        if (
+          t === "language" &&
+          curr.id &&
+          !allowedLanguages.includes(curr.id)
+        ) {
+          return acc
+        }
+        acc[t] = (acc[t] ?? []).concat(curr)
+      })
+      return acc
+    }, {} as Record<string, Array<TagCoreFieldsFragment>>)
+
+    if (res["language"]) {
+      res["language"].sort(sortByLanguage)
+    }
+    if (res["difficulty"]) {
+      res["difficulty"].sort(sortByDifficulty)
+    }
+
+    return res
+  }, [tagsData])
+
+  const handleStatusChange = useCallback(
+    (status: CourseStatus) => () => {
+      setFilteredStatuses((oldStatuses) => {
+        if (oldStatuses.includes(status)) {
+          return oldStatuses.filter((s) => s !== status)
+        }
+        return [...oldStatuses, status]
+      })
+    },
+    [filteredStatuses],
+  )
+
+  const handleResetButtonClick = () => {
+    setSearchString("")
+    setActiveTags([])
+    setFilteredStatuses([CourseStatus.Active, CourseStatus.Upcoming])
+  }
+
+  const handleSearchChange = useEventCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => setSearchString(e.target.value),
+  )
+
+  const handleSelectAllTags = useCallback(
+    () => setActiveTags([...(tagsData?.tags ?? [])]),
+    [tagsData],
+  )
+
+  const filteredCourses = useMemo(
+    () =>
+      (coursesData?.courses ?? []).filter((course) => {
+        if (course.hidden || course.course_translations.length === 0) {
+          return false
+        }
+        if (
+          !course.name
+            .toLocaleLowerCase(locale)
+            .includes(searchString.toLocaleLowerCase(locale)) ||
+          !course.description
+            ?.toLocaleLowerCase(locale)
+            .includes(searchString.toLocaleLowerCase(locale))
+        ) {
+          return false
+        }
+        if (
+          activeTags.length > 0 &&
+          !activeTags.every((tag) => courseHasTag(course, tag))
+        ) {
+          return false
+        }
+        if (
+          filteredStatuses.length > 0 &&
+          course.status &&
+          !filteredStatuses.includes(CourseStatus[course.status])
+        ) {
+          return false
+        }
+        return true
+      }),
+    [coursesData, searchString, activeTags, filteredStatuses],
+  )
+
+  useEffect(() => {
+    if (tagsLoading) {
+      return
+    }
+    if (
+      areEqual(
+        activeTags.map((t) => t.id),
+        initialActiveTags,
+      ) &&
+      areEqual(filteredStatuses, initialStatuses)
+    ) {
+      return
+    }
+
+    const params = new URLSearchParams()
+    if (filteredStatuses.length > 0) {
+      for (const status of filteredStatuses) {
+        params.append("status", status)
+      }
+      if (
+        filteredStatuses.length === 2 &&
+        filteredStatuses.includes(CourseStatus.Active) &&
+        filteredStatuses.includes(CourseStatus.Upcoming)
+      ) {
+        params.delete("status")
+      }
+    }
+    if (activeTags.length > 0) {
+      for (const tag of activeTags) {
+        params.append("tag", tag.id)
+      }
+    }
+    router.replace({ query: params.toString() }, undefined, { shallow: true })
+  }, [tagsLoading, activeTags, filteredStatuses])
+
+  const TagSelectComponent = useMemo(() => {
+    if (isNarrow) {
+      return DynamicTagSelectDropdowns
+    }
+    return DynamicTagSelectButtons
+  }, [isNarrow])
+
+  return (
+    <Container>
+      <FiltersContainer>
+        <SearchBar
+          id="searchCourses"
+          label={t("search")}
+          value={searchString}
+          autoComplete="off"
+          variant="outlined"
+          onChange={handleSearchChange}
+        />
+        <StyledBorderedSection title={t("filter")}>
+          <Filters>
+            <TagSelectComponent
+              tags={tags}
+              activeTags={activeTags}
+              setActiveTags={setActiveTags}
+              selectAllTags={handleSelectAllTags}
+              loading={tagsLoading}
+            />
+            <Statuses>
+              {courseStatuses.map((status) => (
+                <FormControlLabel
+                  label={t(status)}
+                  key={status}
+                  control={
+                    <Checkbox
+                      id={status}
+                      checked={filteredStatuses.includes(status)}
+                      onChange={handleStatusChange(status)}
+                    />
                   }
                 />
               ))}
-        </CardContainer>
+            </Statuses>
+            <ResetFiltersButton
+              id="resetFiltersButton"
+              variant="outlined"
+              onClick={handleResetButtonClick}
+              startIcon={<ClearIcon />}
+            >
+              {t("reset")}
+            </ResetFiltersButton>
+          </Filters>
+        </StyledBorderedSection>
+      </FiltersContainer>
+      {coursesLoading ? (
+        <>
+          <CardsContainer>
+            <CourseCardSkeleton />
+            <CourseCardSkeleton />
+            <CourseCardSkeleton />
+            <CourseCardSkeleton />
+          </CardsContainer>
+        </>
+      ) : (
+        <>
+          <SearchResultStatus
+            tags={activeTags}
+            statuses={filteredStatuses}
+            count={filteredCourses.length}
+          />
+          <CardsContainer>
+            {sort(filteredCourses, compareCourses).map((course) => (
+              <CourseCard key={course.id} course={course} />
+            ))}
+            {filteredCourses.length === 0 && (
+              <li style={{ width: "100%" }}>no courses</li>
+            )}
+          </CardsContainer>
+        </>
       )}
     </Container>
   )

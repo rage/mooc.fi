@@ -6,7 +6,10 @@ import React, {
   useReducer,
 } from "react"
 
-import { CurrentUserQuery } from "/graphql/generated"
+import {
+  CurrentUserQuery,
+  UserDetailedFieldsFragment,
+} from "/graphql/generated"
 
 type UpdateUserPayload = {
   user: CurrentUserQuery["currentUser"]
@@ -15,18 +18,21 @@ type UpdateUserPayload = {
 
 export interface LoginState {
   loggedIn: boolean
-  logInOrOut: () => void
   admin: boolean
-  currentUser?: CurrentUserQuery["currentUser"]
+  currentUser?: UserDetailedFieldsFragment
+}
+
+export interface LoginStateContextType extends LoginState {
+  logInOrOut: () => void
   updateUser: (user: UpdateUserPayload) => void
 }
 
-export const LoginStateContext = createContext<LoginState>({
+export const LoginStateContext = createContext<LoginStateContextType>({
   loggedIn: false,
-  logInOrOut: () => {},
+  logInOrOut: () => void 0,
   currentUser: undefined,
   admin: false,
-  updateUser: (_) => {},
+  updateUser: (_) => void 0,
 })
 
 export function useLoginStateContext() {
@@ -38,6 +44,7 @@ const reducer = (state: LoginState, action: any) => {
     case "logInOrOut":
       return {
         ...state,
+        admin: state.loggedIn ? false : state.admin,
         loggedIn: !state.loggedIn,
       }
     case "updateUser":
@@ -65,10 +72,8 @@ export const LoginStateProvider = React.memo(function LoginStateProvider({
 
   const [state, dispatch] = useReducer(reducer, {
     loggedIn,
-    logInOrOut,
     admin,
     currentUser,
-    updateUser,
   })
 
   useEffect(() => {
@@ -82,13 +87,11 @@ export const LoginStateProvider = React.memo(function LoginStateProvider({
 
   const loginStateContextValue = useMemo(
     () => ({
-      loggedIn: state.loggedIn,
+      ...state,
       logInOrOut,
-      admin: state.admin,
-      currentUser: state.currentUser,
       updateUser,
     }),
-    [state.loggedIn, state.admin, state.currentUser],
+    [state],
   )
 
   return (

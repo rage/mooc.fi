@@ -1,2 +1,15 @@
 {
+  "compilerOptions": {
+    "strictNullChecks": true
+  },
+  "exclude": [
+    "node_modules",
+  ],
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",
+    ".eslintrc.js"
+  ]
+
 }

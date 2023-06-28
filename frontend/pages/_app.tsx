@@ -1,110 +1,100 @@
-import "@fortawesome/fontawesome-svg-core/styles.css"
+import { useInsertionEffect, useMemo } from "react"
 
-import { useEffect, useMemo } from "react"
-
-import { ConfirmProvider } from "material-ui-confirm"
-import type { AppContext, AppProps } from "next/app"
+import { DefaultSeo } from "next-seo"
+import type { AppContext, AppProps, NextWebVitalsMetric } from "next/app"
 import Head from "next/head"
-import { useRouter } from "next/router"
+import Script from "next/script"
 
-import { CacheProvider, EmotionCache, Global } from "@emotion/react"
-import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core"
 import { CssBaseline } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
 
-import createEmotionCache from "../src/createEmotionCache"
-import OriginalLayout from "./_layout"
-import NewLayout from "./_new/_layout"
-import { AlertProvider } from "/contexts/AlertContext"
-import { BreadcrumbProvider } from "/contexts/BreadcrumbContext"
+import DynamicLayout from "/components/DynamicLayout"
+import AppContextProvider from "/contexts/AppContextProvider"
 import { LoginStateProvider } from "/contexts/LoginStateContext"
+import useAlternateLanguage from "/hooks/useAlternateLanguage"
+import useIsNew from "/hooks/useIsNew"
 import { useScrollToHash } from "/hooks/useScrollToHash"
+import useSeoConfig from "/hooks/useSeoConfig"
+import useThemeWithLocale from "/hooks/useThemeWithLocale"
 import { isAdmin, isSignedIn } from "/lib/authentication"
-import { initGA, logPageView } from "/lib/gtag"
 import withApolloClient from "/lib/with-apollo-client"
-import { fontCss } from "/src/fonts"
-import newTheme from "/src/newTheme"
-import originalTheme from "/src/theme"
-import PagesTranslations from "/translations/pages"
-import { useTranslator } from "/util/useTranslator"
+import { createEmotionSsr } from "/src/createEmotionSsr"
 
-fontAwesomeConfig.autoAddCss = false
+import { UserDetailedFieldsFragment } from "/graphql/generated"
 
-const clientSideEmotionCache = createEmotionCache()
+const { withAppEmotionCache, augmentDocumentWithEmotionCache } =
+  createEmotionSsr({
+    key: "moocfi",
+  })
 
-interface MyAppProps extends AppProps {
-  emotionCache?: EmotionCache
+export { augmentDocumentWithEmotionCache }
+
+interface MyPageProps {
+  signedIn?: boolean
+  admin?: boolean
+  currentUser?: UserDetailedFieldsFragment
 }
 
-export function MyApp({
-  Component,
-  pageProps,
-  emotionCache = clientSideEmotionCache,
-}: MyAppProps) {
-  const router = useRouter()
-  const t = useTranslator(PagesTranslations)
+interface MyAppProps extends AppProps<MyPageProps> {
+  deviceType?: string
+}
 
-  const isNew = router.pathname?.includes("_new")
-
-  useEffect(() => {
-    initGA()
-    logPageView()
-
-    router.events.on("routeChangeComplete", logPageView)
-
+export function MyApp({ Component, pageProps, deviceType }: MyAppProps) {
+  const { signedIn, admin, currentUser } = pageProps ?? {}
+  useInsertionEffect(() => {
     const jssStyles = document?.querySelector("#jss-server-side")
     if (jssStyles?.parentElement) {
       jssStyles.parentElement.removeChild(jssStyles)
     }
-
-    return () => {
-      router.events.off("routeChangeComplete", logPageView)
-    }
-  }, [router])
+  }, [])
 
   useScrollToHash()
 
-  const titleString = t("title", { title: "..." })?.[router?.pathname ?? ""]
+  const isNew = useIsNew()
+  const seoConfig = useSeoConfig()
+  const themeWithLocale = useThemeWithLocale(deviceType)
+  const alternateLanguage = useAlternateLanguage()
 
-  const title = `${titleString ? titleString + " - " : ""}MOOC.fi`
-
-  const Layout = isNew ? NewLayout : OriginalLayout
-  const theme = isNew ? newTheme : originalTheme
   const loginStateContextValue = useMemo(
     () => ({
-      loggedIn: pageProps?.signedIn,
-      admin: pageProps?.admin,
-      currentUser: pageProps?.currentUser,
+      loggedIn: signedIn ?? false,
+      admin: admin ?? false,
+      currentUser: currentUser,
     }),
-    [pageProps?.loggedIn, pageProps?.admin, pageProps?.currentUser],
+    [signedIn, admin, currentUser],
   )
+
+  // test for container query support
+  const supportsContainerQueries =
+    typeof document !== "undefined" &&
+    "container" in document.documentElement.style
 
   return (
     <>
-      <CacheProvider value={emotionCache}>
-        <Head>
-          <meta
-            name="viewport"
-            content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
+      <Head>
+        <meta
+          name="viewport"
+          content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
+        />
+        <link rel="alternate" {...alternateLanguage} />
+        {!supportsContainerQueries && (
+          <Script
+            id="container-query-polyfill"
+            src="https://cdn.jsdelivr.net/npm/container-query-polyfill@1/dist/container-query-polyfill.modern.js"
           />
-          <title>{title}</title>
-        </Head>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <LoginStateProvider value={loginStateContextValue}>
-            <ConfirmProvider>
-              <BreadcrumbProvider>
-                <AlertProvider>
-                  <Layout>
-                    <Global styles={fontCss} />
-                    <Component {...pageProps} />
-                  </Layout>
-                </AlertProvider>
-              </BreadcrumbProvider>
-            </ConfirmProvider>
-          </LoginStateProvider>
-        </ThemeProvider>
-      </CacheProvider>
+        )}
+      </Head>
+      <ThemeProvider theme={themeWithLocale}>
+        <CssBaseline />
+        <LoginStateProvider value={loginStateContextValue}>
+          <AppContextProvider>
+            <DynamicLayout isNew={isNew}>
+              <DefaultSeo {...seoConfig} />
+              <Component {...pageProps} />
+            </DynamicLayout>
+          </AppContextProvider>
+        </LoginStateProvider>
+      </ThemeProvider>
     </>
   )
 }
@@ -118,29 +108,34 @@ MyApp.getInitialProps = async (props: AppContext) => {
   let originalProps: any = {}
 
   if (originalGetInitialProps) {
-    originalProps = (await originalGetInitialProps(props)) || {}
+    originalProps = (await originalGetInitialProps(props)) ?? {}
+  }
+  if (!originalProps?.pageProps) {
+    originalProps.pageProps = {}
   }
   if (Component.getInitialProps) {
-    originalProps = {
-      ...originalProps,
-      pageProps: {
-        ...originalProps?.pageProps,
-        ...((await Component.getInitialProps(ctx)) || {}),
-      },
-    }
+    const originalComponentProps = (await Component.getInitialProps(ctx)) ?? {}
+    Object.assign(originalProps.pageProps, originalComponentProps)
   }
 
   const signedIn = isSignedIn(ctx)
   const admin = signedIn && isAdmin(ctx)
 
-  return {
+  Object.assign(originalProps.pageProps, { signedIn, admin })
+  return originalProps
+  /*return {
     ...originalProps,
     pageProps: {
       ...originalProps.pageProps,
       signedIn,
       admin,
     },
-  }
+  }*/
 }
 
-export default withApolloClient(MyApp)
+// @ts-ignore: silence for now
+export function reportWebVitals(metric: NextWebVitalsMetric) {
+  // console.log(metric)
+}
+
+export default withAppEmotionCache(withApolloClient(MyApp))

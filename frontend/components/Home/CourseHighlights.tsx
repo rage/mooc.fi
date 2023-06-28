@@ -1,18 +1,20 @@
-import styled from "@emotion/styled"
-import Grid from "@mui/material/Grid"
+import { Grid, useMediaQuery } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import CourseCard from "./CourseCard"
 import Container from "/components/Container"
 import { BackgroundImage } from "/components/Images/GraphicBackground"
 import { H2Background, SubtitleBackground } from "/components/Text/headers"
 
-import { CourseFieldsFragment } from "/graphql/generated"
+import { FrontpageCourseFieldsFragment } from "/graphql/generated"
 
 interface RootProps {
   backgroundColor: string
 }
 
-const Root = styled.div<RootProps>`
+const Root = styled("div", {
+  shouldForwardProp: (prop) => prop !== "backgroundColor",
+})<RootProps>`
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -22,8 +24,12 @@ const Root = styled.div<RootProps>`
   ${(props) => `background-color: ${props.backgroundColor};`}
 `
 
+const TitleContainer = styled("div")`
+  z-index: 20;
+`
+
 interface CourseHighlightsProps {
-  courses?: CourseFieldsFragment[]
+  courses?: FrontpageCourseFieldsFragment[]
   loading: boolean
   title: string
   headerImage: any
@@ -36,6 +42,8 @@ interface CourseHighlightsProps {
 }
 
 const CourseHighlights = (props: CourseHighlightsProps) => {
+  // @ts-ignore: not used
+  const isMobile = useMediaQuery("(max-width: 600px)", { noSsr: true })
   const {
     courses,
     loading,
@@ -52,13 +60,12 @@ const CourseHighlights = (props: CourseHighlightsProps) => {
   return (
     <Root backgroundColor={backgroundColor}>
       <BackgroundImage
-        src={require(`../../static/images/${headerImage}`)}
+        src={headerImage.src}
         aria-hidden
         hueRotateAngle={hueRotateAngle}
         brightness={brightness}
       />
-
-      <div style={{ zIndex: 20 }}>
+      <TitleContainer>
         <H2Background
           component="h2"
           variant="h2"
@@ -76,7 +83,7 @@ const CourseHighlights = (props: CourseHighlightsProps) => {
             {subtitle}
           </SubtitleBackground>
         )}
-      </div>
+      </TitleContainer>
       <Container>
         <Grid container spacing={3}>
           {loading ? (
@@ -86,7 +93,7 @@ const CourseHighlights = (props: CourseHighlightsProps) => {
             </>
           ) : (
             courses?.map((course) => (
-              <CourseCard key={`course-${course.id}`} course={course} />
+              <CourseCard key={course.id} course={course} />
             ))
           )}
         </Grid>

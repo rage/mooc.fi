@@ -29,7 +29,7 @@ spec:
               memory: 1000Mi
               cpu: 200m
             requests:
-              memory: 100Mi
+              memory: 200Mi
               cpu: 50m
           envFrom:
           - secretRef:
@@ -38,7 +38,7 @@ spec:
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: redis
+                  name: new-redis
                   key: redis-password
             - name: KAFKA_TOP_OF_THE_QUEUE
               value: "1"

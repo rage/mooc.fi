@@ -10,13 +10,13 @@ import {
 } from "@prisma/client"
 
 import { DEFAULT_JOIN_ORGANIZATION_EMAIL_TEMPLATE_ID } from "../../../config/defaultData"
-import { fakeTMCCurrent, getTestContext } from "../../../tests/__helpers"
+import { fakeTMCCurrent, getTestContext } from "../../../tests"
 import {
   adminUserDetails,
   normalUserDetails,
+  seed,
   thirdUserDetails,
 } from "../../../tests/data"
-import { seed } from "../../../tests/data/seed"
 import { calculateActivationCode, PromiseReturnType } from "../../../util"
 
 const ctx = getTestContext()
@@ -37,7 +37,7 @@ type ErrorCase = {
   args?: Record<string, any>
   headers?: HeadersInit
   options?: Record<string, any>
-  before?: Function | AsyncFunction
+  before?: ((...args: any[]) => any) | AsyncFunction
 }
 
 const DateRegExp = new RegExp(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(.\d{3})?Z/)
@@ -175,7 +175,7 @@ describe("UserOrganization", () => {
       describe("succeeds", () => {
         describe("with no confirmation required", () => {
           it("adding user to organization", async () => {
-            const { addUserOrganization } = await ctx.client.request(
+            const { addUserOrganization } = await ctx.client.request<any>(
               addUserOrganizationMutation,
               {
                 organization_id: "10000000000000000000000000000103",
@@ -195,7 +195,7 @@ describe("UserOrganization", () => {
 
         describe("with confirmation required", () => {
           it("creating a user organization join confirmation and an email delivery", async () => {
-            const { addUserOrganization } = await ctx.client.request(
+            const { addUserOrganization } = await ctx.client.request<any>(
               addUserOrganizationMutation,
               {
                 organization_id: "10000000000000000000000000000104",
@@ -220,7 +220,7 @@ describe("UserOrganization", () => {
           })
 
           it("creating a user organization join confirmation and an email delivery and user email matches required organizational email", async () => {
-            const { addUserOrganization } = await ctx.client.request(
+            const { addUserOrganization } = await ctx.client.request<any>(
               addUserOrganizationMutation,
               {
                 organization_id: "10000000000000000000000000000102",
@@ -246,7 +246,7 @@ describe("UserOrganization", () => {
           })
 
           it("creating a user organization join confirmation and an email delivery and correct required organizational email provided", async () => {
-            const { addUserOrganization } = await ctx.client.request(
+            const { addUserOrganization } = await ctx.client.request<any>(
               addUserOrganizationMutation,
               {
                 organization_id: "10000000000000000000000000000102",
@@ -282,7 +282,7 @@ describe("UserOrganization", () => {
               },
             })
 
-            const { addUserOrganization } = await ctx.client.request(
+            const { addUserOrganization } = await ctx.client.request<any>(
               addUserOrganizationMutation,
               {
                 organization_id: "10000000000000000000000000000102",
@@ -631,7 +631,7 @@ describe("UserOrganization", () => {
 
       const createRequest = async (args: Record<string, any> = {}) => {
         result = (
-          await ctx.client.request(
+          await ctx.client.request<any>(
             requestNewUserOrganizationJoinConfirmationMutation,
             {
               id: "96900000000000000000000000000101",
@@ -923,7 +923,7 @@ describe("UserOrganization", () => {
 
       const createRequest = async (args: any, headers?: any) => {
         result = (
-          await ctx.client.request(
+          await ctx.client.request<any>(
             updateUserOrganizationOrganizationalMailMutation,
             args,
             headers,

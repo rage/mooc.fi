@@ -1,6 +1,4 @@
 // import { convertPagination } from "../../util/db-functions"
-
-import { ForbiddenError } from "apollo-server-express"
 import { merge } from "lodash"
 import { extendType, idArg, intArg, nonNull, stringArg } from "nexus"
 
@@ -8,8 +6,8 @@ import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection
 import { Prisma } from "@prisma/client"
 
 import { isAdmin, isOrganization, or } from "../../accessControl"
-import { getCourseOrAlias } from "../../util"
-import { buildUserSearch } from "../common"
+import { GraphQLForbiddenError, GraphQLUserInputError } from "../../lib/errors"
+import { buildUserSearch } from "../../util/db-functions"
 
 export const CompletionQueries = extendType({
   type: "Query",
@@ -27,12 +25,12 @@ export const CompletionQueries = extendType({
       authorize: or(isOrganization, isAdmin),
       resolve: async (_, args, ctx) => {
         const { first, last, completion_language } = args
-        let { course: slug } = args
+        const { course: slug } = args
         if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
           ctx.disableRelations = true
         }
 
-        const course = await getCourseOrAlias(ctx)({
+        const course = await ctx.prisma.course.findUniqueOrAlias({
           where: {
             slug,
           },
@@ -75,16 +73,18 @@ export const CompletionQueries = extendType({
       authorize: or(isOrganization, isAdmin),
       resolve: async (_, args, ctx, __) => {
         const { completion_language, first, last, before, after, search } = args
-        let { course: slug } = args
+        const { course: slug } = args
 
         if ((!first && !last) || (first ?? 0) > 50 || (last ?? 0) > 50) {
-          throw new ForbiddenError("Cannot query more than 50 objects")
+          throw new GraphQLForbiddenError("Cannot query more than 50 objects")
         }
 
-        const course = await getCourseOrAlias(ctx)({ where: { slug } })
+        const course = await ctx.prisma.course.findUniqueOrAlias({
+          where: { slug },
+        })
 
         if (!course) {
-          throw new Error("Course not found")
+          throw new GraphQLUserInputError("course not found")
         }
 
         const baseArgs: Prisma.CompletionFindManyArgs = {
@@ -92,7 +92,9 @@ export const CompletionQueries = extendType({
             completion_language,
             ...(search
               ? {
-                  user: buildUserSearch(search),
+                  user: {
+                    OR: buildUserSearch(search),
+                  },
                 }
               : {}),
           },
@@ -101,12 +103,14 @@ export const CompletionQueries = extendType({
         }
 
         return findManyCursorConnection(
-          (args) =>
-            ctx.prisma.course
+          async (args) => {
+            const res = await ctx.prisma.course
               .findUnique({
-                where: { id: course!.completions_handled_by_id ?? course!.id },
+                where: { id: course.completions_handled_by_id ?? course.id },
               })
-              .completions(merge(baseArgs, args)),
+              .completions(merge(baseArgs, args))
+            return res ?? []
+          },
           async () => {
             // TODO/FIXME: kludge as there is no distinct in prisma "count" or other aggregates
             //  ctx.prisma.completion.count(baseArgs as any), // not really same type, so force it
@@ -138,10 +142,14 @@ export const CompletionQueries = extendType({
             )*/
 
             return (
-              await ctx.prisma.completion.findMany({
-                ...baseArgs,
-                select: { id: true },
-              })
+              (await ctx.prisma.course
+                .findUnique({
+                  where: { id: course.completions_handled_by_id ?? course.id },
+                })
+                .completions({
+                  ...baseArgs,
+                  select: { id: true },
+                })) ?? []
             ).length
           },
           { first, last, before, after },
@@ -159,6 +167,7 @@ export const CompletionQueries = extendType({
     t.connection("completionsPaginated_type", {
       // hack to generate connection type
       type: "Completion",
+      nullable: false,
       additionalArgs: {
         course: nonNull(stringArg()),
         completion_language: stringArg(),
@@ -174,7 +183,7 @@ export const CompletionQueries = extendType({
         return []
       },
       extendConnection(t) {
-        t.int("totalCount")
+        t.nonNull.int("totalCount")
       },
     })
   },

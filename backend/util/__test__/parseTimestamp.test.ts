@@ -1,5 +1,5 @@
 import { parseTimestamp } from ".."
-import { fail } from "../../tests/__helpers"
+import { fail } from "../../tests"
 
 interface TestCase {
   input: string

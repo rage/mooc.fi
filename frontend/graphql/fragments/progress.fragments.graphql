@@ -9,3 +9,66 @@ fragment ProgressCoreFields on Progress {
     ...UserCourseServiceProgressCoreFields
   }
 }
+
+fragment ProgressExtraFields on ProgressExtra {
+  tiers {
+    ...TierInfoFields
+  }
+  exercises {
+    ...TierProgressFields
+  }
+  projectCompletion
+  highestTier
+  n_points
+  max_points
+  pointsNeeded
+  pointsPercentage
+  pointsNeededPercentage
+  exercisePercentage
+  exercisesNeededPercentage
+  totalExerciseCount
+  totalExerciseCompletions
+  totalExerciseCompletionsNeeded
+}
+
+fragment TierInfoFields on TierInfo {
+  id
+  name
+  tier
+  hasTier
+  missingFromTier
+  requiredByTier
+  exercisePercentage
+  exercisesNeededPercentage
+  exerciseCompletions
+  exerciseCount
+}
+
+fragment TierProgressFields on TierProgress {
+  exercise_number
+  tier
+  n_points
+  max_points
+  progress
+  name
+  custom_id
+  course_id
+  exercise_id
+  service_id
+  exercise_completions {
+    ...TierProgressExerciseCompletionFields
+  } 
+}
+
+fragment TierProgressExerciseCompletionFields on ExerciseCompletion {
+  ...ExerciseCompletionCoreFields
+  tier
+  max_points
+}
+
+fragment PointsByGroupFields on PointsByGroup {
+  group
+  n_points
+  max_points
+  progress
+}

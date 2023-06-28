@@ -22,11 +22,51 @@ query CurrentUserStatsSubscriptions {
   }
 }
 
-query UserSummary($upstream_id: Int!, $includeDeletedExercises: Boolean) {
+query UserSummary(
+  $upstream_id: Int
+  $includeNoPointsAwardedExercises: Boolean
+  $includeDeletedExercises: Boolean
+  ) {
   user(upstream_id: $upstream_id) {
-    id
-    username
-    user_course_summary(includeDeletedExercises: $includeDeletedExercises) {
+    ...UserDetailedFields
+    user_course_summary(
+      includeNoPointsAwardedExercises: $includeNoPointsAwardedExercises
+      includeDeletedExercises: $includeDeletedExercises
+    ) {
+      ...UserCourseSummaryCoreFields
+    }
+  }
+}
+
+query UserSummaryCourseList(
+  $upstream_id: Int
+  $includeNoPointsAwardedExercises: Boolean
+  $includeDeletedExercises: Boolean
+  ) {
+  user(upstream_id: $upstream_id) {
+    ...UserDetailedFields
+    user_course_summary(
+      includeNoPointsAwardedExercises: $includeNoPointsAwardedExercises
+      includeDeletedExercises: $includeDeletedExercises
+    ) {
+      ...UserCourseSummaryCourseListFields
+    }
+  }
+}
+
+query UserSummaryForCourse(
+  $upstream_id: Int
+  $course_slug: String!
+  $includeNoPointsAwardedExercises: Boolean
+  $includeDeletedExercises: Boolean
+  ) {
+  user(upstream_id: $upstream_id) {
+    ...UserDetailedFields
+    user_course_summary(
+      course_slug: $course_slug
+      includeNoPointsAwardedExercises: $includeNoPointsAwardedExercises
+      includeDeletedExercises: $includeDeletedExercises
+    ) {
       ...UserCourseSummaryCoreFields
     }
   }
@@ -91,6 +131,7 @@ query ConnectedUser {
       display_name
       organization {
         id
+        name
         organization_translations {
           language
           name
@@ -104,17 +145,44 @@ query ConnectionTest {
   currentUser {
     ...UserCoreFields
     verified_users {
-      id
-      organization {
-        slug
-        organization_translations {
-          language
-          name
-        }
-      }
-      created_at
-      personal_unique_code
-      display_name
+      ...VerifiedUserFields
     }
   }
+}
+
+fragment VerifiedUserFields on VerifiedUser {
+  id
+  organization {
+    slug
+    name
+    organization_translations {
+      language
+      name
+    }
+  }
+  created_at
+  personal_unique_code
+  display_name
+}
+
+subscription UserSearch($search: String!, $fields: [UserSearchField!]) {
+  userSearch(search: $search, fields: $fields) {
+    ...UserSearchMetaFields
+    matches {
+      ...UserCoreFields
+    }
+  }
+}
+
+fragment UserSearchMetaFields on UserSearch {
+  field
+  fieldValue
+  search
+  allMatchIds
+  count
+  fieldIndex
+  fieldCount
+  fieldResultCount
+  fieldUniqueResultCount
+  finished
 }

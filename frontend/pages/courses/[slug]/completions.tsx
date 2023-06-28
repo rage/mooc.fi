@@ -1,11 +1,12 @@
-import { ChangeEvent, useState } from "react"
+import { ChangeEvent, useCallback, useState } from "react"
 
 import { NextSeo } from "next-seo"
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import { TextField } from "@mui/material"
+import { styled } from "@mui/material/styles"
+import { useEventCallback } from "@mui/material/utils"
 
 import { WideContainer } from "/components/Container"
 import CompletionsList from "/components/Dashboard/CompletionsList"
@@ -16,17 +17,16 @@ import Spinner from "/components/Spinner"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import CourseLanguageContext from "/contexts/CourseLanguageContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
-import useSubtitle from "/hooks/useSubtitle"
+import { useQueryParameter } from "/hooks/useQueryParameter"
+import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
 import CoursesTranslations from "/translations/courses"
-import { useQueryParameter } from "/util/useQueryParameter"
-import { useTranslator } from "/util/useTranslator"
 
 import { CourseFromSlugDocument } from "/graphql/generated"
 
-// import useDebounce from "/util/useDebounce"
+// import useDebounce from "/hooks/useDebounce"
 
-const ContentArea = styled.div`
+const ContentArea = styled("div")`
   max-width: 39em;
   margin: auto;
 `
@@ -40,15 +40,29 @@ const Completions = () => {
   const [searchString, setSearchString] = useState("")
   const [search, setSearch] = useState("")
 
-  const handleLanguageChange = (event: ChangeEvent<unknown>) => {
-    // prevents reloading page, URL changes
+  const handleLanguageChange = useEventCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      // prevents reloading page, URL changes
 
-    const href = `/courses/${slug}/completions?language=${
-      (event.target as HTMLInputElement).value
-    }`
-    changeLng((event.target as HTMLInputElement).value as string)
-    router.replace(router.pathname, href, { shallow: true })
-  }
+      const href = `/courses/${slug}/completions?language=${e.target.value}`
+      changeLng(e.target.value)
+      router.replace(router.pathname, href, { shallow: true })
+    },
+  )
+
+  const handleSearchChange = useEventCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setSearchString(e.target.value)
+    },
+  )
+  const handleSearchKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Enter") {
+        setSearch(searchString)
+      }
+    },
+    [searchString],
+  )
 
   const { data, loading, error } = useQuery(CourseFromSlugDocument, {
     variables: { slug },
@@ -68,7 +82,7 @@ const Completions = () => {
       href: `/courses/${slug}/completions`,
     },
   ])
-  const title = useSubtitle(data?.course?.name)
+  const title = data?.course?.name ?? "..."
 
   if (loading || !data) {
     return <Spinner />
@@ -113,10 +127,8 @@ const Completions = () => {
               value={searchString}
               autoComplete="off"
               variant="outlined"
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setSearchString(e.target.value)
-              }
-              onKeyDown={(e) => e.key === "Enter" && setSearch(searchString)}
+              onChange={handleSearchChange}
+              onKeyDown={handleSearchKeyDown}
             />
             <CompletionsList search={search} />
           </ContentArea>

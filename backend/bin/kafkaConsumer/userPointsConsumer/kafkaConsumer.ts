@@ -1,14 +1,14 @@
 import { Message as KafkaMessage, LibrdKafkaError } from "node-rdkafka"
 
+import { Mutex } from "../../../lib/await-semaphore"
+import { KafkaError } from "../../../lib/errors"
+import sentryLogger from "../../../lib/logger"
 import prisma from "../../../prisma"
 import knex from "../../../services/knex"
-import { Mutex } from "../../lib/await-semaphore"
-import { KafkaError } from "../../lib/errors"
-import sentryLogger from "../../lib/logger"
 import { createKafkaConsumer } from "../common/createKafkaConsumer"
 import { handleMessage } from "../common/handleMessage"
 import { KafkaContext } from "../common/kafkaContext"
-import { Message } from "../common/userPoints/interfaces"
+import { handledRecently, setHandledRecently } from "../common/messageHashCache"
 import { saveToDatabase } from "../common/userPoints/saveToDB"
 import { MessageYupSchema } from "../common/userPoints/validate"
 import config from "../kafkaConfig"
@@ -43,13 +43,21 @@ consumer.on("ready", () => {
       logger.error(new KafkaError("Error while consuming", error))
       process.exit(-1)
     }
+
     if (messages.length > 0) {
-      await handleMessage<Message>({
-        context,
-        kafkaMessage: messages[0],
-        MessageYupSchema,
-        saveToDatabase,
-      })
+      const messageString = messages[0]?.value?.toString("utf8") ?? ""
+      if (!handledRecently(messageString)) {
+        await handleMessage({
+          context,
+          kafkaMessage: messages[0],
+          MessageYupSchema,
+          saveToDatabase,
+        })
+        setHandledRecently(messageString)
+      } else {
+        logger.info("Skipping message because it was already handled recently.")
+      }
+
       setImmediate(() => {
         consumer.consume(1, consumerImpl)
       })

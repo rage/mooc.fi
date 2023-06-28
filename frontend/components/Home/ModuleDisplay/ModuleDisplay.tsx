@@ -1,67 +1,86 @@
 import { useMemo } from "react"
 
-import { orderBy } from "lodash"
+import { sortBy } from "remeda"
+
+import { styled } from "@mui/material/styles"
 
 import ModuleDisplayBackground from "/components/Home/ModuleDisplay/ModuleDisplayBackground"
 import ModuleDisplayContent from "/components/Home/ModuleDisplay/ModuleDisplayContent"
 import ModuleDisplaySkeleton from "/components/Home/ModuleDisplay/ModuleDisplaySkeleton"
-import notEmpty from "/util/notEmpty"
 
 import {
   CourseStatus,
-  StudyModuleFieldsWithCoursesFragment,
+  FrontpageCourseFieldsFragment,
+  StudyModuleFieldsFragment,
 } from "/graphql/generated"
 
+type StudyModuleWithFrontpageCourse = StudyModuleFieldsFragment & {
+  courses: Array<FrontpageCourseFieldsFragment>
+}
+
 interface ModuleProps {
-  module?: StudyModuleFieldsWithCoursesFragment
+  studyModule?: StudyModuleWithFrontpageCourse
   hueRotateAngle: number
   brightness: number
   backgroundColor: string
 }
 
+const ModuleContainer = styled("section")`
+  margin-bottom: 3em;
+`
+
 function Module(props: ModuleProps) {
-  const { module, hueRotateAngle, brightness, backgroundColor } = props
+  const { studyModule, hueRotateAngle, brightness, backgroundColor } = props
 
   const orderedCourses = useMemo(
     () =>
-      orderBy(
-        (module?.courses || []).filter(notEmpty),
+      sortBy(
+        studyModule?.courses ?? [],
         [
-          (course) => course.study_module_order,
-          (course) => course.study_module_start_point === true,
-          (course) => course.status === CourseStatus.Active,
-          (course) => course.status === CourseStatus.Upcoming,
+          (course) => course.study_module_order ?? Number.MAX_SAFE_INTEGER,
+          "asc",
         ],
-        ["desc", "desc", "desc"],
+        [(course) => course.study_module_start_point === true, "desc"],
+        [(course) => course.status === CourseStatus.Active, "desc"],
+        [(course) => course.status === CourseStatus.Upcoming, "desc"],
       ),
-    [module?.courses],
+    [studyModule?.courses],
   )
 
-  if (!module) {
-    return null
+  if (!studyModule) {
+    return <ModuleSkeleton {...props} />
   }
 
   return (
-    <section
-      id={module ? module.slug : "module-skeleton"}
-      style={{ marginBottom: "3em" }}
-    >
+    <ModuleContainer id={studyModule.slug}>
       <ModuleDisplayBackground
         backgroundColor={backgroundColor}
         hueRotateAngle={hueRotateAngle}
         brightness={brightness}
       >
-        {module ? (
-          <ModuleDisplayContent
-            name={module.name}
-            description={module.description ?? ""}
-            orderedCourses={orderedCourses}
-          />
-        ) : (
-          <ModuleDisplaySkeleton />
-        )}
+        <ModuleDisplayContent
+          name={studyModule.name}
+          description={studyModule.description ?? ""}
+          orderedCourses={orderedCourses}
+        />
       </ModuleDisplayBackground>
-    </section>
+    </ModuleContainer>
+  )
+}
+
+function ModuleSkeleton(props: ModuleProps) {
+  const { hueRotateAngle, brightness, backgroundColor } = props
+
+  return (
+    <ModuleContainer>
+      <ModuleDisplayBackground
+        backgroundColor={backgroundColor}
+        hueRotateAngle={hueRotateAngle}
+        brightness={brightness}
+      >
+        <ModuleDisplaySkeleton />
+      </ModuleDisplayBackground>
+    </ModuleContainer>
   )
 }
 

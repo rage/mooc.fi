@@ -1,7 +1,7 @@
-import { AuthenticationError } from "apollo-server-core"
 import { extendType, idArg, stringArg } from "nexus"
 
 import { isAdmin, isUser, or } from "../../accessControl"
+import { GraphQLAuthenticationError } from "../../lib/errors"
 import { filterNullFields } from "../../util"
 import { assertUserIdOnlyForAdmin } from "./helpers"
 
@@ -29,7 +29,7 @@ export const UserOrganizationQueries = extendType({
         const user_id = user_id_param ?? ctx.user?.id
 
         if (!user_id) {
-          throw new AuthenticationError("not logged in or no user id")
+          throw new GraphQLAuthenticationError("not logged in or no user id")
         }
 
         return ctx.prisma.user

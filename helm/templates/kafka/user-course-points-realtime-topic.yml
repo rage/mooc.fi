@@ -1,0 +1,13 @@
+apiVersion: kafka.strimzi.io/v1beta1
+kind: KafkaTopic
+metadata:
+  name: user-course-points-realtime
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka-cluster
+spec:
+  partitions: 10
+  replicas: 2
+  config:
+    retention.ms: 604800000
+    segment.bytes: 107374182

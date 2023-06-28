@@ -1,27 +1,19 @@
-import * as winston from "winston"
-
-import type { Prisma, PrismaClient } from "@prisma/client"
+import { type Prisma } from "@prisma/client"
 
 import { PRISMA_LOG_LEVELS } from "../config"
+import { ServerContext } from "../context"
 
-const logLevel: Prisma.LogLevel[] | undefined = PRISMA_LOG_LEVELS?.split(
-  ",",
-) as Prisma.LogLevel[]
+const logLevel = (PRISMA_LOG_LEVELS?.split(",") ?? []) as Prisma.LogLevel[]
 
-export const logDefinition: Prisma.LogDefinition[] | undefined = logLevel?.map(
-  (level) => ({
-    emit: "event",
-    level,
-  }),
-)
+export const logDefinition: Prisma.LogDefinition[] = logLevel.map((level) => ({
+  emit: "event",
+  level,
+}))
 
-interface AttachPrismaEvents {
-  logger: winston.Logger
-  prisma: PrismaClient
-}
+type PrismaEventsContext = Pick<ServerContext, "logger" | "prisma">
 
-export const attachPrismaEvents = ({ logger, prisma }: AttachPrismaEvents) => {
-  logDefinition?.forEach(({ level }) => {
+export const attachPrismaEvents = ({ logger, prisma }: PrismaEventsContext) => {
+  logDefinition.forEach(({ level }) => {
     switch (level) {
       case "query":
         // @ts-ignore: dynamic log types

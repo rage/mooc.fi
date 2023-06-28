@@ -1,7 +1,7 @@
 import { LINKOPING_COMPLETION_RECIPIENTS } from "../config"
+import sentryLogger from "../lib/logger"
 import prisma from "../prisma"
-import { sendMail } from "../util"
-import sentryLogger from "./lib/logger"
+import { sendMail } from "../util/sendMail"
 
 const logger = sentryLogger({ service: "linkoping-stats-emailer" })
 
@@ -20,10 +20,10 @@ const linkopingStatsEmailer = async () => {
       FROM "user" u
       JOIN user_course_setting ucs on ucs.user_id = u.id
       JOIN completion c on c.user_id = u.id
-    WHERE u.email LIKE '%liu.se'
+    WHERE u.email ILIKE '%liu.se'
       AND ucs.other ->> 'ects_consent_sweden' = 'true'
       AND ucs.other ->> 'bai_completion' = 'true'
-      AND c.course_id = '49cbadd8-be32-454f-9b7d-e84d52100b74'
+      AND c.course_id = '49cbadd8-be32-454f-9b7d-e84d52100b74'::uuid
       AND ucs.country = 'Sweden'
     ORDER BY c.completion_date;
   `
@@ -43,8 +43,8 @@ const linkopingStatsEmailer = async () => {
 }
 
 linkopingStatsEmailer()
-  .then(() => process.exit(0))
+  .then(() => prisma.$disconnect().then(() => process.exit(0)))
   .catch((error) => {
     logger.error(error)
-    process.exit(1)
+    return prisma.$disconnect().then(() => process.exit(1))
   })

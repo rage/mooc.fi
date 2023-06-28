@@ -4,9 +4,9 @@
 
 Create `.env` files for backend and frontend. See examples and ask your local boffin for details.
 
-Install `docker-compose`, if not already installed.
-
 ## Development workflow
+
+Current `node` version is `18.16.0`.
 
 Run `npm ci` in the each of the root, backend and frontend directories to install dependencies.
 
@@ -28,7 +28,9 @@ npm run migrate
 npm run dev
 ```
 
-If the database doesn't seem to do anything, ie. no messages after the initial ones after running `docker-compose up` and the database queries are not getting through, run `docker-compose down` and try again. You can always run the database container in detached mode (`-d`) but then you won't see the logs live.
+If the database doesn't seem to do anything, ie. no messages after the initial ones after running `docker compose up` and the database queries are not getting through, run `docker compose down` and try again. You can always run the database container in detached mode (`-d`) but then you won't see the logs live.
+
+If you have used a development database with an older version of PostgreSQL and you want to keep your data, you will need to migrate it to the new version. See [here](docs/database.md) for instructions.
 
 Run `npm run prettier` in the root directory before committing. The commit runs hooks to check this as well as some linters, type checks etc.
 
@@ -40,8 +42,8 @@ By default, `node-rdkafka` builds `librdkafka` from the source. This can take mi
 Do this in some other directory than the project one:
 
 ```bash
-wget https://github.com/edenhill/librdkafka/archive/v1.8.2.tar.gz  -O - | tar -xz
-cd librdkafka-1.8.2
+wget https://github.com/edenhill/librdkafka/archive/v2.0.2.tar.gz  -O - | tar -xz
+cd librdkafka-2.0.2
 ./configure --prefix=/usr
 make && make install
 ```
@@ -56,3 +58,4 @@ Set the env `BUILD_LIBRDKAFKA=0` when doing `npm ci` or similar on the backend t
 
 - [Kafka](docs/kafka.md)
 - [GraphQL](docs/graphql.md)
+- [Database](docs/database.md)

@@ -3,11 +3,10 @@ import { PropsWithChildren } from "react"
 import ProfileCompletionsDisplay from "components/Profile/ProfileCompletionsDisplay"
 import ProfilePointsDisplay from "components/Profile/ProfilePointsDisplay"
 
-import Box from "@mui/material/Box"
-import Typography from "@mui/material/Typography"
+import { Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import ProfileSettings from "/components/Profile/ProfileSettings"
-import notEmpty from "/util/notEmpty"
 
 import { UserOverviewFieldsFragment } from "/graphql/generated"
 
@@ -15,6 +14,12 @@ interface TabPanelProps {
   index: number
   value: number
 }
+
+const TabContainer = styled("div")(
+  ({ theme }) => `
+  ${theme.spacing(3)};
+`,
+)
 
 const TabPanel = ({
   value,
@@ -28,7 +33,7 @@ const TabPanel = ({
     id={`user-profile-${index}`}
     aria-labelledby={`user-profile-tab-${index}`}
   >
-    <Box sx={{ p: 3 }}>{children}</Box>
+    {value === index && <TabContainer>{children}</TabContainer>}
   </Typography>
 )
 
@@ -46,9 +51,7 @@ const StudentDataDisplay = ({ tab, data }: StudentDataDisplayProps) => {
         <ProfilePointsDisplay />
       </TabPanel>
       <TabPanel index={1} value={tab}>
-        <ProfileCompletionsDisplay
-          completions={completions?.filter(notEmpty) ?? []}
-        />
+        <ProfileCompletionsDisplay completions={completions ?? []} />
       </TabPanel>
       <TabPanel index={2} value={tab}>
         <ProfileSettings data={data} />

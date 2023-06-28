@@ -1,5 +1,9 @@
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
+import { URL } from "url"
+
 export const isProduction = process.env.NODE_ENV === "production"
 export const isTest = process.env.NODE_ENV === "test"
+export const isDev = !isProduction && !isTest
 
 require("dotenv-safe").config({
   allowEmptyValues: isProduction || isTest,
@@ -10,31 +14,60 @@ export const isStaging = () =>
 
 export const DEBUG = Boolean(process.env.DEBUG)
 
-export const EXTENSION_PATH = "extensions" // CIRCLECI ? "public" : "extensions"
+// database related
+export const CIRCLECI = process.env.CIRCLECI
+export const EXTENSION_PATH = "extensions"
 
-export let SEARCH_PATH: Array<string>
+const rawDatabaseURL =
+  isTest && !CIRCLECI
+    ? "postgres://prisma:prisma@localhost:5678/testing"
+    : process.env.DATABASE_URL
+const url = new URL((rawDatabaseURL ?? "").replaceAll('"', ""))
+const defaultSearchPath = isProduction ? "moocfi$production" : "default$default"
 
-if (isProduction) {
-  SEARCH_PATH = [process.env.SEARCH_PATH ?? "moocfi$production"]
-} else {
-  SEARCH_PATH =
-    isTest && process.env.RUNNING_IN_CI
-      ? ([process.env.SEARCH_PATH, EXTENSION_PATH].filter(
-          Boolean,
-        ) as Array<string>)
-      : ["default$default"]
+const searchPath = url.searchParams.get("schema")?.split(",") ?? []
+if (searchPath.length === 0) {
+  searchPath.push(defaultSearchPath)
+}
+if (isTest && process.env.RUNNING_IN_CI) {
+  searchPath.push(EXTENSION_PATH)
 }
 
-export const DB_PORT = Number(process.env.DB_PORT)
+const parsedConnectionLimit = Number(process.env.CONNECTION_LIMIT)
+export const CONNECTION_LIMIT =
+  isNaN(parsedConnectionLimit) || parsedConnectionLimit === 0
+    ? url.searchParams.get("connection_limit")
+    : parsedConnectionLimit
+
+if (CONNECTION_LIMIT) {
+  url.searchParams.set("connection_limit", CONNECTION_LIMIT.toString())
+} else {
+  url.searchParams.delete("connection_limit")
+}
+export const APPLICATION_NAME =
+  process.env.APPLICATION_NAME ??
+  url.searchParams.get("application_name") ??
+  "moocfi"
+url.searchParams.set("application_name", APPLICATION_NAME)
+
+export const DATABASE_URL = url.href
+
+url.searchParams.delete("schema")
+const port = url.port ? Number(url.port) : 5432
+
+export const DB_HOST = url.hostname
+export const DB_PORT = !isNaN(port) ? port : 5432
+export const DB_USER = url.username
+export const DB_PASSWORD = url.password
+export const DB_NAME = url.pathname.replace("/", "") ?? undefined
+export const DATABASE_URL_WITHOUT_SCHEMA = url.href
+export const DB_CONNECTION_PARAMS = Object.fromEntries(url.searchParams)
+export const SEARCH_PATH = searchPath
 
 export const {
   BACKEND_URL = "https://mooc.fi",
   FRONTEND_URL = "https://www.mooc.fi",
-  // db
-  DB_HOST,
-  DB_USER,
-  DB_PASSWORD,
-  DB_NAME,
+  CERTIFICATES_URL = "https://certificates.mooc.fi",
   // sentry, new relic
   NEW_RELIC_LICENSE_KEY,
   SENTRY_DSN,
@@ -82,31 +115,17 @@ export const {
   // redis
   REDIS_URL = "redis://127.0.0.1:7001",
   REDIS_PASSWORD,
+  USER_HASH_SECRET = "",
   // prisma log levels for debugging
   PRISMA_LOG_LEVELS,
-  // circleci
-  CIRCLECI,
   // nexus reflection
   NEXUS_REFLECTION,
-  // Linköping University completion addresses, separated by :
+  // Linköping University/Prague completion addresses, separated by :
   LINKOPING_COMPLETION_RECIPIENTS,
+  PRAGUE_COMPLETION_RECIPIENTS,
 } = process.env
-
-export const DATABASE_URL =
-  isTest && !CIRCLECI
-    ? "postgres://prisma:prisma@localhost:5678/testing"
-    : process.env.DATABASE_URL
-
-export const DATABASE_URL_WITHOUT_SCHEMA = (() => {
-  const url = new URL(DATABASE_URL ?? "")
-  url.searchParams.delete("schema")
-
-  return url.href
-})()
-
-// certificates api
-export const CERTIFICATES_URL =
-  process.env.CERTIFICATES_URL || "https://certificates.mooc.fi"
 
 export const PRIVATE_KEY_TEST = "config/mooc-private-test.pem"
 export const PUBLIC_KEY_TEST = "config/mooc-public-test.pem"
+
+export const REDIS_DB = process.env.REDIS_DB ? Number(process.env.REDIS_DB) : 4

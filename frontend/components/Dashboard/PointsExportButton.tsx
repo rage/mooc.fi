@@ -1,9 +1,7 @@
-import { useState } from "react"
-
-import { utils, type WorkBook, writeFile } from "xlsx"
+import { useCallback, useState } from "react"
 
 import { ApolloClient, useApolloClient } from "@apollo/client"
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 
@@ -12,7 +10,7 @@ import {
   ExportUserCourseProgressesQuery,
 } from "/graphql/generated"
 
-const PointsExportButtonContainer = styled.div`
+const PointsExportButtonContainer = styled("div")`
   margin-bottom: 1rem;
 `
 
@@ -26,33 +24,35 @@ function PointsExportButton(props: PointsExportButtonProps) {
 
   const [infotext, setInfotext] = useState("")
 
+  const onExportClick = useCallback(async () => {
+    try {
+      const { utils, writeFile } = await import("xlsx")
+      setInfotext("Downloading data")
+      const data = await downloadInChunks(slug, client, setInfotext)
+      setInfotext("constructing csv")
+      const objects = await flatten(data)
+      const sheet = utils.json_to_sheet(objects)
+      const workbook = {
+        SheetNames: [],
+        Sheets: {},
+      }
+      utils.book_append_sheet(workbook, sheet, "UserCourseProgress")
+      await writeFile(workbook, slug + "-points.csv", {
+        bookType: "csv",
+        type: "string",
+      })
+      setInfotext("ready")
+    } catch (e) {
+      setInfotext(`Error: ${e}`)
+    }
+  }, [slug, client])
+
   return (
     <PointsExportButtonContainer>
       <StyledButton
         color="secondary"
-        disabled={!(infotext == "" || infotext == "ready")}
-        onClick={async () => {
-          try {
-            setInfotext("Downloading data")
-            const data = await downloadInChunks(slug, client, setInfotext)
-            setInfotext("constructing csv")
-            let objects = await flatten(data)
-            console.log(data)
-            console.log(objects)
-            const sheet = utils.json_to_sheet(objects)
-            console.log("sheet", sheet)
-            const workbook: WorkBook = {
-              SheetNames: [],
-              Sheets: {},
-            }
-            utils.book_append_sheet(workbook, sheet, "UserCourseProgress")
-            await writeFile(workbook, slug + "-points.csv"),
-              { bookType: "csv", type: "string" }
-            setInfotext("ready")
-          } catch (e) {
-            setInfotext(`Error: ${e}`)
-          }
-        }}
+        disabled={!(!infotext || infotext == "ready")}
+        onClick={onExportClick}
       >
         Export
       </StyledButton>
@@ -81,6 +81,11 @@ async function flatten(
     } = datum?.user ?? {}
     const { course_variant, country, language } =
       datum?.user_course_settings ?? {}
+    const groups: Record<string, number> = {}
+
+    for (const progress of datum?.progress ?? []) {
+      groups[progress.group] = progress.n_points
+    }
 
     const newDatum = {
       user_id: upstream_id,
@@ -93,13 +98,7 @@ async function flatten(
       course_variant: course_variant?.replace(/\s+/g, " ").trim() ?? "",
       country: country?.replace(/\s+/g, " ").trim() ?? "",
       language: language?.replace(/\s+/g, " ").trim() ?? "",
-      ...(datum?.progress?.reduce(
-        (obj: any, progress: any) => ({
-          ...obj,
-          [progress.group]: progress.n_points,
-        }),
-        {},
-      ) ?? {}),
+      ...groups,
     }
     return newDatum
   })
@@ -111,33 +110,51 @@ async function downloadInChunks(
   client: ApolloClient<object>,
   setMessage: React.Dispatch<React.SetStateAction<string>>,
 ): Promise<ExportUserCourseProgressesQuery["userCourseProgresses"]> {
-  const res: ExportUserCourseProgressesQuery["userCourseProgresses"] = []
-  // let after: string | undefined = undefined
-  let skip = 0
+  let finished = false
+  let res: ExportUserCourseProgressesQuery["userCourseProgresses"] = []
 
-  while (1 === 1) {
-    const { data } = await client.query({
+  // kludge to not block the UI
+  const download = async (
+    skip = 0,
+    innerRes: ExportUserCourseProgressesQuery["userCourseProgresses"] = [],
+  ) => {
+    const { data, error } = await client.query({
       query: ExportUserCourseProgressesDocument,
       variables: {
         course_slug: courseSlug,
         skip,
         take: 100,
         /*after: after, 
-        first: 100*/
+            first: 100*/
       },
     })
-    let downloaded = data?.userCourseProgresses ?? []
+    const downloaded = data?.userCourseProgresses ?? []
+    if (error) {
+      finished = true
+      setMessage("Error downloading data")
+      return Promise.reject()
+    }
     if (downloaded.length === 0) {
-      break
+      finished = true
+      res = innerRes ?? []
+      return Promise.resolve()
     }
     //after = downloaded[downloaded.length - 1]?.id
     // console.log("After:", after)
     skip += downloaded.length
     console.log("Skip:", skip)
 
-    const nDownLoaded = res.push(...downloaded)
-    setMessage(`Downloaded progress for ${nDownLoaded} users...`)
+    const nDownloaded = innerRes?.push(...downloaded)
+    setMessage(`Downloaded progress for ${nDownloaded} users...`)
+    requestAnimationFrame(() => download(skip, innerRes))
   }
+  await (async () => {
+    requestAnimationFrame(() => download())
+    while (!finished) {
+      await new Promise((resolve) => setTimeout(resolve, 10))
+    }
+  })()
+
   return res
 }
 

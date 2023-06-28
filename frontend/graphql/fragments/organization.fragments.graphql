@@ -4,6 +4,8 @@ fragment OrganizationCoreFields on Organization {
   email
   hidden
   disabled
+  name
+  information
   created_at
   updated_at
   required_confirmation

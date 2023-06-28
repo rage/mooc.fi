@@ -3,8 +3,8 @@ import {
   ExerciseCompletionRequiredAction,
 } from "@prisma/client"
 
-import { getTestContext } from "../../tests/__helpers"
-import { seed } from "../../tests/data/seed"
+import { getTestContext } from "../../tests"
+import { seed } from "../../tests/data"
 import { removeDuplicateExerciseCompletions } from "../removeDuplicateExerciseCompletions"
 
 const ctx = getTestContext()
@@ -99,7 +99,7 @@ describe("removeDuplicateExerciseCompletions", () => {
               ...(testData[i].actions
                 ? {
                     exercise_completion_required_actions: {
-                      create: testData[i].actions!.map((value) => ({
+                      create: (testData[i].actions ?? []).map((value) => ({
                         value,
                       })),
                     },
@@ -116,10 +116,7 @@ describe("removeDuplicateExerciseCompletions", () => {
       }
     }
 
-    await expect(
-      async () =>
-        await removeDuplicateExerciseCompletions(ctx.knex, ctx.logger),
-    ).rejects.toThrow("0") // process.exit called with 0
+    await removeDuplicateExerciseCompletions(ctx.knex, ctx.logger)
 
     const after = await ctx.prisma.exerciseCompletion.findMany({
       include: {
@@ -150,10 +147,11 @@ describe("removeDuplicateExerciseCompletions", () => {
 
     expect(removed.length).toBe(0)
 
-    const createdMap: Record<string, CreatedDataEntry> = createdData.reduce(
-      (acc, curr) => ({ ...acc, [curr.created.id]: curr }),
-      {},
-    )
+    const createdMap: Record<string, CreatedDataEntry> = {}
+
+    for (const datum of createdData) {
+      createdMap[datum.created.id] = datum
+    }
 
     // those that were not expected to be pruned are still in the database, as are their actions
     for (const completion of after) {
@@ -165,7 +163,7 @@ describe("removeDuplicateExerciseCompletions", () => {
             .sort(),
         ).toEqual(
           expect.arrayContaining(
-            createdMap[completion.id].testData.actions!.sort(),
+            (createdMap[completion.id].testData.actions ?? []).sort(),
           ),
         )
       }

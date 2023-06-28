@@ -1,8 +1,3 @@
-import {
-  AuthenticationError,
-  ForbiddenError,
-  UserInputError,
-} from "apollo-server-core"
 import { omit } from "lodash"
 import { booleanArg, extendType, idArg, nonNull, stringArg } from "nexus"
 
@@ -11,6 +6,11 @@ import { User } from "@prisma/client"
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { DEFAULT_JOIN_ORGANIZATION_EMAIL_TEMPLATE_ID } from "../../config/defaultData"
 import { Context } from "../../context"
+import {
+  GraphQLAuthenticationError,
+  GraphQLForbiddenError,
+  GraphQLUserInputError,
+} from "../../lib/errors"
 import { calculateActivationCode, filterNullFields } from "../../util"
 import {
   ConfigurationError,
@@ -84,15 +84,13 @@ export const UserOrganizationMutations = extendType({
         }
 
         if (!user) {
-          throw new UserInputError("no such user", { argumentName: "user_id" })
+          throw new GraphQLUserInputError("no such user", "user_id")
         }
 
         if (!organization_id && !organization_slug) {
-          throw new UserInputError(
+          throw new GraphQLUserInputError(
             "no organization_id nor organization_slug provided",
-            {
-              argumentName: ["organization_id", "organization_slug"],
-            },
+            ["organization_id", "organization_slug"],
           )
         }
 
@@ -114,9 +112,10 @@ export const UserOrganizationMutations = extendType({
         })
 
         if (!organization) {
-          throw new UserInputError("no such organization", {
-            argumentName: ["organization_id", "organization_slug"],
-          })
+          throw new GraphQLUserInputError("no such organization", [
+            "organization_id",
+            "organization_slug",
+          ])
         }
 
         if (organization.required_confirmation) {
@@ -160,7 +159,7 @@ export const UserOrganizationMutations = extendType({
       resolve: async (_, { id, code }, ctx) => {
         if (!ctx.user?.id) {
           // just to be sure, should never happen
-          throw new AuthenticationError("not logged in")
+          throw new GraphQLAuthenticationError("not logged in")
         }
 
         const userOrganizationJoinConfirmation =
@@ -185,9 +184,7 @@ export const UserOrganizationMutations = extendType({
 
         // user is not associated with this confirmation or confirmation id is invalid
         if (!userOrganizationJoinConfirmation) {
-          throw new UserInputError("invalid confirmation id", {
-            argumentName: "id",
-          })
+          throw new GraphQLUserInputError("invalid confirmation id", "id")
         }
 
         const { user_organization } = userOrganizationJoinConfirmation
@@ -227,7 +224,7 @@ export const UserOrganizationMutations = extendType({
           }
 
           // TODO: should we just return the expired confirmation?
-          throw new ForbiddenError("confirmation link has expired")
+          throw new GraphQLForbiddenError("confirmation link has expired")
         }
 
         const activationCodeResult = await calculateActivationCode({
@@ -240,7 +237,7 @@ export const UserOrganizationMutations = extendType({
         }
 
         if (activationCodeResult.value !== code) {
-          throw new ForbiddenError("invalid activation code")
+          throw new GraphQLForbiddenError("invalid activation code")
         }
 
         const newUserOrganizationJoinConfirmation =
@@ -285,7 +282,7 @@ export const UserOrganizationMutations = extendType({
       ) => {
         if (!ctx.user?.id) {
           // just to be sure, should never happen
-          throw new AuthenticationError("not logged in")
+          throw new GraphQLAuthenticationError("not logged in")
         }
 
         const userOrganization = await ctx.prisma.userOrganization.findFirst({
@@ -308,9 +305,7 @@ export const UserOrganizationMutations = extendType({
         })
 
         if (!userOrganization) {
-          throw new UserInputError("invalid user organization id", {
-            argumentName: "id",
-          })
+          throw new GraphQLUserInputError("invalid user organization id", "id")
         }
 
         const { user, organization, user_organization_join_confirmations } =
@@ -491,9 +486,9 @@ export const UserOrganizationMutations = extendType({
         } = userOrganization ?? {}
 
         if (!userOrganization || !user || !organization) {
-          throw new UserInputError(
+          throw new GraphQLUserInputError(
             "no user organization found or invalid user/organization relation",
-            { argumentName: "id" },
+            "id",
           )
         }
 
@@ -602,9 +597,7 @@ export const UserOrganizationMutations = extendType({
         })
 
         if (!userOrganization) {
-          throw new UserInputError("no user organization found", {
-            argumentName: "id",
-          })
+          throw new GraphQLUserInputError("no user organization found", "id")
         }
 
         const { user_id, organization_id, organization } = userOrganization

@@ -1,25 +1,26 @@
 import React from "react"
 
-import { memoize } from "lodash"
-import Link from "next/link"
+import memo from "just-memoize"
 import { useRouter } from "next/router"
 
-import styled from "@emotion/styled"
-import { Skeleton } from "@mui/material"
+import { Link, Skeleton } from "@mui/material"
+import { css, styled } from "@mui/material/styles"
 
 import { Breadcrumb, useBreadcrumbContext } from "/contexts/BreadcrumbContext"
+import { useTranslator } from "/hooks/useTranslator"
 import { isTranslationKey } from "/translations"
-import BreadcrumbsTranslations from "/translations/breadcrumbs"
-import { useTranslator } from "/util/useTranslator"
+import BreadcrumbsTranslations, {
+  Breadcrumbs as BreadcrumbsTranslationType,
+} from "/translations/breadcrumbs"
 
-const BreadcrumbList = styled.ul`
+const BreadcrumbList = styled("ul")`
   list-style: none;
   overflow: hidden;
   margin: 0px !important;
   padding-left: 0px;
 `
 
-const BreadcrumbItem = styled.li`
+const BreadcrumbItem = styled("li")`
   float: left;
   cursor: pointer;
   &:first-of-type a {
@@ -38,7 +39,7 @@ const BreadcrumbItem = styled.li`
   }
 `
 
-const BreadcrumbArrowStyle = `
+const BreadcrumbLinkBase = css`
   color: #2f4858;
   text-decoration: none;
   padding: 10px 0 10px 45px;
@@ -78,12 +79,12 @@ const BreadcrumbArrowStyle = `
   }
 `
 
-const BreadcrumbLink = styled.a`
-  ${BreadcrumbArrowStyle}
+const BreadcrumbLink = styled(Link)`
+  ${BreadcrumbLinkBase.styles}
 `
 
-const BreadcrumbNonLink = styled.div`
-  ${BreadcrumbArrowStyle}
+const BreadcrumbNonLink = styled("div")`
+  ${BreadcrumbLinkBase.styles}
 `
 
 const BreadcrumbComponent: React.FunctionComponent<Breadcrumb> = ({
@@ -93,9 +94,7 @@ const BreadcrumbComponent: React.FunctionComponent<Breadcrumb> = ({
 }) => {
   const t = useTranslator(BreadcrumbsTranslations)
 
-  const _translation = isTranslationKey<typeof BreadcrumbsTranslations>(
-    translation,
-  )
+  const _translation = isTranslationKey<BreadcrumbsTranslationType>(translation)
     ? t(translation)
     : translation
 
@@ -108,15 +107,13 @@ const BreadcrumbComponent: React.FunctionComponent<Breadcrumb> = ({
           {text ?? <Skeleton width="100px" />}
         </BreadcrumbNonLink>
       ) : (
-        <Link href={href} passHref>
-          <BreadcrumbLink>{text}</BreadcrumbLink>
-        </Link>
+        <BreadcrumbLink href={href}>{text}</BreadcrumbLink>
       )}
     </BreadcrumbItem>
   )
 }
 
-const createKey = memoize(
+const createKey = memo(
   (href: string, prefix?: string) =>
     `${prefix ?? ""}${encodeURIComponent(href).replace(/[%#]/g, "-")}`,
 )
@@ -125,23 +122,25 @@ export function Breadcrumbs() {
   const router = useRouter()
   const { breadcrumbs } = useBreadcrumbContext()
 
-  const isHomePage = !!router?.asPath
-    ?.replace(/#(.*)/, "")
-    .match(/^(?:\/_new)?\/?$/)
+  const isHomePage = !!RegExp(/^(?:\/_new)?\/?$/).exec(
+    router?.asPath?.replace(/#(.*)/, ""),
+  )
 
   if (isHomePage) {
     return null
   }
 
   return (
-    <BreadcrumbList>
-      <BreadcrumbComponent translation="home" href="/" key="home" />
-      {breadcrumbs.map((breadcrumb, index) => (
-        <BreadcrumbComponent
-          {...breadcrumb}
-          key={createKey(breadcrumb.href ?? `${index}`, "breadcrumb")}
-        />
-      ))}
-    </BreadcrumbList>
+    <nav id="breadcrumbs" aria-label="breadcrumbs">
+      <BreadcrumbList>
+        <BreadcrumbComponent translation="home" href="/" key="home" />
+        {breadcrumbs.map((breadcrumb, index) => (
+          <BreadcrumbComponent
+            {...breadcrumb}
+            key={createKey(breadcrumb.href ?? `${index}`, "breadcrumb")}
+          />
+        ))}
+      </BreadcrumbList>
+    </nav>
   )
 }

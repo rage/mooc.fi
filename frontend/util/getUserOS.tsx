@@ -1,16 +1,21 @@
-export type userOsType = "OS" | "Linux" | "Windows" | "macOS" | "ZIP"
+import { GetServerSidePropsContext } from "next"
 
-function getUserOS(): userOsType {
-  var OSName: userOsType = "OS"
-  if (typeof window != "undefined") {
-    if (window.navigator.appVersion.indexOf("Win") != -1) OSName = "Windows"
-    if (window.navigator.appVersion.indexOf("Mac") != -1) OSName = "macOS"
-    if (window.navigator.appVersion.indexOf("Linux") != -1) OSName = "Linux"
-    if (window.navigator.appVersion.indexOf("X11") != -1) OSName = "Linux"
-    return OSName
-  } else {
-    return OSName
-  }
+export type UserOSType = "OS" | "Linux" | "Windows" | "macOS" | "ZIP"
+
+function getUserOS(req?: GetServerSidePropsContext["req"]): UserOSType {
+  let OSName: UserOSType = "OS"
+  const detectString =
+    req?.headers["user-agent"] ?? typeof window !== "undefined"
+      ? window.navigator.userAgentData?.platform ?? // all but firefox
+        window.navigator.userAgent ?? // old
+        window.navigator.oscpu // firefox
+      : ""
+  if (detectString.indexOf("Win") != -1) OSName = "Windows"
+  if (detectString.indexOf("Mac") != -1) OSName = "macOS"
+  if (detectString.indexOf("Linux") != -1) OSName = "Linux"
+  if (detectString.indexOf("X11") != -1) OSName = "Linux"
+
+  return OSName
 }
 
 export default getUserOS

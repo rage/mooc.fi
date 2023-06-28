@@ -1,5 +1,18 @@
 import { useEffect, useRef } from "react"
 
+function getArrayDiff(a: any[], b: any[]) {
+  const diff = []
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) {
+      diff.push({
+        from: a[i],
+        to: b[i],
+      })
+    }
+  }
+  return diff
+}
+
 function useWhyDidYouUpdate(name: string, props: any) {
   // Get a mutable ref object where we can store props ...
   // ... for comparison next time this hook runs.
@@ -15,10 +28,20 @@ function useWhyDidYouUpdate(name: string, props: any) {
       allKeys.forEach((key) => {
         // If previous is different from current
         if (previousProps.current[key] !== props[key]) {
+          let arrayDiff = undefined
           // Add to changesObj
+          if (
+            Array.isArray(previousProps.current[key]) &&
+            Array.isArray(props[key])
+          ) {
+            if (previousProps.current[key].length === props[key].length) {
+              arrayDiff = getArrayDiff(previousProps.current[key], props[key])
+            }
+          }
           changesObj[key] = {
             from: previousProps.current[key],
             to: props[key],
+            arrayDiff,
           }
         }
       })

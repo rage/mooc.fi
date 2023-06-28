@@ -3,23 +3,28 @@ import { useState } from "react"
 import { DateTime } from "luxon"
 import { useConfirm } from "material-ui-confirm"
 import { NextSeo } from "next-seo"
-import { withRouter } from "next/router"
-import * as Papa from "papaparse"
+import dynamic from "next/dynamic"
+import { useRouter } from "next/router"
+import { parse } from "papaparse"
 
 import { useMutation, useQuery } from "@apollo/client"
-import styled from "@emotion/styled"
-import AdapterLuxon from "@mui/lab/AdapterLuxon"
-import DatePicker from "@mui/lab/DatePicker"
-import LocalizationProvider from "@mui/lab/LocalizationProvider"
-import { Button, Container, TextField, TextFieldProps } from "@mui/material"
-import Alert from "@mui/material/Alert"
-import AlertTitle from "@mui/material/AlertTitle"
-import Typography from "@mui/material/Typography"
+import {
+  Alert,
+  AlertTitle,
+  Button,
+  Container,
+  Skeleton,
+  TextField,
+  Typography,
+} from "@mui/material"
+import { styled } from "@mui/material/styles"
+import { type DatePickerProps } from "@mui/x-date-pickers"
+import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
-import useSubtitle from "/hooks/useSubtitle"
+import { useQueryParameter } from "/hooks/useQueryParameter"
 import withAdmin from "/lib/with-admin"
-import { useQueryParameter } from "/util/useQueryParameter"
 
 import {
   AddManualCompletionDocument,
@@ -30,6 +35,11 @@ const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
 `
 
+const DynamicDatePicker = dynamic<DatePickerProps<Date | null>>(
+  () => import("@mui/x-date-pickers").then((mod) => mod.DatePicker),
+  { ssr: false, loading: () => <Skeleton variant="rectangular" /> },
+)
+
 interface CompletionData {
   user_id: string
   grade?: string
@@ -37,8 +47,8 @@ interface CompletionData {
 }
 
 const ManualCompletions = () => {
+  const { locale } = useRouter()
   const confirm = useConfirm()
-
   const [submitting, setSubmitting] = useState(false)
   const [input, setInput] = useState("")
   const [message, setMessage] = useState<string | null>(null)
@@ -46,7 +56,7 @@ const ManualCompletions = () => {
   const [messageSeverity, setMessageSeverity] = useState<
     "info" | "error" | "success" | "warning" | undefined
   >("info")
-  const [completionDate, setCompletionDate] = useState<DateTime | null>(null)
+  const [completionDate, setCompletionDate] = useState<Date | null>(null)
   const [addCompletions, { loading: mutationLoading, error: mutationError }] =
     useMutation(AddManualCompletionDocument, {
       onCompleted: () => {
@@ -79,13 +89,13 @@ const ManualCompletions = () => {
       href: `/courses/${slug}/manual-completions`,
     },
   ])
-  const title = useSubtitle(courseData?.course?.name)
+  const title = courseData?.course?.name ?? "..."
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     setSubmitting(true)
     setMessage(null)
     setMessageSeverity("info")
-    const parsed = Papa.parse<CompletionData>(input, { header: true })
+    const parsed = parse<CompletionData>(input, { header: true })
     if (parsed.errors.length > 0) {
       setMessage(JSON.stringify(parsed.errors, undefined, 2))
       setMessageSeverity("error")
@@ -178,7 +188,7 @@ const ManualCompletions = () => {
         .then(() =>
           addCompletions({
             variables: {
-              course_id: courseData!.course!.id,
+              course_id: courseData?.course?.id ?? "",
               completions: filteredData,
             },
           }),
@@ -188,7 +198,7 @@ const ManualCompletions = () => {
     } else {
       addCompletions({
         variables: {
-          course_id: courseData!.course!.id,
+          course_id: courseData?.course?.id ?? "",
           completions: filteredData,
         },
       })
@@ -228,14 +238,15 @@ const ManualCompletions = () => {
           Completion date (optional) - if provided, will be default for every
           completion with no date set
         </Typography>
-        <LocalizationProvider dateAdapter={AdapterLuxon}>
-          <DatePicker
-            inputFormat="yyyy-MM-dd"
+        <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={locale}>
+          <DynamicDatePicker
             onChange={setCompletionDate}
             value={completionDate}
-            renderInput={(props: TextFieldProps) => (
-              <TextField {...props} variant="outlined" />
-            )}
+            slotProps={{
+              textField: {
+                variant: "outlined",
+              },
+            }}
           />
         </LocalizationProvider>
         <Typography>
@@ -251,7 +262,6 @@ const ManualCompletions = () => {
           label="csv"
           fullWidth
           rows={20}
-          maxRows={5000}
           multiline
         />
         <Button disabled={submitting} onClick={onSubmit}>
@@ -262,4 +272,4 @@ const ManualCompletions = () => {
   )
 }
 
-export default withRouter(withAdmin(ManualCompletions) as any)
+export default withAdmin(ManualCompletions)

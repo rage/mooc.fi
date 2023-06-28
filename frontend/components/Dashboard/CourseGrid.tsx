@@ -1,14 +1,17 @@
 import { useMemo } from "react"
 
-import { range } from "lodash"
+import { range } from "remeda"
 
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import CourseCard from "./CourseCard"
 import { useFilterContext } from "/contexts/FilterContext"
 import notEmpty from "/util/notEmpty"
 
-const CourseList = styled.ul``
+const CourseList = styled("ul")`
+  list-style: none;
+  padding: 0;
+`
 
 const CourseGrid = () => {
   const { loading, coursesData } = useFilterContext()
@@ -22,18 +25,12 @@ const CourseGrid = () => {
     <section>
       <CourseList>
         {loading ? (
-          range(6).map((i) => (
-            <CourseCard key={`skeleton-${i}`} loading={true} />
-          ))
+          range(0, 6).map((i) => <CourseCard key={`skeleton-${i}`} loading />)
         ) : (
           <>
             <CourseCard key="newcourse" />
             {courses?.map((course) => (
-              <CourseCard
-                key={`${course.id}-${course.status}`}
-                course={course}
-                loading={loading}
-              />
+              <CourseCard key={course.id} course={course} />
             ))}
           </>
         )}

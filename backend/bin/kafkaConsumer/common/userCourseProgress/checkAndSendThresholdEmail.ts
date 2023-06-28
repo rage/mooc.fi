@@ -27,14 +27,18 @@ export const checkAndSendThresholdEmail = async ({
     })
 
   // Sort threshold emails ascending, send highest threshold email as last.
-  const templatesThatFulfillPoints = courseEmailThresholdTemplates
-    .sort((a, b) => (a.points_threshold ?? 0) - (b.points_threshold ?? 0))
-    .filter((et) => {
+  courseEmailThresholdTemplates.sort(
+    (a, b) => (a.points_threshold ?? 0) - (b.points_threshold ?? 0),
+  )
+
+  const templatesThatFulfillPoints = courseEmailThresholdTemplates.filter(
+    (et) => {
       if (et.points_threshold === null || et.points_threshold === undefined) {
         return false
       }
       return combinedUserCourseProgress.total_n_points >= et.points_threshold
-    })
+    },
+  )
 
   for (const template of templatesThatFulfillPoints) {
     const mailSent = await context.prisma.emailDelivery.findFirst({

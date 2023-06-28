@@ -1,8 +1,9 @@
 import { NextPageContext } from "next"
 import { AppContext } from "next/app"
+import { useRouter } from "next/router"
 import { renderToString } from "react-dom/server"
 
-import { type ApolloClient, ApolloProvider } from "@apollo/client"
+import { ApolloProvider, type ApolloClient } from "@apollo/client"
 
 import fetchUserDetails from "./fetch-user-details"
 import getApollo, { initNewApollo } from "./get-apollo"
@@ -27,7 +28,9 @@ const withApolloClient = (App: any) => {
     accessToken,
     ...pageProps
   }: Props) => {
-    const apolloClient = apollo ?? getApollo(apolloState, accessToken)
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const { locale } = useRouter()
+    const apolloClient = getApollo(apolloState, accessToken, locale)
     return (
       <ApolloProvider client={apolloClient}>
         <App {...pageProps} />
@@ -43,6 +46,7 @@ const withApolloClient = (App: any) => {
     const Component = inAppContext ? ctx.Component : undefined
 
     const res = inAppContext ? ctx?.ctx?.res : ctx?.res
+    const locale = inAppContext ? ctx?.ctx?.locale : ctx?.locale
 
     let props: any = {
       pageProps: {},
@@ -62,7 +66,7 @@ const withApolloClient = (App: any) => {
     // 1. access token might have changed
     // 2. We've decided to discard apollo cache between page transitions to avoid bugs.
     //  @ts-ignore: ignore type error on ctx
-    const apollo = initNewApollo(accessToken)
+    const apollo = initNewApollo(accessToken, locale)
     // @ts-ignore: ignore
     apollo.toJSON = () => null
     // UserDetailsContext uses this
@@ -72,9 +76,10 @@ const withApolloClient = (App: any) => {
 
     if (typeof window === "undefined") {
       if (inAppContext) {
-        props = { ...props, apollo }
+        props.apollo = apollo
       } else {
-        props = { pageProps: { ...props, apollo } }
+        Object.assign(props.pageProps, props ?? {}, { apollo })
+        //props = { pageProps: { ...props, apollo } }
       }
       if (res?.finished) {
         return props
@@ -91,7 +96,7 @@ const withApolloClient = (App: any) => {
           tree: (
             <AppTree
               {...props}
-              pageProps={props?.pageProps ?? {}}
+              //pageProps={props?.pageProps ?? {}}
               Component={Component}
             />
           ),

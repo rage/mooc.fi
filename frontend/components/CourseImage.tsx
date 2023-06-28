@@ -1,55 +1,50 @@
-import { memo } from "react"
+import React from "react"
 
-import styled from "@emotion/styled"
+import { ImageProps } from "next/image"
+
 import { Typography } from "@mui/material"
+import { css, styled } from "@mui/material/styles"
 
-import { addDomain } from "/util/imageUtils"
+import LoaderImage from "./LoaderImage"
 
 import { ImageCoreFieldsFragment } from "/graphql/generated"
 
-const ComponentStyle = `
+const ImageComponentBase = css`
   width: 100%;
   height: 100%;
   object-fit: cover;
 `
 
-const ImageComponent = styled.img`
-  ${ComponentStyle}
-`
-const PlaceholderComponent = styled.div`
-  ${ComponentStyle}
+const PlaceholderComponent = styled("div")`
+  ${ImageComponentBase.styles}
   background-color: #F0F0F0;
   display: flex;
   justify-content: center;
   align-items: center;
 `
-interface CourseImageProps {
+interface CourseImageProps extends Omit<ImageProps, "src"> {
   photo?: ImageCoreFieldsFragment | null
-  [k: string]: any
+  src?: ImageProps["src"]
 }
 
-const CourseImage = memo((props: CourseImageProps) => {
+const CourseImage = React.memo((props: CourseImageProps) => {
   const { photo, ...rest } = props
 
   return (
-    <picture>
+    <>
       {photo ? (
-        <>
-          <source srcSet={addDomain(photo.compressed)} type="image/webp" />
-          <source srcSet={addDomain(photo.uncompressed)} type="image/png" />
-          <ImageComponent
-            src={addDomain(photo.uncompressed)}
-            loading="lazy"
-            alt=""
-            {...rest}
-          />
-        </>
+        <LoaderImage
+          image={photo}
+          sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          fill
+          {...rest}
+        />
       ) : (
         <PlaceholderComponent>
           <Typography variant="h3">no image</Typography>
         </PlaceholderComponent>
       )}
-    </picture>
+    </>
   )
 })
 

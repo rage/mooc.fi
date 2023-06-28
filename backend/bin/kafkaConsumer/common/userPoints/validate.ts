@@ -7,11 +7,11 @@ export const MessageYupSchema = yup.object().shape({
   exercise_id: yup.string().required(),
   n_points: yup.number().nullable(),
   completed: yup.boolean().required(),
+  attempted: yup.boolean().nullable(),
   user_id: yup.number().required(),
   course_id: yup.string().length(36).required(),
   service_id: yup.string().length(36).required(),
   required_actions: yup.array(yup.string()),
-  attempted: yup.boolean().nullable(),
   message_format_version: yup
     .number()
     .min(CURRENT_MESSAGE_FORMAT_VERSION)

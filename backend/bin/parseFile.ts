@@ -41,13 +41,13 @@ const doIt = async () => {
     if (existing.length > 0) counter++
   }
   console.log(counter)
-  let y = data.filter(
+  const y = data.filter(
     (p) =>
       p.namespace === "elements-of-ai" &&
       p.field_name == "language" &&
       p.value == "en",
   )
-  let z = data
+  const z = data
     .filter(
       (p) =>
         p.namespace === "elements-of-ai" &&

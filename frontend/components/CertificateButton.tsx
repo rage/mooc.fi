@@ -1,25 +1,29 @@
-import { useCallback, useState } from "react"
+import { useCallback, useId, useState } from "react"
 
-import styled from "@emotion/styled"
+import { LinkProps } from "next/link"
+
 import WarningIcon from "@mui/icons-material/Warning"
 import {
+  Button,
+  ButtonProps,
   CircularProgress,
+  Dialog,
   DialogActions,
+  DialogContent,
   DialogContentText,
+  DialogTitle,
   Paper,
   TextField,
   Typography,
 } from "@mui/material"
-import Button from "@mui/material/Button"
-import Dialog from "@mui/material/Dialog"
-import DialogContent from "@mui/material/DialogContent"
-import DialogTitle from "@mui/material/DialogTitle"
+import { styled } from "@mui/material/styles"
+import { useEventCallback } from "@mui/material/utils"
 
 import { useAlertContext } from "/contexts/AlertContext"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useCertificate } from "/hooks/useCertificate"
+import { useTranslator } from "/hooks/useTranslator"
 import CompletionsTranslations from "/translations/completions"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   CompletionDetailedFieldsFragment,
@@ -29,9 +33,10 @@ import {
 const CERTIFICATES_URL = "https://certificates.mooc.fi"
 
 const StyledButton = styled(Button)`
-  margin: auto;
   background-color: #005361;
-`
+  text-align: center;
+  max-width: 20vw;
+` as typeof Button
 
 const StyledDialog = styled(Dialog)`
   padding: 1rem;
@@ -54,11 +59,16 @@ interface CertificateProps {
   completion: CompletionDetailedFieldsFragment
 }
 
-const CertificateButton = ({ course, completion }: CertificateProps) => {
+const CertificateButton = ({
+  course,
+  completion,
+  ...buttonProps
+}: CertificateProps & Partial<ButtonProps> & Partial<LinkProps>) => {
   const t = useTranslator(CompletionsTranslations)
   const { currentUser } = useLoginStateContext()
   const { addAlert } = useAlertContext()
   const [dialogOpen, setDialogOpen] = useState(false)
+  const dialogTitleId = useId()
 
   const isOtherUser = currentUser?.id !== completion.user_id
 
@@ -69,7 +79,7 @@ const CertificateButton = ({ course, completion }: CertificateProps) => {
       message: t("certificateGeneratedMessage"),
       severity: "success",
     })
-  }, [])
+  }, [t])
   const onReceiveGeneratedCertificateError = useCallback(() => {
     setDialogOpen(false)
     addAlert({
@@ -77,7 +87,7 @@ const CertificateButton = ({ course, completion }: CertificateProps) => {
       message: t("nameFormErrorSubmit"),
       severity: "error",
     })
-  }, [])
+  }, [t])
 
   const {
     state,
@@ -94,16 +104,27 @@ const CertificateButton = ({ course, completion }: CertificateProps) => {
     onReceiveGeneratedCertificateError,
   })
 
+  const onShowCertificate = useCallback(
+    () =>
+      window.open(
+        `${CERTIFICATES_URL}/validate/${state.certificateId}`,
+        "_blank",
+      ),
+    [state.certificateId],
+  )
+
+  const onDialogOpen = useEventCallback(() => setDialogOpen(true))
+  const onDialogClose = useEventCallback(() => setDialogOpen(false))
+  const onFirstNameChange = useEventCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => setFirstName(e.target.value),
+  )
+  const onLastNameChange = useEventCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => setLastName(e.target.value),
+  )
+
   if (state.certificateId) {
     return (
-      <StyledButton
-        onClick={() =>
-          window.open(
-            `${CERTIFICATES_URL}/validate/${state.certificateId}`,
-            "_blank",
-          )
-        }
-      >
+      <StyledButton onClick={onShowCertificate} {...buttonProps}>
         {t("showCertificate")}
       </StyledButton>
     )
@@ -126,11 +147,13 @@ const CertificateButton = ({ course, completion }: CertificateProps) => {
       </>
     )
   }
+
   return (
     <>
       <StyledButton
         disabled={state.status !== "IDLE"}
-        onClick={() => setDialogOpen(true)}
+        onClick={onDialogOpen}
+        {...buttonProps}
       >
         {state.status !== "IDLE" ? (
           <CircularProgress size={24} color="secondary" />
@@ -140,19 +163,20 @@ const CertificateButton = ({ course, completion }: CertificateProps) => {
       </StyledButton>
       <StyledDialog
         open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-        aria-labelledby="dialog-title"
+        disableEnforceFocus
+        onClose={onDialogClose}
+        aria-labelledby={dialogTitleId}
       >
-        <DialogTitle id="dialog-title">{t("nameFormTitle")}</DialogTitle>
+        <DialogTitle id={dialogTitleId}>{t("nameFormTitle")}</DialogTitle>
         <DialogContent>
-          <DialogContentText style={{ marginBottom: "1.5rem" }}>
+          <DialogContentText sx={{ marginBottom: "1.5rem" }}>
             {t("nameFormIntro")}
           </DialogContentText>
           <StyledTextField
             id="first-name"
             label={t("nameFormFirstName")}
             value={firstName}
-            onChange={(event) => setFirstName(event.target.value)}
+            onChange={onFirstNameChange}
             defaultValue={firstName}
             fullWidth
           />
@@ -161,13 +185,13 @@ const CertificateButton = ({ course, completion }: CertificateProps) => {
             label={t("nameFormLastName")}
             defaultValue={lastName}
             value={lastName}
-            onChange={(event) => setLastName(event.target.value)}
+            onChange={onLastNameChange}
             fullWidth
           />
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={() => setDialogOpen(false)}
+            onClick={onDialogClose}
             variant="outlined"
             color="inherit"
             fullWidth

@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react"
 
-import styled from "@emotion/styled"
 import {
   FormControl,
   FormHelperText,
@@ -8,14 +7,15 @@ import {
   InputLabel,
   Link,
 } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmitButton"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
+import { useTranslator } from "/hooks/useTranslator"
 import { isSignedIn, signIn } from "/lib/authentication"
 import CommonTranslations from "/translations/common"
-import { useTranslator } from "/util/useTranslator"
 
-const StyledForm = styled.form`
+const StyledForm = styled("form")`
   padding: 1em;
 `
 
@@ -79,7 +79,9 @@ function SignIn() {
             setError(false)
           }}
         />
-        <FormHelperText error={error}>{error && t("error")}</FormHelperText>
+        <FormHelperText error={error}>
+          {error && t("loginFailedError")}
+        </FormHelperText>
       </FormControl>
 
       <SubmitButton
@@ -89,7 +91,8 @@ function SignIn() {
         color="secondary"
         fullWidth
         disabled={email.trim() === "" || password.trim() === ""}
-        onClick={async (e) => {
+        onClick={async (e: any) => {
+          // TODO: typing
           e.preventDefault()
           try {
             await signIn({ email, password, shallow: false })

@@ -1,15 +1,15 @@
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import ModuleCoursesListing, {
   ThreeOrLessCoursesListing,
 } from "/components/Home/ModuleDisplay/ModuleCourseCardList"
 import { H2Background } from "/components/Text/headers"
+import { useTranslator } from "/hooks/useTranslator"
 import HomeTranslations from "/translations/home"
-import { useTranslator } from "/util/useTranslator"
 
-import { CourseFieldsFragment, CourseStatus } from "/graphql/generated"
+import { CourseStatus, FrontpageCourseFieldsFragment } from "/graphql/generated"
 
-const CoursesListContainer = styled.div`
+const CoursesListContainer = styled("div")`
   margin: 2rem 2em 2em 2rem;
   padding: 1rem;
   min-width: 33%;
@@ -20,7 +20,7 @@ const CoursesListTitle = styled(H2Background)`
   margin-bottom: 3rem;
 `
 interface ModuleCoursesProps {
-  courses: CourseFieldsFragment[]
+  courses: FrontpageCourseFieldsFragment[]
 }
 
 const ModuleCoursesDisplay = (props: ModuleCoursesProps) => {

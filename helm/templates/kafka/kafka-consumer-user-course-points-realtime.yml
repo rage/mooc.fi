@@ -1,0 +1,58 @@
+{{- $deploymentname := "kafka-consumer-user-course-points-realtime" -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $deploymentname }}
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ $deploymentname }}
+      {{- include "helm.selectorLabels" . | nindent 6 }}
+  replicas: {{ .Values.kafkaConsumer.topic.userCoursePointsRealtime.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ $deploymentname }}
+        {{- include "helm.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ $deploymentname }}
+          image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          command: ["sh", "-c", "npm run kafka-consumer-user-course-points-realtime"]
+          imagePullPolicy: Always
+          ports:
+            - name: backend-http
+              containerPort: 4000
+          resources:
+            limits:
+              memory: 1000Mi
+              cpu: 300m
+            requests:
+              memory: 300Mi
+              cpu: 100m
+          envFrom:
+          - secretRef:
+              name: backend-secret
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: new-redis
+                  key: redis-password
+            - name: CONNECTION_LIMIT
+              value: "{{ default .Values.kafkaConsumer.connectionLimit .Values.kafkaConsumer.topic.userCoursePointsRealtime.connectionLimit }}"
+            - name: APPLICATION_NAME
+              value: "{{ $deploymentname }}"
+          volumeMounts:
+            - name: google-cloud-storage-serviceaccount
+              mountPath: "/etc/gcs"
+              readOnly: true
+      volumes:
+        - name: google-cloud-storage-serviceaccount
+          secret:
+            secretName: google-cloud-storage-serviceaccount
+            items:
+              - key: account.json
+                path: account.json

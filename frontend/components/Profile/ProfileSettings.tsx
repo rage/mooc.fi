@@ -4,8 +4,8 @@ import { useMutation } from "@apollo/client"
 
 import CustomSnackbar from "/components/CustomSnackbar"
 import ResearchConsent from "/components/Dashboard/ResearchConsent"
+import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
-import { useTranslator } from "/util/useTranslator"
 
 import {
   CurrentUserOverviewDocument,
@@ -49,7 +49,7 @@ const ProfileSettings = ({ data }: ProfileSettingsProps) => {
     useState<SnackbarProps>(initialSnackbarState)
 
   const handleResearchConsentInput = async (
-    event: ChangeEvent<{}>,
+    event: ChangeEvent<HTMLInputElement>,
     value: string,
   ) => {
     event.preventDefault()

@@ -4,7 +4,7 @@ import { scalarType } from "nexus"
 export type UploadRoot = Promise<FileUpload>
 
 export const Upload = scalarType({
-  ...GraphQLUpload!,
+  ...GraphQLUpload,
   name: "Upload",
   asNexusMethod: "upload",
   rootTyping: "UploadRoot",

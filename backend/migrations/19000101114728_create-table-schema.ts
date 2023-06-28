@@ -327,7 +327,6 @@ export async function up(knex: Knex): Promise<any> {
     course uuid
   );`)
 
-  // TODO: check organization_role vs OrganizationRole
   await knex.raw(`CREATE TABLE IF NOT EXISTS user_organization (
     id uuid NOT NULL,
     role organization_role DEFAULT 'Student'::organization_role,
@@ -543,4 +542,6 @@ export async function up(knex: Knex): Promise<any> {
   }
 }
 
-export async function down(_knex: Knex): Promise<any> {}
+export async function down(_knex: Knex): Promise<any> {
+  return
+}

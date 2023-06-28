@@ -27,7 +27,7 @@ export function abStudiesRouter(ctx: ApiContext) {
   }
 
   async function abStudiesPost(
-    req: Request<{}, {}, { name: string; group_count: number }>,
+    req: Request<any, any, { name: string; group_count: number }>,
     res: Response,
   ) {
     const { prisma } = ctx
@@ -64,7 +64,7 @@ export function abStudiesRouter(ctx: ApiContext) {
   }
 
   async function abStudiesUsersPost(
-    req: Request<{ id: string }, {}, { users: Array<number> }>,
+    req: Request<{ id: string }, any, { users: Array<number> }>,
     res: Response,
   ) {
     const { prisma } = ctx
@@ -105,14 +105,14 @@ export function abStudiesRouter(ctx: ApiContext) {
         .json({ message: `ab_study with id ${id} not found` })
     }
 
-    const groupByUser = enrollments.reduce((acc, curr) => {
-      if (!curr.user) return acc
+    const groupByUser: Record<string, number | null> = {}
 
-      return {
-        ...acc,
-        [curr.user.upstream_id]: curr.group,
+    for (const enrollment of enrollments) {
+      if (!enrollment.user) {
+        continue
       }
-    }, {})
+      groupByUser[enrollment.user.upstream_id] = enrollment.group
+    }
 
     return res.status(200).json({ study_id: id, users: groupByUser })
   }

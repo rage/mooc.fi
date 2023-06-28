@@ -1,7 +1,7 @@
 import { DateTime } from "luxon"
 
+import { DatabaseInputError } from "../../../lib/errors"
 import { err, ok, parseTimestamp, Result } from "../../../util"
-import { DatabaseInputError } from "../../lib/errors"
 import { KafkaContext } from "../common/kafkaContext"
 import { ExerciseData, Message } from "./interfaces"
 
@@ -103,7 +103,6 @@ const handleExercise = async ({
   const exercisePart = parseExercisePart(exercise.part)
 
   if (existingExercise) {
-    // FIXME: well this is weird
     if (
       DateTime.fromISO(existingExercise.timestamp?.toISOString() ?? "") >
       timestamp

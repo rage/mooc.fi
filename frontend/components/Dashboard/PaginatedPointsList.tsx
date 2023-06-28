@@ -1,15 +1,14 @@
 import { ChangeEvent, useEffect, useState } from "react"
 
-import { range } from "lodash"
+import { range } from "remeda"
 
 import { useLazyQuery } from "@apollo/client"
-import styled from "@emotion/styled"
 import { Button, Grid, Skeleton, Slider, TextField } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 import PointsList from "./DashboardPointsList"
 import ErrorBoundary from "/components/ErrorBoundary"
-import notEmpty from "/util/notEmpty"
-import useDebounce from "/util/useDebounce"
+import useDebounce from "/hooks/useDebounce"
 
 import { StudentProgressesDocument } from "/graphql/generated"
 
@@ -55,14 +54,15 @@ function PaginatedPointsList(props: Props) {
   }
 
   // FIXME: the gap should depend on screen width
-  const sliderMarks = range(0, 101, 10).map((value) => ({
-    value,
-    label: value,
-  }))
+  const sliderMarks = range(0, 101).map(
+    (value) => ({
+      value,
+      label: value,
+    }),
+    10,
+  )
 
-  const users = (data?.userCourseSettings?.edges ?? [])
-    .map((e) => e?.node)
-    .filter(notEmpty)
+  const users = (data?.userCourseSettings?.edges ?? []).map((e) => e?.node)
 
   return (
     <ErrorBoundary>

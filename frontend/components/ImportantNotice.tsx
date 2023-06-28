@@ -1,8 +1,8 @@
-import styled from "@emotion/styled"
 import { Paper, SvgIcon, SvgIconProps, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
+import { useTranslator } from "/hooks/useTranslator"
 import RegisterCompletionTranslations from "/translations/register-completion"
-import { useTranslator } from "/util/useTranslator"
 
 const ImportantNoticeContainer = styled(Paper)`
   padding: 1em;
@@ -30,7 +30,7 @@ function AlertIcon(props: SvgIconProps) {
 }
 
 type RegProps = {
-  email: String
+  email: string
 }
 
 function ImportantNotice(props: RegProps) {
@@ -39,9 +39,11 @@ function ImportantNotice(props: RegProps) {
   return (
     <ImportantNoticeContainer>
       <AlertIcon />
-      <Typography>
-        {t("Instructions1")} {props.email}
-      </Typography>
+      <Typography
+        dangerouslySetInnerHTML={{
+          __html: t("InstructionsEmail", { email: props.email }),
+        }}
+      />
     </ImportantNoticeContainer>
   )
 }

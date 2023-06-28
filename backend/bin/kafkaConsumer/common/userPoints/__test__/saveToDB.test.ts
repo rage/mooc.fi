@@ -1,11 +1,14 @@
+import { DatabaseInputError, ValidationError } from "../../../../../lib/errors"
 import {
   fakeGetAccessToken,
   fakeTMCSpecific,
   getTestContext,
-} from "../../../../../tests/__helpers"
-import { adminUserDetails, normalUserDetails } from "../../../../../tests/data"
-import { seed } from "../../../../../tests/data/seed"
-import { DatabaseInputError } from "../../../../lib/errors"
+} from "../../../../../tests"
+import {
+  adminUserDetails,
+  normalUserDetails,
+  seed,
+} from "../../../../../tests/data"
 import { KafkaContext } from "../../kafkaContext"
 import { Message } from "../interfaces"
 import { saveToDatabase } from "../saveToDB"
@@ -61,7 +64,7 @@ describe("userPoints/saveToDatabase", () => {
   }
 
   describe("errors", () => {
-    it("no user found errors", async () => {
+    it("no user found", async () => {
       const ret = await saveToDatabase(kafkaContext, {
         ...message,
         user_id: 9999,
@@ -85,19 +88,20 @@ describe("userPoints/saveToDatabase", () => {
       expect(ret.error.message).toContain("Invalid course")
     })
 
-    it("no exercise id given errors", async () => {
+    it("no exercise id given", async () => {
       const ret = await saveToDatabase(kafkaContext, {
         ...message,
+        // @ts-expect-error: testing error
         exercise_id: undefined,
-      } as any)
+      })
       if (!ret.isErr()) {
         fail()
       }
-      expect(ret.error).toBeInstanceOf(DatabaseInputError)
+      expect(ret.error).toBeInstanceOf(ValidationError)
       expect(ret.error.message).toContain("Message doesn't contain")
     })
 
-    it("no exercise found errors", async () => {
+    it("no exercise found", async () => {
       const ret = await saveToDatabase(kafkaContext, {
         ...message,
         exercise_id: "bogus",
@@ -129,12 +133,12 @@ describe("userPoints/saveToDatabase", () => {
         },
       })
       expect(created).not.toBeNull()
-      expect(created!.attempted).toBe(false)
-      expect(created!.completed).toBe(false)
-      expect(created!.n_points).toBe(1)
-      expect(created!.timestamp.toISOString()).toBe("2000-02-01T08:00:00.000Z")
+      expect(created?.attempted).toBe(false)
+      expect(created?.completed).toBe(false)
+      expect(created?.n_points).toBe(1)
+      expect(created?.timestamp.toISOString()).toBe("2000-02-01T08:00:00.000Z")
       expect(
-        created!.exercise_completion_required_actions
+        created?.exercise_completion_required_actions
           .map((ra) => ra.value)
           .sort(),
       ).toEqual(["test1", "test2"])
@@ -160,7 +164,7 @@ describe("userPoints/saveToDatabase", () => {
       })
       expect(created).not.toBeNull()
       expect(
-        created!.exercise_completion_required_actions.map((ra) => ra.value)
+        created?.exercise_completion_required_actions.map((ra) => ra.value)
           .length,
       ).toEqual(0)
     })
@@ -172,18 +176,18 @@ describe("userPoints/saveToDatabase", () => {
         ...message,
         timestamp: "1900-01-01T10:00:00.00+02:00",
       })
-      if (!ret.isOk()) {
+      if (!ret.isWarning()) {
         fail()
       }
-      expect(ret.value).toContain("Timestamp older")
+      expect(ret.value.message).toContain("Timestamp older")
     })
 
     it("aborts on equal timestamp", async () => {
       const ret = await saveToDatabase(kafkaContext, message)
-      if (!ret.isOk()) {
+      if (!ret.isWarning()) {
         fail()
       }
-      expect(ret.value).toContain("Timestamp older")
+      expect(ret.value.message).toContain("Timestamp older")
     })
 
     it("updates actions when not completed", async () => {
@@ -304,120 +308,5 @@ describe("userPoints/saveToDatabase", () => {
           .every((id) => id === updated[0].id),
       ).toBe(true)
     })
-
-    /*     it.only("moves orphaned actions from other completions with same timestamp", async () => {
-      const duplicateCompletions: Array<Prisma.ExerciseCompletionCreateInput> =
-        [
-          {
-            id: "11111111-0000-0000-0000-000000000001",
-            timestamp: "2022-01-01T10:00:00.00+02:00",
-            updated_at: "2022-02-01T10:00:00.00+02:00",
-            user: { connect: { id: "20000000000000000000000000000106" } },
-            exercise: {
-              connect: { id: "50000000-0000-0000-0000-000000000003" },
-            },
-            exercise_completion_required_actions: {
-              create: [
-                {
-                  value: "test1",
-                },
-                {
-                  value: "test2",
-                },
-              ],
-            },
-          },
-          {
-            id: "11111111-0000-0000-0000-000000000002",
-            timestamp: "2022-01-01T10:00:00.00+02:00",
-            updated_at: "2022-01-01T10:00:00.00+02:00",
-            user: { connect: { id: "20000000000000000000000000000106" } },
-            exercise: {
-              connect: { id: "50000000-0000-0000-0000-000000000003" },
-            },
-            exercise_completion_required_actions: {
-              create: [
-                {
-                  value: "test3",
-                },
-              ],
-            },
-          },
-          {
-            id: "11111111-0000-0000-0000-000000000003",
-            timestamp: "2021-01-01T10:00:00.00+02:00",
-            updated_at: "2021-01-01T10:00:00.00+02:00",
-            user: { connect: { id: "20000000000000000000000000000106" } },
-            exercise: {
-              connect: { id: "50000000-0000-0000-0000-000000000003" },
-            },
-            exercise_completion_required_actions: {
-              create: [
-                {
-                  value: "should-not-be-included",
-                },
-              ],
-            },
-          },
-        ]
-
-      const created: Array<ExerciseCompletion> = []
-      for (const data of duplicateCompletions) {
-        created.push(
-          await ctx.prisma.exerciseCompletion.create({
-            data,
-            include: {
-              exercise_completion_required_actions: true,
-            },
-          }),
-        )
-      }
-
-      const ret = await saveToDatabase(kafkaContext, {
-        user_id: 5,
-        exercise_id: "customid3",
-        course_id: "00000000000000000000000000000002",
-        n_points: 1,
-        completed: false,
-        message_format_version: 1,
-        required_actions: ["test1", "test2", "test3"],
-        service_id: "40000000-0000-0000-0000-000000000102",
-        attempted: true,
-        original_submission_date: "2022-01-01T10:00:00.00+02:00",
-        timestamp: "2022-03-01T10:00:00.00+02:00",
-      })
-
-      if (!ret.isOk()) {
-        fail()
-      }
-      expect(ret.value).toContain("success")
-
-      const updated = orderBy(
-        await ctx.prisma.exerciseCompletion.findMany({
-          where: {
-            id: { in: created.map((c) => c.id) },
-          },
-          include: {
-            exercise_completion_required_actions: true,
-          },
-        }),
-        "id",
-      )
-
-      console.log(
-        JSON.stringify(created, null, 2),
-        JSON.stringify(updated, null, 2),
-      )
-      expect(updated[0].updated_at! > created[0].updated_at!).toBeTruthy()
-      expect(updated[1].updated_at).toEqual(created[1].updated_at)
-      expect(updated[2].updated_at).toEqual(created[2].updated_at)
-      const actions = updated[0].exercise_completion_required_actions
-        .map((ra) => ra.value)
-        .sort()
-      expect(actions.length).toBe(3)
-
-      expect(actions).toEqual(["test1", "test2", "test3"])
-      expect(updated[2].exercise_completion_required_actions.length).toBe(0)
-    }) */
   })
 })

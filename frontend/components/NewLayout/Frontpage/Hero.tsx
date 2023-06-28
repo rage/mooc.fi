@@ -1,27 +1,18 @@
-import styled from "@emotion/styled"
 import { Button, Typography } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
+import { BackgroundImage } from "/components/Images/CardBackgroundFullCover"
+import { useTranslator } from "/hooks/useTranslator"
 import HomeTranslations from "/translations/home"
-import { useTranslator } from "/util/useTranslator"
 
-const HeroContainer = styled.section`
+const HeroContainer = styled("section")`
   display: flex;
   position: relative;
   height: 80%;
   align-items: center;
 `
 
-const BackgroundImage = styled.img`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: -2;
-`
-
-const HeroContentContainer = styled.div`
+const HeroContentContainer = styled("div")`
   height: 100%;
   width: 100%;
   position: relative;
@@ -52,26 +43,31 @@ const CourseButton = styled(Button)`
     color: #fff;
   }
 `
+
 function HeroContent() {
   const t = useTranslator(HomeTranslations)
 
   return (
     <HeroContentContainer>
       <Title variant="h1">{t("tagLine")}</Title>
-      <Paragraph variant="subtitle2">{t("intro")}</Paragraph>
+      <Paragraph variant="subtitle1">{t("intro")}</Paragraph>
       <CourseButton variant="outlined" href="#courses">
         {t("courseButton")}
       </CourseButton>
     </HeroContentContainer>
   )
 }
+
 function Hero() {
   return (
     <HeroContainer>
       <HeroContent />
       <BackgroundImage
-        src={require("../../../static/images/new/hero.png")}
-        alt=""
+        src="/images/new/hero.png"
+        fill
+        aria-hidden
+        alt="background image"
+        priority
       />
     </HeroContainer>
   )

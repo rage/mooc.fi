@@ -1,14 +1,21 @@
-FROM node:14-buster
+FROM node:18.16.0-alpine3.18
 
-RUN apt-get update \
-  && apt-get install -yy build-essential libpng-dev postgresql-client libpq-dev redis-tools git jq \
-  && rm -rf /var/lib/apt/lists/*
+RUN apk update && \
+    apk add \
+      build-base \
+      libpng-dev \
+      postgresql-client \
+      libpq \
+      redis \
+      git \
+      jq \
+      bash \
+      python3 \
+      pigz \
+      librdkafka=2.1.1-r0 \
+      librdkafka-dev=2.1.1-r0
 
-RUN wget https://github.com/edenhill/librdkafka/archive/v1.8.2.tar.gz  -O - | tar -xz \
-  && cd librdkafka-1.8.2 \
-  && ./configure --prefix=/usr \
-  && make && make install \
-  && cd ..
+RUN rm -rf /var/cache/apk/*
 
 RUN mkdir -p /app && chown -R node /app
 
@@ -16,12 +23,17 @@ USER node
 
 WORKDIR /app
 
-COPY --chown=node package.json /app/
-COPY --chown=node package-lock.json /app/
+COPY --chown=node package.json package-lock.json /app/
+COPY --chown=node patches /app/patches
+COPY --chown=node prisma /app/prisma
+COPY --chown=node .npm /home/node/.npm
 
-RUN env BUILD_LIBRDKAFKA=0 npm ci
+ARG BUILD_LIBRDKAFKA=0
+RUN npm ci --prefer-offline --no-audit
+RUN rm -rf /node_modules/node-rdkafka/deps
 
 COPY --chown=node . /app
+RUN rm -rf /app/.npm
 
 RUN cp .env.example .env \
     && cp tsconfig.production.json tsconfig.json \
@@ -29,8 +41,6 @@ RUN cp .env.example .env \
     && npm run generate \
     && env NODE_ENV=production GOOGLE_CLOUD_STORAGE_BUCKET=x npm run build
 RUN npm run build-sourcemap
-#    && cp -R sourcemap/bin dist/bin \
-#    && rm .env
 RUN npm run copy-env 
 
 ENV NODE_ENV=production

@@ -1,26 +1,23 @@
 version: 2.1
 orbs:
-  helm: circleci/helm@1.1.2
-  docker: circleci/docker@1.7.0
+  helm: circleci/helm@2.0.1
   jq: circleci/jq@2.2.0
-  node: circleci/node@5.0.2
+  node: circleci/node@5.1.0
+#  codecov: codecov/codecov@3.2.4
 executors:
-  backend_test:
+  node_postgres:
     docker:
-      - image: cimg/node:14.18.3
-      - image: cimg/postgres:11.13
+      - image: cimg/node:18.16.0
+      - image: cimg/postgres:15.3
         environment:
           POSTGRES_USER: root
           POSTGRES_DB: circle_test
           POSTGRES_PASSWORD: ""
-  backend_build:
-    docker:
-      - image: eu.gcr.io/moocfi-public/cloud-sdk-node:latest
 
 jobs:
   code_style:
     docker:
-      - image: cimg/node:14.18.3
+      - image: cimg/node:18.16.0
     steps:
       - checkout
       - node/install-packages
@@ -38,26 +35,75 @@ jobs:
 
   build_frontend:
     docker:
-      - image: google/cloud-sdk:latest
+      - image: cimg/gcp:2023.05
+    working_directory: /mnt/ramdisk
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: "20.10.18"
+          docker_layer_caching: true
+      - restore_cache:
+          keys:
+          - frontend-cache-{{ checksum "frontend/package.json" }}-{{ checksum "frontend/package-lock.json" }}
+          - frontend-cache-{{ checksum "frontend/package.json" }}
+      - run:
+          name: Move cache to correct location
+          command: |
+            mkdir -p frontend/.npm
+            [ -d /mnt/ramdisk/.npm ] && mv /mnt/ramdisk/.npm /mnt/ramdisk/frontend/.npm || true
+      - run:
+          name: Set npm cache
+          command: "npm config set cache /mnt/ramdisk/frontend/.npm"
+      - run:
+          name: Install Docker Buildx
+          command: |
+            mkdir -vp ~/.docker/cli-plugins/
+            curl --silent -L "https://github.com/docker/buildx/releases/download/v0.10.5/buildx-v0.10.5.linux-amd64" > ~/.docker/cli-plugins/docker-buildx
+            chmod a+x ~/.docker/cli-plugins/docker-buildx
+            docker buildx version
+            export DOCKER_BUILDKIT=1
+            docker buildx create --name buildx-frontend --use
+            docker buildx install
       - run:
           name: "Build frontend image"
           command: "bin/build-docker-frontend.sh"
-      - run:
-          name: "Push image if on master/staging"
-          command: "bin/push-docker-frontend-image.sh"
+      - save_cache:
+          key: frontend-cache-{{ checksum "frontend/package.json" }}-{{ checksum "frontend/package-lock.json" }}
+          paths:
+            - /mnt/ramdisk/frontend/.npm
+            - /mnt/ramdisk/frontend/.next/cache
+      - when:
+          condition:
+            or:
+              - equal: [ master, << pipeline.git.branch >> ]
+              - equal: [ staging, << pipeline.git.branch >> ]
+          steps:
+            - run:
+                name: "Push image"
+                command: "bin/push-docker-frontend-image.sh"
     resource_class: large
 
   prepare_backend_test:
-    executor: backend_test
-    working_directory: ~/project/backend
+    executor: node_postgres
+    working_directory: /mnt/ramdisk/backend
     steps:
       - checkout:
-          path: ~/project
+          path: /mnt/ramdisk
       - jq/install
-      - node/install-packages
+      - run:
+          name: patch-package hash
+          command: md5sum patches/* > patches.hash
+      - restore_cache:
+          keys:
+          - backend-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}-{{ checksum "patches.hash" }}
+          - backend-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}
+          - backend-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: Set npm cache
+          command: "npm config set cache /mnt/ramdisk/.npm"
+      - run:
+          name: "Install dependencies"
+          command: npm ci --prefer-offline --no-audit
       - run:
           name: "Set environment"
           command: |
@@ -67,34 +113,30 @@ jobs:
           name: "Set up Prisma"
           command: |
             npm run generate
-      - persist_to_workspace:
-          root: ~/project
+      - save_cache:
+          key: backend-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}-{{ checksum "patches.hash" }}
           paths:
-            - .
+            - /mnt/ramdisk/.npm
+      - run:
+          name: "Delete npm cache from workspace"
+          command: "rm -rf /mnt/ramdisk/.npm"
+      - persist_to_workspace:
+          root: /mnt/ramdisk
+          paths:
+            - backend
     resource_class: large
 
   test_backend:
-    executor: backend_test
+    executor: node_postgres
     environment:
-      DATABASE_URL: postgres://root@localhost/circle_test
-      DB_HOST: localhost
-      DB_PORT: 5432
-      DB_USER: root
-      DB_PASSWORD: ""
-      DB_NAME: circle_test
+      DATABASE_URL: postgres://root@localhost:5432/circle_test
       RUNNING_IN_CI: "true"
       NODE_ENV: test
-      JEST_JUNIT_OUTPUT_DIR: ./coverage/junit/
     parallelism: 8
-    working_directory: ~/project/backend
+    working_directory: /mnt/ramdisk/backend
     steps:
       - attach_workspace:
-          at: ~/project
-      # - run:
-      #     name: "Install psql client"
-      #     command: |
-      #       sudo apt-get update
-      #       sudo apt-get install postgresql-client
+          at: /mnt/ramdisk
       - run:
           name: "Wait for database"
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
@@ -108,6 +150,15 @@ jobs:
             TEST=$(circleci tests glob ./**/*.test.ts | grep -v node_modules | circleci tests split --split-by=timings)
             echo $TEST
             npm run test:ci -- --runTestsByPath $TEST
+      - run:
+          name: "Process test reports"
+          command: |
+            if [ -e ./coverage/jest/clover.xml ]; then
+              sed -i "s|`pwd`/||g" ./coverage/jest/clover.xml
+            fi
+            if [ -e ./coverage/jest/coverage-final.json ]; then
+              sed -i "s|`pwd`/||g" ./coverage/jest/coverage-final.json
+            fi
       - store_test_results:
           path: ./coverage/junit/
       - store_artifacts:
@@ -115,19 +166,19 @@ jobs:
       - store_artifacts:
           path: ./coverage/jest
           destination: backend-tests
-      - persist_to_workspace:
-          root: ~/project/backend
-          paths:
-            - coverage
+      # - persist_to_workspace:
+      #     root: ~/project/backend
+      #     paths:
+      #       - coverage
       - run:
           name: "Upload coverage"
           command: |
             curl https://uploader.codecov.io/latest/linux/codecov -o /tmp/codecov
             chmod +x /tmp/codecov
-            /tmp/codecov -F backend
-      #- run:
-      #    name: "Upload coverage"
-      #    command: bash <(curl -s https://codecov.io/bash)
+            /tmp/codecov -F backend -n "${CIRCLE_BUILD_NUM}"
+  ### when codecov orb is enabled
+  #    - codecov/upload:
+  #        flags: backend
     # The resource_class feature allows configuring CPU and RAM resources for each job. Different resource classes are available for different executors. https://circleci.com/docs/2.0/configuration-reference/#resourceclass
     resource_class: large
   # could combine the artifacts in this step if needed, now the codecov/junit stuff combines automatically
@@ -150,47 +201,83 @@ jobs:
   #           echo "Not implemented yet"
   # could also be only for master/staging since now we're doing npm install earlier, and if it passes there, it will pass here too
   # - only that the node version is different in backend image?
+  
   build_backend:
-    executor: backend_build
+    docker:
+      - image: cimg/gcp:2023.05
+    working_directory: /mnt/ramdisk
     steps:
       - checkout
       - setup_remote_docker:
-          version: 19.03.13
+          version: "20.10.18"
+          docker_layer_caching: true
       - jq/install
-      - docker/install-docker-tools:
-          docker-compose-version: 1.29.2
+      - run:
+          name: patch-package hash
+          command: md5sum backend/patches/* > backend/patches.hash
+      - restore_cache:
+          keys:
+          - backend-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}-{{ checksum "backend/patches.hash" }}
+          - backend-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}
+          - backend-cache-{{ checksum "backend/package-lock.json" }}
+      - run:
+          name: Move cache to correct location
+          command: |
+            mkdir -p backend/.npm
+            [ -d /mnt/ramdisk/.npm ] && mv /mnt/ramdisk/.npm /mnt/ramdisk/backend/.npm || true
+      - run:
+          name: Set npm cache
+          command: "npm config set cache /mnt/ramdisk/backend/.npm"
+      - run:
+          name: Install Docker Buildx
+          command: |
+            mkdir -vp ~/.docker/cli-plugins/
+            curl --silent -L "https://github.com/docker/buildx/releases/download/v0.10.5/buildx-v0.10.5.linux-amd64" > ~/.docker/cli-plugins/docker-buildx
+            chmod a+x ~/.docker/cli-plugins/docker-buildx
+            docker buildx version
+            export DOCKER_BUILDKIT=1
+            docker buildx create --name buildx-backend --use
+            docker buildx install
       - run:
           name: "Build backend image"
           command: "bin/build-docker-backend.sh"
-      - run:
-          name: "Persist image"
-          command: |
-            REV="$CIRCLE_WORKFLOW_ID-$(git rev-parse --verify HEAD)"
-            TAG="eu.gcr.io/moocfi/moocfi-backend:build-$REV"
-            mkdir -p ~/project/build
-            docker save $TAG | gzip > ~/project/build/moocfi-backend.tar.gz
-      - persist_to_workspace:
-          root: ~/project
+      - save_cache:
+          key: backend-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}-{{ checksum "backend/patches.hash" }}
           paths:
-            - build
-            - backend/sourcemap
+            - /mnt/ramdisk/backend/.npm
+      - when:
+          condition:
+            or:
+              - equal: [ master, << pipeline.git.branch >> ]
+              - equal: [ staging, << pipeline.git.branch >> ]
+          steps:
+            - run:
+                name: "Install Sentry client"
+                command: npm i --prefix=$HOME/.local -g @sentry/cli
+            - run:
+                name: "Push image"
+                command: "bin/push-docker-backend-image.sh"
     resource_class: large
 
-  push_backend:
-    executor: backend_build
-    steps:
-      - attach_workspace:
-          at: ~/project
-      - setup_remote_docker:
-          version: 19.03.13
-      - run:
-          name: "Restore image"
-          command: |
-            docker load < ./build/moocfi-backend.tar.gz
-      - run:
-          name: "Push image if on master/staging"
-          command: "bin/push-docker-backend-image.sh"
-    resource_class: large
+  # push_backend:
+  #   docker:
+  #     - image: cimg/gcp:2023.05
+  #   steps:
+  #     - attach_workspace:
+  #         at: ~/project
+  #     - setup_remote_docker:
+  #         docker_layer_caching: true
+  #     - run:
+  #         name: "Restore image"
+  #         command: |
+  #           docker load < ./build/moocfi-backend.tar.gz
+  #     - run:
+  #         name: "Install Sentry client"
+  #         command: npm i -g @sentry/cli --unsafe-perm
+  #     - run:
+  #         name: "Push image if on master/staging"
+  #         command: "bin/push-docker-backend-image.sh"
+  #   resource_class: large
 
   # build_auth:
   #   docker:
@@ -232,22 +319,23 @@ jobs:
   #         command: "bin/push-docker-auth-image.sh"
   deploy_to_production:
     docker:
-      - image: google/cloud-sdk:latest
+      - image: cimg/gcp:2023.05
+    working_directory: /mnt/ramdisk
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - helm/install-helm-client:
           version: v3.4.2
       - run:
-          name: install envsubst
-          command: apt-get install -qq -y gettext
+          name: Install envsubst
+          command: sudo apt-get update && sudo apt-get install -qq -y gettext
       - run:
           name: "Deploy"
           command: "bin/ci-update-deployments.sh"
     resource_class: large
 
 workflows:
-  version: 2
   build-deploy:
     jobs:
       - code_style
@@ -260,15 +348,15 @@ workflows:
       #    requires:
       #      - test_backend
       - build_backend
-      - push_backend:
-          requires:
-            - test_backend
-            - build_backend
-          filters:
-            branches:
-              only:
-                - master
-                - staging
+      # - push_backend:
+      #     requires:
+      #       - test_backend
+      #       - build_backend
+      #     filters:
+      #       branches:
+      #         only:
+      #           - master
+      #           - staging
       # - build_auth
       - deploy_to_production:
           requires:
@@ -276,7 +364,7 @@ workflows:
             - test_backend
             #- upload_backend_coverage
             - build_backend
-            - push_backend
+            # - push_backend
             # - build_auth
             - code_style
           filters:

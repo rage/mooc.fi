@@ -1,3 +1,5 @@
+import assert from "assert"
+
 import {
   Completion,
   Course,
@@ -9,14 +11,12 @@ import {
 } from "@prisma/client"
 
 import { BaseContext } from "../../../../context"
-import { getTestContext } from "../../../../tests/__helpers"
-import { seed } from "../../../../tests/data/seed"
+import { getTestContext } from "../../../../tests"
+import { seed } from "../../../../tests/data"
 import {
   createCompletion,
   getExerciseCompletionsForCourses,
-  getUserCourseSettings,
   pruneDuplicateExerciseCompletions,
-  pruneOrphanedExerciseCompletionRequiredActions,
 } from "../userFunctions"
 
 const ctx = getTestContext()
@@ -34,7 +34,7 @@ describe("createCompletion", () => {
   })
 
   describe("create new completion", () => {
-    it("create new one when no existing is found", async () => {
+    it("when no existing is found", async () => {
       const course = await ctx.prisma.course.findFirst({
         where: {
           slug: "course2",
@@ -46,21 +46,66 @@ describe("createCompletion", () => {
           upstream_id: 2,
         },
       })
+
+      assert(user)
+      assert(course)
+
       await createCompletion({
-        user: user!,
-        course: course!,
+        user,
+        course,
         context,
         tier: 1,
       })
       const createdCompletion = await ctx.prisma.completion.findFirst({
         where: {
-          course_id: course!.id,
-          user_id: user!.id,
+          course_id: course.id,
+          user_id: user.id,
         },
       })
+
+      assert(createdCompletion)
+
+      assert(createdCompletion)
       expect(createdCompletion).not.toBeNull()
-      expect(createdCompletion!.tier).toEqual(1)
-      expect(createdCompletion!.completion_language).toEqual("en_US")
+      expect(createdCompletion.tier).toEqual(1)
+      expect(createdCompletion.completion_language).toEqual("en_US")
+    })
+
+    it("with completion language from child course", async () => {
+      const course = await ctx.prisma.course.findFirst({
+        where: {
+          slug: "handled",
+        },
+        include: {
+          completions_handled_by: true,
+        },
+      })
+      const handler = course?.completions_handled_by
+
+      const user = await ctx.prisma.user.findFirst({
+        where: {
+          upstream_id: 2,
+        },
+      })
+
+      assert(user)
+      assert(course)
+
+      await createCompletion({
+        user,
+        course,
+        handler,
+        context,
+      })
+      const createdCompletion = await ctx.prisma.completion.findFirst({
+        where: {
+          course_id: course.completions_handled_by_id,
+          user_id: user.id,
+        },
+      })
+      assert(createdCompletion)
+      expect(createdCompletion).not.toBeNull()
+      expect(createdCompletion.completion_language).toEqual("fi_FI")
     })
   })
 
@@ -80,77 +125,98 @@ describe("createCompletion", () => {
           upstream_id: 1,
         },
       })
+      assert(user)
+      assert(course)
       existingCompletion = await ctx.prisma.completion.findFirst({
         where: {
-          user_id: user!.id,
-          course_id: course!.id,
+          user_id: user.id,
+          course_id: course.id,
         },
       })
     })
 
-    it("should update when no existing tier", async () => {
+    it("should update when no existing tier exists", async () => {
+      assert(user)
+      assert(course)
+
       await createCompletion({
-        user: user!,
-        course: course!,
+        user,
+        course,
         context,
         tier: 3,
       })
       const updatedCompletion = await ctx.prisma.completion.findFirst({
         where: {
-          user_id: user!.id,
-          course_id: course!.id,
+          user_id: user.id,
+          course_id: course.id,
         },
         orderBy: { created_at: "asc" },
       })
+      assert(updatedCompletion)
+
       expect(updatedCompletion).not.toBeNull()
-      expect(updatedCompletion!.tier).toEqual(3)
+      expect(updatedCompletion.tier).toEqual(3)
       expect(
-        updatedCompletion!.updated_at! > existingCompletion!.updated_at!,
+        (updatedCompletion?.updated_at ?? new Date(0)) >
+          (existingCompletion?.updated_at ?? new Date(0)),
       ).toEqual(true)
     })
+
     it("should update when existing tier is not defined", async () => {
+      assert(user)
+
       course = await ctx.prisma.course.findFirst({
         where: {
           slug: "course2",
         },
       })
+      assert(course)
+
       existingCompletion = await ctx.prisma.completion.findFirst({
         where: {
-          user_id: user!.id,
-          course_id: course!.id,
+          user_id: user.id,
+          course_id: course.id,
         },
         orderBy: { created_at: "asc" },
       })
+
+      assert(existingCompletion)
+
       await createCompletion({
-        user: user!,
-        course: course!,
+        user,
+        course,
         context,
         tier: 1,
       })
       const updatedCompletion = await ctx.prisma.completion.findFirst({
         where: {
-          user_id: user!.id,
-          course_id: course!.id,
+          user_id: user.id,
+          course_id: course.id,
         },
         orderBy: { created_at: "asc" },
       })
+      assert(updatedCompletion)
 
-      expect(updatedCompletion!.tier).toEqual(1)
+      expect(updatedCompletion.tier).toEqual(1)
       expect(
-        updatedCompletion!.updated_at! > existingCompletion!.updated_at!,
+        (updatedCompletion.updated_at ?? new Date(0)) >
+          (existingCompletion.updated_at ?? new Date(0)),
       ).toEqual(true)
     })
 
     it("should not update when tier is not defined", async () => {
+      assert(user)
+      assert(course)
+
       await createCompletion({
-        user: user!,
-        course: course!,
+        user,
+        course,
         context,
       })
       const updatedCompletion = await ctx.prisma.completion.findFirst({
         where: {
-          user_id: user!.id,
-          course_id: course!.id,
+          user_id: user.id,
+          course_id: course.id,
         },
         orderBy: { created_at: "asc" },
       })
@@ -158,16 +224,19 @@ describe("createCompletion", () => {
     })
 
     it("should not update when existing tier is equivalent", async () => {
+      assert(user)
+      assert(course)
+
       await createCompletion({
-        user: user!,
-        course: course!,
+        user,
+        course,
         context,
         tier: 2,
       })
       const updatedCompletion = await ctx.prisma.completion.findFirst({
         where: {
-          user_id: user!.id,
-          course_id: course!.id,
+          user_id: user.id,
+          course_id: course.id,
         },
         orderBy: { created_at: "asc" },
       })
@@ -175,16 +244,19 @@ describe("createCompletion", () => {
     })
 
     it("should not update when existing tier is larger", async () => {
+      assert(user)
+      assert(course)
+
       await createCompletion({
-        user: user!,
-        course: course!,
+        user,
+        course,
         context,
         tier: 1,
       })
       const updatedCompletion = await ctx.prisma.completion.findFirst({
         where: {
-          user_id: user!.id,
-          course_id: course!.id,
+          user_id: user.id,
+          course_id: course.id,
         },
         orderBy: { created_at: "asc" },
       })
@@ -197,15 +269,9 @@ describe("getUserCourseSettings", () => {
   const HANDLER_COURSE_ID = "00000000-0000-0000-0000-000000000666"
   const INHERITING_COURSE_ID = "00000000-0000-0000-0000-000000000668"
   const USER_ID = "20000000-0000-0000-0000-000000000104"
-  const context = {} as BaseContext
 
   beforeEach(async () => {
     await seed(ctx.prisma)
-    Object.assign(context, {
-      prisma: ctx.prisma,
-      knex: ctx.knex,
-      logger: ctx.logger,
-    })
   })
 
   it("should return inherited settings if they exist", async () => {
@@ -230,10 +296,11 @@ describe("getUserCourseSettings", () => {
       },
     })
 
-    const settings = await getUserCourseSettings({
-      user_id: USER_ID,
-      course_id: INHERITING_COURSE_ID,
-      context,
+    const settings = await ctx.prisma.user.findUserCourseSettings({
+      where: {
+        user_id: USER_ID,
+        course_id: INHERITING_COURSE_ID,
+      },
     })
 
     expect(settings).toEqual(handler)
@@ -251,20 +318,22 @@ describe("getUserCourseSettings", () => {
       },
     })
 
-    const settings = await getUserCourseSettings({
-      user_id: USER_ID,
-      course_id: INHERITING_COURSE_ID,
-      context,
+    const settings = await ctx.prisma.user.findUserCourseSettings({
+      where: {
+        user_id: USER_ID,
+        course_id: INHERITING_COURSE_ID,
+      },
     })
 
     expect(settings).toEqual(created)
   })
 
   it("should return null if no settings found", async () => {
-    const settings = await getUserCourseSettings({
-      user_id: USER_ID,
-      course_id: INHERITING_COURSE_ID,
-      context,
+    const settings = await ctx.prisma.user.findUserCourseSettings({
+      where: {
+        user_id: USER_ID,
+        course_id: INHERITING_COURSE_ID,
+      },
     })
 
     expect(settings).toBeNull()
@@ -495,6 +564,7 @@ describe("exercise completion utilities", () => {
         }),
       )
     }
+
     Object.assign(context, {
       prisma: ctx.prisma,
       knex: ctx.knex,
@@ -551,20 +621,21 @@ describe("exercise completion utilities", () => {
 
   describe("pruneDuplicateExerciseCompletions", () => {
     it("should prune duplicates", async () => {
-      const before = await ctx.prisma.user
-        .findUnique({
-          where: {
-            id: USER_ID_1,
-          },
-        })
-        .exercise_completions({
-          where: {
-            exercise: { course_id: "00000000-0000-0000-0000-000000000667" },
-          },
-          orderBy: {
-            exercise_id: "asc",
-          },
-        })
+      const before =
+        (await ctx.prisma.user
+          .findUnique({
+            where: {
+              id: USER_ID_1,
+            },
+          })
+          .exercise_completions({
+            where: {
+              exercise: { course_id: "00000000-0000-0000-0000-000000000667" },
+            },
+            orderBy: {
+              exercise_id: "asc",
+            },
+          })) ?? []
 
       const result = (
         await pruneDuplicateExerciseCompletions({
@@ -583,20 +654,21 @@ describe("exercise completion utilities", () => {
 
       expect(result).toEqual(expect.arrayContaining(expectedPruned))
 
-      const after = await ctx.prisma.user
-        .findUnique({
-          where: {
-            id: USER_ID_1,
-          },
-        })
-        .exercise_completions({
-          where: {
-            exercise: { course_id: "00000000-0000-0000-0000-000000000667" },
-          },
-          orderBy: {
-            exercise_id: "asc",
-          },
-        })
+      const after =
+        (await ctx.prisma.user
+          .findUnique({
+            where: {
+              id: USER_ID_1,
+            },
+          })
+          .exercise_completions({
+            where: {
+              exercise: { course_id: "00000000-0000-0000-0000-000000000667" },
+            },
+            orderBy: {
+              exercise_id: "asc",
+            },
+          })) ?? []
 
       expect(before.length - after.length).toEqual(result.length)
 
@@ -605,29 +677,6 @@ describe("exercise completion utilities", () => {
         expect(beforeEntry).toEqual(ec)
         expect(result).not.toContain(ec.id)
       })
-    })
-  })
-
-  describe("pruneOrphanedExerciseCompletionRequiredActions", () => {
-    it("should prune orphaned actions", async () => {
-      const beforeActionCount =
-        await ctx.prisma.exerciseCompletionRequiredAction.count()
-      const existingIds = exerciseCompletions[2]
-        .exercise_completion_required_actions!.map(({ id }) => id)
-        .sort()
-      await ctx.prisma.exerciseCompletion.delete({
-        where: {
-          id: exerciseCompletions[2].id,
-        },
-      })
-      const result = await pruneOrphanedExerciseCompletionRequiredActions({
-        context,
-      })
-      const afterCount =
-        await ctx.prisma.exerciseCompletionRequiredAction.count()
-      expect(result.length).toBe(2)
-      expect(result.map(({ id }) => id).sort()).toEqual(existingIds)
-      expect(afterCount).toEqual(beforeActionCount - 2)
     })
   })
 })

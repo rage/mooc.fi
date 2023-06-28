@@ -1,0 +1,31 @@
+query CourseEditorTags(
+  $language: String
+  $excludeTagTypes: [String!]
+  $includeWithNoCourses: Boolean
+) {
+  tags(
+    language: $language
+    excludeTagTypes: $excludeTagTypes
+    includeWithNoCourses: $includeWithNoCourses
+  ) {
+    ...TagCoreFields
+  }
+}
+
+query TagEditorTags {
+  tags {
+    ...TagCoreFields
+  }
+}
+
+query TagEditorTagTypes {
+  tagTypes {
+    ...TagTypeFields
+  }
+}
+
+query CourseCatalogueTags($language: String) {
+  tags(language: $language) {
+    ...TagCoreFields
+  }
+}

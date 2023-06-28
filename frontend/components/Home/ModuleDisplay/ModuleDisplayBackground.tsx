@@ -1,12 +1,15 @@
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import { BackgroundImage } from "/components/Images/GraphicBackground"
+import backgroundPattern from "/public/images/background/backgroundPattern.svg"
 
 interface RootProps {
   backgroundColor: string
 }
 
-const Background = styled.div<RootProps>`
+const Background = styled("div", {
+  shouldForwardProp: (prop) => prop !== "backgroundColor",
+})<RootProps>`
   margin-top: 1em;
   display: flex;
   flex-direction: row;
@@ -15,10 +18,10 @@ const Background = styled.div<RootProps>`
   padding-bottom: 4em;
   position: relative;
   ${(props) =>
-    `background-image: linear-gradient(to left, rgba(255,0,0,0) ,${props.backgroundColor} 55%);`}
+    `background-image: linear-gradient(to left, rgba(255,0,0,0), ${props.backgroundColor} 55%);`}
   @media(max-width: 1200px) {
     ${(props) =>
-      `background-image: linear-gradient(to top, rgba(255,0,0,0) ,${props.backgroundColor} 55%);`}
+      `background-image: linear-gradient(to top, rgba(255,0,0,0), ${props.backgroundColor} 55%);`}
   }
 `
 interface DisplayBackgroundProps {
@@ -32,25 +35,14 @@ const ModuleDisplayBackground = (
 ) => {
   const { backgroundColor, children, hueRotateAngle, brightness } = props
 
-  // webp for svg?
-  // const imageUrl = "/static/images/backgroundPattern.svg"
-  // <source srcSet={`${imageUrl}?webp`} type="image/webp" />
-
   return (
     <Background backgroundColor={backgroundColor}>
-      <picture style={{ zIndex: -1 }}>
-        <source
-          srcSet={require("../../../static/images/backgroundPattern.svg")}
-          type="image/svg+xml"
-        />
-        <BackgroundImage
-          src={require("../../../static/images/backgroundPattern.svg")}
-          loading="lazy"
-          aria-hidden
-          hueRotateAngle={hueRotateAngle}
-          brightness={brightness}
-        />
-      </picture>
+      <BackgroundImage
+        src={backgroundPattern.src}
+        hueRotateAngle={hueRotateAngle}
+        brightness={brightness}
+        style={{ zIndex: -1 }}
+      />
       {children}
     </Background>
   )

@@ -1,22 +1,23 @@
 import React, { createContext, useContext, useMemo, useState } from "react"
 
-import { BreadcrumbsTranslations } from "/translations/breadcrumbs"
+import { KeyOfTranslation } from "/translations"
+import { Breadcrumbs } from "/translations/breadcrumbs"
 
 export interface Breadcrumb {
-  translation?: keyof BreadcrumbsTranslations
+  translation?: KeyOfTranslation<Breadcrumbs>
   label?: string
   as?: string
   href?: string
 }
 
-interface BreadcrumbContext {
+export interface BreadcrumbContextType {
   breadcrumbs: Breadcrumb[]
-  setBreadcrumbs: (crumbs: Breadcrumb[]) => void
+  setBreadcrumbs: React.Dispatch<React.SetStateAction<Array<Breadcrumb>>>
 }
 
-export const BreadcrumbContext = createContext({
+export const BreadcrumbContext = createContext<BreadcrumbContextType>({
   breadcrumbs: [] as Breadcrumb[],
-  setBreadcrumbs: (_: Breadcrumb[]) => {},
+  setBreadcrumbs: () => void 0,
 })
 
 export const useBreadcrumbContext = () => {
@@ -27,11 +28,11 @@ export const useBreadcrumbContext = () => {
 
 export const BreadcrumbProvider = React.memo(function BreadcrumbProvider({
   children,
-}: React.PropsWithChildren<{}>) {
+}: React.PropsWithChildren) {
   const [breadcrumbs, setBreadcrumbs] = useState<Array<Breadcrumb>>([])
 
   const breadcrumbContextValue = useMemo(
-    () => ({ breadcrumbs: breadcrumbs, setBreadcrumbs }),
+    () => ({ breadcrumbs, setBreadcrumbs }),
     [breadcrumbs],
   )
 

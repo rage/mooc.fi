@@ -1,7 +1,6 @@
-import { ReadStream } from "fs"
-
 import { FileUpload } from "graphql-upload"
 import { arg, booleanArg, extendType, idArg, nonNull, objectType } from "nexus"
+import sharp from "sharp"
 
 import { isAdmin } from "../accessControl"
 import { Context } from "../context"
@@ -9,8 +8,6 @@ import {
   deleteStorageImage,
   uploadStorageImage,
 } from "../services/google-cloud"
-
-const sharp = require("sharp")
 
 export const Image = objectType({
   name: "Image",
@@ -61,7 +58,9 @@ export const ImageMutations = extendType({
   },
 })
 
-const readFS = (stream: ReadStream): Promise<Buffer> => {
+const readFS = (
+  stream: ReturnType<FileUpload["createReadStream"]>,
+): Promise<Buffer> => {
   const chunkList: Uint8Array[] = []
 
   return new Promise((resolve, reject) =>
@@ -85,7 +84,7 @@ export const uploadImage = async ({
 }: UploadImageArgs) => {
   const { createReadStream, mimetype, filename } = await file
 
-  const image: Buffer = await readFS(createReadStream())
+  const image = await readFS(createReadStream())
   const filenameWithoutExtension = /(.+?)(\.[^.]*$|$)$/.exec(filename)?.[1]
 
   const uncompressedImage: Buffer = await sharp(image).jpeg().toBuffer()

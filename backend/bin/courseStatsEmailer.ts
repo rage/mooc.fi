@@ -1,5 +1,5 @@
+import sentryLogger from "../lib/logger"
 import prisma from "../prisma"
-import sentryLogger from "./lib/logger"
 
 const logger = sentryLogger({ service: "course-stats-emailer" })
 
@@ -21,8 +21,9 @@ const courseStatsEmailer = async () => {
 }
 
 courseStatsEmailer()
-  .then(() => process.exit(0))
+  .then(() => prisma.$disconnect().then(() => process.exit(0)))
   .catch((error) => {
     logger.error(error)
-    process.exit(1)
+
+    return prisma.$disconnect().then(() => process.exit(1))
   })

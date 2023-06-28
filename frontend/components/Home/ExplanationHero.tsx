@@ -1,42 +1,21 @@
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import Explanation from "./Explanation"
+import { BackgroundImage } from "/components/Images/CardBackgroundFullCover"
+import homeBackground from "/public/images/hero/homeBackground.webp"
 
-const ExplanationRoot = styled.section`
+const ExplanationRoot = styled("section")`
   display: flex;
   position: relative;
   margin-bottom: 2rem;
   height: 80%;
 `
 
-const BackgroundImage = styled.img`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: -2;
-`
-
 function ExplanationHero() {
   return (
     <ExplanationRoot>
       <Explanation />
-      <picture>
-        <source
-          srcSet={require(`../../static/images/homeBackground.jpg?webp`)}
-          type="image/webp"
-        />
-        <source
-          srcSet={require("../../static/images/homeBackground.jpg")}
-          type="image/jpeg"
-        />
-        <BackgroundImage
-          src={require("../../static/images/homeBackground.jpg")}
-          alt=""
-        />
-      </picture>
+      <BackgroundImage src={homeBackground} alt="" priority aria-hidden fill />
     </ExplanationRoot>
   )
 }

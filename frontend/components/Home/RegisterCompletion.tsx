@@ -1,25 +1,41 @@
 import { PropsWithChildren } from "react"
 
+import { NextSeo } from "next-seo"
+
+import { Typography } from "@mui/material"
+
 import Container from "/components/Container"
 import { H1NoBackground } from "/components/Text/headers"
 
 interface RegisterCompletionProps {
-  title: string
+  title?: string
+  pageTitle?: string
+  message?: string
 }
 
-export default function RegisterCompletion({
+function RegisterCompletion({
   title,
+  pageTitle,
+  message,
   children,
 }: PropsWithChildren<RegisterCompletionProps>) {
   return (
-    <Container>
-      {/* <Alert severity="warning" variant="filled">
+    <>
+      {pageTitle && <NextSeo title={pageTitle} />}
+      <Container>
+        {/* <Alert severity="warning" variant="filled">
         {t("registrationClosed")}
       </Alert> */}
-      <H1NoBackground variant="h1" component="h1" align="center">
-        {title}
-      </H1NoBackground>
-      {children}
-    </Container>
+        {title && (
+          <H1NoBackground variant="h1" component="h1" align="center">
+            {title}
+          </H1NoBackground>
+        )}
+        {message && <Typography>{message}</Typography>}
+        {children}
+      </Container>
+    </>
   )
 }
+
+export default RegisterCompletion

@@ -1,17 +1,15 @@
-import ReactGA from "react-ga"
-
-import styled from "@emotion/styled"
-import { Grid, Skeleton, Typography } from "@mui/material"
+import { EnhancedButtonBase, Grid, Skeleton, Typography } from "@mui/material"
+import { css, styled } from "@mui/material/styles"
 
 import {
   ModuleCardText,
   ModuleCardTitle,
 } from "/components/Home/ModuleDisplay/Common"
 import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
+import { useTranslator } from "/hooks/useTranslator"
 import HomeTranslations from "/translations/home"
-import { useTranslator } from "/util/useTranslator"
 
-import { CourseFieldsFragment, CourseStatus } from "/graphql/generated"
+import { CourseStatus, FrontpageCourseFieldsFragment } from "/graphql/generated"
 
 const SkeletonTitle = styled(Skeleton)`
   margin-bottom: 0.5rem;
@@ -23,7 +21,6 @@ const SkeletonText = styled(Skeleton)`
 
 interface BackgroundProps {
   upcoming?: boolean
-  component: string
 }
 
 const Background = styled(ClickableButtonBase)<BackgroundProps>`
@@ -36,29 +33,29 @@ const Background = styled(ClickableButtonBase)<BackgroundProps>`
   width: 100%;
   ${({ upcoming }) =>
     upcoming
-      ? `
-    &:after {
-      border-left: 80px solid transparent;
-      border-right: 80px solid green;
-      border-top: 80px solid transparent;
-      height: 0;
-      width: 0;
-      position: absolute;
-      right: 0px;
-      bottom: 0px;
-      content: "";
-      z-index: 2;
-    }
-    &:after.span {
-      color: #ffffff;
-      font-family: sans-serif;
-      font-size: 1.005em;
-      right: 0px;
-      bottom: 83px;
-      position: absolute;
-      width: 60px;
-    }
-  `
+      ? css`
+          &:after {
+            border-left: 80px solid transparent;
+            border-right: 80px solid green;
+            border-top: 80px solid transparent;
+            height: 0;
+            width: 0;
+            position: absolute;
+            right: 0px;
+            bottom: 0px;
+            content: "";
+            z-index: 2;
+          }
+          &:after.span {
+            color: #ffffff;
+            font-family: sans-serif;
+            font-size: 1.005em;
+            right: 0px;
+            bottom: 83px;
+            position: absolute;
+            width: 60px;
+          }
+        `
       : undefined}
   @media (min-width: 960px) {
     min-height: 150px;
@@ -66,9 +63,9 @@ const Background = styled(ClickableButtonBase)<BackgroundProps>`
   @media (min-width: 600px) and (max-width: 960px) {
     min-height: 250px;
   }
-`
+` as EnhancedButtonBase<"button", BackgroundProps>
 
-const ContentArea = styled.div`
+const ContentArea = styled("div")`
   padding: 1rem 1rem 2rem 1rem;
   flex-direction: column;
   display: flex;
@@ -80,14 +77,14 @@ interface HeaderProps {
   upcoming?: boolean | null
 }
 
-const Header = styled.div<HeaderProps>`
+const Header = styled("div", {
+  shouldForwardProp: (prop) => prop !== "startPoint" && prop !== "upcoming",
+})<HeaderProps>`
   padding-top: 0.5rem;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   padding-bottom: 0.5rem;
   justify-content: center;
-  top: 0;
-  left: 0;
   color: #ffffff;
   background-color: ${({ startPoint, upcoming }) =>
     upcoming ? "#378170" : startPoint ? "#005A84" : "#158278"};
@@ -96,7 +93,7 @@ const Header = styled.div<HeaderProps>`
 `
 
 interface ModuleSmallCourseCardProps {
-  course?: CourseFieldsFragment
+  course?: FrontpageCourseFieldsFragment
   showHeader?: boolean
 }
 
@@ -108,42 +105,38 @@ function ModuleSmallCourseCard({
 
   return (
     <Grid item xs={12} sm={6} md={12} lg={6} xl={4}>
-      <Background focusRipple component="div" role="none">
-        {course ? (
-          <ReactGA.OutboundLink
-            eventLabel={`modulecoursesite: ${course ? course.name : ""}`}
-            to={course.link ?? ""}
-            target="_blank"
-            style={{ textDecoration: "none", width: "100%" }}
-            onClick={(e) => (course.link === "" ? e.preventDefault() : null)}
-            aria-label={`To the course homepage of ${course.name}`}
-          >
-            {showHeader &&
-              (course!.study_module_start_point ||
-                course!.status === CourseStatus.Upcoming) && (
-                <Header
-                  startPoint={course!.study_module_start_point}
-                  upcoming={course!.status === CourseStatus.Upcoming}
-                >
-                  <Typography variant="body1">
-                    {course!.status === CourseStatus.Upcoming
-                      ? t("upcomingShort")
-                      : t("moduleCourseStartPoint")}
-                  </Typography>
-                </Header>
-              )}
-            <ContentArea>
-              <ModuleCardTitle>{course.name}</ModuleCardTitle>
-              <ModuleCardText>{course.description}</ModuleCardText>
-            </ContentArea>
-          </ReactGA.OutboundLink>
-        ) : (
-          <>
-            <SkeletonTitle />
-            <SkeletonText />
-          </>
-        )}
-      </Background>
+      {course ? (
+        <Background
+          focusRipple
+          href={course.link ?? ""}
+          target="_blank"
+          aria-label={`To the course homepage of ${course.name}`}
+        >
+          {showHeader &&
+            (course.study_module_start_point ||
+              course.status === CourseStatus.Upcoming) && (
+              <Header
+                startPoint={course.study_module_start_point}
+                upcoming={course.status === CourseStatus.Upcoming}
+              >
+                <Typography variant="body1">
+                  {course.status === CourseStatus.Upcoming
+                    ? t("upcomingShort")
+                    : t("moduleCourseStartPoint")}
+                </Typography>
+              </Header>
+            )}
+          <ContentArea>
+            <ModuleCardTitle>{course.name}</ModuleCardTitle>
+            <ModuleCardText>{course.description}</ModuleCardText>
+          </ContentArea>
+        </Background>
+      ) : (
+        <Background focusRipple component="div" role="none">
+          <SkeletonTitle />
+          <SkeletonText />
+        </Background>
+      )}
     </Grid>
   )
 }

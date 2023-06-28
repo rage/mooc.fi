@@ -1,4 +1,3 @@
-import { ForbiddenError, UserInputError } from "apollo-server-express"
 import { chunk } from "lodash"
 import {
   arg,
@@ -13,7 +12,8 @@ import { type NexusGenInputs } from "nexus-typegen"
 
 import { isAdmin, isOrganization, or } from "../accessControl"
 import { Context } from "../context"
-import { filterNullFields, getCourseOrAlias } from "../util"
+import { GraphQLForbiddenError } from "../lib/errors"
+import { filterNullFields } from "../util"
 
 export const CompletionRegistered = objectType({
   name: "CompletionRegistered",
@@ -52,7 +52,7 @@ export const CompletionRegisteredQueries = extendType({
         const { course: slug, skip, take, cursor } = args
 
         if ((take ?? 0) > 50) {
-          throw new ForbiddenError("Cannot query more than 50 items")
+          throw new GraphQLForbiddenError("Cannot query more than 50 items")
         }
 
         const queryParams = {
@@ -64,20 +64,10 @@ export const CompletionRegisteredQueries = extendType({
         }
 
         if (slug) {
-          const courseReference = await getCourseOrAlias(ctx)({
-            where: { slug },
-          })
-
-          if (!courseReference) {
-            throw new UserInputError("course not found", {
-              argumentName: "course",
-            })
-          }
-
           return ctx.prisma.course
-            .findUnique({
+            .findUniqueOrAlias({
               where: {
-                id: courseReference.id,
+                slug,
               },
             })
             .completions_registered(queryParams)
@@ -117,14 +107,15 @@ const buildPromises = (
   ctx: Context,
 ) => {
   return array.map(async (entry) => {
-    const { user_id, course_id } =
-      (await ctx.prisma.completion.findUnique({
-        where: { id: entry.completion_id },
-        select: {
-          course_id: true,
-          user_id: true,
-        },
-      })) ?? {}
+    const completion = await ctx.prisma.completion.findUnique({
+      where: { id: entry.completion_id },
+      select: {
+        course_id: true,
+        user_id: true,
+      },
+    })
+
+    const { course_id, user_id } = completion ?? {}
 
     if (!course_id || !user_id) {
       // TODO/FIXME: we now fail silently if course/user not found

@@ -1,11 +1,10 @@
-import { UserInputError } from "apollo-server-express"
 import { omit } from "lodash"
-import { arg, extendType, idArg, nonNull, nullable, stringArg } from "nexus"
+import { arg, extendType, idArg, nonNull, stringArg } from "nexus"
 
 import { Prisma } from "@prisma/client"
 
 import { isAdmin } from "../../accessControl"
-import { filterNullFields } from "../../util"
+import { GraphQLUserInputError } from "../../lib/errors"
 
 export const StudyModuleMutations = extendType({
   type: "Mutation",
@@ -55,24 +54,22 @@ export const StudyModuleMutations = extendType({
         const { id, slug, new_slug, study_module_translations } = study_module
 
         if (!slug) {
-          throw new UserInputError("must provide slug", {
-            argumentName: "slug",
-          })
+          throw new GraphQLUserInputError("must provide slug", "slug")
         }
 
         const existingTranslations = await ctx.prisma.studyModule
           .findUnique({ where: { slug } })
           .study_module_translations()
-        const newTranslations = (study_module_translations || [])
+        const newTranslations = (study_module_translations ?? [])
           .filter((t) => !t?.id)
-          .map((t) => omit(t, "id"))
-        const updatedTranslations = (study_module_translations || [])
+          .map((t) => ({ ...t, id: undefined }))
+        const updatedTranslations = (study_module_translations ?? [])
           .filter((t) => !!t?.id)
-          .map((t) => ({ where: { id: t?.id }, data: omit(t, "id") }))
-        const existingTranslationIds = (existingTranslations || []).map(
+          .map((t) => ({ where: { id: t?.id }, data: { ...t, id: undefined } }))
+        const existingTranslationIds = (existingTranslations ?? []).map(
           (t) => t.id,
         )
-        const moduleTranslationIds = (study_module_translations || []).map(
+        const moduleTranslationIds = (study_module_translations ?? []).map(
           (t) => t?.id,
         )
         const removedTranslationIds = existingTranslationIds
@@ -112,25 +109,23 @@ export const StudyModuleMutations = extendType({
     t.field("deleteStudyModule", {
       type: "StudyModule",
       args: {
-        id: nullable(idArg()),
+        id: idArg(),
         slug: stringArg(),
       },
       authorize: isAdmin,
-      resolve: async (_, args, ctx) => {
-        const { id, slug } = args
-
+      validate: (_, { id, slug }) => {
         if (!id && !slug) {
-          throw new UserInputError("must have at least id or slug", {
-            argumentName: ["id", "slug"],
-          })
+          throw new GraphQLUserInputError("must provide id or slug", [
+            "id",
+            "slug",
+          ])
         }
-
+      },
+      resolve: async (_, { id, slug }, ctx) => {
         const deletedModule = await ctx.prisma.studyModule.delete({
           where: {
-            ...filterNullFields({
-              id,
-              slug,
-            }),
+            id: id ?? undefined,
+            slug: slug ?? undefined,
           },
         })
 

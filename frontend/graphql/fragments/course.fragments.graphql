@@ -1,8 +1,14 @@
-fragment CourseCoreFields on Course {
+fragment CourseKeyFields on Course {
   id
   slug
   name
+}
+
+fragment CourseCoreFields on Course {
+  ...CourseKeyFields
+  name
   ects
+  language
   created_at
   updated_at
 }
@@ -30,7 +36,7 @@ fragment CourseTranslationDetailedFields on CourseTranslation {
   updated_at
 }
 
-fragment CourseFields on Course {
+fragment FrontpageCourseFields on Course {
   ...CourseWithPhotoCoreFields
   description
   link
@@ -49,11 +55,55 @@ fragment CourseFields on Course {
   start_date
   end_date
   has_certificate
+  study_modules {
+    ...StudyModuleCoreFields
+  }
+}
+
+fragment NewFrontpageCourseFields on Course {
+  ...CourseCoreFields
+  description
+  link
+  order
+  study_module_order
+  promote
+  status
+  start_point
+  study_module_start_point
+  hidden
+  upcoming_active_link
+  tier
+  support_email
+  teacher_in_charge_email
+  teacher_in_charge_name
+  start_date
+  end_date
+  has_certificate
+  study_modules {
+    ...StudyModuleCoreFields
+  }
+}
+
+fragment CourseFields on Course {
+  ...FrontpageCourseFields
   course_translations {
     ...CourseTranslationCoreFields
   }
-  study_modules {
-    ...StudyModuleCoreFields
+  tags {
+    ...TagCoreFields
+  }
+}
+
+fragment NewCourseFields on Course {
+  ...NewFrontpageCourseFields
+  course_translations {
+    ...CourseTranslationCoreFields
+  }
+  tags {
+    ...TagCoreFields
+  }
+  sponsors(language: $language) {
+    ...CourseSponsorFields
   }
 }
 
@@ -88,17 +138,33 @@ fragment EditorCourseDetailedFields on Course {
     ...OpenUniversityRegistrationLinkCoreFields
   }
   inherit_settings_from {
-    id
+    ...CourseKeyFields
   }
   automatic_completions
   automatic_completions_eligible_for_ects
   exercise_completions_needed
   points_needed
+  sponsors {
+    ...CourseSponsorFields
+  }
 }
 
 fragment EditorCourseOtherCoursesFields on Course {
   ...CourseWithPhotoCoreFields
   course_translations {
     ...CourseTranslationCoreFields
+  }
+}
+
+fragment CourseDashboardCourseFields on Course {
+  ...CourseCoreFields
+  teacher_in_charge_name
+  teacher_in_charge_email
+  start_date
+  completion_email {
+    ...EmailTemplateCoreFields
+  }
+  course_stats_email {
+    ...EmailTemplateCoreFields
   }
 }

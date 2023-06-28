@@ -10,6 +10,8 @@ import {
 } from "../../../../../config/courseConfig"
 import {
   ExerciseCompletionPart,
+  ProgressExtra,
+  ServiceProgressPartType,
   TierInfo,
   TierProgressGroup,
   TierProgressMap,
@@ -24,34 +26,30 @@ export const getTierProgress = (
       what's the highest amount of points received, not necessarily from maximum tier
     ...
   */
-  const tierProgressMap = exerciseCompletionsForCourses.reduce<TierProgressMap>(
-    (acc, curr) => {
-      const { exercise, tier } = BAIexercises[curr.custom_id ?? ""] ?? {}
+  const tierProgressMap: TierProgressMap = {}
 
-      if (!exercise) return acc
+  for (const exerciseCompletion of exerciseCompletionsForCourses) {
+    const {
+      custom_id,
+      max_points = 0,
+      n_points: ec_n_points = 0,
+    } = exerciseCompletion
+    const { exercise, tier } = BAIexercises[custom_id ?? ""] ?? {}
 
-      const max_points = curr.max_points || 0
-      const n_points = Math.max(
-        acc[exercise]?.n_points || 0,
-        curr.n_points || 0,
-      )
+    if (!exercise) continue
 
-      return {
-        ...acc,
-        [String(exercise)]: {
-          tier: Math.max(acc[exercise]?.tier || 0, tier ?? 0),
-          max_points,
-          n_points,
-          progress: n_points / (max_points || 1),
-          // TODO/FIXME: is this custom_id ever used anywhere?
-          // Currently it will just overwrite the custom id that was already there - if it's supposed to be
-          // the id of the highest finished exercise, it should be done differently
-          custom_id: curr.custom_id,
-        },
-      }
-    },
-    {},
-  )
+    const existing_n_points = tierProgressMap[exercise]?.n_points || 0
+    const n_points = Math.max(ec_n_points, existing_n_points)
+    const maxTier = Math.max(tierProgressMap[exercise]?.tier || 0, tier || 0)
+
+    tierProgressMap[String(exercise)] = {
+      tier: maxTier,
+      max_points,
+      n_points,
+      progress: n_points / (max_points || 1),
+      custom_id,
+    }
+  }
 
   // one entry per exercise with the highest tier and the highest amount of points
   const tierProgress = Object.entries(tierProgressMap).map<TierProgressGroup>(
@@ -112,35 +110,33 @@ export const getTierInfo = ({
   hasBasicRule,
   required_by_tier,
 }: GetTierInfo) => {
-  const tierCompletions = range(1, 4).reduce<Record<string, number>>(
-    (acc, tier) => ({
-      ...acc,
-      [String(tier)]: Object.values(tierProgressMap).filter(
-        (t) => t.tier >= tier,
-      ).length,
-    }),
-    {},
-  )
+  const tierCompletions: Record<string, number> = {}
+
+  for (const tier of range(1, 4)) {
+    tierCompletions[tier] = Object.values(tierProgressMap).filter(
+      (t) => t.tier >= tier,
+    ).length
+  }
   /*
     [tier #]: # of exercises completed from _at least_ this tier,
       so tier 3 is counted in both 1 and 2, and so on
   */
 
   const hasTier: Record<string, boolean> = {
-    "1": hasBasicRule,
-    "2": hasBasicRule && tierCompletions["2"] >= required_by_tier["2"],
-    "3": hasBasicRule && tierCompletions["3"] >= required_by_tier["3"],
+    1: hasBasicRule,
+    2: hasBasicRule && tierCompletions[2] >= required_by_tier[2],
+    3: hasBasicRule && tierCompletions[3] >= required_by_tier[3],
   }
 
-  const missingFromTier = range(1, 4)
-    .map(String)
-    .reduce<Record<string, number>>(
-      (acc, tier) => ({
-        ...acc,
-        [tier]: Math.max(0, required_by_tier[tier] - tierCompletions[tier]),
-      }),
-      {},
+  const missingFromTier: Record<string, number> = {}
+
+  for (const tier of range(1, 4)) {
+    missingFromTier[tier] = Math.max(
+      0,
+      required_by_tier[tier] - tierCompletions[tier],
     )
+  }
+
   /*
     [tier #]: how many exercises missing to get to this tier
   */
@@ -186,14 +182,18 @@ export const getProgress = ({
   projectCompletion,
   highestTier,
   totalExerciseCompletions,
-}: GetProgressArgs) => {
+}: GetProgressArgs): {
+  progress: Array<ServiceProgressPartType>
+  extra: ProgressExtra
+} => {
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const pointsProgress = (n_points || 0) / (max_points || 1)
   const newProgress = {
     progress: [
       {
         group: "total",
-        max_points,
-        n_points,
+        max_points: max_points || 0,
+        n_points: n_points || 0,
         progress: isNaN(pointsProgress) ? 0 : pointsProgress,
       },
     ],

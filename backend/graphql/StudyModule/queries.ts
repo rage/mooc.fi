@@ -1,16 +1,16 @@
-import { UserInputError } from "apollo-server-express"
 import { omit } from "lodash"
 import { arg, booleanArg, extendType, idArg, nonNull, stringArg } from "nexus"
 
 import { StudyModule, StudyModuleTranslation } from "@prisma/client"
 
 import { isAdmin, isUser, or, Role } from "../../accessControl"
-import { filterNullFields } from "../../util"
+import { GraphQLUserInputError } from "../../lib/errors"
+import { filterNullRecursive } from "../../util"
 
 export const StudyModuleQueries = extendType({
   type: "Query",
   definition(t) {
-    t.nullable.field("study_module", {
+    t.field("study_module", {
       type: "StudyModule",
       args: {
         id: idArg(),
@@ -19,21 +19,25 @@ export const StudyModuleQueries = extendType({
         translationFallback: booleanArg({ default: false }),
       },
       authorize: or(isAdmin, isUser),
+      validate: (_, { id, slug }) => {
+        if (!id && !slug) {
+          throw new GraphQLUserInputError("must provide id or slug", [
+            "id",
+            "slug",
+          ])
+        }
+      },
       resolve: async (_, args, ctx) => {
         const { id, slug, language, translationFallback } = args
 
-        if (!id && !slug) {
-          throw new UserInputError("must provide id or slug", {
-            argumentName: ["id", "slug"],
-          })
-        }
-
-        const study_module = await ctx.prisma.studyModule.findUnique({
+        const study_module:
+          | (StudyModule & {
+              study_module_translations?: StudyModuleTranslation[]
+            })
+          | null = await ctx.prisma.studyModule.findUnique({
           where: {
-            ...filterNullFields({
-              id,
-              slug,
-            }),
+            id: id ?? undefined,
+            slug: slug ?? undefined,
           },
           ...(ctx.role !== Role.ADMIN && {
             select: {
@@ -86,27 +90,27 @@ export const StudyModuleQueries = extendType({
     t.list.nonNull.field("study_modules", {
       type: "StudyModule",
       args: {
-        orderBy: arg({ type: "StudyModuleOrderByInput" }),
+        orderBy: arg({
+          type: "StudyModuleOrderByWithRelationAndSearchRelevanceInput",
+        }),
         language: stringArg(),
       },
-      resolve: async (_, args, ctx) => {
-        const { orderBy, language } = args
-
-        const modules: Array<
-          StudyModule & {
-            study_module_translations?: StudyModuleTranslation[]
-          }
-        > = await ctx.prisma.studyModule.findMany({
-          orderBy: filterNullFields(orderBy),
-          ...(language && {
-            include: {
-              study_module_translations: {
-                where: {
-                  language: { equals: language },
+      resolve: async (_, { orderBy, language }, ctx) => {
+        const modules: (StudyModule & {
+          study_module_translations?: StudyModuleTranslation[]
+        })[] = await ctx.prisma.studyModule.findMany({
+          orderBy: filterNullRecursive(orderBy) ?? undefined,
+          ...(language
+            ? {
+                include: {
+                  study_module_translations: {
+                    where: {
+                      language,
+                    },
+                  },
                 },
-              },
-            },
-          }),
+              }
+            : {}),
         })
 
         const filtered = modules.map((study_module) => ({

@@ -1,8 +1,11 @@
-import { AuthenticationError, ForbiddenError } from "apollo-server-express"
 import { arg, booleanArg, extendType, nonNull, stringArg } from "nexus"
 
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { Context } from "../../context"
+import {
+  GraphQLAuthenticationError,
+  GraphQLForbiddenError,
+} from "../../lib/errors"
 import { invalidate } from "../../services/redis"
 import { hashUser } from "../../util"
 import { ConflictError } from "../common"
@@ -21,7 +24,7 @@ export const UserMutations = extendType({
         const authorization = ctx?.req?.headers?.authorization
 
         if (!currentUser) {
-          throw new AuthenticationError("not logged in")
+          throw new GraphQLAuthenticationError("not logged in")
         }
 
         const access_token = authorization?.split(" ")[1]
@@ -49,7 +52,7 @@ export const UserMutations = extendType({
         const authorization = ctx?.req?.headers?.authorization
 
         if (!currentUser) {
-          throw new AuthenticationError("not logged in")
+          throw new GraphQLAuthenticationError("not logged in")
         }
 
         const access_token = authorization?.split(" ")[1]
@@ -109,11 +112,11 @@ export const UserMutations = extendType({
         const { user: currentUser } = ctx
 
         if (!currentUser) {
-          throw new AuthenticationError("not logged in")
+          throw new GraphQLAuthenticationError("not logged in")
         }
 
         if (ctx.role !== Role.ADMIN && id && currentUser.id !== id) {
-          throw new ForbiddenError("invalid credentials to do that")
+          throw new GraphQLForbiddenError("invalid credentials to do that")
         }
 
         // TODO: sync changes with TMC here?

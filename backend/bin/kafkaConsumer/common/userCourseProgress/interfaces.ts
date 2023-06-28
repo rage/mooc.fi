@@ -1,29 +1,31 @@
-export interface Message {
+import { Prisma } from "@prisma/client"
+
+export interface Message extends Prisma.JsonObject {
   timestamp: string
   user_id: number
   course_id: string
   service_id: string
   progress: PointsByGroup[]
-  message_format_version: Number
+  message_format_version: number
 }
 
-export interface PointsByGroup {
+export interface PointsByGroup extends Prisma.JsonObject {
   group: string
   max_points: number
   n_points: number
   progress: number
 }
 
-export interface ServiceProgressPartType {
+export interface ServiceProgressPartType extends Prisma.JsonObject {
   max_points: number
   n_points: number
   group: string
   progress: number
 }
 
-export interface ServiceProgressType extends Array<ServiceProgressPartType> {}
+export type ServiceProgressType = Array<ServiceProgressPartType>
 
-export interface TierProgress {
+export interface TierProgress extends Prisma.JsonObject {
   tier: number
   n_points: number
   max_points: number
@@ -40,9 +42,10 @@ export interface TotalProgress {
   total_max_points: number
 }
 
-export type TierProgressMap = {
-  [Tier in string]: TierProgress
+export interface TierProgressMap extends Prisma.JsonObject {
+  [Tier: string]: TierProgress
 }
+
 export interface ExerciseCompletionPart {
   course_id: string
   exercise_id: string
@@ -51,11 +54,17 @@ export interface ExerciseCompletionPart {
   custom_id?: string
 }
 
-export type TierInfo = Record<
-  string,
-  {
+export interface TierInfo extends Prisma.JsonObject {
+  [Tier: string]: {
     hasTier: boolean
     missingFromTier: number
     exerciseCompletions: number
   }
->
+}
+export interface ProgressExtra extends Prisma.JsonObject {
+  tiers: TierInfo
+  exercises: TierProgressMap
+  projectCompletion: boolean
+  highestTier: number
+  totalExerciseCompletions: number
+}

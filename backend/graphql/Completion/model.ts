@@ -1,9 +1,9 @@
-import { ForbiddenError } from "apollo-server-express"
 import { objectType } from "nexus"
 
 import { UserCourseProgress } from "@prisma/client"
 
 import { BAIParentCourse, BAITierCourses } from "../../config/courseConfig"
+import { GraphQLForbiddenError } from "../../lib/errors"
 import {
   checkCertificate,
   checkCertificateForUser,
@@ -31,41 +31,11 @@ export const Completion = objectType({
     t.model.tier()
     t.model.completion_registration_attempt_date()
 
-    // we're not querying completion course languages for now, and this was buggy
-    /*     t.field("course", {
-      type: "Course",
-      args: {
-        language: schema.nullable(stringArg()),
-      },
-      resolve: async (parent, args, ctx) => {
-        const { language } = args
-        const { prisma } = ctx
-
-        const course = await prisma.course({ id: parent.course })
-
-        if (language) {
-          const course_translations = await prisma.courseTranslations({
-            where: { course, language },
-          })
-
-          if (!course_translations.length) {
-            return course
-          }
-
-          const { name = course.name, description } = course_translations[0]
-
-          return { ...course, name, description }
-        }
-
-        return course
-      },
-    })
- */
-    t.nullable.field("user", {
+    t.field("user", {
       type: "User",
       resolve: async (parent, _, ctx) => {
         if (ctx.disableRelations) {
-          throw new ForbiddenError(
+          throw new GraphQLForbiddenError(
             "Cannot query relations when asking for more than 50 objects",
           )
         }
@@ -77,30 +47,28 @@ export const Completion = objectType({
       },
     })
 
-    t.nullable.field("completion_link", {
+    t.field("completion_link", {
       type: "String",
-      resolve: async (parent, _, ctx) => {
-        if (
-          !parent.course_id ||
-          !parent.completion_language ||
-          parent.completion_language === "unknown"
-        ) {
+      resolve: async ({ course_id, completion_language }, _, ctx) => {
+        if (!course_id) {
           return null
         }
+        const links = await ctx.prisma.course
+          .findUnique({
+            where: { id: course_id },
+          })
+          .open_university_registration_links({
+            where: {
+              ...(completion_language && completion_language !== "unknown"
+                ? {
+                    language: completion_language,
+                  }
+                : {}),
+            },
+            take: 1,
+          })
 
-        const link = (
-          await ctx.prisma.course
-            .findUnique({
-              where: { id: parent.course_id },
-            })
-            .open_university_registration_links({
-              where: {
-                language: parent.completion_language,
-              },
-            })
-        )?.[0]
-
-        return link?.link ?? null
+        return links?.[0]?.link ?? null
       },
     })
 
@@ -113,14 +81,14 @@ export const Completion = objectType({
           })
           .completions_registered()
 
-        return registered.length > 0
+        return (registered ?? []).length > 0
       },
     })
 
     t.nonNull.field("project_completion", {
       type: "Boolean",
       resolve: async (parent, _, ctx) => {
-        if (!parent.course_id) {
+        if (!parent.course_id || !parent.user_id) {
           return false
         }
 
@@ -132,14 +100,17 @@ export const Completion = objectType({
           return false
         }
 
-        const progresses = await ctx.prisma.userCourseProgress.findMany({
-          where: {
-            course_id: { in: [BAIParentCourse, ...BAITierCourses] },
-            user_id: parent.user_id,
-          },
-          distinct: ["user_id", "course_id"],
-          orderBy: { created_at: "asc" },
-        })
+        const progresses = await ctx.prisma.user
+          .findUnique({
+            where: { id: parent.user_id },
+          })
+          .user_course_progresses({
+            where: {
+              course_id: { in: [BAIParentCourse, ...BAITierCourses] },
+            },
+            distinct: ["user_id", "course_id"],
+            orderBy: { created_at: "asc" },
+          })
 
         return (
           progresses?.some(
@@ -149,7 +120,7 @@ export const Completion = objectType({
       },
     })
 
-    t.nullable.field("certificate_availability", {
+    t.field("certificate_availability", {
       type: "CertificateAvailability",
       resolve: async ({ course_id, user_upstream_id }, _, ctx) => {
         if (!course_id) {
@@ -164,13 +135,18 @@ export const Completion = objectType({
           return null
         }
 
+        if (!course.has_certificate) {
+          return null
+        }
         const accessToken =
           ctx.req?.headers?.authorization?.replace("Bearer ", "") ?? ""
 
         let certificate_availability
         if (user_upstream_id !== ctx.user?.upstream_id) {
           if (!ctx.user?.administrator) {
-            throw new ForbiddenError("Cannot query other users' certificates")
+            throw new GraphQLForbiddenError(
+              "Cannot query other users' certificates",
+            )
           }
 
           if (!user_upstream_id) {
@@ -186,7 +162,7 @@ export const Completion = objectType({
               ),
             {
               prefix: "certificateavailability",
-              expireTime: 10,
+              expireTime: 300,
               key: `${course.slug}-${user_upstream_id}`,
             },
             {
@@ -198,7 +174,7 @@ export const Completion = objectType({
             async () => checkCertificate(course.slug, accessToken),
             {
               prefix: "certificateavailability",
-              expireTime: 10,
+              expireTime: 300,
               key: `${course.slug}-${ctx.user?.upstream_id}`,
             },
             {
@@ -207,11 +183,7 @@ export const Completion = objectType({
           )
         }
 
-        if (!certificate_availability) {
-          return null
-        }
-
-        return certificate_availability
+        return certificate_availability ?? null
       },
     })
   },

@@ -41,7 +41,7 @@ Some libraries allow to use autocommit feature. Autocommit with commit every mes
 >From a certain point onward there is no longer any turning back. That is the point that must be reached.  
 > ~ Franz Kafka
 ---
-## In Points.mooc.fi
+## In mooc.fi
 
 At the moment we have six topics in mooc.fi kafka:
 
@@ -59,7 +59,8 @@ First sive are meant to be consumed by us and the last is produced by us. The to
 `Current message format version is: 1`  
 
 This is for submitting users progress in a specific course from a specific service. In typescript the message format looks like this: 
-```Typescript
+
+```ts
 export interface Message {
   timestamp: string
   user_id: number
@@ -80,7 +81,7 @@ export interface PointsByGroup {
 Description of message format version `1`:  
 
 Message  :
-| varibale | description | more info |
+| variable | description | more info |
 | ----------|----------------------------|----|
 | timestamp | when the message was sent | |
 | user_id   | user id from tmc | can be queryed from tmc api with email |
@@ -103,8 +104,9 @@ PointsByGroup:
 
 This is for submitting services exercise data to points. (What exerices are in a course). You provide us a list
 of exercises and we add them to our db. We will delete existing exercies if they are not included in newest exercise update.
+
 In typescript the message format is: 
-```Typescript
+```ts
 export interface Message {
   timestamp: string
   course_id: string
@@ -151,7 +153,8 @@ ExerciseData:
 This is for submitting users points in single exercise.
 
 In typescript the message format is:
-```Typescript
+
+```ts
 export interface Message {
   timestamp: string
   exercise_id: string
@@ -162,6 +165,7 @@ export interface Message {
   course_id: string
   service_id: string
   required_actions: string[]
+  original_submission_date: string
   message_format_version: Number
 }
 ```
@@ -180,13 +184,50 @@ Message:
 | course_id | course id from points db | this is broadcasted in kafka topic courses when a course is created
 | service_id | service_id from points db | each service has one id and this should be stored in services own db
 | required_actions | Array of strings, which describe what user needs to do to complete the exercise | this field is optional
+| original_submission_date | when the user originally submitted the exercise to the service (ie. created at from that database) | this field is optional
 | message_format_version | which version of message format is used | messages with wrong number are not processed
 
+---
 
+### user-course-points-batch
+`Current message format version is: 1`
 
+This is for submitting multiple exercises for one user for one course at a time.
 
+In typescript the message format is:
 
+```ts
+export interface Message {
+  timestamp: string
+  user_id: number
+  course_id: string
+  exercises: Array<{
+    timestamp: string
+    exercise_id: string
+    n_points: Number
+    completed: boolean
+    attempted: boolean
+    user_id: Number
+    course_id: string
+    service_id: string
+    required_actions: string[]
+    original_submission_date: string
+    message_format_version: Number
+  }>
+  message_format_version: number
+}
+```
 
+The `exercises` field is imported from the `user-points-*` message format automatically, so if it changes, this one does as well.
 
+Description of message format version `1`:
 
+Message: 
 
+| variable | description | more info |
+| -------- | ----------- | --------- |
+| timestamp | when the message was sent |
+| user_id | user id from tmc | can be queryed from tmc api with email
+| course_id | course id from points db | this is broadcasted in kafka topic courses when a course is created
+| exercises | array of exercises | see user-points-realtime / user-points-batch 
+| message_format_version | which version of message format is used | messages with wrong number are not processed

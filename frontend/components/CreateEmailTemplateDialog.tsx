@@ -1,7 +1,7 @@
-import { useState } from "react"
+import { useId, useMemo, useState } from "react"
 
-import { omit } from "lodash"
 import Router from "next/router"
+import { omit } from "remeda"
 
 import { useMutation, useQuery } from "@apollo/client"
 import {
@@ -16,6 +16,7 @@ import {
   TextField,
 } from "@mui/material"
 
+import ErrorMessage from "./ErrorMessage"
 import CustomSnackbar from "/components/CustomSnackbar"
 import Spinner from "/components/Spinner"
 import { EmailTemplateType } from "/types/emailTemplates"
@@ -23,7 +24,7 @@ import notEmpty from "/util/notEmpty"
 
 import {
   AddEmailTemplateDocument,
-  CourseCoreFieldsFragment,
+  CourseDashboardCourseFieldsFragment,
   CourseUpsertArg,
   EmailTemplateEditorCoursesDocument,
   UpdateCourseDocument,
@@ -31,7 +32,7 @@ import {
 } from "/graphql/generated"
 
 interface CreateEmailTemplateDialogProps {
-  course?: CourseCoreFieldsFragment
+  course?: CourseDashboardCourseFieldsFragment
   buttonText: string
   organization?: any // TODO: type, actually query this somewhere
   type?: EmailTemplateType
@@ -43,28 +44,21 @@ const CreateEmailTemplateDialog = ({
   buttonText,
   type = "completion",
 }: CreateEmailTemplateDialogProps) => {
+  const [selectedCourse, setSelectedCourse] =
+    useState<CourseDashboardCourseFieldsFragment | null>(null)
+  const [isErrorSnackbarOpen, setIsErrorSnackbarOpen] = useState(false)
+  const { loading, error, data } = useQuery(EmailTemplateEditorCoursesDocument)
+  const dialogTitleId = useId()
+
   const [openDialog, setOpenDialog] = useState(false)
   const [nameInput, setNameInput] = useState("")
   const [templateType, setTemplateType] = useState(type)
-  const [selectedCourse, setSelectedCourse] = useState<
-    CourseCoreFieldsFragment | undefined
-  >()
-  const [isErrorSnackbarOpen, setIsErrorSnackbarOpen] = useState(false)
-  const { loading, error, data } = useQuery(EmailTemplateEditorCoursesDocument)
 
-  const [addEmailTemplateMutation, {}] = useMutation(AddEmailTemplateDocument)
-  const [updateCourseMutation, {}] = useMutation(UpdateCourseDocument)
-  const [updateOrganizationEmailTemplateMutation, {}] = useMutation(
+  const [addEmailTemplateMutation] = useMutation(AddEmailTemplateDocument)
+  const [updateCourseMutation] = useMutation(UpdateCourseDocument)
+  const [updateOrganizationEmailTemplateMutation] = useMutation(
     UpdateOrganizationEmailTemplateDocument,
   )
-
-  if (loading) {
-    return <Spinner />
-  }
-  //TODO fix error messages
-  if (error || !data) {
-    return <p>Error has occurred</p>
-  }
 
   const handleDialogClickOpen = () => {
     setOpenDialog(true)
@@ -74,25 +68,23 @@ const CreateEmailTemplateDialog = ({
     setOpenDialog(false)
   }
 
-  const courseOptions =
-    templateType === "completion"
-      ? data!.courses
-          ?.filter(notEmpty)
-          .filter((c) => c?.completion_email === null)
-          .map((c) => {
-            return (
-              <option key={c.id} value={c.id}>
-                {c?.name}
-              </option>
-            )
-          })
-      : data!.courses?.filter(notEmpty).map((c) => {
-          return (
-            <option key={c.id} value={c.id}>
-              {c?.name}
-            </option>
-          )
-        })
+  const courseOptions = useMemo(() => {
+    if (!data) {
+      return []
+    }
+
+    let courseData = data.courses?.filter(notEmpty) ?? []
+
+    if (templateType === "completion") {
+      courseData = courseData.filter((c) => c.completion_email == null)
+    }
+
+    return courseData.map((c, i) => (
+      <option key={c.id} value={i}>
+        {c?.name}
+      </option>
+    ))
+  }, [templateType, data])
 
   const handleCreate = async () => {
     try {
@@ -104,8 +96,6 @@ const CreateEmailTemplateDialog = ({
             templateType === "threshold" ? selectedCourse?.id : null,
         },
       })
-
-      console.log("data", addEmailTemplateData)
 
       const updateableCourse = course ?? selectedCourse
 
@@ -131,6 +121,8 @@ const CreateEmailTemplateDialog = ({
                 "id",
                 "completion_email",
                 "course_stats_email",
+                "created_at",
+                "updated_at",
               ]),
               ...connectVariables,
             },
@@ -155,6 +147,19 @@ const CreateEmailTemplateDialog = ({
     }
   }
 
+  if (loading) {
+    return <Spinner />
+  }
+
+  if (error) {
+    console.log(error)
+    return <ErrorMessage />
+  }
+
+  if (!data) {
+    return <div>Template not found</div>
+  }
+
   return (
     <div>
       <Button color="primary" onClick={handleDialogClickOpen}>
@@ -163,9 +168,9 @@ const CreateEmailTemplateDialog = ({
       <Dialog
         open={openDialog}
         onClose={handleDialogClose}
-        aria-labelledby="form-dialog-title"
+        aria-labelledby={dialogTitleId}
       >
-        <DialogTitle id="form-dialog-title">Create</DialogTitle>
+        <DialogTitle id={dialogTitleId}>Create</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Name your new Email Template. This will create new Email Template
@@ -210,7 +215,7 @@ const CreateEmailTemplateDialog = ({
                       setSelectedCourse(
                         data.courses
                           ?.filter(notEmpty)
-                          .find((c) => c.id === e.target.value)!,
+                          .find((c) => c.id === e.target.value) ?? null,
                       )
                     }}
                     id="selectCourse"

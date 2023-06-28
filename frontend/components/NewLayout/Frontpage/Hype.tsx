@@ -1,4 +1,4 @@
-import styled from "@emotion/styled"
+import { styled } from "@mui/material/styles"
 
 import { SectionContainer } from "/components/NewLayout/Common"
 import {
@@ -8,8 +8,8 @@ import {
   CardTitle,
   CardWrapper,
 } from "/components/NewLayout/Common/Card"
+import { useTranslator } from "/hooks/useTranslator"
 import NaviTranslations from "/translations/navi"
-import { useTranslator } from "/util/useTranslator"
 
 type NaviItem = {
   title: string
@@ -20,31 +20,40 @@ type NaviItem = {
 }
 
 // either 4, 2 or 1 columns, depending on the number of items
-const HypeGrid = styled.div<{ count?: number }>`
+const HypeGrid = styled("div", {
+  shouldForwardProp: (prop) => prop !== "count",
+})<{ count?: number }>(
+  ({ theme, count = 4 }) => `
   display: grid;
   grid-gap: 1rem;
-  grid-template-columns: ${({ count = 4 }) =>
+  grid-template-columns: ${
     count % 2 === 0
       ? "repeat(auto-fit, minmax(200px, 1fr))"
-      : `repeat(auto-fit, minmax(166px, 1fr))`};
+      : `repeat(auto-fit, minmax(166px, 1fr))`
+  };
   padding: 2rem;
   justify-content: center;
   width: 80%;
 
-  @media (max-width: 1200px) {
-    grid-template-columns: ${({ count = 4 }) =>
+  ${theme.breakpoints.down("lg")} {
+    grid-template-columns: ${
       count % 2 === 0
         ? "repeat(auto-fit, minmax(300px, 1fr))"
-        : `repeat(auto-fit, minmax(450px, 1fr))`};
+        : `repeat(auto-fit, minmax(450px, 1fr))`
+    };
   }
 
-  @media (max-width: 400px) {
+  ${theme.breakpoints.down("xs")} {
     padding: 0;
     width: 100%;
     grid-template-columns: 1fr;
   }
-`
+`,
+)
 
+const HypeCardHeader = styled(CardHeader)`
+  background-color: #f5f5f5;
+`
 interface HypeCardProps {
   item: NaviItem
 }
@@ -52,9 +61,11 @@ interface HypeCardProps {
 const HypeCard = ({ item: { title, text } }: HypeCardProps) => {
   return (
     <CardWrapper>
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-      </CardHeader>
+      <HypeCardHeader>
+        <CardTitle variant="h5" component="h3">
+          {title}
+        </CardTitle>
+      </HypeCardHeader>
       <CardBody>
         <CardDescription>{text}</CardDescription>
       </CardBody>
@@ -64,14 +75,14 @@ const HypeCard = ({ item: { title, text } }: HypeCardProps) => {
 function Hype() {
   const t = useTranslator(NaviTranslations)
 
-  const items = t("naviItems") as Array<NaviItem>
+  const items = t("naviItems") as readonly NaviItem[]
 
   // remember to test with divisible by 2 and 3
   return (
     <SectionContainer>
       <HypeGrid count={items.length}>
         {items.map((item) => (
-          <HypeCard key={`hype-${item.title}`} item={item} />
+          <HypeCard key={item.title ?? item.text} item={item} />
         ))}
       </HypeGrid>
     </SectionContainer>

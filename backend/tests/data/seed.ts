@@ -1,6 +1,5 @@
-import type { PrismaClient } from "@prisma/client"
-
 import { createDefaultData } from "../../config/defaultData"
+import { type ExtendedPrismaClient } from "../../prisma"
 import {
   abEnrollments,
   abStudies,
@@ -16,8 +15,11 @@ import {
   openUniversityRegistrationLink,
   organizations,
   services,
+  sponsors,
   storedData,
   study_modules,
+  tags,
+  tagTypes,
   userCourseProgresses,
   userCourseServiceProgresses,
   userCourseSettings,
@@ -28,12 +30,16 @@ import {
 
 type ExcludeInternalKeys<K> = K extends `$${string}` ? never : K
 
-export const seed = async (prisma: PrismaClient) => {
-  const create = async <K extends ExcludeInternalKeys<keyof PrismaClient>, T>(
+export const seed = async (prisma: ExtendedPrismaClient) => {
+  const create = async <
+    K extends ExcludeInternalKeys<keyof ExtendedPrismaClient>,
+    T,
+  >(
     key: K,
     data: T[],
   ) => {
     const created = []
+    // @ts-ignore: key
     for (const datum of data) {
       // @ts-ignore: key
       created.push(await prisma[key].create({ data: datum }))
@@ -44,6 +50,9 @@ export const seed = async (prisma: PrismaClient) => {
 
   await createDefaultData(prisma)
 
+  const seededTagTypes = await create("tagType", tagTypes)
+  const seededTags = await create("tag", tags)
+  const seededSponsors = await create("sponsor", sponsors)
   const seededModules = await create("studyModule", study_modules)
   const seededCourses = await create("course", courses)
   const seededEmailTemplateOrganizations = await create(
@@ -123,5 +132,8 @@ export const seed = async (prisma: PrismaClient) => {
     emailTemplateOrganizations: seededEmailTemplateOrganizations,
     userOrganizations: seededUserOrganizations,
     userOrganizationJoinConfirmations: seededUserOrganizationJoinConfirmations,
+    tags: seededTags,
+    tagTypes: seededTagTypes,
+    sponsors: seededSponsors,
   }
 }

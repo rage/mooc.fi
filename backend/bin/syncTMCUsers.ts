@@ -1,18 +1,15 @@
-// import { PrismaClient } from "@prisma/client"
-
 import axios from "axios"
 import { groupBy, orderBy } from "lodash"
 import * as winston from "winston"
 
-import { PrismaClient } from "@prisma/client"
-
 import { isTest, TMC_HOST } from "../config"
+import { TMCError } from "../lib/errors"
+import sentryLogger from "../lib/logger"
+import { type ExtendedPrismaClient } from "../prisma"
 import { getAccessToken } from "../services/tmc"
 import { isDefined } from "../util"
-import { TMCError } from "./lib/errors"
-import sentryLogger from "./lib/logger"
 
-const URL = `${TMC_HOST || ""}/api/v8/users/recently_changed_user_details`
+const URL = `${TMC_HOST ?? ""}/api/v8/users/recently_changed_user_details`
 
 export interface Change {
   id: number
@@ -28,7 +25,7 @@ export interface Change {
 const _logger = sentryLogger({ service: "sync-tmc-users" })
 
 export interface SyncTMCUsersContext {
-  prisma: PrismaClient
+  prisma: ExtendedPrismaClient
   logger: winston.Logger
 }
 
@@ -63,6 +60,8 @@ export const syncTMCUsers = async (
 
   const stopTime = new Date().getTime()
   logger.info(`used ${stopTime - startTime} milliseconds`)
+
+  await ctx.prisma.$disconnect()
 
   return {
     deletedUsers,
@@ -125,7 +124,7 @@ export const updateEmails = async (
         existing[username]?.length &&
         existing[username][0].email !== newestChange.new_value
       ) {
-        await prisma!.user.update({
+        await prisma.user.update({
           where: {
             username,
           },

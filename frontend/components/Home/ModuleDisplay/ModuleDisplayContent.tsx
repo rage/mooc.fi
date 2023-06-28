@@ -2,13 +2,14 @@ import { CenteredContent } from "/components/Home/ModuleDisplay/Common"
 import ModuleCoursesDisplay from "/components/Home/ModuleDisplay/ModuleCoursesDisplay"
 import ModuleDescription from "/components/Home/ModuleDisplay/ModuleDescription"
 
-import { CourseFieldsFragment } from "/graphql/generated"
+import { FrontpageCourseFieldsFragment } from "/graphql/generated"
 
 interface ModuleDisplayProps {
   name: string
-  description: string | JSX.Element
-  orderedCourses?: CourseFieldsFragment[]
+  description: string | React.JSX.Element
+  orderedCourses?: FrontpageCourseFieldsFragment[]
 }
+
 const ModuleDisplayContent = (props: ModuleDisplayProps) => {
   const { name, description, orderedCourses = [] } = props
   return (
