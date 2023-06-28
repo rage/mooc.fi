@@ -14,6 +14,7 @@ import { fromStudyModuleForm, toStudyModuleForm } from "./serialization"
 import StudyModuleEditForm from "./StudyModuleEditForm"
 import { StudyModuleFormValues } from "./types"
 import { useTranslator } from "/hooks/useTranslator"
+import CommonTranslations from "/translations/common"
 import StudyModulesTranslations from "/translations/study-modules"
 
 import {
@@ -32,7 +33,7 @@ interface StudyModuleEditProps {
 }
 
 const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
-  const t = useTranslator(StudyModulesTranslations)
+  const t = useTranslator(StudyModulesTranslations, CommonTranslations)
 
   const [addStudyModule] = useMutation(AddStudyModuleDocument)
   const [updateStudyModule] = useMutation(UpdateStudyModuleDocument)

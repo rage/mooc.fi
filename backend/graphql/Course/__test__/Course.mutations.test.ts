@@ -71,6 +71,11 @@ describe("Course", () => {
           id: "tag1",
         },
       ],
+      sponsors: [
+        {
+          id: "sponsor1",
+        },
+      ],
     })
 
     const getUpdateCourse = () => ({
@@ -123,6 +128,14 @@ describe("Course", () => {
       tags: [
         {
           id: "tag2",
+        },
+      ],
+      sponsors: [
+        {
+          id: "sponsor1",
+        },
+        {
+          id: "sponsor2",
         },
       ],
     })
@@ -196,6 +209,13 @@ describe("Course", () => {
             expected: omit(expectedAddedCourse, "tags"),
           },
         ],
+        [
+          "with no sponsors",
+          {
+            data: omit(getNewCourse(), "sponsors"),
+            expected: omit(expectedAddedCourse, "sponsors"),
+          },
+        ],
       ]
 
       test.each(cases)(
@@ -210,7 +230,7 @@ describe("Course", () => {
           )
 
           expect(res.addCourse).toMatchStrippedSnapshot(expected, {
-            excludePaths: ["tags.id"],
+            excludePaths: ["tags.id", "sponsors.id"],
           })
 
           expect(KafkaProducer).toHaveBeenCalledTimes(1)
@@ -250,7 +270,7 @@ describe("Course", () => {
               idFields: ["id", "course_id" /*, "photo_id"*/].filter(
                 (f) => !omitIdFields.includes(f),
               ), //.filter(isNotNullOrUndefined),
-              excludePaths: ["tags.id"],
+              excludePaths: ["tags.id", "sponsors.id"],
             },
           )
         },
@@ -309,7 +329,7 @@ describe("Course", () => {
             },
           },
           {
-            excludePaths: ["id", "study_modules", "tags.id"],
+            excludePaths: ["id", "study_modules", "tags.id", "sponsors.id"],
           },
         )
 
@@ -359,7 +379,7 @@ describe("Course", () => {
             },
           },
           {
-            excludePaths: ["id", "study_modules", "tags.id"],
+            excludePaths: ["id", "study_modules", "tags.id", "sponsors.id"],
           },
         )
         const updatedCourse = await ctx.prisma.course.findUnique({
@@ -375,7 +395,7 @@ describe("Course", () => {
             },
           },
           {
-            excludePaths: ["id", "study_modules", "tags.id"],
+            excludePaths: ["id", "study_modules", "tags.id", "sponsors.id"],
           },
         )
       })
@@ -402,7 +422,7 @@ describe("Course", () => {
             },
           },
           {
-            excludePaths: ["id", "study_modules", "tags.id"],
+            excludePaths: ["id", "study_modules", "tags.id", "sponsors.id"],
           },
         )
         const updatedCourse = await ctx.prisma.course.findUnique({
@@ -418,7 +438,7 @@ describe("Course", () => {
             },
           },
           {
-            excludePaths: ["id", "study_modules", "tags.id"],
+            excludePaths: ["id", "study_modules", "tags.id", "sponsors.id"],
           },
         )
       })
@@ -441,7 +461,7 @@ describe("Course", () => {
             },*/
           },
           {
-            excludePaths: ["id", "study_modules", "tags.id"],
+            excludePaths: ["id", "study_modules", "tags.id", "sponsors.id"],
           },
         )
 
@@ -468,7 +488,7 @@ describe("Course", () => {
             ),*/
           },
           {
-            excludePaths: ["tags.id"],
+            excludePaths: ["tags.id", "sponsors.id"],
           },
         )
       })
@@ -492,7 +512,7 @@ describe("Course", () => {
             ...expectedUpdatedCourse,
             photo: null,
           },
-          { excludePaths: ["tags.id"] },
+          { excludePaths: ["tags.id", "sponsors.id"] },
         )
         const updatedCourse = await ctx.prisma.course.findUnique({
           where: { slug: "course1" },
@@ -500,7 +520,7 @@ describe("Course", () => {
         })
         expect(updatedCourse).toMatchStrippedSnapshot(
           {},
-          { excludePaths: ["tags.id"] },
+          { excludePaths: ["tags.id", "sponsors.id"] },
         )
       })
 
@@ -661,6 +681,23 @@ const createCourseMutation = gql`
           language
         }
       }
+      sponsors {
+        id
+        name
+        translations {
+          name
+          description
+          link
+          link_text
+          language
+        }
+        images {
+          type
+          width
+          height
+          uri
+        }
+      }
     }
   }
 `
@@ -749,6 +786,23 @@ const updateCourseMutation = gql`
           name
           description
           language
+        }
+      }
+      sponsors {
+        id
+        name
+        translations {
+          name
+          description
+          link
+          link_text
+          language
+        }
+        images {
+          type
+          width
+          height
+          uri
         }
       }
     }

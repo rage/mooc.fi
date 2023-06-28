@@ -13,6 +13,7 @@ import {
 import { initialTranslation, languages } from "./form-validation"
 import { StudyModuleFormValues } from "./types"
 import { useTranslator } from "/hooks/useTranslator"
+import CommonTranslations from "/translations/common"
 import StudyModulesTranslations from "/translations/study-modules"
 
 const ItemContainer = styled("div")`
@@ -23,7 +24,7 @@ const ItemContainer = styled("div")`
 `
 
 function StudyModuleTranslationsForm() {
-  const t = useTranslator(StudyModulesTranslations)
+  const t = useTranslator(StudyModulesTranslations, CommonTranslations)
   const _languages = languages(t)
 
   const renderArrayListItem: ControlledFieldArrayListProps<

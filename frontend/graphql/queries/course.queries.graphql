@@ -4,9 +4,33 @@ query Courses($language: String) {
   }
 }
 
+query NewCourses($language: String) {
+  courses(orderBy: { order: asc }, language: $language, hidden: false) {
+    ...NewCourseFields
+  }
+}
+
 query FrontpageCoursesModules($language: String) {
   courses(orderBy: { order: asc }, language: $language, hidden: false) {
     ...FrontpageCourseFields
+  }
+  study_modules(orderBy: { id: asc }, language: $language) {
+    ...StudyModuleFields
+  }
+}
+
+query NewFrontpageCoursesModules($language: String) {
+  courses(orderBy: { order: asc }, language: $language, hidden: false) {
+    ...NewFrontpageCourseFields
+    sponsors(language: $language) {
+      ...SponsorFields
+      translations {
+        ...SponsorTranslationFields
+      }
+      images {
+        ...SponsorImageFields
+      }
+    }
   }
   study_modules(orderBy: { id: asc }, language: $language) {
     ...StudyModuleFields
@@ -65,30 +89,12 @@ query CourseEditorDetails($slug: String) {
 
 query EmailTemplateEditorCourses {
   courses {
-    ...CourseCoreFields
-    teacher_in_charge_name
-    teacher_in_charge_email
-    start_date
-    completion_email {
-      ...EmailTemplateCoreFields
-    }
-    course_stats_email {
-      ...EmailTemplateCoreFields
-    }
+    ...CourseDashboardCourseFields
   }
 }
 
 query CourseDashboard($slug: String!, $language: String) {
   course(slug: $slug, language: $language) {
-    ...CourseCoreFields
-    teacher_in_charge_name
-    teacher_in_charge_email
-    start_date
-    completion_email {
-      ...EmailTemplateCoreFields
-    }
-    course_stats_email {
-      ...EmailTemplateCoreFields
-    }
+    ...CourseDashboardCourseFields
   }
 }

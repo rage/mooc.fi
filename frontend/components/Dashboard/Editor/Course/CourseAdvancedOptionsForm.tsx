@@ -9,6 +9,7 @@ import {
   ControlledTextField,
 } from "../Common/Fields"
 import { useCourseEditorData } from "./CourseEditorDataContext"
+import CourseSponsorsForm from "./CourseSponsorsForm"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/courses"
@@ -54,6 +55,7 @@ function CourseAdvancedOptionsForm() {
           tip={t("helpCourseAutomaticCompletionsEligibleForEcts")}
         />
       </FormFieldGroup>
+      <CourseSponsorsForm />
       {enableSuperSecret ? (
         <>
           <FormSubtitleWithMargin variant="h6" component="h3" align="center">

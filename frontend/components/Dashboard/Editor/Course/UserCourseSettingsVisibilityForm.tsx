@@ -1,7 +1,7 @@
 import { useCallback } from "react"
 
-import { isString } from "lodash"
 import { useController, useFormContext } from "react-hook-form"
+import { isString } from "remeda"
 
 import {
   Autocomplete,

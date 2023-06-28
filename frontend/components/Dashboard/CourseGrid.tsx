@@ -1,4 +1,4 @@
-import { range } from "lodash"
+import { range } from "remeda"
 
 import { styled } from "@mui/material/styles"
 
@@ -23,7 +23,7 @@ const CourseGrid = ({ courses, loading, onClickStatus }: CourseGridProps) => (
   <section>
     <CourseList>
       {loading ? (
-        range(6).map((i) => <CourseCard key={`skeleton-${i}`} loading />)
+        range(0, 6).map((i) => <CourseCard key={`skeleton-${i}`} loading />)
       ) : (
         <>
           <CourseCard key="newcourse" />

@@ -4,6 +4,7 @@ import { FieldValues } from "react-hook-form"
 import {
   CourseStatus,
   ImageCoreFieldsFragment,
+  SponsorFieldsFragment,
   TagCoreFieldsFragment,
 } from "/graphql/generated"
 
@@ -51,6 +52,7 @@ export interface CourseFormValues extends FormValues {
   exercise_completions_needed?: number
   points_needed?: number
   tags: TagFormValue[]
+  sponsors: SponsorFormValue[]
 }
 
 export interface CourseTranslationFormValues extends FormValues {
@@ -112,5 +114,34 @@ export interface TagTypeFormValues extends FormValues {
 
 export type TagOptionValue = Omit<
   TagCoreFieldsFragment,
+  "__typename" | "id"
+> & { _id: string }
+
+export interface SponsorFormValue extends FormValues {
+  _id?: string
+  name: string
+  order: number
+  translations: SponsorTranslationFormValues[]
+  images: SponsorImageFormValues[]
+}
+
+export interface SponsorTranslationFormValues extends FormValues {
+  _id?: string
+  language: string
+  name: string
+  description?: string
+  link?: string
+  link_text?: string
+}
+
+export interface SponsorImageFormValues extends FormValues {
+  _id?: string
+  type: string
+  width: number
+  height: number
+}
+
+export type SponsorOptionValue = Omit<
+  SponsorFieldsFragment,
   "__typename" | "id"
 > & { _id: string }

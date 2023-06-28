@@ -1,15 +1,17 @@
 import { useMemo } from "react"
 
-import { omit } from "lodash"
+import { omit } from "remeda"
 
 import { useMutation, useQuery } from "@apollo/client"
 
 import { toCourseForm } from "/components/Dashboard/Editor/Course/serialization"
+import { filterNull } from "/util/filterNull"
 
 import {
   AddCourseDocument,
   CourseEditorDetailsDocument,
   CourseEditorOtherCoursesDocument,
+  CourseEditorSponsorsDocument,
   CourseEditorTagsDocument,
   CoursesDocument,
   DeleteCourseDocument,
@@ -53,6 +55,13 @@ export function useEditorCourses({ slug, isClone }: UseEditorCoursesProps) {
       includeWithNoCourses: true,
     },
   })
+
+  const {
+    data: sponsorsData,
+    loading: sponsorsLoading,
+    error: sponsorsError,
+  } = useQuery(CourseEditorSponsorsDocument)
+
   const [addCourse, { loading: addCourseLoading, error: addCourseError }] =
     useMutation(AddCourseDocument)
   const [
@@ -75,6 +84,7 @@ export function useEditorCourses({ slug, isClone }: UseEditorCoursesProps) {
     const courses = coursesData?.courses ?? []
     const studyModules = studyModulesData?.study_modules ?? []
     const tags = tagsData?.tags ?? []
+    const sponsors = sponsorsData?.sponsors ?? []
 
     if (isClone && course) {
       course = {
@@ -114,26 +124,53 @@ export function useEditorCourses({ slug, isClone }: UseEditorCoursesProps) {
       ...omit(tag, ["__typename", "id"]),
       _id: tag.id,
       types: tag.types ?? [],
-      tag_translations: (tag.tag_translations ?? []).map((translation) => ({
-        ...translation,
-        description: translation.description ?? undefined,
-      })),
+      tag_translations: (tag.tag_translations ?? []).map((translation) =>
+        filterNull(translation),
+      ),
     }))
+    const sponsorOptions = (sponsors ?? []).map((sponsor) => ({
+      ...omit(sponsor, ["__typename", "id"]),
+      _id: sponsor.id,
+      translations: sponsor.translations.map((translation) =>
+        filterNull(translation),
+      ),
+      images: (sponsor.images ?? []).map((image) => filterNull(image)),
+      order: 0,
+    }))
+
     return {
       course,
       courses,
       studyModules,
       tags,
+      sponsors,
       defaultValues,
       tagOptions,
+      sponsorOptions,
       isClone,
     }
-  }, [isClone, courseData, coursesData, studyModulesData, tagsData])
+  }, [
+    isClone,
+    courseData,
+    coursesData,
+    studyModulesData,
+    tagsData,
+    sponsorsData,
+  ])
 
   return {
     loading:
-      courseLoading || studyModulesLoading || coursesLoading || tagsLoading,
-    error: courseError ?? studyModulesError ?? coursesError ?? tagsError,
+      courseLoading ||
+      studyModulesLoading ||
+      coursesLoading ||
+      tagsLoading ||
+      sponsorsLoading,
+    error:
+      courseError ??
+      studyModulesError ??
+      coursesError ??
+      tagsError ??
+      sponsorsError,
     addCourse,
     updateCourse,
     deleteCourse,

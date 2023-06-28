@@ -1,10 +1,14 @@
-// generated Wed Nov 23 2022 13:42:15 GMT+0200 (Itä-Euroopan normaaliaika)
-import en from "./en.json"
-import fi from "./fi.json"
+// generated Mon Jun 26 2023 18:20:38 GMT+0300 (Itä-Euroopan kesäaika)
+
+import en from "./en"
+import fi from "./fi"
 import { TranslationDictionary } from "/translations"
 
-export type Users = typeof en & typeof fi
+export type Users = typeof en | typeof fi
 
-const UsersTranslations: TranslationDictionary<Users> = { en, fi }
+const UsersTranslations = { en, fi } as TranslationDictionary<
+  Users,
+  { en: typeof en; fi: typeof fi }
+>
 
 export default UsersTranslations

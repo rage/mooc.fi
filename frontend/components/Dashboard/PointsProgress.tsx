@@ -7,7 +7,7 @@ import React, {
   useState,
 } from "react"
 
-import { orderBy } from "lodash"
+import { sort } from "remeda"
 
 import { Skeleton, Typography, useMediaQuery } from "@mui/material"
 import { styled, useTheme } from "@mui/material/styles"
@@ -170,7 +170,7 @@ const ProgressLegend = ({
 
   return (
     <ProgressLegendMarkerContainer>
-      {orderBy(data, "percentage").map((p, index) => (
+      {sort(data, (e) => e.percentage).map((p, index) => (
         <ProgressLegendMarker
           key={`legend-${p.percentage}-${p.caption}-${isNarrow}`}
           order={index}

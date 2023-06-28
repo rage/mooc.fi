@@ -4,6 +4,7 @@ import { Autocomplete, TextField } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { useTranslator } from "/hooks/useTranslator"
+import { KeyOfTranslationDictionary } from "/translations"
 import CommonTranslations from "/translations/common"
 import notEmpty from "/util/notEmpty"
 
@@ -76,7 +77,11 @@ const TagSelectDropdowns = ({
             renderInput={(params) => (
               <TextField
                 {...params}
-                label={t(category as keyof (typeof CommonTranslations)[string])}
+                label={t(
+                  category as KeyOfTranslationDictionary<
+                    typeof CommonTranslations
+                  >,
+                )}
               />
             )}
           />

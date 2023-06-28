@@ -16,7 +16,7 @@ type MDXComponent<T> = {
   meta?: Meta
 } & React.ComponentType<T>
 
-export function useFAQPage(topic?: string) {
+export function useFAQPage(topic = "toc_faq") {
   const t = useTranslator(FAQTranslations)
   const { locale } = useRouter()
 

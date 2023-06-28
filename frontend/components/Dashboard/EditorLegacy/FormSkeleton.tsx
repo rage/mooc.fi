@@ -1,4 +1,4 @@
-import { range } from "lodash"
+import { range } from "remeda"
 
 import { Container, Paper, Skeleton } from "@mui/material"
 import { styled } from "@mui/material/styles"
@@ -10,7 +10,7 @@ const FormBackground = styled(Paper)`
 const FormSkeleton: React.FC = () => (
   <Container maxWidth="md">
     <FormBackground elevation={1}>
-      {range(10).map((idx) => (
+      {range(0, 10).map((idx) => (
         <Skeleton key={`skeleton-${idx}`} sx={{ marginBottom: "2em" }} />
       ))}
     </FormBackground>

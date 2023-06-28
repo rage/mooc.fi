@@ -1,7 +1,7 @@
 import { useRef } from "react"
 
-import { omit } from "lodash"
 import { FormProvider, useForm } from "react-hook-form"
+import { omit } from "remeda"
 
 import {
   ControlledFieldArrayList,

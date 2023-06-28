@@ -1,12 +1,12 @@
 import React, { useCallback, useMemo } from "react"
 
-import { get } from "lodash"
 import {
   FieldPath,
   FieldValues,
   useController,
   useFormContext,
 } from "react-hook-form"
+import { prop } from "remeda"
 
 import { InputAdornment, TextField, TextFieldProps } from "@mui/material"
 import { styled } from "@mui/material/styles"
@@ -66,7 +66,7 @@ function ControlledTextFieldComponent<
     ...textFieldProps
   } = props
   const anchor = useAnchor(name)
-  const defaultValue = get(defaultValues, name)
+  const defaultValue = prop(name)(defaultValues)
 
   const { field, fieldState } = useController<TFieldValues>({
     name,

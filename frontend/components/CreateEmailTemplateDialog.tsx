@@ -1,7 +1,7 @@
 import { useId, useMemo, useState } from "react"
 
-import { omit } from "lodash"
 import Router from "next/router"
+import { omit } from "remeda"
 
 import { useApolloClient, useQuery } from "@apollo/client"
 import {
@@ -23,14 +23,14 @@ import notEmpty from "/util/notEmpty"
 
 import {
   AddEmailTemplateDocument,
-  CourseCoreFieldsFragment,
+  CourseDashboardCourseFieldsFragment,
   CourseUpsertArg,
   EmailTemplateEditorCoursesDocument,
   UpdateCourseDocument,
 } from "/graphql/generated"
 
 interface CreateEmailTemplateDialogParams {
-  course?: CourseCoreFieldsFragment
+  course?: CourseDashboardCourseFieldsFragment
   buttonText: string
   type?: string
 }
@@ -44,7 +44,7 @@ const CreateEmailTemplateDialog = ({
   const [nameInput, setNameInput] = useState("")
   const [templateType, setTemplateType] = useState(type)
   const [selectedCourse, setSelectedCourse] =
-    useState<CourseCoreFieldsFragment | null>(null)
+    useState<CourseDashboardCourseFieldsFragment | null>(null)
   const [isErrorSnackbarOpen, setIsErrorSnackbarOpen] = useState(false)
   const { loading, error, data } = useQuery(EmailTemplateEditorCoursesDocument)
   const client = useApolloClient()

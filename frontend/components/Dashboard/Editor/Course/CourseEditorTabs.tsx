@@ -1,7 +1,7 @@
 import { useMemo } from "react"
 
-import { isString } from "lodash"
 import { useFormState } from "react-hook-form"
+import { isString } from "remeda"
 
 import BuildIcon from "@mui/icons-material/Build"
 import InfoIcon from "@mui/icons-material/Info"

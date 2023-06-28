@@ -1,10 +1,11 @@
 /* eslint-disable complexity */
 import { getIn } from "formik"
-import { omit } from "lodash"
 import { DateTime } from "luxon"
+import { omit } from "remeda"
 
 import { initialValues } from "./form-validation"
 import { CourseFormValues, CourseTranslationFormValues } from "./types"
+import { filterNull } from "/util/filterNull"
 import notEmpty from "/util/notEmpty"
 
 import {
@@ -91,13 +92,13 @@ export const toCourseForm = ({
     study_modules,
     course_variants:
       course?.course_variants?.map((course_variant) => ({
-        ...omit(course_variant, ["__typename", "created_at", "updated_at"]),
+        ...omit(course_variant, ["__typename"]),
         slug: course_variant.slug ?? "",
         description: course_variant.description ?? undefined,
       })) ?? [],
     course_aliases:
       course?.course_aliases?.map((course_alias) => ({
-        ...omit(course_alias, ["__typename", "created_at", "updated_at"]),
+        ...omit(course_alias, ["__typename"]),
         course_code: course_alias.course_code ?? undefined,
       })) ?? [],
     new_slug: course.slug,
@@ -109,7 +110,7 @@ export const toCourseForm = ({
     has_certificate: course?.has_certificate ?? false,
     user_course_settings_visibilities:
       course?.user_course_settings_visibilities?.map((visibility) => ({
-        ...omit(visibility, ["__typename", "created_at", "updated_at"]),
+        ...omit(visibility, ["__typename"]),
         language: visibility.language ?? undefined,
       })),
     upcoming_active_link: course?.upcoming_active_link ?? false,
@@ -150,7 +151,7 @@ export function fromCourseForm<Values extends CourseFormValues>({
   const course_translations =
     values?.course_translations?.map(
       (course_translation: CourseTranslationFormValues) => ({
-        ...omit(course_translation, "open_university_course_link"),
+        ...omit(course_translation, ["open_university_course_link"]),
         link: course_translation.link ?? "",
         id:
           !course_translation.id || course_translation.id === ""
@@ -159,24 +160,10 @@ export function fromCourseForm<Values extends CourseFormValues>({
       }),
     ) ?? []
 
-  const course_variants = (values?.course_variants ?? []).map(
-    (course_variant) =>
-      omit(course_variant, ["__typename"]) as Values["course_variants"][number],
-  )
+  const { course_variants = [], user_course_settings_visibilities = [] } =
+    values
 
-  const course_aliases = (values?.course_aliases ?? []).map((course_alias) => ({
-    ...omit(course_alias, ["__typename"]),
-    course_code: course_alias.course_code ?? undefined,
-  }))
-
-  const user_course_settings_visibilities = (
-    values?.user_course_settings_visibilities ?? []
-  ).map(
-    (visibility) =>
-      omit(visibility, [
-        "__typename",
-      ]) as Values["user_course_settings_visibilities"][number],
-  )
+  const course_aliases = (values?.course_aliases ?? []).map(filterNull)
 
   const open_university_registration_links = values?.course_translations
     ?.map((course_translation: CourseTranslationFormValues) => {
@@ -216,25 +203,17 @@ export function fromCourseForm<Values extends CourseFormValues>({
     .map((id) => ({ id }))
 
   const tags = values?.tags?.map(
-    (tag) =>
-      omit(tag, [
-        "__typename",
-        "name",
-        "tag_translations",
-      ]) as Values["tags"][number],
+    (tag) => omit(tag, ["tag_translations"]) as Values["tags"][number],
   )
 
   const formValues = newCourse
-    ? (omit(values, [
+    ? omit(values, [
         "id",
         "new_slug",
         "thumbnail",
         "import_photo",
         "delete_photo",
-      ]) as Omit<
-        Values,
-        "id" | "new_slug" | "thumbnail" | "import_photo" | "delete_photo"
-      >)
+      ])
     : ({
         ...omit(values, ["id", "thumbnail", "import_photo"]),
         new_slug: values.new_slug.trim(),

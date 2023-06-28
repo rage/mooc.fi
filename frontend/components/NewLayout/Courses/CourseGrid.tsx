@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 
-import { differenceBy } from "lodash"
 import dynamic from "next/dynamic"
 import { useRouter } from "next/router"
+import { difference, sort } from "remeda"
 
 import { useQuery } from "@apollo/client"
 import ClearIcon from "@mui/icons-material/Clear"
@@ -36,9 +36,9 @@ import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
 import {
   CourseCatalogueTagsDocument,
-  CourseFieldsFragment,
-  CoursesDocument,
   CourseStatus,
+  NewCourseFieldsFragment,
+  NewCoursesDocument,
   TagCoreFieldsFragment,
 } from "/graphql/generated"
 
@@ -252,7 +252,7 @@ const SearchResultStatus = ({
 }
 
 const courseHasTag = (
-  course: CourseFieldsFragment | null,
+  course: NewCourseFieldsFragment | null,
   tag: TagCoreFieldsFragment,
 ) => {
   if (!course) {
@@ -262,8 +262,8 @@ const courseHasTag = (
 }
 
 const compareCourses = (
-  course1: CourseFieldsFragment,
-  course2: CourseFieldsFragment,
+  course1: NewCourseFieldsFragment,
+  course2: NewCourseFieldsFragment,
 ) => {
   if (course1.study_modules.length == 0) {
     return 1
@@ -279,7 +279,7 @@ const compareCourses = (
 }
 
 function areEqual<T>(a: Array<T>, b: Array<T>) {
-  return a.length === b.length && !differenceBy(a, b).length
+  return a.length === b.length && !difference(a, b).length
 }
 
 function CourseGrid() {
@@ -298,7 +298,7 @@ function CourseGrid() {
   }) as CourseStatus[]
 
   const { loading: coursesLoading, data: coursesData } = useQuery(
-    CoursesDocument,
+    NewCoursesDocument,
     {
       variables: { language },
       ssr: false,
@@ -348,10 +348,10 @@ function CourseGrid() {
     }, {} as Record<string, Array<TagCoreFieldsFragment>>)
 
     if (res["language"]) {
-      res["language"] = res["language"].sort(sortByLanguage)
+      res["language"].sort(sortByLanguage)
     }
     if (res["difficulty"]) {
-      res["difficulty"] = res["difficulty"].sort(sortByDifficulty)
+      res["difficulty"].sort(sortByDifficulty)
     }
 
     return res
@@ -523,7 +523,7 @@ function CourseGrid() {
             count={filteredCourses.length}
           />
           <CardsContainer>
-            {filteredCourses.sort(compareCourses).map((course) => (
+            {sort(filteredCourses, compareCourses).map((course) => (
               <CourseCard key={course.id} course={course} />
             ))}
             {filteredCourses.length === 0 && (

@@ -17,7 +17,10 @@ import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
 import { notEmptyOrEmptyString } from "/util/guards"
 
-import { CourseFieldsFragment, TagCoreFieldsFragment } from "/graphql/generated"
+import {
+  NewCourseFieldsFragment,
+  TagCoreFieldsFragment,
+} from "/graphql/generated"
 
 const Tag = styled(Chip)`
   border-radius: 2rem;
@@ -118,7 +121,7 @@ export const LanguageTag = ({
 }
 
 interface TagsProps {
-  course: CourseFieldsFragment
+  course: NewCourseFieldsFragment
   abbreviated?: boolean
 }
 

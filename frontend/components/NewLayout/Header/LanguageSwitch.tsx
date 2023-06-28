@@ -13,6 +13,7 @@ import {
 import { styled } from "@mui/material/styles"
 
 import { useTranslator } from "/hooks/useTranslator"
+import { KeyOfTranslationDictionary } from "/translations"
 import CommonTranslations from "/translations/common"
 
 const LanguageSwitchButton = (buttonProps: ButtonProps<"div">) => (
@@ -64,8 +65,12 @@ const LanguageSwitch = () => {
           href={asPath}
           locale={locale}
           active={currentLocale === locale}
-          title={t(locale as keyof (typeof CommonTranslations)[string])}
-          aria-label={t(locale as keyof (typeof CommonTranslations)[string])}
+          title={t(
+            locale as KeyOfTranslationDictionary<typeof CommonTranslations>,
+          )}
+          aria-label={t(
+            locale as KeyOfTranslationDictionary<typeof CommonTranslations>,
+          )}
         >
           {locale}
         </Language>

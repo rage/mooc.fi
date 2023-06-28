@@ -1,4 +1,4 @@
-import { range } from "lodash"
+import { range } from "remeda"
 
 import { Grid } from "@mui/material"
 
@@ -15,7 +15,9 @@ const ModuleGrid = ({ modules, loading }: ModuleGridProps) => (
   <section>
     <Grid container spacing={3}>
       {loading ? (
-        range(4).map((i) => <ModuleCard key={`module-skeleton-${i}`} loading />)
+        range(0, 4).map((i) => (
+          <ModuleCard key={`module-skeleton-${i}`} loading />
+        ))
       ) : (
         <>
           {modules?.map((studyModule) => (

@@ -186,6 +186,7 @@ export type CourseKeySpecifier = (
   | "promote"
   | "services"
   | "slug"
+  | "sponsors"
   | "start_date"
   | "start_point"
   | "status"
@@ -245,6 +246,7 @@ export type CourseFieldPolicy = {
   promote?: FieldPolicy<any> | FieldReadFunction<any>
   services?: FieldPolicy<any> | FieldReadFunction<any>
   slug?: FieldPolicy<any> | FieldReadFunction<any>
+  sponsors?: FieldPolicy<any> | FieldReadFunction<any>
   start_date?: FieldPolicy<any> | FieldReadFunction<any>
   start_point?: FieldPolicy<any> | FieldReadFunction<any>
   status?: FieldPolicy<any> | FieldReadFunction<any>
@@ -316,6 +318,25 @@ export type CourseOwnershipFieldPolicy = {
   updated_at?: FieldPolicy<any> | FieldReadFunction<any>
   user?: FieldPolicy<any> | FieldReadFunction<any>
   user_id?: FieldPolicy<any> | FieldReadFunction<any>
+}
+export type CourseSponsorKeySpecifier = (
+  | "course"
+  | "course_id"
+  | "created_at"
+  | "order"
+  | "sponsor"
+  | "sponsor_id"
+  | "updated_at"
+  | CourseSponsorKeySpecifier
+)[]
+export type CourseSponsorFieldPolicy = {
+  course?: FieldPolicy<any> | FieldReadFunction<any>
+  course_id?: FieldPolicy<any> | FieldReadFunction<any>
+  created_at?: FieldPolicy<any> | FieldReadFunction<any>
+  order?: FieldPolicy<any> | FieldReadFunction<any>
+  sponsor?: FieldPolicy<any> | FieldReadFunction<any>
+  sponsor_id?: FieldPolicy<any> | FieldReadFunction<any>
+  updated_at?: FieldPolicy<any> | FieldReadFunction<any>
 }
 export type CourseStatsSubscriptionKeySpecifier = (
   | "created_at"
@@ -595,6 +616,8 @@ export type MutationKeySpecifier = (
   | "addVerifiedUser"
   | "createCourseStatsSubscription"
   | "createRegistrationAttemptDate"
+  | "createSponsor"
+  | "createSponsorImage"
   | "createTag"
   | "createTagTranslation"
   | "createTagType"
@@ -622,6 +645,7 @@ export type MutationKeySpecifier = (
   | "updateOpenUniversityRegistrationLink"
   | "updateResearchConsent"
   | "updateService"
+  | "updateSponsor"
   | "updateStudyModule"
   | "updateStudyModuletranslation"
   | "updateTag"
@@ -657,6 +681,8 @@ export type MutationFieldPolicy = {
   addVerifiedUser?: FieldPolicy<any> | FieldReadFunction<any>
   createCourseStatsSubscription?: FieldPolicy<any> | FieldReadFunction<any>
   createRegistrationAttemptDate?: FieldPolicy<any> | FieldReadFunction<any>
+  createSponsor?: FieldPolicy<any> | FieldReadFunction<any>
+  createSponsorImage?: FieldPolicy<any> | FieldReadFunction<any>
   createTag?: FieldPolicy<any> | FieldReadFunction<any>
   createTagTranslation?: FieldPolicy<any> | FieldReadFunction<any>
   createTagType?: FieldPolicy<any> | FieldReadFunction<any>
@@ -686,6 +712,7 @@ export type MutationFieldPolicy = {
     | FieldReadFunction<any>
   updateResearchConsent?: FieldPolicy<any> | FieldReadFunction<any>
   updateService?: FieldPolicy<any> | FieldReadFunction<any>
+  updateSponsor?: FieldPolicy<any> | FieldReadFunction<any>
   updateStudyModule?: FieldPolicy<any> | FieldReadFunction<any>
   updateStudyModuletranslation?: FieldPolicy<any> | FieldReadFunction<any>
   updateTag?: FieldPolicy<any> | FieldReadFunction<any>
@@ -910,6 +937,7 @@ export type QueryKeySpecifier = (
   | "registeredCompletions"
   | "service"
   | "services"
+  | "sponsors"
   | "studyModuleTranslations"
   | "study_module"
   | "study_module_exists"
@@ -956,6 +984,7 @@ export type QueryFieldPolicy = {
   registeredCompletions?: FieldPolicy<any> | FieldReadFunction<any>
   service?: FieldPolicy<any> | FieldReadFunction<any>
   services?: FieldPolicy<any> | FieldReadFunction<any>
+  sponsors?: FieldPolicy<any> | FieldReadFunction<any>
   studyModuleTranslations?: FieldPolicy<any> | FieldReadFunction<any>
   study_module?: FieldPolicy<any> | FieldReadFunction<any>
   study_module_exists?: FieldPolicy<any> | FieldReadFunction<any>
@@ -1027,6 +1056,73 @@ export type ServiceFieldPolicy = {
   updated_at?: FieldPolicy<any> | FieldReadFunction<any>
   url?: FieldPolicy<any> | FieldReadFunction<any>
   user_course_service_progresses?: FieldPolicy<any> | FieldReadFunction<any>
+}
+export type SponsorKeySpecifier = (
+  | "courses"
+  | "created_at"
+  | "id"
+  | "images"
+  | "language"
+  | "name"
+  | "order"
+  | "translations"
+  | "updated_at"
+  | SponsorKeySpecifier
+)[]
+export type SponsorFieldPolicy = {
+  courses?: FieldPolicy<any> | FieldReadFunction<any>
+  created_at?: FieldPolicy<any> | FieldReadFunction<any>
+  id?: FieldPolicy<any> | FieldReadFunction<any>
+  images?: FieldPolicy<any> | FieldReadFunction<any>
+  language?: FieldPolicy<any> | FieldReadFunction<any>
+  name?: FieldPolicy<any> | FieldReadFunction<any>
+  order?: FieldPolicy<any> | FieldReadFunction<any>
+  translations?: FieldPolicy<any> | FieldReadFunction<any>
+  updated_at?: FieldPolicy<any> | FieldReadFunction<any>
+}
+export type SponsorImageKeySpecifier = (
+  | "created_at"
+  | "height"
+  | "sponsor"
+  | "sponsor_id"
+  | "type"
+  | "updated_at"
+  | "uri"
+  | "width"
+  | SponsorImageKeySpecifier
+)[]
+export type SponsorImageFieldPolicy = {
+  created_at?: FieldPolicy<any> | FieldReadFunction<any>
+  height?: FieldPolicy<any> | FieldReadFunction<any>
+  sponsor?: FieldPolicy<any> | FieldReadFunction<any>
+  sponsor_id?: FieldPolicy<any> | FieldReadFunction<any>
+  type?: FieldPolicy<any> | FieldReadFunction<any>
+  updated_at?: FieldPolicy<any> | FieldReadFunction<any>
+  uri?: FieldPolicy<any> | FieldReadFunction<any>
+  width?: FieldPolicy<any> | FieldReadFunction<any>
+}
+export type SponsorTranslationKeySpecifier = (
+  | "created_at"
+  | "description"
+  | "language"
+  | "link"
+  | "link_text"
+  | "name"
+  | "sponsor"
+  | "sponsor_id"
+  | "updated_at"
+  | SponsorTranslationKeySpecifier
+)[]
+export type SponsorTranslationFieldPolicy = {
+  created_at?: FieldPolicy<any> | FieldReadFunction<any>
+  description?: FieldPolicy<any> | FieldReadFunction<any>
+  language?: FieldPolicy<any> | FieldReadFunction<any>
+  link?: FieldPolicy<any> | FieldReadFunction<any>
+  link_text?: FieldPolicy<any> | FieldReadFunction<any>
+  name?: FieldPolicy<any> | FieldReadFunction<any>
+  sponsor?: FieldPolicy<any> | FieldReadFunction<any>
+  sponsor_id?: FieldPolicy<any> | FieldReadFunction<any>
+  updated_at?: FieldPolicy<any> | FieldReadFunction<any>
 }
 export type StoredDataKeySpecifier = (
   | "course"
@@ -1614,6 +1710,13 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | CourseOwnershipKeySpecifier)
     fields?: CourseOwnershipFieldPolicy
   }
+  CourseSponsor?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | CourseSponsorKeySpecifier
+      | (() => undefined | CourseSponsorKeySpecifier)
+    fields?: CourseSponsorFieldPolicy
+  }
   CourseStatsSubscription?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?:
       | false
@@ -1788,6 +1891,27 @@ export type StrictTypedTypePolicies = {
       | ServiceKeySpecifier
       | (() => undefined | ServiceKeySpecifier)
     fields?: ServiceFieldPolicy
+  }
+  Sponsor?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | SponsorKeySpecifier
+      | (() => undefined | SponsorKeySpecifier)
+    fields?: SponsorFieldPolicy
+  }
+  SponsorImage?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | SponsorImageKeySpecifier
+      | (() => undefined | SponsorImageKeySpecifier)
+    fields?: SponsorImageFieldPolicy
+  }
+  SponsorTranslation?: Omit<TypePolicy, "fields" | "keyFields"> & {
+    keyFields?:
+      | false
+      | SponsorTranslationKeySpecifier
+      | (() => undefined | SponsorTranslationKeySpecifier)
+    fields?: SponsorTranslationFieldPolicy
   }
   StoredData?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?:

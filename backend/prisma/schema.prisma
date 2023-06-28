@@ -143,6 +143,7 @@ model Course {
   tags                                    Tag[]                            @relation("CourseToTag")
   services                                Service[]                        @relation("course_to_service")
   study_modules                           StudyModule[]                    @relation("study_module_to_course")
+  sponsors                                CourseSponsor[]
 
   @@index([completion_email_id])
   @@index([completions_handled_by_id])
@@ -618,7 +619,7 @@ model CourseStatsSubscription {
 }
 
 model Tag {
-  id               String           @id @default(dbgenerated("extensions.uuid_generate_v4()"))
+  id               String           @id @unique
   hidden           Boolean          @default(false)
   created_at       DateTime         @default(now())
   updated_at       DateTime         @default(now()) @updatedAt
@@ -651,6 +652,60 @@ model TagTranslation {
   @@id([tag_id, language])
   @@unique([name, language])
   @@map("tag_translation")
+}
+
+model Sponsor {
+  id           String               @id @unique
+  name         String
+  courses      CourseSponsor[]
+  translations SponsorTranslation[]
+  images       SponsorImage[]
+  created_at   DateTime             @default(now())
+  updated_at   DateTime             @default(now()) @updatedAt
+
+  @@map("sponsor")
+}
+
+model SponsorTranslation {
+  sponsor_id  String
+  language    String
+  name        String
+  description String?
+  link        String?
+  link_text   String?
+  sponsor     Sponsor  @relation(fields: [sponsor_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(now()) @updatedAt
+
+  @@id([sponsor_id, language])
+  @@map("sponsor_translation")
+}
+
+model SponsorImage {
+  sponsor_id String
+  type       String
+  width      Int
+  height     Int
+  uri        String
+  sponsor    Sponsor  @relation(fields: [sponsor_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+
+  @@id([sponsor_id, type])
+  @@map("sponsor_image")
+}
+
+model CourseSponsor {
+  course_id  String
+  sponsor_id String
+  order      Int?   @default(0)
+  course     Course @relation(fields: [course_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  sponsor    Sponsor @relation(fields: [sponsor_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+
+  @@id([course_id, sponsor_id])
+  @@map("course_sponsor")
 }
 
 enum CourseStatus {

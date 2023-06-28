@@ -46,6 +46,7 @@ import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import { LanguageEntry } from "/components/Surfaces/LanguageEntryGrid"
 import useDebounce from "/hooks/useDebounce"
 import { useTranslator } from "/hooks/useTranslator"
+import CommonTranslations from "/translations/common"
 import StudyModulesTranslations from "/translations/study-modules"
 
 const FormContainer = styled("div")`
@@ -77,7 +78,7 @@ const StudyModuleFormComponent = () => {
   const { errors, values, isSubmitting } =
     useFormikContext<StudyModuleFormValues>()
 
-  const t = useTranslator(StudyModulesTranslations)
+  const t = useTranslator(StudyModulesTranslations, CommonTranslations)
   const confirm = useConfirm()
 
   const [imageError, setImageError] = useState("")

@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, useMemo } from "react"
 
-import { sortBy } from "lodash"
 import dynamic from "next/dynamic"
+import { sortBy } from "remeda"
 
 import { CardContent, Skeleton, Typography } from "@mui/material"
 
@@ -106,7 +106,7 @@ export function CourseEntry({ children }: PropsWithChildren) {
       {hasTierSummaries &&
         sortBy(
           selectedData.tier_summaries ?? [],
-          (tierEntry) => tierEntry.course?.tier,
+          (tierEntry) => tierEntry.course?.tier ?? 0,
         ).map((tierEntry) => (
           <CourseEntryCard
             key={tierEntry.course.id}

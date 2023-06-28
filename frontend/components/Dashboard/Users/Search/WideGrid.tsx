@@ -1,6 +1,6 @@
 import { useContext } from "react"
 
-import { range } from "lodash"
+import { range } from "remeda"
 
 import {
   Button,
@@ -103,7 +103,7 @@ const RenderResults = () => {
   if (loading && data.length < 1) {
     return (
       <TableBody>
-        {range(5).map((n) => (
+        {range(0, 5).map((n) => (
           <TableRow key={`skeleton-${n}`}>
             <TableCell colSpan={colSpan}>
               <Skeleton />

@@ -39,3 +39,10 @@ fragment StudyModuleFieldsWithCourses on StudyModule {
     ...CourseFields
   }
 }
+
+fragment NewStudyModuleFieldsWithCourses on StudyModule {
+  ...StudyModuleFields
+  courses {
+    ...NewCourseFields
+  }
+}

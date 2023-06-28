@@ -12,6 +12,7 @@ import {
   UserCourseSettingsVisibilityFormValues,
 } from "./types"
 import { Translator } from "/translations"
+import { Common } from "/translations/common"
 import { Courses } from "/translations/courses"
 
 import { CourseFromSlugDocument, CourseStatus } from "/graphql/generated"
@@ -66,6 +67,7 @@ export const initialValues: CourseFormValues = {
   user_course_settings_visibilities: [],
   upcoming_active_link: false,
   tags: [],
+  sponsors: [],
   completions_handled_by: "",
   inherit_settings_from: "",
 }
@@ -79,7 +81,7 @@ export const study_modules: { value: any; label: any }[] = []
 interface CourseEditSchemaArgs {
   client: ApolloClient<object>
   initialSlug: string | null
-  t: Translator<Courses>
+  t: Translator<Courses & Common>
 }
 
 const courseEditSchema = ({ client, initialSlug, t }: CourseEditSchemaArgs) => {

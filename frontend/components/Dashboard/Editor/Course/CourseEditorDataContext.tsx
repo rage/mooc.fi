@@ -1,10 +1,11 @@
 import { createContext, useContext } from "react"
 
-import { CourseFormValues, TagFormValue } from "./types"
+import { CourseFormValues, SponsorFormValue, TagFormValue } from "./types"
 
 import {
   EditorCourseDetailedFieldsFragment,
   EditorCourseOtherCoursesFieldsFragment,
+  SponsorCoreFieldsFragment,
   StudyModuleDetailedFieldsFragment,
   TagCoreFieldsFragment,
 } from "/graphql/generated"
@@ -15,6 +16,8 @@ export interface CourseEditorDataContext {
   studyModules?: StudyModuleDetailedFieldsFragment[]
   tags?: TagCoreFieldsFragment[]
   tagOptions?: TagFormValue[]
+  sponsors?: SponsorCoreFieldsFragment[]
+  sponsorOptions?: SponsorFormValue[]
   defaultValues: CourseFormValues
   isClone?: boolean
 }

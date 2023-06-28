@@ -207,5 +207,42 @@ export const Course = objectType({
         return tags.map((t) => ({ ...t, language }))
       },
     })
+
+    t.nonNull.list.nonNull.field("sponsors", {
+      type: "Sponsor",
+      args: {
+        language: stringArg(),
+      },
+      resolve: async (parent, { language }, ctx) => {
+        const sponsors = await ctx.prisma.course
+          .findUnique({
+            where: {
+              id: parent.id,
+            },
+          })
+          .sponsors({
+            ...(language && {
+              where: {
+                sponsor: {
+                  translations: {
+                    some: {
+                      language,
+                    },
+                  },
+                },
+              },
+            }),
+            include: {
+              sponsor: true,
+            },
+          })
+
+        return (sponsors ?? []).flatMap(({ sponsor, order }) => ({
+          ...sponsor,
+          order,
+          language,
+        }))
+      },
+    })
   },
 })

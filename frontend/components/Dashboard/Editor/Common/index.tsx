@@ -1,12 +1,12 @@
 import React, { PropsWithChildren, useCallback } from "react"
 
-import { isEqual } from "lodash"
 import {
   FieldValues,
   Message,
   MultipleFieldErrors,
   Resolver,
 } from "react-hook-form"
+import { equals } from "remeda"
 import * as Yup from "yup"
 
 import { yupResolver } from "@hookform/resolvers/yup"
@@ -100,7 +100,7 @@ const TabSectionImpl = (
 
 // would otherwise render all tabsections again a bit too often
 export const TabSection = React.memo(TabSectionImpl, (prevProps, nextProps) => {
-  return isEqual(prevProps, nextProps)
+  return equals(prevProps, nextProps)
 }) as typeof TabSectionImpl
 
 export function useCustomValidationResolver<

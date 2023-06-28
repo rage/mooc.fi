@@ -6,8 +6,8 @@ import React, {
   useRef,
 } from "react"
 
-import { orderBy } from "lodash"
 import { FieldErrors, FieldValues } from "react-hook-form"
+import { sortBy } from "remeda"
 
 import {
   useEditorContext,
@@ -86,7 +86,7 @@ export function useAnchors(initialAnchors?: Record<string, Anchor>) {
       const errorAnchors = Object.values(anchors).filter((anchor) =>
         Object.keys(flattenedErrors).includes(convertDotNotation(anchor.name)),
       )
-      const firstErrorAnchor = orderBy(errorAnchors, (anchor) => anchor.id)[0]
+      const firstErrorAnchor = sortBy(errorAnchors, (anchor) => anchor.id)[0]
 
       const firstRef = firstErrorAnchor?.refInstance.current
       const firstTab = firstErrorAnchor?.tab

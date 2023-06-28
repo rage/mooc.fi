@@ -9,6 +9,7 @@ import { css, styled } from "@mui/material/styles"
 
 import { CardTitle } from "../Common/Card"
 import { courseColorSchemes } from "./common"
+import Sponsors from "./Sponsors"
 import {
   DifficultyTags,
   DifficultyTagsContainer,
@@ -26,7 +27,7 @@ import moocLogo from "/public/images/new/logos/moocfi_white.svg"
 import CommonTranslations from "/translations/common"
 import { useFormatDateTime } from "/util/dataFormatFunctions"
 
-import { CourseFieldsFragment, CourseStatus } from "/graphql/generated"
+import { CourseStatus, NewCourseFieldsFragment } from "/graphql/generated"
 
 const ContainerBase = css`
   display: grid;
@@ -284,7 +285,7 @@ const MoocfiLogo = styled(CardHeaderImage)`
 `
 
 interface ScheduleProps {
-  course?: CourseFieldsFragment
+  course?: NewCourseFieldsFragment
 }
 
 const Schedule = React.memo(
@@ -339,6 +340,7 @@ interface CourseCardLayoutProps {
   moduleTags?: React.ReactNode
   languageTags?: React.ReactNode
   difficultyTags?: React.ReactNode
+  sponsors?: React.ReactNode
   link: React.ReactNode
 }
 
@@ -351,6 +353,7 @@ function CourseCardLayout({
   moduleTags,
   languageTags,
   difficultyTags,
+  sponsors,
   link,
 }: CourseCardLayoutProps) {
   return (
@@ -379,6 +382,7 @@ function CourseCardLayout({
           <Organizer variant="body2" component="div">
             {organizer}
           </Organizer>
+          {sponsors}
         </CourseDetails>{" "}
         {schedule}
         <ResponsiveTags>
@@ -393,7 +397,7 @@ function CourseCardLayout({
 }
 
 interface CourseCardProps {
-  course: CourseFieldsFragment
+  course: NewCourseFieldsFragment
   studyModule?: string
 }
 
@@ -440,6 +444,7 @@ const CourseCard = React.forwardRef<
         languageTags={<LanguageTags course={course} />}
         difficultyTags={<DifficultyTags course={course} />}
         link={<Link href="https://www.mooc.fi">{t("showCourse")}</Link>}
+        sponsors={<Sponsors data={course.sponsors} />}
         /* <SponsorContainer>
           <Sponsor src={sponsorLogo.src} alt="Sponsor logo" fill />
         </SponsorContainer> */

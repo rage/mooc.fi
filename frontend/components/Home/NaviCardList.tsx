@@ -24,8 +24,8 @@ const NaviCardGrid = styled(Grid)`
 function NaviCardList() {
   const t = useTranslator(NaviTranslations)
 
-  const items = t("naviItems") as NaviItem[]
-  const customItems = t("customNaviItems") as NaviItem[]
+  const items = t("naviItems") as readonly NaviItem[]
+  const customItems = t("customNaviItems") as readonly NaviItem[]
 
   return (
     <Container>
