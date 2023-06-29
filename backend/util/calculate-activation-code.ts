@@ -13,15 +13,14 @@ const crypto = require("crypto")
 
 interface CalculateActivationCodeArgs {
   prisma: ExtendedPrismaClient
-  userOrganizationJoinConfirmation: UserOrganizationJoinConfirmation &
-    {
-      user_organization:
-        | (UserOrganization & {
-            user: User | null
-            organization: Organization | null
-          })
-        | null
-    }
+  userOrganizationJoinConfirmation: UserOrganizationJoinConfirmation & {
+    user_organization:
+      | (UserOrganization & {
+          user: User | null
+          organization: Organization | null
+        })
+      | null
+  }
 }
 
 export const calculateActivationCode = async ({
