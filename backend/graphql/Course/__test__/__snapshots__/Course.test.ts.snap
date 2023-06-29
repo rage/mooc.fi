@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Course model completions shouldn't return anything with non-existent user 1`] = `
-Object {
-  "course": Object {
-    "completions": Array [],
+{
+  "course": {
+    "completions": [],
     "id": "00000000-0000-0000-0000-000000000002",
     "name": "course1",
     "slug": "course1",
@@ -12,10 +12,10 @@ Object {
 `;
 
 exports[`Course model completions works with user_id 1`] = `
-Object {
-  "course": Object {
-    "completions": Array [
-      Object {
+{
+  "course": {
+    "completions": [
+      {
         "completion_language": null,
         "email": "what@ever.com",
         "id": "12400000-0000-0000-0000-000000000001",
@@ -34,10 +34,10 @@ Object {
 `;
 
 exports[`Course model completions works with user_upstream_id 1`] = `
-Object {
-  "course": Object {
-    "completions": Array [
-      Object {
+{
+  "course": {
+    "completions": [
+      {
         "completion_language": null,
         "email": "e@mail.com",
         "id": "30000000-0000-0000-0000-000000000102",

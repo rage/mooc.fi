@@ -53,7 +53,7 @@ export const adminUserDetails = {
 export const thirdUserDetails: UserInfo = {
   id: 3,
   administrator: false,
-  email: "third@mail.com",
+  email: "third@organization.fi",
   user_field: {
     first_name: "first",
     last_name: "last",
@@ -61,7 +61,7 @@ export const thirdUserDetails: UserInfo = {
     html1: "",
     organizational_id: "",
   },
-  username: "third_user",
+  username: "third_user_with_organization",
   extra_fields: {},
 }
 
@@ -339,9 +339,9 @@ export const users: Prisma.UserCreateInput[] = [
   {
     id: "20000000000000000000000000000104",
     administrator: false,
-    email: "g@mail.com",
+    email: "third@organization.fi",
     upstream_id: 3,
-    username: "third_user",
+    username: "third_user_with_organization",
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
   },

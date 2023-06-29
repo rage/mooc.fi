@@ -38,7 +38,7 @@ describe("Course", () => {
     const getNewCourse = () => ({
       name: "new1",
       slug: "new1",
-      start_date: "01/01/1900",
+      start_date: "1900-01-01T08:00:00.000Z",
       teacher_in_charge_email: "e@mail.com",
       teacher_in_charge_name: "teacher",
       study_modules: [{ id: "00000000000000000000000000000101" }],
@@ -83,8 +83,8 @@ describe("Course", () => {
       name: "updated course1",
       slug: "course1",
       new_slug: "updated_course1",
-      start_date: "02/01/1900",
-      end_date: "12/30/2100",
+      start_date: "1900-02-01T08:00:00.000Z",
+      end_date: "2100-12-30T08:00:00.000Z",
       teacher_in_charge_email: "updated-e@mail.com",
       teacher_in_charge_name: "updated teacher",
       course_translations: [

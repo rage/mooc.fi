@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`UserOrganization mutations addUserOrganization succeeds with confirmation required creating a user organization join confirmation and an email delivery 1`] = `
-Object {
+{
   "confirmed": false,
   "confirmed_at": null,
   "id": Any<String>,
-  "organization": Object {
+  "organization": {
     "id": "10000000-0000-0000-0000-000000000104",
     "slug": "test3",
   },
@@ -13,14 +13,14 @@ Object {
   "organizational_identifier": null,
   "role": "Student",
   "user_id": "20000000-0000-0000-0000-000000000102",
-  "user_organization_join_confirmations": Array [
-    Object {
+  "user_organization_join_confirmations": [
+    {
       "confirmed": false,
       "confirmed_at": null,
       "email": "e@mail.com",
-      "email_delivery": Object {
+      "email_delivery": {
         "email": "e@mail.com",
-        "email_template": Object {
+        "email_template": {
           "id": "48383100-0000-0000-0000-000000000101",
           "name": "organization join email",
         },
@@ -40,11 +40,11 @@ Object {
 `;
 
 exports[`UserOrganization mutations addUserOrganization succeeds with confirmation required creating a user organization join confirmation and an email delivery and correct required organizational email provided 1`] = `
-Object {
+{
   "confirmed": false,
   "confirmed_at": null,
   "id": Any<String>,
-  "organization": Object {
+  "organization": {
     "id": "10000000-0000-0000-0000-000000000102",
     "slug": "test",
   },
@@ -52,14 +52,14 @@ Object {
   "organizational_identifier": null,
   "role": "Student",
   "user_id": "20000000-0000-0000-0000-000000000103",
-  "user_organization_join_confirmations": Array [
-    Object {
+  "user_organization_join_confirmations": [
+    {
       "confirmed": false,
       "confirmed_at": null,
       "email": "user@organization.fi",
-      "email_delivery": Object {
+      "email_delivery": {
         "email": "user@organization.fi",
-        "email_template": Object {
+        "email_template": {
           "id": "48383100-0000-0000-0000-000000000101",
           "name": "organization join email",
         },
@@ -79,11 +79,11 @@ Object {
 `;
 
 exports[`UserOrganization mutations addUserOrganization succeeds with confirmation required creating a user organization join confirmation and an email delivery and user email matches required organizational email 1`] = `
-Object {
+{
   "confirmed": false,
   "confirmed_at": null,
   "id": Any<String>,
-  "organization": Object {
+  "organization": {
     "id": "10000000-0000-0000-0000-000000000102",
     "slug": "test",
   },
@@ -91,14 +91,14 @@ Object {
   "organizational_identifier": null,
   "role": "Student",
   "user_id": "20000000-0000-0000-0000-000000000104",
-  "user_organization_join_confirmations": Array [
-    Object {
+  "user_organization_join_confirmations": [
+    {
       "confirmed": false,
       "confirmed_at": null,
       "email": "third@organization.fi",
-      "email_delivery": Object {
+      "email_delivery": {
         "email": "third@organization.fi",
-        "email_template": Object {
+        "email_template": {
           "id": "48383100-0000-0000-0000-000000000101",
           "name": "organization join email",
         },
@@ -118,11 +118,11 @@ Object {
 `;
 
 exports[`UserOrganization mutations addUserOrganization succeeds with confirmation required using the default email template if one isn't specified 1`] = `
-Object {
+{
   "confirmed": false,
   "confirmed_at": null,
   "id": Any<String>,
-  "organization": Object {
+  "organization": {
     "id": "10000000-0000-0000-0000-000000000102",
     "slug": "test",
   },
@@ -130,14 +130,14 @@ Object {
   "organizational_identifier": null,
   "role": "Student",
   "user_id": "20000000-0000-0000-0000-000000000103",
-  "user_organization_join_confirmations": Array [
-    Object {
+  "user_organization_join_confirmations": [
+    {
       "confirmed": false,
       "confirmed_at": null,
       "email": "user@organization.fi",
-      "email_delivery": Object {
+      "email_delivery": {
         "email": "user@organization.fi",
-        "email_template": Object {
+        "email_template": {
           "id": "99999999-9998-9997-9996-999999999995",
           "name": "___default_join_organization",
         },
@@ -157,11 +157,11 @@ Object {
 `;
 
 exports[`UserOrganization mutations addUserOrganization succeeds with no confirmation required adding user to organization 1`] = `
-Object {
+{
   "confirmed": true,
   "confirmed_at": StringMatching /\\\\d\\{4\\}-\\\\d\\{2\\}-\\\\d\\{2\\}T\\\\d\\{2\\}:\\\\d\\{2\\}:\\\\d\\{2\\}\\(\\.\\\\d\\{3\\}\\)\\?Z/,
   "id": Any<String>,
-  "organization": Object {
+  "organization": {
     "id": "10000000-0000-0000-0000-000000000103",
     "slug": "test2",
   },
@@ -169,12 +169,12 @@ Object {
   "organizational_identifier": "kissa",
   "role": "Student",
   "user_id": "20000000-0000-0000-0000-000000000103",
-  "user_organization_join_confirmations": Array [],
+  "user_organization_join_confirmations": [],
 }
 `;
 
 exports[`UserOrganization mutations confirmUserOrganizationJoin succeeds confirming membership if all checks pass: Bearer normal 1`] = `
-Object {
+{
   "confirmed": true,
   "confirmed_at": Any<Date>,
   "created_at": 1900-01-01T08:00:00.000Z,
@@ -186,7 +186,7 @@ Object {
   "language": "fi",
   "redirect": null,
   "updated_at": Any<Date>,
-  "user_organization": Object {
+  "user_organization": {
     "confirmed": true,
     "confirmed_at": Any<Date>,
     "consented": true,
@@ -204,7 +204,7 @@ Object {
 `;
 
 exports[`UserOrganization mutations confirmUserOrganizationJoin succeeds confirming membership not associated with self with admin credentials if all checks pass: Bearer admin 1`] = `
-Object {
+{
   "confirmed": true,
   "confirmed_at": Any<Date>,
   "created_at": 1900-01-01T08:00:00.000Z,
@@ -216,7 +216,7 @@ Object {
   "language": "fi",
   "redirect": null,
   "updated_at": Any<Date>,
-  "user_organization": Object {
+  "user_organization": {
     "confirmed": true,
     "confirmed_at": Any<Date>,
     "consented": true,
@@ -234,13 +234,13 @@ Object {
 `;
 
 exports[`UserOrganization requestNewUserOrganizationJoinConfirmation succeeds with no extra arguments returning a confirmation 1`] = `
-Object {
+{
   "confirmed": false,
   "confirmed_at": null,
   "email": "e@mail.com",
-  "email_delivery": Object {
+  "email_delivery": {
     "email": "e@mail.com",
-    "email_template": Object {
+    "email_template": {
       "id": "48383100-0000-0000-0000-000000000101",
       "name": "organization join email",
     },
@@ -254,19 +254,19 @@ Object {
   "id": Any<String>,
   "language": "fi",
   "redirect": null,
-  "user_organization": Object {
+  "user_organization": {
     "confirmed": false,
     "confirmed_at": null,
     "consented": true,
     "id": "96900000-0000-0000-0000-000000000101",
-    "organization": Object {
+    "organization": {
       "id": "10000000-0000-0000-0000-000000000103",
       "slug": "test2",
     },
     "organizational_email": null,
     "organizational_identifier": null,
     "role": "Student",
-    "user": Object {
+    "user": {
       "id": "20000000-0000-0000-0000-000000000102",
       "upstream_id": 1,
     },
