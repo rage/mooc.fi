@@ -10,7 +10,13 @@ import {
 } from "@prisma/client"
 
 import { DEFAULT_JOIN_ORGANIZATION_EMAIL_TEMPLATE_ID } from "../../../config/defaultData"
-import { fakeTMCCurrent, getTestContext } from "../../../tests"
+import {
+  FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+  FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+  FAKE_THIRD_USER_AUTHORIZATION_HEADERS,
+  fakeTMCCurrent,
+  getTestContext,
+} from "../../../tests"
 import {
   adminUserDetails,
   normalUserDetails,
@@ -21,9 +27,18 @@ import { calculateActivationCode, PromiseReturnType } from "../../../util"
 
 const ctx = getTestContext()
 const tmc = fakeTMCCurrent({
-  "Bearer normal": [200, normalUserDetails],
-  "Bearer admin": [200, adminUserDetails],
-  "Bearer third": [200, thirdUserDetails],
+  [FAKE_NORMAL_USER_AUTHORIZATION_HEADERS["Authorization"]]: [
+    200,
+    normalUserDetails,
+  ],
+  [FAKE_ADMIN_USER_AUTHORIZATION_HEADERS["Authorization"]]: [
+    200,
+    adminUserDetails,
+  ],
+  [FAKE_THIRD_USER_AUTHORIZATION_HEADERS["Authorization"]]: [
+    200,
+    thirdUserDetails,
+  ],
 })
 
 const CONFIRMATION_ID = "61300000-0000-0000-0000-000000000001"
@@ -68,9 +83,7 @@ describe("UserOrganization", () => {
               user_id: "20000000000000000000000000000103",
               organization_id: "10000000000000000000000000000102",
             },
-            headers: {
-              Authorization: "Bearer normal",
-            },
+            headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
             message: "invalid credentials to do that",
           },
           {
@@ -79,9 +92,7 @@ describe("UserOrganization", () => {
               user_id: "20000000000000000000000000000999",
               organization_id: "10000000000000000000000000000102",
             },
-            headers: {
-              Authorization: "Bearer admin",
-            },
+            headers: FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
             message: "no such user",
           },
           {
@@ -91,9 +102,7 @@ describe("UserOrganization", () => {
               user_id: "20000000000000000000000000000103",
               organization_id: "10000000000000000000000000000999",
             },
-            headers: {
-              Authorization: "Bearer admin",
-            },
+            headers: FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
             message: "no such organization",
           },
           {
@@ -103,16 +112,12 @@ describe("UserOrganization", () => {
               user_id: "20000000000000000000000000000103",
               organization_slug: "foofoo",
             },
-            headers: {
-              Authorization: "Bearer admin",
-            },
+            headers: FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
             message: "no such organization",
           },
           {
             title: "if neither organization_id nor organization_slug provided",
-            headers: {
-              Authorization: "Bearer normal",
-            },
+            headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
             message: "no organization_id nor organization_slug provided",
           },
           {
@@ -120,9 +125,7 @@ describe("UserOrganization", () => {
             args: {
               organization_id: "10000000000000000000000000000103",
             },
-            headers: {
-              Authorization: "Bearer normal",
-            },
+            headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
             message: "this user/organization relation already exists",
           },
           {
@@ -131,9 +134,7 @@ describe("UserOrganization", () => {
             args: {
               organization_id: "10000000000000000000000000000102",
             },
-            headers: {
-              Authorization: "Bearer admin",
-            },
+            headers: FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
             message:
               "given email does not fulfill organization email requirements",
           },
@@ -144,9 +145,7 @@ describe("UserOrganization", () => {
               organization_id: "10000000000000000000000000000102",
               organizational_email: "foo@foo.foo",
             },
-            headers: {
-              Authorization: "Bearer admin",
-            },
+            headers: FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
             message:
               "given email does not fulfill organization email requirements",
           },
@@ -181,9 +180,7 @@ describe("UserOrganization", () => {
                 organization_id: "10000000000000000000000000000103",
                 organizational_identifier: "kissa",
               },
-              {
-                Authorization: "Bearer admin",
-              },
+              FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
             )
 
             expect(addUserOrganization).toMatchSnapshot({
@@ -200,9 +197,7 @@ describe("UserOrganization", () => {
               {
                 organization_id: "10000000000000000000000000000104",
               },
-              {
-                Authorization: "Bearer normal",
-              },
+              FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
             )
 
             expect(addUserOrganization).toMatchSnapshot({
@@ -226,9 +221,7 @@ describe("UserOrganization", () => {
                 organization_id: "10000000000000000000000000000102",
                 language: "fi",
               },
-              {
-                Authorization: "Bearer third",
-              },
+              FAKE_THIRD_USER_AUTHORIZATION_HEADERS,
             )
 
             expect(addUserOrganization).toMatchSnapshot({
@@ -253,9 +246,7 @@ describe("UserOrganization", () => {
                 organizational_email: "user@organization.fi",
                 redirect: "https://foo.bar",
               },
-              {
-                Authorization: "Bearer admin",
-              },
+              FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
             )
 
             expect(addUserOrganization).toMatchSnapshot({
@@ -289,9 +280,7 @@ describe("UserOrganization", () => {
                 organizational_email: "user@organization.fi",
                 redirect: "https://foo.bar",
               },
-              {
-                Authorization: "Bearer admin",
-              },
+              FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
             )
 
             expect(addUserOrganization).toMatchSnapshot({
@@ -323,9 +312,7 @@ describe("UserOrganization", () => {
               id: CONFIRMATION_ID,
               code: "foo",
             },
-            headers: {
-              Authorization: "Bearer third",
-            },
+            headers: FAKE_THIRD_USER_AUTHORIZATION_HEADERS,
             message: "invalid confirmation id",
           },
           {
@@ -334,9 +321,7 @@ describe("UserOrganization", () => {
               id: CONFIRMATION_ID,
               code: "foo",
             },
-            headers: {
-              Authorization: "Bearer normal",
-            },
+            headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
             message:
               "this user organization membership has already been confirmed",
           },
@@ -346,9 +331,7 @@ describe("UserOrganization", () => {
               id: CONFIRMATION_ID,
               code: "foo",
             },
-            headers: {
-              Authorization: "Bearer normal",
-            },
+            headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
             message: "confirmation link has expired",
             before: async () =>
               ctx.prisma.userOrganizationJoinConfirmation.update({
@@ -372,9 +355,7 @@ describe("UserOrganization", () => {
               id: CONFIRMATION_ID,
               code: "foo",
             },
-            headers: {
-              Authorization: "Bearer normal",
-            },
+            headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
             message: "confirmation link has expired",
             before: async () =>
               ctx.prisma.userOrganizationJoinConfirmation.update({
@@ -399,9 +380,7 @@ describe("UserOrganization", () => {
               id: CONFIRMATION_ID,
               code: "foo",
             },
-            headers: {
-              Authorization: "Bearer normal",
-            },
+            headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
             message: "invalid activation code",
             before: async () =>
               ctx.prisma.userOrganizationJoinConfirmation.update({
@@ -443,7 +422,9 @@ describe("UserOrganization", () => {
       })
 
       describe("succeeds", () => {
-        const confirmMembershipSuccessTest = async (authorization: string) => {
+        const confirmMembershipSuccessTest = async (
+          headers: Record<string, string>,
+        ) => {
           const userOrganizationJoinConfirmation =
             await ctx.prisma.userOrganizationJoinConfirmation.update({
               where: {
@@ -488,9 +469,7 @@ describe("UserOrganization", () => {
               id: CONFIRMATION_ID,
               code: activationCodeResult.value,
             },
-            {
-              Authorization: authorization,
-            },
+            headers,
           )
 
           const updatedConfirmation =
@@ -510,7 +489,7 @@ describe("UserOrganization", () => {
                 updated_at: expect.any(Date),
               },
             },
-            authorization,
+            headers["Authorization"],
           )
 
           expect(updatedConfirmation!.confirmed).toEqual(true)
@@ -533,11 +512,15 @@ describe("UserOrganization", () => {
         }
 
         it("confirming membership if all checks pass", async () => {
-          await confirmMembershipSuccessTest("Bearer normal")
+          await confirmMembershipSuccessTest(
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+          )
         })
 
         it("confirming membership not associated with self with admin credentials if all checks pass", async () => {
-          await confirmMembershipSuccessTest("Bearer admin")
+          await confirmMembershipSuccessTest(
+            FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+          )
         })
       })
     })
@@ -551,9 +534,7 @@ describe("UserOrganization", () => {
           args: {
             id: "96900000000000000000000000000101",
           },
-          headers: {
-            Authorization: "Bearer third",
-          },
+          headers: FAKE_THIRD_USER_AUTHORIZATION_HEADERS,
           message: "invalid user organization id",
         },
         {
@@ -561,9 +542,7 @@ describe("UserOrganization", () => {
           args: {
             id: "96900000000000000000000000000101",
           },
-          headers: {
-            Authorization: "Bearer normal",
-          },
+          headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
           message:
             "this user organization membership has already been confirmed",
         },
@@ -573,9 +552,7 @@ describe("UserOrganization", () => {
             id: "96900000000000000000000000000101",
             organizational_email: "kissa@foo.foo",
           },
-          headers: {
-            Authorization: "Bearer normal",
-          },
+          headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
           message:
             "given email does not fulfill organization email requirements",
           before: async () =>
@@ -637,9 +614,7 @@ describe("UserOrganization", () => {
               id: "96900000000000000000000000000101",
               ...args,
             },
-            {
-              Authorization: "Bearer normal",
-            },
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
           )
         )?.requestNewUserOrganizationJoinConfirmation
       }
@@ -860,9 +835,7 @@ describe("UserOrganization", () => {
             id: "96900000000000000000000000000199",
             organizational_email: "foo@foo.fi",
           },
-          headers: {
-            Authorization: "Bearer normal",
-          },
+          headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
           message: "invalid credentials to do that",
         },
         {
@@ -871,9 +844,7 @@ describe("UserOrganization", () => {
             id: "06900000000000000000000000000199",
             organizational_email: "foo@foo.fi",
           },
-          headers: {
-            Authorization: "Bearer third",
-          },
+          headers: FAKE_THIRD_USER_AUTHORIZATION_HEADERS,
           message: "no such user/organization relation or no user in relation",
         },
         {
@@ -882,9 +853,7 @@ describe("UserOrganization", () => {
             id: "96900000000000000000000000000199",
             organizational_email: "foo@foo.fi",
           },
-          headers: {
-            Authorization: "Bearer third",
-          },
+          headers: FAKE_THIRD_USER_AUTHORIZATION_HEADERS,
           message:
             "given email does not fulfill organization email requirements",
         },
@@ -940,9 +909,7 @@ describe("UserOrganization", () => {
               organizational_email: "foo@organization.fi",
               language: "en",
             },
-            {
-              Authorization: "Bearer third",
-            },
+            FAKE_THIRD_USER_AUTHORIZATION_HEADERS,
           )
         })
 
@@ -999,9 +966,7 @@ describe("UserOrganization", () => {
               id: "96900000000000000000000000000199",
               organizational_email: "third_user@organization.fi",
             },
-            {
-              Authorization: "Bearer third",
-            },
+            FAKE_THIRD_USER_AUTHORIZATION_HEADERS,
           )
         })
 
@@ -1036,9 +1001,7 @@ describe("UserOrganization", () => {
               id: "96900000000000000000000000000199",
               organizational_email: "foo@organization.fi",
             },
-            {
-              Authorization: "Bearer third",
-            },
+            FAKE_THIRD_USER_AUTHORIZATION_HEADERS,
           )
         })
 
@@ -1064,9 +1027,7 @@ describe("UserOrganization", () => {
               id: "96900000000000000000000000000199",
               organizational_email: "foo@organization.fi",
             },
-            {
-              Authorization: "Bearer third",
-            },
+            FAKE_THIRD_USER_AUTHORIZATION_HEADERS,
           )
         })
 
@@ -1109,9 +1070,7 @@ describe("UserOrganization", () => {
               id: "96900000000000000000000000000199",
               organizational_email: "foo@organization.fi",
             },
-            {
-              Authorization: "Bearer third",
-            },
+            FAKE_THIRD_USER_AUTHORIZATION_HEADERS,
           )
         })
 
@@ -1138,9 +1097,7 @@ describe("UserOrganization", () => {
               organizational_email: "foo@organization.fi",
               language: "en",
             },
-            {
-              Authorization: "Bearer third",
-            },
+            FAKE_THIRD_USER_AUTHORIZATION_HEADERS,
           )
         })
 
