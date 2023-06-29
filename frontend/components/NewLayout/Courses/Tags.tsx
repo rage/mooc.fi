@@ -15,7 +15,7 @@ import {
 import { InfoTooltip } from "/components/Tooltip"
 import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
-import { notEmptyOrEmptyString } from "/util/guards"
+import { isDefinedAndNotEmpty } from "/util/guards"
 
 import {
   NewCourseFieldsFragment,
@@ -104,7 +104,7 @@ export const LanguageTag = ({
             labelProps={{ variant: "h6", component: "h3" }}
             title={otherLanguages
               .map((language) => language.name)
-              .filter(notEmptyOrEmptyString)
+              .filter(isDefinedAndNotEmpty)
               .sort((a, b) => a.localeCompare(b))
               .join(", ")}
             outlined={false}

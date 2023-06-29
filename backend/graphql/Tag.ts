@@ -14,7 +14,7 @@ import { Prisma, Tag as TypeofTag } from "@prisma/client"
 
 import { isAdmin, Role } from "../accessControl"
 import { GraphQLForbiddenError, GraphQLUserInputError } from "../lib/errors"
-import { isNotNullOrUndefined } from "../util/isNullOrUndefined"
+import { isDefinedAndNotEmpty } from "../util"
 import { localeToLanguage } from "../util/locale"
 
 const wrapLanguage =
@@ -355,8 +355,8 @@ export const TagMutations = extendType({
             disconnect: typesToDisconnect,
           }
         }
-        if (!isNotNullOrUndefined(hidden)) {
-          data.hidden = { set: hidden ?? undefined }
+        if (isDefinedAndNotEmpty(hidden)) {
+          data.hidden = { set: hidden }
         }
 
         if (Object.keys(data).length === 0) {

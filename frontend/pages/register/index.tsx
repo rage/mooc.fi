@@ -24,7 +24,7 @@ import useDebounce from "/hooks/useDebounce"
 import { useTranslator } from "/hooks/useTranslator"
 import withSignedIn from "/lib/with-signed-in"
 import RegistrationTranslations from "/translations/register"
-import notEmpty from "/util/notEmpty"
+import { isDefinedAndNotEmpty } from "/util/guards"
 
 import {
   AddUserOrganizationDocument,
@@ -157,7 +157,7 @@ function useRegisterOrganization(searchFilter: string) {
     const mIds =
       userOrganizationsData.currentUser?.user_organizations
         ?.map((uo) => uo?.organization?.id)
-        .filter(notEmpty) ?? []
+        .filter(isDefinedAndNotEmpty) ?? []
 
     setMemberships(mIds)
   }, [userOrganizationsData])
@@ -209,7 +209,7 @@ function useRegisterOrganization(searchFilter: string) {
     // TODO: error handling if mutations don't succeed
     if (memberships.includes(id)) {
       const existing = userOrganizationsData?.currentUser?.user_organizations
-        ?.filter(notEmpty)
+        ?.filter(isDefinedAndNotEmpty)
         .find((uo) => uo?.organization?.id === id)
 
       if (existing) {

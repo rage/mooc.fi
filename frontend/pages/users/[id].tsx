@@ -10,7 +10,7 @@ import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
 import CommonTranslations from "/translations/common"
-import notEmpty from "/util/notEmpty"
+import { isDefinedAndNotEmpty } from "/util/guards"
 
 import {
   UserProfileUserCourseSettingsDocument,
@@ -18,7 +18,7 @@ import {
 } from "/graphql/generated"
 
 function hasNode<T>(data: { node?: T | null } | null): data is { node: T } {
-  return notEmpty(data) && notEmpty(data?.node)
+  return isDefinedAndNotEmpty(data?.node)
 }
 
 const filterEdges = (
@@ -26,7 +26,7 @@ const filterEdges = (
     node: UserProfileUserCourseSettingsQueryNodeFieldsFragment | null
   } | null> | null,
 ) => {
-  return (edges ?? []).filter(hasNode).filter(notEmpty) ?? []
+  return (edges ?? []).filter(hasNode).filter(isDefinedAndNotEmpty) ?? []
 }
 
 const UserPage = () => {

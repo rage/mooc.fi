@@ -16,8 +16,7 @@ import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
 import CoursesTranslations from "/translations/courses"
-import { notEmptyOrEmptyString } from "/util/guards"
-import notEmpty from "/util/notEmpty"
+import { isDefinedAndNotEmpty } from "/util/guards"
 
 import {
   CourseStatus,
@@ -66,10 +65,10 @@ function useCourseSearch() {
   useEffect(() => {
     const searchParams = new URLSearchParams()
 
-    if (notEmptyOrEmptyString(searchVariables.search)) {
+    if (isDefinedAndNotEmpty(searchVariables.search)) {
       searchParams.set("search", encodeURIComponent(searchVariables.search))
     }
-    if (notEmptyOrEmptyString(searchVariables.handledBy)) {
+    if (isDefinedAndNotEmpty(searchVariables.handledBy)) {
       searchParams.set(
         "handledBy",
         encodeURIComponent(searchVariables.handledBy),
@@ -89,7 +88,7 @@ function useCourseSearch() {
       )
     ) {
       searchVariables.status
-        .filter(notEmpty)
+        .filter(isDefinedAndNotEmpty)
         .forEach((s) => searchParams.append("status", s))
     }
 
@@ -176,14 +175,14 @@ const createInitialSearchVariables = ({
 }: CreateInitialSearchVariableArgs): SearchVariables => {
   const statusParam = (decodeURIComponent(status ?? "")
     ?.split(",")
-    .filter(notEmptyOrEmptyString) ?? []) as CourseStatus[]
+    .filter(isDefinedAndNotEmpty) ?? []) as CourseStatus[]
 
   const initialSearchVariables = {
     search,
     hidden: (hidden ?? "").toLowerCase() !== "false" ?? true,
     handledBy: handledBy ?? null,
     status: statusParam.length
-      ? statusParam.filter(notEmptyOrEmptyString)
+      ? statusParam.filter(isDefinedAndNotEmpty)
       : [CourseStatus.Active, CourseStatus.Upcoming],
   }
 

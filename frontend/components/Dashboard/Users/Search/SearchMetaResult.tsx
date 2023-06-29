@@ -18,7 +18,7 @@ import UserSearchContext, {
 } from "/contexts/UserSearchContext"
 import { useTranslator } from "/hooks/useTranslator"
 import UsersTranslations from "/translations/users"
-import notEmpty from "/util/notEmpty"
+import { isDefinedAndNotEmpty } from "/util/guards"
 
 import { UserSearchField } from "/graphql/generated"
 
@@ -131,7 +131,7 @@ export const NarrowMetaResult = () => {
                 </Typography>
                 <Typography variant="h4">{count}</Typography>
               </MetaRow>
-              {notEmpty(fieldMeta?.fieldValue) &&
+              {isDefinedAndNotEmpty(fieldMeta?.fieldValue) &&
                 fieldMeta?.fieldValue !== meta.search && (
                   <PaddedMetaRow>
                     <Typography variant="h4">

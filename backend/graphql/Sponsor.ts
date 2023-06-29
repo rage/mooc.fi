@@ -10,13 +10,13 @@ import {
   stringArg,
 } from "nexus"
 
+import { isDefined, isNullish } from "../util"
 import { filterNull } from "../util/db-functions"
-import { notEmpty } from "../util/notEmpty"
 
 function ifDefined<T, U>(value: T, obj: U): U
 function ifDefined<_, U>(value: null | undefined, obj: U): undefined
 function ifDefined<T, U>(value: T | null | undefined, obj: U): U | undefined {
-  if (!notEmpty(value)) {
+  if (isNullish(value)) {
     return undefined
   }
   return obj
@@ -77,7 +77,7 @@ export const Sponsor = objectType({
           ifDefined(maxWidth, { width: { lte: maxWidth as number } }),
           ifDefined(minHeight, { height: { gte: minHeight as number } }),
           ifDefined(maxHeight, { height: { lte: maxHeight as number } }),
-        ].filter(notEmpty)
+        ].filter(isDefined)
 
         return ctx.prisma.sponsor
           .findUnique({
@@ -191,10 +191,10 @@ export const SponsorMutations = extendType({
           data: {
             ...rest,
             translations: {
-              create: translations?.map(filterNull).filter(notEmpty),
+              create: translations?.map(filterNull).filter(isDefined),
             },
             images: {
-              create: images?.map(filterNull).filter(notEmpty),
+              create: images?.map(filterNull).filter(isDefined),
             },
           },
         })
@@ -222,7 +222,7 @@ export const SponsorMutations = extendType({
               ? {
                   connectOrCreate: (translations ?? [])
                     .map(filterNull)
-                    .filter(notEmpty)
+                    .filter(isDefined)
                     .map((translation) => ({
                       where: {
                         sponsor_id_language: {
@@ -238,7 +238,7 @@ export const SponsorMutations = extendType({
               ? {
                   connectOrCreate: (images ?? [])
                     .map(filterNull)
-                    .filter(notEmpty)
+                    .filter(isDefined)
                     .map((image) => ({
                       where: {
                         sponsor_id_type: {
@@ -257,7 +257,7 @@ export const SponsorMutations = extendType({
               ? {
                   upsert: (translations ?? [])
                     .map(filterNull)
-                    .filter(notEmpty)
+                    .filter(isDefined)
                     .map((translation) => ({
                       where: {
                         sponsor_id_language: {
@@ -274,7 +274,7 @@ export const SponsorMutations = extendType({
               ? {
                   upsert: (images ?? [])
                     .map(filterNull)
-                    .filter(notEmpty)
+                    .filter(isDefined)
                     .map((image) => ({
                       where: {
                         sponsor_id_type: {

@@ -1,7 +1,7 @@
 import memoize from "just-memoize"
 import { NextRouter } from "next/router"
 
-import notEmpty from "/util/notEmpty"
+import { isDefinedAndNotEmpty } from "/util/guards"
 
 export type LanguageKey = string
 const defaultLanguage = "en" as const
@@ -257,7 +257,7 @@ const _combineDictionaries = <
 ): TranslationDictionary<T & U & V> => {
   const combined: TranslationDictionary<T & U & V> = {}
 
-  for (const dict of dicts.filter(notEmpty)) {
+  for (const dict of dicts.filter(isDefinedAndNotEmpty)) {
     for (const lang of Object.keys(dict)) {
       combined[lang] = Object.assign(combined[lang] ?? {}, dict[lang] ?? {})
     }

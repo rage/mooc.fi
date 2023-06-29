@@ -269,7 +269,7 @@ describe("Course", () => {
             {
               idFields: ["id", "course_id" /*, "photo_id"*/].filter(
                 (f) => !omitIdFields.includes(f),
-              ), //.filter(isNotNullOrUndefined),
+              ),
               excludePaths: ["tags.id", "sponsors.id"],
             },
           )

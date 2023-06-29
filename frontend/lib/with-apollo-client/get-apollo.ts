@@ -19,7 +19,7 @@ import { onError } from "@apollo/client/link/error"
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions"
 import { getMainDefinition } from "@apollo/client/utilities"
 
-import notEmpty from "/util/notEmpty"
+import { isDefinedAndNotEmpty } from "/util/guards"
 
 import { StrictTypedTypePolicies } from "/graphql/generated/apollo-helpers"
 
@@ -196,7 +196,7 @@ function create(
     link: isBrowser
       ? ApolloLink.from(
           [authLink, errorLink, localeLink, wsAndUploadAndBatchHTTPLink].filter(
-            notEmpty,
+            isDefinedAndNotEmpty,
           ),
         )
       : ApolloLink.from(
@@ -205,7 +205,7 @@ function create(
             authLink,
             localeLink,
             uploadAndBatchHTTPLink,
-          ].filter(notEmpty),
+          ].filter(isDefinedAndNotEmpty),
         ),
     cache: isBrowser ? cache.restore(initialState ?? {}) : createCache(),
     ssrMode: !isBrowser,

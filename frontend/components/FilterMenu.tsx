@@ -20,7 +20,7 @@ import { useFilterContext } from "/contexts/FilterContext"
 import { useSearch } from "/hooks/useSearch"
 import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
-import notEmpty from "/util/notEmpty"
+import { isDefinedAndNotEmpty } from "/util/guards"
 
 import { CourseStatus } from "/graphql/generated"
 
@@ -100,7 +100,8 @@ export default function FilterMenu({ fields, label }: FilterProps) {
     useFilterContext()
 
   const handlerCourses = useMemo(
-    () => handlerCoursesData?.handlerCourses?.filter(notEmpty) ?? [],
+    () =>
+      handlerCoursesData?.handlerCourses?.filter(isDefinedAndNotEmpty) ?? [],
     [handlerCoursesData],
   )
 

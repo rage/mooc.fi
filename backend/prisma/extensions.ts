@@ -4,7 +4,7 @@ import { Prisma, PrismaClient } from "@prisma/client"
 import type { Types } from "@prisma/client/runtime"
 
 import TMCClient from "../services/tmc"
-import { notEmpty } from "../util/notEmpty"
+import { isDefinedAndNotEmpty } from "../util"
 
 interface PaginationArgs<T> {
   first?: number | null
@@ -30,15 +30,15 @@ function baseFindManyWithPagination<T, A extends Types.Extensions.Args>(
   let take = 0
   let cursor = undefined
 
-  if (notEmpty(before)) {
+  if (isDefinedAndNotEmpty(before)) {
     skip += 1
     cursor = before
-  } else if (notEmpty(after)) {
+  } else if (isDefinedAndNotEmpty(after)) {
     cursor = after
   }
-  if (notEmpty(last)) {
+  if (isDefinedAndNotEmpty(last)) {
     take = -(last ?? 0)
-  } else if (notEmpty(first)) {
+  } else if (isDefinedAndNotEmpty(first)) {
     take = first
   }
 

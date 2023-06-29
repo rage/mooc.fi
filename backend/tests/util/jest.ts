@@ -2,7 +2,7 @@ import { toMatchSnapshot, type Context } from "jest-snapshot"
 import { find, omit, orderBy } from "lodash"
 import { DateTime } from "luxon"
 
-import { isNullOrUndefined } from "../../util/isNullOrUndefined"
+import { isNullish } from "../../util"
 
 export const ID_REGEX = new RegExp(
   /[a-f\d]{8}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{12}/,
@@ -30,7 +30,7 @@ export function stripDates<T>(obj: undefined): undefined
 export function stripDates<T>(
   obj?: T | null,
 ): Omit<T, "created_at" | "updated_at"> | null | undefined {
-  if (!isObject(obj) || isNullOrUndefined(obj)) {
+  if (!isObject(obj) || isNullish(obj)) {
     return obj
   }
 
@@ -113,7 +113,7 @@ export function stripFields<
     ) as unknown as DeepOmit<T, Fields[number]>
   }
 
-  if (!isObject(obj) || isNullOrUndefined(obj)) {
+  if (!isObject(obj) || isNullish(obj)) {
     return obj as DeepOmit<T, Fields[number]>
   }
   const ret = {} as DeepOmit<T, Fields[number]>
@@ -249,7 +249,7 @@ export function idsToExpect<
   options: StrippedSnapshotFinalOptions<T> = {} as StrippedSnapshotFinalOptions<T>,
   path = "" as Path<T>,
 ): Partial<U> {
-  if (!isObject(obj) || Array.isArray(obj) || isNullOrUndefined(obj)) {
+  if (!isObject(obj) || Array.isArray(obj) || isNullish(obj)) {
     return propertyMatchers
   }
 

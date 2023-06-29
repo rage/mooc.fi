@@ -6,7 +6,7 @@ import { styled } from "@mui/material/styles"
 
 import CourseCard from "./CourseCard"
 import { useFilterContext } from "/contexts/FilterContext"
-import notEmpty from "/util/notEmpty"
+import { isDefinedAndNotEmpty } from "/util/guards"
 
 const CourseList = styled("ul")`
   list-style: none;
@@ -17,7 +17,7 @@ const CourseGrid = () => {
   const { loading, coursesData } = useFilterContext()
 
   const courses = useMemo(
-    () => coursesData?.courses?.filter(notEmpty) ?? [],
+    () => coursesData?.courses?.filter(isDefinedAndNotEmpty) ?? [],
     [coursesData],
   )
 

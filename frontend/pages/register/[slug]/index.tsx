@@ -20,7 +20,7 @@ import { updateUserDetails } from "/lib/account"
 import withSignedIn from "/lib/with-signed-in"
 import HomeTranslations from "/translations/home"
 import RegistrationTranslations from "/translations/register"
-import notEmpty from "/util/notEmpty"
+import { isDefinedAndNotEmpty } from "/util/guards"
 
 import {
   AddUserOrganizationDocument,
@@ -150,7 +150,7 @@ const RegisterToOrganization = () => {
     const mSlugs =
       userOrganizationsData.currentUser?.user_organizations
         ?.map((uo) => uo?.organization?.slug)
-        .filter(notEmpty) ?? []
+        .filter(isDefinedAndNotEmpty) ?? []
     const currentMembership =
       userOrganizationsData.currentUser?.user_organizations.find(
         (uo) => uo?.organization?.slug === slug,

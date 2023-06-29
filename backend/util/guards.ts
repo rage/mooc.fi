@@ -1,5 +1,7 @@
 export type Optional<T> = T | undefined | null
 export type Nullish = null | undefined
+export type Empty = "" | Nullish
+export type Falsy = false | 0 | 0n | "" | Nullish
 export type PromiseReturnType<T> = T extends (
   ...args: any[]
 ) => Promise<infer R>
@@ -8,6 +10,18 @@ export type PromiseReturnType<T> = T extends (
 
 export function isDefined<T>(value: T | Nullish): value is T {
   return value !== null && typeof value !== "undefined"
+}
+
+export function isFalsy(value: unknown): value is Falsy {
+  return !value
+}
+
+export function isEmptyString(value: unknown): value is "" {
+  return typeof value === "string" && value === ""
+}
+
+export function isDefinedAndNotEmpty<T>(value: T | Empty): value is T {
+  return isDefined(value) && !isEmptyString(value)
 }
 
 export function isNullish<T>(value: T | Nullish): value is Nullish {
@@ -22,10 +36,8 @@ export function isNotNull<T>(value: T | null): value is T {
   return value !== null
 }
 
-export function isNullishOrEmpty<T>(
-  value: T | Nullish | "",
-): value is Nullish | "" {
-  return isNullish(value) || (typeof value === "string" && value === "")
+export function isNullishOrEmpty<T>(value: T | Empty): value is Empty {
+  return isNullish(value) || isEmptyString(value)
 }
 
 export const isPromise = <T>(value: any): value is Promise<T> => {

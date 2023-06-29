@@ -20,7 +20,7 @@ import ErrorMessage from "./ErrorMessage"
 import CustomSnackbar from "/components/CustomSnackbar"
 import Spinner from "/components/Spinner"
 import { EmailTemplateType } from "/types/emailTemplates"
-import notEmpty from "/util/notEmpty"
+import { isDefinedAndNotEmpty } from "/util/guards"
 
 import {
   AddEmailTemplateDocument,
@@ -73,7 +73,7 @@ const CreateEmailTemplateDialog = ({
       return []
     }
 
-    let courseData = data.courses?.filter(notEmpty) ?? []
+    let courseData = data.courses?.filter(isDefinedAndNotEmpty) ?? []
 
     if (templateType === "completion") {
       courseData = courseData.filter((c) => c.completion_email == null)
@@ -214,7 +214,7 @@ const CreateEmailTemplateDialog = ({
                       e.preventDefault()
                       setSelectedCourse(
                         data.courses
-                          ?.filter(notEmpty)
+                          ?.filter(isDefinedAndNotEmpty)
                           .find((c) => c.id === e.target.value) ?? null,
                       )
                     }}
