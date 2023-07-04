@@ -14,12 +14,16 @@
       "@components/*": [
         "./components/*"
       ],
-      "@mui/material": [
-        "node_modules/@mui/material",
-        "node_modules/@mui/material/styles",
-        "node_modules/@mui/system",
-        "node_modules/@mui/styled-engine",
+      "src/*": [
+        "./src/*",
+        "./node_modules/next-seo/lib/*" // fix broken absolute imports in next-seo
       ],
+      "next-statoscope": [
+        "./types/next-statoscope.d.ts"
+      ],
+      "@next/mdx": [
+        "./types/next-mdx.d.ts"
+      ]
     },
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
@@ -46,11 +50,11 @@
     "isolatedModules": true,
     "incremental": true,
     "maxNodeModuleJsDepth": 8,
-    //"typeRoots": [
-    //  "./node_modules/@types",
-    //  "types",
-    //  "./node_modules/user-agent-data-types"
-    //],
+    // "typeRoots": [
+    //   "types",
+    //   "./node_modules/@types",
+    //   "./node_modules/user-agent-data-types"
+    // ],
     "plugins": [
       {
         "name": "next"
@@ -65,7 +69,7 @@
   ],
   "include": [
     "next-env.d.ts",
-    "types/mui.d.ts",
+    "./types/mui.d.ts",
     "**/*.ts",
     "**/*.tsx",
     "**/*.js"

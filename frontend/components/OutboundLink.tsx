@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from "react"
 
-import { EnhancedLink, Link, LinkProps } from "@mui/material"
+import { EnhancedLink, EnhancedLinkProps, Link } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
 // inlined svg from @fortawesome/fontawesome-free/svgs/solid/up-right-from-square.svg
@@ -22,11 +22,11 @@ const StyledOutboundLink = styled(Link)`
   ${OutboundLinkTextStyle.styles}
 ` as EnhancedLink
 
-function OutboundLink({
-  label,
-  children,
-  ...props
-}: PropsWithChildren<LinkProps>) {
+interface OutboundLinkProps extends PropsWithChildren<EnhancedLinkProps> {
+  label?: string
+}
+
+function OutboundLink({ label, children, ...props }: OutboundLinkProps) {
   return (
     <StyledOutboundLink target="_blank" aria-label={label} {...props}>
       {children}

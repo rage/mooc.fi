@@ -47,7 +47,10 @@ const StyledTextField = styled(TextField)<{ width?: string }>`
 function ControlledTextFieldComponent<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
->(props: ControlledTextFieldProps<TFieldValues, TName> & TextFieldProps) {
+>(
+  props: ControlledTextFieldProps<TFieldValues, TName> &
+    Omit<TextFieldProps, "name">,
+) {
   const { resetField } = useFormContext<TFieldValues>()
   const { defaultValues } = useCourseEditorData()
   const {
@@ -66,7 +69,9 @@ function ControlledTextFieldComponent<
     ...textFieldProps
   } = props
   const anchor = useAnchor(name)
-  const defaultValue = prop(name)(defaultValues)
+  const defaultValue = prop<typeof defaultValues, keyof typeof defaultValues>(
+    name,
+  )(defaultValues)
 
   const { field, fieldState } = useController<TFieldValues>({
     name,

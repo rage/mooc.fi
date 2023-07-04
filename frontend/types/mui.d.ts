@@ -1,25 +1,17 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { LinkProps as NextLinkProps } from "next/link"
 
-import { Button as MUIButton } from "@mui/material"
-import {
-  ButtonProps,
-  ButtonTypeMap as MUIButtonTypeMap,
-} from "@mui/material/Button"
-import {
-  ButtonBaseProps,
-  ExtendButtonBase,
-  ExtendButtonBaseTypeMap,
-  ButtonBaseTypeMap as MUIButtonBaseTypeMap,
-} from "@mui/material/ButtonBase"
-import { LinkTypeMap as MUILinkTypeMap } from "@mui/material/Link"
-import { MenuItemTypeMap as MUIMenuItemTypeMap } from "@mui/material/MenuItem"
+import { ButtonTypeMap } from "@mui/material/Button"
+import { ButtonBaseTypeMap, ExtendButtonBase } from "@mui/material/ButtonBase"
+import { LinkTypeMap } from "@mui/material/Link"
+import { MenuItemTypeMap } from "@mui/material/MenuItem"
 import {
   OverridableComponent,
-  OverridableTypeMap,
   OverrideProps,
 } from "@mui/material/OverridableComponent"
 import { ComponentsOverrides } from "@mui/material/styles"
+
+import { LinkBehavior } from "/components/Link"
 
 type DefaultNextLinkProps = Omit<
   NextLinkProps,
@@ -31,53 +23,57 @@ type DefaultNextLinkProps = Omit<
 >
 
 declare module "@mui/material/Link" {
-  export type LinkProps<
-    D extends React.ElementType = MUILinkTypeMap["defaultComponent"],
+  export type EnhancedLinkProps<
+    D extends React.ElementType = typeof LinkBehavior,
     P = {},
-  > = OverrideProps<MUILinkTypeMap<P, D>, D> & Partial<DefaultNextLinkProps>
+  > = OverrideProps<LinkTypeMap<P & Partial<DefaultNextLinkProps>, D>, D>
+  export type EnhancedLink<
+    D extends React.ElementType = typeof LinkBehavior,
+    P = {},
+  > = OverridableComponent<LinkTypeMap<P & Partial<DefaultNextLinkProps>, D>>
   const Link: OverridableComponent<
-    MUILinkTypeMap<Partial<DefaultNextLinkProps>, "a">
+    LinkTypeMap<Partial<DefaultNextLinkProps>, typeof LinkBehavior>
   >
 }
+
 declare module "@mui/material/ButtonBase" {
-  export type ButtonBaseProps<
-    D extends React.ElementType = MUIButtonBaseTypeMap["defaultComponent"],
+  export type EnhancedButtonBaseProps<
+    D extends React.ElementType = ButtonBaseTypeMap["defaultComponent"],
     P = {},
-  > = OverrideProps<MUIButtonBaseTypeMap<P, D>, D> &
-    Partial<DefaultNextLinkProps>
+  > = OverrideProps<ButtonBaseTypeMap<P & Partial<DefaultNextLinkProps>, D>, D>
+  export type EnhancedButtonBase<
+    D extends React.ElementType = ButtonBaseTypeMap["defaultComponent"],
+    P = {},
+  > = ExtendButtonBase<ButtonBaseTypeMap<P & Partial<DefaultNextLinkProps>, D>>
   const ButtonBase: ExtendButtonBase<
-    MUIButtonBaseTypeMap<Partial<DefaultNextLinkProps>, "button">
+    ButtonBaseTypeMap<Partial<DefaultNextLinkProps>>
   >
 }
 
 declare module "@mui/material/Button" {
-  export type ButtonProps<
-    D extends React.ElementType = MUIButtonTypeMap["defaultComponent"],
+  export type EnhancedButtonProps<
+    D extends React.ElementType = ButtonTypeMap["defaultComponent"],
     P = {},
-  > = OverrideProps<MUIButtonTypeMap<P, D>, D> & Partial<DefaultNextLinkProps>
-  const Button: ExtendButtonBase<
-    MUIButtonTypeMap<Partial<DefaultNextLinkProps>, "button">
-  >
-}
-declare module "@mui/material" {
-  export type EnhancedLink<
-    D extends React.ElementType = MUILinkTypeMap["defaultComponent"],
-    P = {},
-  > = OverridableComponent<MUILinkTypeMap<P & DefaultNextLinkProps, D>>
-  export type EnhancedButtonBase<
-    D extends React.ElementType = MUIButtonBaseTypeMap["defaultComponent"],
-    P = {},
-  > = ExtendButtonBase<
-    MUIButtonBaseTypeMap<P & Partial<DefaultNextLinkProps>, D>
-  >
+  > = OverrideProps<ButtonTypeMap<P & Partial<DefaultNextLinkProps>, D>, D>
   export type EnhancedButton<
-    D extends React.ElementType = MUIButtonTypeMap["defaultComponent"],
+    D extends React.ElementType = ButtonTypeMap["defaultComponent"],
     P = {},
-  > = ExtendButtonBase<MUIButtonTypeMap<P & Partial<DefaultNextLinkProps>, D>>
+  > = ExtendButtonBase<ButtonTypeMap<P & Partial<DefaultNextLinkProps>, D>>
+  const Button: ExtendButtonBase<ButtonTypeMap<Partial<DefaultNextLinkProps>>>
+}
+
+declare module "@mui/material/MenuItem" {
+  export type EnhancedMenuItemProps<
+    D extends React.ElementType = MenuItemTypeMap["defaultComponent"],
+    P = {},
+  > = OverrideProps<MenuItemTypeMap<P & Partial<DefaultNextLinkProps>, D>, D>
   export type EnhancedMenuItem<
-    D extends React.ElementType = MUIMenuItemTypeMap["defaultComponent"],
+    D extends React.ElementType = MenuItemTypeMap["defaultComponent"],
     P = {},
-  > = ExtendButtonBase<MUIMenuItemTypeMap<P & Partial<DefaultNextLinkProps>, D>>
+  > = ExtendButtonBase<MenuItemTypeMap<P & Partial<DefaultNextLinkProps>, D>>
+  const MenuItem: ExtendButtonBase<
+    MenuItemTypeMap<Partial<DefaultNextLinkProps>>
+  >
 }
 
 declare module "@mui/material/Typography" {

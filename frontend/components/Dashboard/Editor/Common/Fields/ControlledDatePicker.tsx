@@ -6,6 +6,7 @@ import { FieldValues, useController, useFormContext } from "react-hook-form"
 
 import { Skeleton, TextField, TextFieldProps } from "@mui/material"
 import { styled } from "@mui/material/styles"
+import type { DatePickerProps } from "@mui/x-date-pickers"
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 
@@ -50,7 +51,9 @@ function ControlledDatePickerImpl<
     <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={locale}>
       <DynamicDatePicker
         value={field.value}
-        onChange={field.onChange}
+        onChange={
+          field.onChange as Exclude<DatePickerProps<any>["onChange"], undefined>
+        }
         onClose={onCloseDatePicker}
         label={label}
         slotProps={{

@@ -19,8 +19,8 @@ import MenuIcon from "@mui/icons-material/Menu"
 import {
   Divider,
   EnhancedMenuItem,
+  EnhancedMenuItemProps,
   IconButton,
-  LinkProps,
   ListItemIcon,
   ListItemText,
   Menu,
@@ -49,16 +49,14 @@ const MobileMenuContainer = styled("div")(
 interface MobileMenuItemProps {
   Icon: typeof SvgIcon
   text: string
-  href?: string
-  onClick?: React.MouseEventHandler<HTMLLIElement>
-  [key: string]: any
+  onClick?: React.MouseEventHandler<HTMLAnchorElement>
 }
 
-const MenuItem = MUIMenuItem as EnhancedMenuItem
+const MenuItem = MUIMenuItem as EnhancedMenuItem<"a">
 
 const MobileMenuItem = forwardRef<
   HTMLAnchorElement,
-  MobileMenuItemProps & LinkProps
+  EnhancedMenuItemProps<"a"> & MobileMenuItemProps
 >(({ Icon, text, ...props }, ref) => {
   return (
     <MenuItem component="a" {...props} ref={ref}>
@@ -72,7 +70,7 @@ const MobileMenuItem = forwardRef<
 
 const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
   const [anchor, setAnchor] = useState<
-    (EventTarget & HTMLButtonElement) | null
+    (EventTarget & HTMLAnchorElement) | null
   >(null)
   const open = Boolean(anchor)
 
@@ -80,13 +78,13 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
   const { admin, loggedIn, logInOrOut, currentUser } = useLoginStateContext()
   const client = useApolloClient()
 
-  const onClick: MouseEventHandler<HTMLButtonElement> = useEventCallback(
+  const onClick: MouseEventHandler<HTMLAnchorElement> = useEventCallback(
     (event) => {
       setAnchor(event.currentTarget)
     },
   )
 
-  const onClose: MouseEventHandler<HTMLButtonElement> = useEventCallback(() => {
+  const onClose: MouseEventHandler<HTMLAnchorElement> = useEventCallback(() => {
     setAnchor(null)
   })
 
@@ -199,7 +197,10 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
 
   return (
     <MobileMenuContainer>
-      <IconButton onClick={onClick} aria-hidden>
+      <IconButton
+        onClick={onClick as any as MouseEventHandler<HTMLButtonElement>}
+        aria-hidden
+      >
         <MenuIcon />
       </IconButton>
       <Menu open={open} onClose={onClose} anchorEl={anchor} ref={ref}>
