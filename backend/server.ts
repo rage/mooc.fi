@@ -22,7 +22,7 @@ import { apiRouter } from "./api"
 import { DEBUG, isProduction, isTest } from "./config"
 import { createDefaultData } from "./config/defaultData"
 import { ServerContext } from "./context"
-import createSchema from "./schema"
+import { createSchema } from "./schema/common"
 
 // wrapped so that the context isn't cached between test instances
 const createExpressAppWithContext = ({

@@ -135,7 +135,7 @@ export const ExerciseCompletionMutations = extendType({
               ? { connect: { id: exercise_id } }
               : undefined,
             user: user_id ? { connect: { id: user_id } } : undefined,
-            timestamp,
+            timestamp: timestamp ?? new Date(),
             original_submission_date,
           },
         })

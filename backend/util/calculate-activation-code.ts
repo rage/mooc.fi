@@ -5,8 +5,8 @@ import {
   UserOrganizationJoinConfirmation,
 } from "@prisma/client"
 
-import { OrphanedEntityError } from "../graphql/common"
 import { type ExtendedPrismaClient } from "../prisma"
+import { OrphanedEntityError } from "../schema/common"
 import { err, ok, Result } from "../util"
 
 const crypto = require("crypto")
@@ -32,11 +32,7 @@ export const calculateActivationCode = async ({
       ? userOrganizationJoinConfirmation?.user_organization
       : undefined
 
-  if (
-    !userOrganization ||
-    !userOrganization.user ||
-    !userOrganization.organization
-  ) {
+  if (!userOrganization?.user || !userOrganization.organization) {
     userOrganization = await prisma.userOrganization.findUnique({
       where: {
         id: userOrganizationJoinConfirmation.user_organization_id,

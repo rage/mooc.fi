@@ -24,6 +24,7 @@ import {
   Result,
 } from "../../util"
 import { ConfigurationError, ConflictError } from "../common"
+import { ExtendedTransactionClient } from "/prisma"
 
 export function assertUserIdOnlyForAdmin(ctx: Context, id?: User["id"] | null) {
   if (!id) {
@@ -93,8 +94,7 @@ interface JoinUserOrganizationOptions {
 /**
  * Join user with organization and return the created `UserOrganization`.
  * If organization requires email confirmation to join, run the confirmation link
- * logic. If this somehow fails, delete the created relation (primitive rollback, it really is)
- * and return an error.
+ * logic. Return an error and rollback the transaction if any of the steps fail.
  */
 export const joinUserOrganization = async ({
   ctx,
@@ -125,9 +125,8 @@ export const joinUserOrganization = async ({
 
   const currentDate = new Date()
 
-  // TODO: wrap all in transaction once prisma is updated, so we don't need to do the deletion manually
-  try {
-    const userOrganization = await ctx.prisma.userOrganization.create({
+  return ctx.prisma.$transaction(async (trx) => {
+    const userOrganization = await trx.userOrganization.create({
       data: {
         user: { connect: { id: user.id } },
         organization: {
@@ -157,26 +156,15 @@ export const joinUserOrganization = async ({
           email: organizational_email ?? user.email,
           redirect,
           language,
+          trx,
         })
 
       if (createUserOrganizationJoinConfirmationResult.isErr()) {
-        await ctx.prisma.userOrganization.delete({
-          where: { id: userOrganization.id },
-        })
-
         return createUserOrganizationJoinConfirmationResult
       }
     }
     return ok(userOrganization)
-  } catch (e) {
-    if (e instanceof Error) return err(e)
-
-    return err(
-      new GraphQLGenericError(
-        (e as string) ?? "Unknown error creating user organization",
-      ),
-    )
-  }
+  })
 }
 
 interface CreateUserOrganizationJoinConfirmationOptions {
@@ -187,6 +175,7 @@ interface CreateUserOrganizationJoinConfirmationOptions {
   email: string
   redirect?: string | null
   language?: string | null
+  trx?: ExtendedTransactionClient
 }
 
 /**
@@ -201,7 +190,9 @@ export const createUserOrganizationJoinConfirmation = async ({
   email,
   redirect,
   language,
+  trx,
 }: CreateUserOrganizationJoinConfirmationOptions) => {
+  const prisma = trx ?? ctx.prisma
   const join_organization_email_template_id =
     organization.join_organization_email_template_id ??
     DEFAULT_JOIN_ORGANIZATION_EMAIL_TEMPLATE_ID
@@ -218,7 +209,7 @@ export const createUserOrganizationJoinConfirmation = async ({
 
   try {
     const userOrganizationJoinConfirmation =
-      await ctx.prisma.userOrganizationJoinConfirmation.create({
+      await prisma.userOrganizationJoinConfirmation.create({
         data: {
           user_organization: { connect: { id: userOrganization.id } },
           email,

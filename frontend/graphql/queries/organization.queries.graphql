@@ -1,5 +1,19 @@
-query Organizations {
-  organizations {
+query Organizations(
+  $take: Int,
+  $skip: Int,
+  $cursor: OrganizationWhereUniqueInput,
+  $orderBy: OrganizationOrderByWithRelationAndSearchRelevanceInput
+  $hidden: Boolean
+  $disabled: Boolean
+) {
+  organizations(
+    take: $take
+    skip: $skip
+    cursor: $cursor
+    orderBy: $orderBy
+    hidden: $hidden
+    disabled: $disabled
+  ) {
     ...OrganizationCoreFields
   }
 }

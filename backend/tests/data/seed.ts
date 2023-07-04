@@ -1,3 +1,6 @@
+import { Prisma } from "@prisma/client"
+import type { Types } from "@prisma/client/runtime"
+
 import { createDefaultData } from "../../config/defaultData"
 import { type ExtendedPrismaClient } from "../../prisma"
 import {
@@ -28,18 +31,22 @@ import {
   users,
 } from "./"
 
-type ExcludeInternalKeys<K> = K extends `$${string}` ? never : K
+type ExcludeInternalKeys<K> = Exclude<K, `$${string}` | symbol>
 
 export const seed = async (prisma: ExtendedPrismaClient) => {
   const create = async <
     K extends ExcludeInternalKeys<keyof ExtendedPrismaClient>,
     T,
+    ResultType extends Types.DefaultSelection<
+      Prisma.TypeMap["model"][Capitalize<K>]["payload"]
+    > = Types.DefaultSelection<
+      Prisma.TypeMap["model"][Capitalize<K>]["payload"]
+    >,
   >(
     key: K,
     data: T[],
-  ) => {
-    const created = []
-    // @ts-ignore: key
+  ): Promise<Array<ResultType>> => {
+    const created: Array<ResultType> = []
     for (const datum of data) {
       // @ts-ignore: key
       created.push(await prisma[key].create({ data: datum }))

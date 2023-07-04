@@ -4,7 +4,6 @@ import {
   Exercise,
   ExerciseCompletion,
   ExerciseCompletionRequiredAction,
-  Prisma,
 } from "@prisma/client"
 
 import {
@@ -207,23 +206,22 @@ export const createExerciseCompletion = async (
 
   let savedExerciseCompletion: ExerciseCompletion
 
-  const exerciseCompletionCreateInputData: Prisma.ExerciseCompletionCreateInput =
-    {
-      exercise: {
-        connect: { id: exercise_id },
-      },
-      user: {
-        connect: { upstream_id: Number(message.user_id) },
-      },
-      n_points: Number(message.n_points),
-      completed: message.completed,
-      attempted: message.attempted ?? false,
-      exercise_completion_required_actions: {
-        create: required_actions.map((value) => ({ value })),
-      },
-      timestamp: timestamp.toJSDate(),
-      original_submission_date: originalSubmissionDate?.toJSDate(),
-    }
+  const exerciseCompletionCreateInputData = {
+    exercise: {
+      connect: { id: exercise_id },
+    },
+    user: {
+      connect: { upstream_id: Number(message.user_id) },
+    },
+    n_points: Number(message.n_points),
+    completed: message.completed,
+    attempted: message.attempted ?? false,
+    exercise_completion_required_actions: {
+      create: required_actions.map((value) => ({ value })),
+    },
+    timestamp: timestamp.toJSDate(),
+    original_submission_date: originalSubmissionDate?.toJSDate(),
+  }
   logger.info(`Inserting ${JSON.stringify(exerciseCompletionCreateInputData)}`)
   try {
     savedExerciseCompletion = await prisma.exerciseCompletion.create({

@@ -218,8 +218,7 @@ export const UserCourseSummary = objectType({
       },
     })
 
-    t.field("start_date", {
-      type: "DateTime",
+    t.datetime("start_date", {
       resolve: async (
         { user_id, course_id, inherit_settings_from_id },
         _,
@@ -235,7 +234,7 @@ export const UserCourseSummary = objectType({
             take: 1,
           })
 
-        return userCourseSetting?.[0]?.created_at
+        return userCourseSetting?.[0]?.created_at ?? null
       },
     })
 

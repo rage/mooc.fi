@@ -83,7 +83,7 @@ export const courseFindUniqueFns = Prisma.defineExtension((client) =>
     model: {
       course: {
         /**
-         * Find course or if not found by slug, course through course alias..
+         * Find course or if not found by slug, course through course alias.
          * Otherwise functions just like findUnique.
          * @param args {Prisma.CourseFindUniqueArgs} course findUnique args
          * @returns {Prisma.Prisma__CourseClient<Prisma.CourseGetPayload<T> | null, null>} course or course delegate
@@ -103,7 +103,12 @@ export const courseFindUniqueFns = Prisma.defineExtension((client) =>
 
           const res = client.course
             .findUniqueOrThrow({ where, select: { id: true } })
-            .then(() => client.course.findUnique(args))
+            .then(() =>
+              client.course.findUnique(
+                // FIXME: temporary until Prisma extension typing fixed
+                args as Types.Utils.Exact<Args, Prisma.CourseFindUniqueArgs<A>>,
+              ),
+            )
             .catch(() => {
               if (!slug) {
                 return null
@@ -118,7 +123,8 @@ export const courseFindUniqueFns = Prisma.defineExtension((client) =>
                 .course({
                   where: omit(where, ["id", "slug"]),
                   ...rest,
-                })
+                  // FIXME: temporary until Prisma extension typing fixed
+                } as Types.Utils.Exact<Args, Prisma.CourseFindUniqueArgs<A>>)
             })
 
           return res as Prisma.Prisma__CourseClient<
@@ -158,7 +164,8 @@ export const courseFindUniqueFns = Prisma.defineExtension((client) =>
                   id: course.completions_handled_by_id ?? course.id,
                 },
                 ...rest,
-              })
+                // FIXME: temporary until Prisma extension typing fixed
+              } as Types.Utils.Exact<Args, Prisma.CourseFindUniqueArgs<A>>)
             })
 
           return res as Prisma.Prisma__CourseClient<
@@ -256,7 +263,7 @@ export const findUsercourseSettings = Prisma.defineExtension((client) =>
 
           if (course_slug) {
             res = await (
-              client.$extends({}) as ExtendedPrismaClient<typeof client>
+              client.$extends({}) as ExtendedPrismaClient<PrismaClient>
             ).course.findUniqueOrAlias({
               where: {
                 slug: course_slug,
@@ -283,14 +290,13 @@ export const findUsercourseSettings = Prisma.defineExtension((client) =>
   }),
 )
 
-export const applyExtensions = <P extends PrismaClient = PrismaClient>(
-  prisma: P,
-) =>
+export const applyExtensions = <P extends PrismaClient>(prisma: P) =>
   prisma
     .$extends(findManyPagination)
     .$extends(courseFindUniqueFns)
     .$extends(createFromTMC)
     .$extends(findUsercourseSettings)
 
-export type ExtendedPrismaClient<P extends PrismaClient = PrismaClient> =
-  ReturnType<typeof applyExtensions<P>>
+export type ExtendedPrismaClient<P extends PrismaClient> = ReturnType<
+  typeof applyExtensions<P>
+>

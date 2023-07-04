@@ -4,6 +4,10 @@ import { plugin } from "nexus"
 
 import { redisify } from "../services/redis"
 
+const isAsyncIterator = (i: unknown): i is AsyncIterable<any> => {
+  return Symbol.asyncIterator in (i as AsyncIterable<any>)
+}
+
 export const cachePlugin = () =>
   plugin({
     name: "CachePlugin",
@@ -54,6 +58,7 @@ export const cachePlugin = () =>
 
             if (
               maybeSubscription &&
+              isAsyncIterator(maybeSubscription) &&
               typeof maybeSubscription[Symbol.asyncIterator] === "function"
             ) {
               for await (const item of maybeSubscription) {

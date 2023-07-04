@@ -9,10 +9,11 @@ import {
 } from "nexus"
 
 import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
+import { Prisma } from "@prisma/client"
 
 import { isAdmin } from "../accessControl"
 import { GraphQLForbiddenError, GraphQLUserInputError } from "../lib/errors"
-import { filterNullFields, isDefined } from "../util"
+import { isDefined } from "../util"
 import { buildUserSearch } from "./common"
 
 export const UserCourseSetting = objectType({
@@ -381,15 +382,14 @@ const getUserCourseSettingSearch = ({
   user_id,
   user_upstream_id,
 }: GetUserCourseSettingSearchArgs) => {
-  const userSearch =
-    search && search !== "" ? { OR: buildUserSearch(search) } : null
+  const userSearch = search && search !== "" ? buildUserSearch(search) : null
 
-  const userConditions = [
+  const userConditions: Prisma.UserWhereInput[] = [
     user_id || user_upstream_id
-      ? filterNullFields({
-          id: user_id,
-          upstream_id: user_upstream_id,
-        })
+      ? {
+          id: user_id ?? undefined,
+          upstream_id: user_upstream_id ?? undefined,
+        }
       : undefined,
     userSearch,
   ].filter(isDefined)

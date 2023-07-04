@@ -23,7 +23,7 @@ export const buildUserSearch = (
 
   const possibleNameCombinations = getNameCombinations(search)
 
-  const userSearchQuery: Prisma.UserWhereInput["OR"] = [
+  const userSearchQuery: Prisma.UserWhereInput[] = [
     {
       first_name: { contains: search, mode: "insensitive" },
     },

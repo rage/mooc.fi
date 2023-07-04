@@ -26,7 +26,7 @@ export const OpenUniversityRegistrationLink = objectType({
     t.model.tiers()
 
     /*t.nullable.list.field("tiers", {
-      type: "Json",
+      type: "JSON",
       resolve: async (parent, _args, ctx) => {
         const res = await ctx.prisma.openUniversityRegistrationLink.findUnique({
           where: { id: parent.id },

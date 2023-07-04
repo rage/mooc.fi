@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch", "clientExtensions", "postgresqlExtensions", "extendedWhereUnique", "filteredRelationCount"]
+  previewFeatures = ["fullTextSearch", "postgresqlExtensions", "extendedWhereUnique", "jsonProtocol"]
   // , "fieldReference", 
 }
 
@@ -91,8 +91,8 @@ model Course {
   teacher_in_charge_name                  String
   teacher_in_charge_email                 String
   support_email                           String?
-  start_date                              String
-  end_date                                String?
+  start_date                              DateTime
+  end_date                                DateTime?
   ects                                    String?
   promote                                 Boolean?
   status                                  CourseStatus?                    @default(Upcoming)
@@ -647,7 +647,7 @@ model UserOrganizationJoinConfirmation {
   updated_at           DateTime?        @default(now()) @updatedAt
   user_organization_id String           @db.Uuid
   email_delivery_id    String?          @unique @db.Uuid
-  user_organization    UserOrganization @relation(fields: [user_organization_id], references: [id])
+  user_organization    UserOrganization @relation(fields: [user_organization_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   email_delivery       EmailDelivery?   @relation(fields: [email_delivery_id], references: [id])
 
   @@map("user_organization_join_confirmation")

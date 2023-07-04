@@ -15,7 +15,6 @@
     "noImplicitAny": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "skipLibCheck": true,
     "esModuleInterop": true,
     "sourceMap": true,
     "inlineSources": true,

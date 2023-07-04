@@ -145,7 +145,7 @@ export const Course = objectType({
         includeHidden: booleanArg(),
       },
       validate: (_, { includeHidden }, ctx) => {
-        if (includeHidden && !isAdmin({}, {}, ctx, {})) {
+        if (includeHidden && !isAdmin({}, {}, ctx, {} as any)) {
           throw new GraphQLForbiddenError("no admin rights")
         }
       },

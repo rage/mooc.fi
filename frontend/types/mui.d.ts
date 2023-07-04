@@ -19,11 +19,14 @@ import {
   OverridableTypeMap,
   OverrideProps,
 } from "@mui/material/OverridableComponent"
+import { ComponentsOverrides } from "@mui/material/styles"
 
-type LinkProps = Omit<
+type DefaultNextLinkProps = Omit<
   NextLinkProps,
   {
-    [K in keyof NextLinkProps]: K extends `on${string}` ? K : never
+    [K in Exclude<keyof NextLinkProps, undefined>]: K extends `on${string}`
+      ? K
+      : never
   }[keyof NextLinkProps]
 >
 
@@ -31,50 +34,50 @@ declare module "@mui/material/Link" {
   export type LinkProps<
     D extends React.ElementType = MUILinkTypeMap["defaultComponent"],
     P = {},
-  > = OverrideProps<MUILinkTypeMap<P, D>, D> & Partial<LinkProps>
-  declare const Link: OverridableComponent<
-    MUILinkTypeMap<Partial<LinkProps>, "a">
+  > = OverrideProps<MUILinkTypeMap<P, D>, D> & Partial<DefaultNextLinkProps>
+  const Link: OverridableComponent<
+    MUILinkTypeMap<Partial<DefaultNextLinkProps>, "a">
   >
-  export default Link
 }
 declare module "@mui/material/ButtonBase" {
   export type ButtonBaseProps<
     D extends React.ElementType = MUIButtonBaseTypeMap["defaultComponent"],
     P = {},
-  > = OverrideProps<MUIButtonBaseTypeMap<P, D>, D> & Partial<LinkProps>
-  declare const ButtonBase: ExtendButtonBase<
-    MUIButtonBaseTypeMap<Partial<LinkProps>, "button">
+  > = OverrideProps<MUIButtonBaseTypeMap<P, D>, D> &
+    Partial<DefaultNextLinkProps>
+  const ButtonBase: ExtendButtonBase<
+    MUIButtonBaseTypeMap<Partial<DefaultNextLinkProps>, "button">
   >
-  export default ButtonBase
 }
 
 declare module "@mui/material/Button" {
   export type ButtonProps<
     D extends React.ElementType = MUIButtonTypeMap["defaultComponent"],
     P = {},
-  > = OverrideProps<MUIButtonTypeMap<P, D>, D> & Partial<LinkProps>
-  declare const Button: ExtendButtonBase<
-    MUIButtonTypeMap<Partial<LinkProps>, "button">
+  > = OverrideProps<MUIButtonTypeMap<P, D>, D> & Partial<DefaultNextLinkProps>
+  const Button: ExtendButtonBase<
+    MUIButtonTypeMap<Partial<DefaultNextLinkProps>, "button">
   >
-  export default Button
 }
 declare module "@mui/material" {
   export type EnhancedLink<
     D extends React.ElementType = MUILinkTypeMap["defaultComponent"],
     P = {},
-  > = OverridableComponent<MUILinkTypeMap<P & LinkProps, D>>
+  > = OverridableComponent<MUILinkTypeMap<P & DefaultNextLinkProps, D>>
   export type EnhancedButtonBase<
     D extends React.ElementType = MUIButtonBaseTypeMap["defaultComponent"],
     P = {},
-  > = ExtendButtonBase<MUIButtonBaseTypeMap<P & Partial<LinkProps>, D>>
+  > = ExtendButtonBase<
+    MUIButtonBaseTypeMap<P & Partial<DefaultNextLinkProps>, D>
+  >
   export type EnhancedButton<
     D extends React.ElementType = MUIButtonTypeMap["defaultComponent"],
     P = {},
-  > = ExtendButtonBase<MUIButtonTypeMap<P & Partial<LinkProps>, D>>
+  > = ExtendButtonBase<MUIButtonTypeMap<P & Partial<DefaultNextLinkProps>, D>>
   export type EnhancedMenuItem<
     D extends React.ElementType = MUIMenuItemTypeMap["defaultComponent"],
     P = {},
-  > = ExtendButtonBase<MUIMenuItemTypeMap<P & Partial<LinkProps>, D>>
+  > = ExtendButtonBase<MUIMenuItemTypeMap<P & Partial<DefaultNextLinkProps>, D>>
 }
 
 declare module "@mui/material/Typography" {
@@ -200,7 +203,6 @@ declare module "@mui/material/styles" {
       | "titleRoot"
       | "titleText"
   }
-
   interface Components<Theme = unknown> {
     MUIDataTableHeadCell?: {
       styleOverrides?: ComponentsOverrides<Theme>["MUIDataTableHeadCell"]

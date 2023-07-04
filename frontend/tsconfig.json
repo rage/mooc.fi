@@ -36,7 +36,6 @@
     "noUnusedParameters": true,
     "preserveConstEnums": true,
     "removeComments": false,
-    "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
     "strictNullChecks": true,
@@ -47,11 +46,11 @@
     "isolatedModules": true,
     "incremental": true,
     "maxNodeModuleJsDepth": 8,
-    "typeRoots": [
-      "./node_modules/@types",
-      "types",
-      "./node_modules/user-agent-data-types"
-    ],
+    //"typeRoots": [
+    //  "./node_modules/@types",
+    //  "types",
+    //  "./node_modules/user-agent-data-types"
+    //],
     "plugins": [
       {
         "name": "next"

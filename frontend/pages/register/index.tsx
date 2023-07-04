@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 
 import { range } from "remeda"
 
@@ -30,8 +30,8 @@ import {
   AddUserOrganizationDocument,
   CurrentUserUserOrganizationsDocument,
   DeleteUserOrganizationDocument,
-  OrganizationCoreFieldsFragment,
   OrganizationsDocument,
+  SortOrder,
 } from "/graphql/generated"
 
 const Header = styled(Typography)`
@@ -110,19 +110,15 @@ function useSearchBox() {
 }
 
 function useRegisterOrganization(searchFilter: string) {
-  const [memberships, setMemberships] = useState<Array<string>>([])
-  const [organizations, setOrganizations] = useState<
-    Record<string, OrganizationCoreFieldsFragment>
-  >({})
-  const [filteredOrganizations, setFilteredOrganizations] = useState<
-    Record<string, OrganizationCoreFieldsFragment>
-  >({})
-
   const {
     data: organizationsData,
     error: organizationsError,
     loading: organizationsLoading,
-  } = useQuery(OrganizationsDocument)
+  } = useQuery(OrganizationsDocument, {
+    variables: {
+      orderBy: { name: SortOrder.asc },
+    },
+  })
   const {
     data: userOrganizationsData,
     error: userOrganizationsError,
@@ -144,97 +140,60 @@ function useRegisterOrganization(searchFilter: string) {
     ],
   })
 
-  console.log(organizationsData, userOrganizationsData)
-  // TODO: do something else
-  useEffect(() => {
-    if (
-      !userOrganizationsData ||
-      (userOrganizationsData && Object.keys(organizations).length)
-    ) {
-      return
+  const memberships = useMemo(() => {
+    if (!userOrganizationsData) {
+      return []
     }
-
     const mIds =
       userOrganizationsData.currentUser?.user_organizations
         ?.map((uo) => uo?.organization?.id)
         .filter(isDefinedAndNotEmpty) ?? []
-
-    setMemberships(mIds)
+    return mIds
   }, [userOrganizationsData])
 
-  useEffect(() => {
+  const filteredOrganizations = useMemo(() => {
     if (!organizationsData) {
-      return
+      return []
     }
-
-    const sortedOrganizations = (organizationsData?.organizations ?? []).sort(
-      (a, b) => a.name.localeCompare(b.name, "fi-FI"),
-    )
-    const orgs = {} as Record<string, OrganizationCoreFieldsFragment>
-
-    for (const org of sortedOrganizations) {
-      orgs[org.id] = org
-    }
-
-    setOrganizations(orgs)
-    setFilteredOrganizations(orgs)
-  }, [organizationsData])
-
-  useEffect(() => {
-    if (!organizations || !Object.keys(organizations).length) {
-      return
-    }
-
     if (!searchFilter) {
-      setFilteredOrganizations(organizations)
-
-      return
+      return organizationsData?.organizations ?? []
     }
 
-    const newFilteredOrganizations = {} as Record<
-      string,
-      OrganizationCoreFieldsFragment
-    >
+    return organizationsData?.organizations?.filter((org) =>
+      org.name.toLowerCase().includes(searchFilter.toLowerCase()),
+    )
+  }, [organizationsData, searchFilter])
 
-    for (const [id, org] of Object.entries(organizations)) {
-      if (!org.name.toLowerCase().includes(searchFilter.toLowerCase())) {
-        continue
-      }
-      newFilteredOrganizations[id] = org
-    }
-    setFilteredOrganizations(newFilteredOrganizations)
-  }, [searchFilter, organizations])
+  const toggleMembership = useCallback(
+    (id: string) => async () => {
+      // TODO: error handling if mutations don't succeed
+      if (memberships.includes(id)) {
+        const existing = userOrganizationsData?.currentUser?.user_organizations
+          ?.filter(isDefinedAndNotEmpty)
+          .find((uo) => uo?.organization?.id === id)
 
-  const toggleMembership = (id: string) => async () => {
-    // TODO: error handling if mutations don't succeed
-    if (memberships.includes(id)) {
-      const existing = userOrganizationsData?.currentUser?.user_organizations
-        ?.filter(isDefinedAndNotEmpty)
-        .find((uo) => uo?.organization?.id === id)
-
-      if (existing) {
-        await deleteUserOrganization({
+        if (existing) {
+          await deleteUserOrganization({
+            variables: {
+              id: existing.id,
+            },
+          })
+        }
+      } else {
+        await addUserOrganization({
           variables: {
-            id: existing.id,
+            organization_id: id,
           },
         })
-        setMemberships(memberships.filter((i) => i !== id))
       }
-    } else {
-      await addUserOrganization({
-        variables: {
-          organization_id: id,
-        },
-      })
-      setMemberships(memberships.concat(id))
-    }
-  }
+    },
+    [memberships, userOrganizationsData],
+  )
 
   return {
     error: organizationsError ?? userOrganizationsError,
     loading: organizationsLoading,
-    organizations,
-    filteredOrganizations,
+    organizations: filteredOrganizations,
     memberships,
     toggleMembership,
   }
@@ -244,14 +203,8 @@ const OrganizationItems = () => {
   const t = useTranslator(RegistrationTranslations)
 
   const { searchFilter } = useSearchBox()
-  const {
-    error,
-    organizations,
-    loading,
-    filteredOrganizations,
-    memberships,
-    toggleMembership,
-  } = useRegisterOrganization(searchFilter)
+  const { error, loading, organizations, memberships, toggleMembership } =
+    useRegisterOrganization(searchFilter)
 
   if (error) {
     return <ErrorMessage />
@@ -267,18 +220,18 @@ const OrganizationItems = () => {
     )
   }
 
-  if (!organizations || Object.keys(organizations).length === 0) {
+  if (!organizations || organizations.length === 0) {
     return <div>{t("noResults", { search: searchFilter })}</div>
   }
 
   return (
     <>
-      {Object.entries(filteredOrganizations).map(([id, organization]) => (
+      {organizations.map((organization) => (
         <OrganizationCard
-          key={id}
+          key={organization.id}
           name={organization.name}
-          isMember={memberships.includes(id)}
-          onToggle={toggleMembership(id)}
+          isMember={memberships.includes(organization.id)}
+          onToggle={toggleMembership(organization.id)}
         />
       ))}
     </>

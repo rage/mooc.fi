@@ -1,4 +1,4 @@
-// generated Tue Jun 27 2023 12:36:56 GMT+0300 (Itä-Euroopan kesäaika)
+// generated Mon Jul 03 2023 13:53:33 GMT+0300 (Itä-Euroopan kesäaika)
 
 export * from "./ABEnrollment"
 export * from "./ABStudy"
@@ -14,6 +14,7 @@ export * from "./CourseStatsSubscription"
 export * from "./CourseTranslation"
 export * from "./CourseVariant"
 export * from "./DateTime"
+export * from "./Decimal"
 export * from "./EmailDelivery"
 export * from "./EmailTemplate"
 export * from "./Exercise"
@@ -46,7 +47,7 @@ export * from "./UserCourseServiceProgress"
 export * from "./UserCourseSetting"
 export * from "./UserCourseSettingsVisibility"
 export * from "./UserCourseSummary"
-export * from "./UserOrganizationJoinConfirmation"
 export * from "./UserOrganization"
+export * from "./UserOrganizationJoinConfirmation"
 export * from "./UserSearch"
 export * from "./VerifiedUser"

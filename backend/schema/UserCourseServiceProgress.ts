@@ -21,7 +21,7 @@ export const UserCourseServiceProgress = objectType({
     t.model.course()
 
     /*t.list.field("progress", {
-      type: "Json",
+      type: "JSON",
       resolve: async (parent, _args, ctx) => {
         const res = await ctx.prisma.userCourseServiceProgress.findUnique({
           where: { id: parent.id },

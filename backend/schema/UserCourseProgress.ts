@@ -15,7 +15,10 @@ import {
 import { Prisma } from "@prisma/client"
 
 import { isAdmin } from "../accessControl"
-import { ProgressExtra } from "../bin/kafkaConsumer/common/userCourseProgress/interfaces"
+import {
+  PointsByGroup,
+  ProgressExtra,
+} from "../bin/kafkaConsumer/common/userCourseProgress/interfaces"
 import {
   BAIExerciseCount,
   pointsNeeded as BAIPointsNeeded,
@@ -29,9 +32,8 @@ import { ensureDefinedArray, filterNullFields, isDefined } from "../util"
 import { OrphanedEntityError } from "./common"
 
 // progress seems not to be uniform, let's try to normalize it a bit
-const normalizeProgress = <T extends object | Prisma.JsonValue>(
-  data?: T | T[],
-): T[] => ensureDefinedArray(data).filter((p) => p?.hasOwnProperty("progress"))
+const normalizeProgress = <T extends Prisma.JsonValue>(data?: T | T[]): T[] =>
+  ensureDefinedArray(data).filter((p) => p?.hasOwnProperty("progress"))
 
 export const UserCourseProgress = objectType({
   name: "UserCourseProgress",
@@ -40,41 +42,30 @@ export const UserCourseProgress = objectType({
     t.model.course_id()
     t.model.course()
     t.model.created_at()
+    t.model.extra()
     t.model.max_points()
     t.model.n_points()
     // TODO/FIXME: this was borked on some previous version because of JSON, might work now
-    t.model.progress({
-      resolve: (parent) => normalizeProgress(parent.progress),
-    })
+    // t.model.progress()
     t.model.updated_at()
     t.model.user_id()
     t.model.user()
     t.model.user_course_service_progresses()
 
-    /*t.list.field("progress", {
-      type: "Json",
+    t.list.nonNull.field("progress", {
+      type: "JSON",
       deprecation: "use points_by_group",
-      resolve: async (parent, _args, ctx) => {
-        const res = await ctx.prisma.userCourseProgress.findUnique({
-          where: { id: parent.id },
-          select: { progress: true },
-        })
-
+      resolve: async ({ progress }) => {
         // TODO/FIXME: do we want to return progresses that might not have "progress" field?
-        return normalizeProgress(res?.progress)
+        return normalizeProgress(progress) ?? []
       },
-    })*/
+    })
 
     t.nonNull.list.nonNull.field("points_by_group", {
       type: "PointsByGroup",
-      resolve: async (parent, _args, ctx) => {
-        const res = await ctx.prisma.userCourseProgress.findUnique({
-          where: { id: parent.id },
-          select: { progress: true },
-        })
-
+      resolve: async ({ progress }) => {
         // TODO/FIXME: do we want to return progresses that might not have "progress" field?
-        return normalizeProgress(res?.progress as any)
+        return normalizeProgress(progress) as PointsByGroup[]
       },
     })
 
@@ -385,7 +376,7 @@ export const UserCourseProgressMutations = extendType({
           ),
         ),
         extra: arg({
-          type: "Json",
+          type: "JSON",
         }),
         max_points: floatArg(),
         n_points: floatArg(),
@@ -400,7 +391,7 @@ export const UserCourseProgressMutations = extendType({
             user: { connect: { id: user_id } },
             course: { connect: { id: course_id } },
             progress: progress ?? Prisma.JsonNull,
-            extra,
+            extra: extra ?? Prisma.JsonNull,
             max_points,
             n_points,
           },

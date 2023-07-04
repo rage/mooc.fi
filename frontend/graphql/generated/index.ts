@@ -24,7 +24,7 @@ export type Incremental<T> =
   | {
       [P in keyof T]?: P extends " $fragmentName" | "__typename" ? T[P] : never
     }
-// Generated on 2023-06-28T22:57:23+03:00
+// Generated on 2023-07-03T18:00:52+03:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -33,6 +33,8 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean }
   Int: { input: number; output: number }
   Float: { input: number; output: number }
+  /** A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
+  Date: { input: any; output: any }
   /** A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
   DateTime: { input: any; output: any }
   /** An arbitrary-precision Decimal type */
@@ -328,7 +330,7 @@ export type Course = {
   created_at: Scalars["DateTime"]["output"]
   description: Maybe<Scalars["String"]["output"]>
   ects: Maybe<Scalars["String"]["output"]>
-  end_date: Maybe<Scalars["String"]["output"]>
+  end_date: Maybe<Scalars["DateTime"]["output"]>
   exercise_completions_needed: Maybe<Scalars["Int"]["output"]>
   exercises: Maybe<Array<Exercise>>
   handles_completions_for: Array<Course>
@@ -353,7 +355,7 @@ export type Course = {
   services: Array<Service>
   slug: Scalars["String"]["output"]
   sponsors: Array<Sponsor>
-  start_date: Scalars["String"]["output"]
+  start_date: Scalars["DateTime"]["output"]
   start_point: Maybe<Scalars["Boolean"]["output"]>
   status: Maybe<CourseStatus>
   study_module_order: Maybe<Scalars["Int"]["output"]>
@@ -586,7 +588,6 @@ export enum CourseOrderByRelevanceFieldEnum {
   completions_handled_by_id = "completions_handled_by_id",
   course_stats_email_id = "course_stats_email_id",
   ects = "ects",
-  end_date = "end_date",
   id = "id",
   inherit_settings_from_id = "inherit_settings_from_id",
   language = "language",
@@ -594,7 +595,6 @@ export enum CourseOrderByRelevanceFieldEnum {
   owner_organization_id = "owner_organization_id",
   photo_id = "photo_id",
   slug = "slug",
-  start_date = "start_date",
   support_email = "support_email",
   teacher_in_charge_email = "teacher_in_charge_email",
   teacher_in_charge_name = "teacher_in_charge_name",
@@ -608,60 +608,60 @@ export type CourseOrderByRelevanceInput = {
 
 export type CourseOrderByWithRelationAndSearchRelevanceInput = {
   _relevance?: InputMaybe<CourseOrderByRelevanceInput>
-  automatic_completions?: InputMaybe<SortOrder>
-  automatic_completions_eligible_for_ects?: InputMaybe<SortOrder>
+  automatic_completions?: InputMaybe<SortOrderInput>
+  automatic_completions_eligible_for_ects?: InputMaybe<SortOrderInput>
   completion_email?: InputMaybe<EmailTemplateOrderByWithRelationAndSearchRelevanceInput>
-  completion_email_id?: InputMaybe<SortOrder>
+  completion_email_id?: InputMaybe<SortOrderInput>
   completions?: InputMaybe<CompletionOrderByRelationAggregateInput>
   completions_handled_by?: InputMaybe<CourseOrderByWithRelationAndSearchRelevanceInput>
-  completions_handled_by_id?: InputMaybe<SortOrder>
+  completions_handled_by_id?: InputMaybe<SortOrderInput>
   completions_registered?: InputMaybe<CompletionRegisteredOrderByRelationAggregateInput>
   course_aliases?: InputMaybe<CourseAliasOrderByRelationAggregateInput>
   course_organizations?: InputMaybe<CourseOrganizationOrderByRelationAggregateInput>
   course_stats_email?: InputMaybe<EmailTemplateOrderByWithRelationAndSearchRelevanceInput>
-  course_stats_email_id?: InputMaybe<SortOrder>
+  course_stats_email_id?: InputMaybe<SortOrderInput>
   course_translations?: InputMaybe<CourseTranslationOrderByRelationAggregateInput>
   course_variants?: InputMaybe<CourseVariantOrderByRelationAggregateInput>
   created_at?: InputMaybe<SortOrder>
-  ects?: InputMaybe<SortOrder>
-  end_date?: InputMaybe<SortOrder>
-  exercise_completions_needed?: InputMaybe<SortOrder>
+  ects?: InputMaybe<SortOrderInput>
+  end_date?: InputMaybe<SortOrderInput>
+  exercise_completions_needed?: InputMaybe<SortOrderInput>
   exercises?: InputMaybe<ExerciseOrderByRelationAggregateInput>
   handles_completions_for?: InputMaybe<CourseOrderByRelationAggregateInput>
   handles_settings_for?: InputMaybe<CourseOrderByRelationAggregateInput>
-  has_certificate?: InputMaybe<SortOrder>
-  hidden?: InputMaybe<SortOrder>
+  has_certificate?: InputMaybe<SortOrderInput>
+  hidden?: InputMaybe<SortOrderInput>
   id?: InputMaybe<SortOrder>
   inherit_settings_from?: InputMaybe<CourseOrderByWithRelationAndSearchRelevanceInput>
-  inherit_settings_from_id?: InputMaybe<SortOrder>
-  language?: InputMaybe<SortOrder>
+  inherit_settings_from_id?: InputMaybe<SortOrderInput>
+  language?: InputMaybe<SortOrderInput>
   name?: InputMaybe<SortOrder>
   open_university_registration_links?: InputMaybe<OpenUniversityRegistrationLinkOrderByRelationAggregateInput>
-  order?: InputMaybe<SortOrder>
+  order?: InputMaybe<SortOrderInput>
   owner_organization?: InputMaybe<OrganizationOrderByWithRelationAndSearchRelevanceInput>
-  owner_organization_id?: InputMaybe<SortOrder>
+  owner_organization_id?: InputMaybe<SortOrderInput>
   ownerships?: InputMaybe<CourseOwnershipOrderByRelationAggregateInput>
   photo?: InputMaybe<ImageOrderByWithRelationAndSearchRelevanceInput>
-  photo_id?: InputMaybe<SortOrder>
-  points_needed?: InputMaybe<SortOrder>
-  promote?: InputMaybe<SortOrder>
+  photo_id?: InputMaybe<SortOrderInput>
+  points_needed?: InputMaybe<SortOrderInput>
+  promote?: InputMaybe<SortOrderInput>
   services?: InputMaybe<ServiceOrderByRelationAggregateInput>
   slug?: InputMaybe<SortOrder>
   sponsors?: InputMaybe<CourseSponsorOrderByRelationAggregateInput>
   start_date?: InputMaybe<SortOrder>
-  start_point?: InputMaybe<SortOrder>
-  status?: InputMaybe<SortOrder>
+  start_point?: InputMaybe<SortOrderInput>
+  status?: InputMaybe<SortOrderInput>
   stored_data?: InputMaybe<StoredDataOrderByRelationAggregateInput>
-  study_module_order?: InputMaybe<SortOrder>
-  study_module_start_point?: InputMaybe<SortOrder>
+  study_module_order?: InputMaybe<SortOrderInput>
+  study_module_start_point?: InputMaybe<SortOrderInput>
   study_modules?: InputMaybe<StudyModuleOrderByRelationAggregateInput>
-  support_email?: InputMaybe<SortOrder>
+  support_email?: InputMaybe<SortOrderInput>
   tags?: InputMaybe<TagOrderByRelationAggregateInput>
   teacher_in_charge_email?: InputMaybe<SortOrder>
   teacher_in_charge_name?: InputMaybe<SortOrder>
-  tier?: InputMaybe<SortOrder>
+  tier?: InputMaybe<SortOrderInput>
   triggered_automatically_email?: InputMaybe<EmailTemplateOrderByRelationAggregateInput>
-  upcoming_active_link?: InputMaybe<SortOrder>
+  upcoming_active_link?: InputMaybe<SortOrderInput>
   updated_at?: InputMaybe<SortOrder>
   user_course_progresses?: InputMaybe<UserCourseProgressOrderByRelationAggregateInput>
   user_course_service_progresses?: InputMaybe<UserCourseServiceProgressOrderByRelationAggregateInput>
@@ -1099,7 +1099,7 @@ export type CourseWhereInput = {
   course_variants?: InputMaybe<CourseVariantListRelationFilter>
   created_at?: InputMaybe<DateTimeFilter>
   ects?: InputMaybe<StringNullableFilter>
-  end_date?: InputMaybe<StringNullableFilter>
+  end_date?: InputMaybe<DateTimeNullableFilter>
   exercise_completions_needed?: InputMaybe<IntNullableFilter>
   exercises?: InputMaybe<ExerciseListRelationFilter>
   handles_completions_for?: InputMaybe<CourseListRelationFilter>
@@ -1123,7 +1123,7 @@ export type CourseWhereInput = {
   services?: InputMaybe<ServiceListRelationFilter>
   slug?: InputMaybe<StringFilter>
   sponsors?: InputMaybe<CourseSponsorListRelationFilter>
-  start_date?: InputMaybe<StringFilter>
+  start_date?: InputMaybe<DateTimeFilter>
   start_point?: InputMaybe<BoolNullableFilter>
   status?: InputMaybe<EnumCourseStatusNullableFilter>
   stored_data?: InputMaybe<StoredDataListRelationFilter>
@@ -1164,7 +1164,7 @@ export type CourseWhereUniqueInput = {
   course_variants?: InputMaybe<CourseVariantListRelationFilter>
   created_at?: InputMaybe<DateTimeFilter>
   ects?: InputMaybe<StringNullableFilter>
-  end_date?: InputMaybe<StringNullableFilter>
+  end_date?: InputMaybe<DateTimeNullableFilter>
   exercise_completions_needed?: InputMaybe<IntNullableFilter>
   exercises?: InputMaybe<ExerciseListRelationFilter>
   handles_completions_for?: InputMaybe<CourseListRelationFilter>
@@ -1188,7 +1188,7 @@ export type CourseWhereUniqueInput = {
   services?: InputMaybe<ServiceListRelationFilter>
   slug?: InputMaybe<Scalars["String"]["input"]>
   sponsors?: InputMaybe<CourseSponsorListRelationFilter>
-  start_date?: InputMaybe<StringFilter>
+  start_date?: InputMaybe<DateTimeFilter>
   start_point?: InputMaybe<BoolNullableFilter>
   status?: InputMaybe<EnumCourseStatusNullableFilter>
   stored_data?: InputMaybe<StoredDataListRelationFilter>
@@ -1372,23 +1372,23 @@ export type EmailTemplateOrderByRelevanceInput = {
 
 export type EmailTemplateOrderByWithRelationAndSearchRelevanceInput = {
   _relevance?: InputMaybe<EmailTemplateOrderByRelevanceInput>
-  course_instance_language?: InputMaybe<SortOrder>
+  course_instance_language?: InputMaybe<SortOrderInput>
   course_stats_subscriptions?: InputMaybe<CourseStatsSubscriptionOrderByRelationAggregateInput>
   courses?: InputMaybe<CourseOrderByRelationAggregateInput>
   created_at?: InputMaybe<SortOrder>
   email_deliveries?: InputMaybe<EmailDeliveryOrderByRelationAggregateInput>
-  exercise_completions_threshold?: InputMaybe<SortOrder>
-  html_body?: InputMaybe<SortOrder>
+  exercise_completions_threshold?: InputMaybe<SortOrderInput>
+  html_body?: InputMaybe<SortOrderInput>
   id?: InputMaybe<SortOrder>
   joined_organizations?: InputMaybe<OrganizationOrderByRelationAggregateInput>
-  name?: InputMaybe<SortOrder>
-  points_threshold?: InputMaybe<SortOrder>
+  name?: InputMaybe<SortOrderInput>
+  points_threshold?: InputMaybe<SortOrderInput>
   stats_courses?: InputMaybe<CourseOrderByRelationAggregateInput>
-  template_type?: InputMaybe<SortOrder>
-  title?: InputMaybe<SortOrder>
+  template_type?: InputMaybe<SortOrderInput>
+  title?: InputMaybe<SortOrderInput>
   triggered_automatically_by_course?: InputMaybe<CourseOrderByWithRelationAndSearchRelevanceInput>
-  triggered_automatically_by_course_id?: InputMaybe<SortOrder>
-  txt_body?: InputMaybe<SortOrder>
+  triggered_automatically_by_course_id?: InputMaybe<SortOrderInput>
+  txt_body?: InputMaybe<SortOrderInput>
   updated_at?: InputMaybe<SortOrder>
 }
 
@@ -1514,19 +1514,19 @@ export type ExerciseCompletionOrderByRelevanceInput = {
 
 export type ExerciseCompletionOrderByWithRelationAndSearchRelevanceInput = {
   _relevance?: InputMaybe<ExerciseCompletionOrderByRelevanceInput>
-  attempted?: InputMaybe<SortOrder>
-  completed?: InputMaybe<SortOrder>
+  attempted?: InputMaybe<SortOrderInput>
+  completed?: InputMaybe<SortOrderInput>
   created_at?: InputMaybe<SortOrder>
   exercise?: InputMaybe<ExerciseOrderByWithRelationAndSearchRelevanceInput>
   exercise_completion_required_actions?: InputMaybe<ExerciseCompletionRequiredActionOrderByRelationAggregateInput>
-  exercise_id?: InputMaybe<SortOrder>
+  exercise_id?: InputMaybe<SortOrderInput>
   id?: InputMaybe<SortOrder>
-  n_points?: InputMaybe<SortOrder>
-  original_submission_date?: InputMaybe<SortOrder>
+  n_points?: InputMaybe<SortOrderInput>
+  original_submission_date?: InputMaybe<SortOrderInput>
   timestamp?: InputMaybe<SortOrder>
   updated_at?: InputMaybe<SortOrder>
   user?: InputMaybe<UserOrderByWithRelationAndSearchRelevanceInput>
-  user_id?: InputMaybe<SortOrder>
+  user_id?: InputMaybe<SortOrderInput>
 }
 
 export type ExerciseCompletionRequiredAction = {
@@ -1632,19 +1632,19 @@ export type ExerciseOrderByRelevanceInput = {
 export type ExerciseOrderByWithRelationAndSearchRelevanceInput = {
   _relevance?: InputMaybe<ExerciseOrderByRelevanceInput>
   course?: InputMaybe<CourseOrderByWithRelationAndSearchRelevanceInput>
-  course_id?: InputMaybe<SortOrder>
+  course_id?: InputMaybe<SortOrderInput>
   created_at?: InputMaybe<SortOrder>
   custom_id?: InputMaybe<SortOrder>
-  deleted?: InputMaybe<SortOrder>
+  deleted?: InputMaybe<SortOrderInput>
   exercise_completions?: InputMaybe<ExerciseCompletionOrderByRelationAggregateInput>
   id?: InputMaybe<SortOrder>
-  max_points?: InputMaybe<SortOrder>
-  name?: InputMaybe<SortOrder>
-  part?: InputMaybe<SortOrder>
-  section?: InputMaybe<SortOrder>
+  max_points?: InputMaybe<SortOrderInput>
+  name?: InputMaybe<SortOrderInput>
+  part?: InputMaybe<SortOrderInput>
+  section?: InputMaybe<SortOrderInput>
   service?: InputMaybe<ServiceOrderByWithRelationAndSearchRelevanceInput>
-  service_id?: InputMaybe<SortOrder>
-  timestamp?: InputMaybe<SortOrder>
+  service_id?: InputMaybe<SortOrderInput>
+  timestamp?: InputMaybe<SortOrderInput>
   updated_at?: InputMaybe<SortOrder>
 }
 
@@ -1751,14 +1751,14 @@ export type ImageOrderByRelevanceInput = {
 
 export type ImageOrderByWithRelationAndSearchRelevanceInput = {
   _relevance?: InputMaybe<ImageOrderByRelevanceInput>
-  compressed?: InputMaybe<SortOrder>
-  compressed_mimetype?: InputMaybe<SortOrder>
+  compressed?: InputMaybe<SortOrderInput>
+  compressed_mimetype?: InputMaybe<SortOrderInput>
   courses?: InputMaybe<CourseOrderByRelationAggregateInput>
   created_at?: InputMaybe<SortOrder>
-  default?: InputMaybe<SortOrder>
-  encoding?: InputMaybe<SortOrder>
+  default?: InputMaybe<SortOrderInput>
+  encoding?: InputMaybe<SortOrderInput>
   id?: InputMaybe<SortOrder>
-  name?: InputMaybe<SortOrder>
+  name?: InputMaybe<SortOrderInput>
   original?: InputMaybe<SortOrder>
   original_mimetype?: InputMaybe<SortOrder>
   uncompressed?: InputMaybe<SortOrder>
@@ -2023,7 +2023,7 @@ export type MutationaddUserArgs = {
 
 export type MutationaddUserCourseProgressArgs = {
   course_id: Scalars["ID"]["input"]
-  extra?: InputMaybe<Scalars["Json"]["input"]>
+  extra?: InputMaybe<Scalars["JSON"]["input"]>
   max_points?: InputMaybe<Scalars["Float"]["input"]>
   n_points?: InputMaybe<Scalars["Float"]["input"]>
   progress?: InputMaybe<Array<PointsByGroupInput>>
@@ -2417,6 +2417,11 @@ export type NestedUuidNullableFilter = {
   search?: InputMaybe<Scalars["String"]["input"]>
 }
 
+export enum NullsOrder {
+  first = "first",
+  last = "last",
+}
+
 export type OpenUniversityRegistrationLink = {
   __typename?: "OpenUniversityRegistrationLink"
   course: Maybe<Course>
@@ -2438,7 +2443,7 @@ export type OpenUniversityRegistrationLinkCreateInput = {
   link?: InputMaybe<Scalars["String"]["input"]>
   start_date?: InputMaybe<Scalars["DateTime"]["input"]>
   stop_date?: InputMaybe<Scalars["DateTime"]["input"]>
-  tiers?: InputMaybe<Array<Scalars["JSONObject"]["input"]>>
+  tiers?: InputMaybe<Array<Scalars["JSON"]["input"]>>
 }
 
 export type OpenUniversityRegistrationLinkListRelationFilter = {
@@ -2458,7 +2463,7 @@ export type OpenUniversityRegistrationLinkUpsertInput = {
   link?: InputMaybe<Scalars["String"]["input"]>
   start_date?: InputMaybe<Scalars["DateTime"]["input"]>
   stop_date?: InputMaybe<Scalars["DateTime"]["input"]>
-  tiers?: InputMaybe<Array<Scalars["JSONObject"]["input"]>>
+  tiers?: InputMaybe<Array<Scalars["JSON"]["input"]>>
 }
 
 export type OpenUniversityRegistrationLinkWhereInput = {
@@ -2608,41 +2613,41 @@ export type OrganizationOrderByRelevanceInput = {
 export type OrganizationOrderByWithRelationAndSearchRelevanceInput = {
   _relevance?: InputMaybe<OrganizationOrderByRelevanceInput>
   completions_registered?: InputMaybe<CompletionRegisteredOrderByRelationAggregateInput>
-  contact_information?: InputMaybe<SortOrder>
+  contact_information?: InputMaybe<SortOrderInput>
   course_organizations?: InputMaybe<CourseOrganizationOrderByRelationAggregateInput>
   courses?: InputMaybe<CourseOrderByRelationAggregateInput>
   created_at?: InputMaybe<SortOrder>
   creator?: InputMaybe<UserOrderByWithRelationAndSearchRelevanceInput>
-  creator_id?: InputMaybe<SortOrder>
-  disabled?: InputMaybe<SortOrder>
-  disabled_reason?: InputMaybe<SortOrder>
-  email?: InputMaybe<SortOrder>
+  creator_id?: InputMaybe<SortOrderInput>
+  disabled?: InputMaybe<SortOrderInput>
+  disabled_reason?: InputMaybe<SortOrderInput>
+  email?: InputMaybe<SortOrderInput>
   email_deliveries?: InputMaybe<EmailDeliveryOrderByRelationAggregateInput>
-  hidden?: InputMaybe<SortOrder>
+  hidden?: InputMaybe<SortOrderInput>
   id?: InputMaybe<SortOrder>
-  information?: InputMaybe<SortOrder>
+  information?: InputMaybe<SortOrderInput>
   join_organization_email_template?: InputMaybe<EmailTemplateOrderByWithRelationAndSearchRelevanceInput>
-  join_organization_email_template_id?: InputMaybe<SortOrder>
-  logo_content_type?: InputMaybe<SortOrder>
-  logo_file_name?: InputMaybe<SortOrder>
-  logo_file_size?: InputMaybe<SortOrder>
-  logo_updated_at?: InputMaybe<SortOrder>
+  join_organization_email_template_id?: InputMaybe<SortOrderInput>
+  logo_content_type?: InputMaybe<SortOrderInput>
+  logo_file_name?: InputMaybe<SortOrderInput>
+  logo_file_size?: InputMaybe<SortOrderInput>
+  logo_updated_at?: InputMaybe<SortOrderInput>
   name?: InputMaybe<SortOrder>
   organization_translations?: InputMaybe<OrganizationTranslationOrderByRelationAggregateInput>
-  phone?: InputMaybe<SortOrder>
-  pinned?: InputMaybe<SortOrder>
-  required_confirmation?: InputMaybe<SortOrder>
-  required_organization_email?: InputMaybe<SortOrder>
+  phone?: InputMaybe<SortOrderInput>
+  pinned?: InputMaybe<SortOrderInput>
+  required_confirmation?: InputMaybe<SortOrderInput>
+  required_organization_email?: InputMaybe<SortOrderInput>
   secret_key?: InputMaybe<SortOrder>
   slug?: InputMaybe<SortOrder>
-  tmc_created_at?: InputMaybe<SortOrder>
-  tmc_updated_at?: InputMaybe<SortOrder>
+  tmc_created_at?: InputMaybe<SortOrderInput>
+  tmc_updated_at?: InputMaybe<SortOrderInput>
   updated_at?: InputMaybe<SortOrder>
   user_organizations?: InputMaybe<UserOrganizationOrderByRelationAggregateInput>
-  verified?: InputMaybe<SortOrder>
-  verified_at?: InputMaybe<SortOrder>
+  verified?: InputMaybe<SortOrderInput>
+  verified_at?: InputMaybe<SortOrderInput>
   verified_users?: InputMaybe<VerifiedUserOrderByRelationAggregateInput>
-  website?: InputMaybe<SortOrder>
+  website?: InputMaybe<SortOrderInput>
 }
 
 export enum OrganizationRole {
@@ -3286,6 +3291,11 @@ export enum SortOrder {
   desc = "desc",
 }
 
+export type SortOrderInput = {
+  nulls?: InputMaybe<NullsOrder>
+  sort: SortOrder
+}
+
 export type Sponsor = {
   __typename?: "Sponsor"
   courses: Array<CourseSponsor>
@@ -3583,9 +3593,9 @@ export type StudyModuleOrderByWithRelationAndSearchRelevanceInput = {
   courses?: InputMaybe<CourseOrderByRelationAggregateInput>
   created_at?: InputMaybe<SortOrder>
   id?: InputMaybe<SortOrder>
-  image?: InputMaybe<SortOrder>
+  image?: InputMaybe<SortOrderInput>
   name?: InputMaybe<SortOrder>
-  order?: InputMaybe<SortOrder>
+  order?: InputMaybe<SortOrderInput>
   slug?: InputMaybe<SortOrder>
   study_module_translations?: InputMaybe<StudyModuleTranslationOrderByRelationAggregateInput>
   updated_at?: InputMaybe<SortOrder>
@@ -4080,7 +4090,8 @@ export type UserCourseProgress = {
   max_points: Maybe<Scalars["Float"]["output"]>
   n_points: Maybe<Scalars["Float"]["output"]>
   points_by_group: Array<PointsByGroup>
-  progress: Scalars["Json"]["output"]
+  /** @deprecated use points_by_group */
+  progress: Maybe<Array<Scalars["JSON"]["output"]>>
   updated_at: Scalars["DateTime"]["output"]
   user: Maybe<User>
   user_course_service_progresses: Array<UserCourseServiceProgress>
@@ -4401,14 +4412,14 @@ export type UserOrderByWithRelationAndSearchRelevanceInput = {
   email?: InputMaybe<SortOrder>
   email_deliveries?: InputMaybe<EmailDeliveryOrderByRelationAggregateInput>
   exercise_completions?: InputMaybe<ExerciseCompletionOrderByRelationAggregateInput>
-  first_name?: InputMaybe<SortOrder>
+  first_name?: InputMaybe<SortOrderInput>
   id?: InputMaybe<SortOrder>
-  last_name?: InputMaybe<SortOrder>
+  last_name?: InputMaybe<SortOrderInput>
   organizations?: InputMaybe<OrganizationOrderByRelationAggregateInput>
-  real_student_number?: InputMaybe<SortOrder>
-  research_consent?: InputMaybe<SortOrder>
+  real_student_number?: InputMaybe<SortOrderInput>
+  research_consent?: InputMaybe<SortOrderInput>
   stored_data?: InputMaybe<StoredDataOrderByRelationAggregateInput>
-  student_number?: InputMaybe<SortOrder>
+  student_number?: InputMaybe<SortOrderInput>
   updated_at?: InputMaybe<SortOrder>
   upstream_id?: InputMaybe<SortOrder>
   user_course_progresses?: InputMaybe<UserCourseProgressOrderByRelationAggregateInput>
@@ -5106,8 +5117,8 @@ export type FrontpageCourseFieldsFragment = {
   support_email: string | null
   teacher_in_charge_email: string
   teacher_in_charge_name: string
-  start_date: string
-  end_date: string | null
+  start_date: any
+  end_date: any | null
   has_certificate: boolean | null
   name: string
   ects: string | null
@@ -5153,8 +5164,8 @@ export type NewFrontpageCourseFieldsFragment = {
   support_email: string | null
   teacher_in_charge_email: string
   teacher_in_charge_name: string
-  start_date: string
-  end_date: string | null
+  start_date: any
+  end_date: any | null
   has_certificate: boolean | null
   name: string
   ects: string | null
@@ -5187,8 +5198,8 @@ export type CourseFieldsFragment = {
   support_email: string | null
   teacher_in_charge_email: string
   teacher_in_charge_name: string
-  start_date: string
-  end_date: string | null
+  start_date: any
+  end_date: any | null
   has_certificate: boolean | null
   name: string
   ects: string | null
@@ -5256,8 +5267,8 @@ export type NewCourseFieldsFragment = {
   support_email: string | null
   teacher_in_charge_email: string
   teacher_in_charge_name: string
-  start_date: string
-  end_date: string | null
+  start_date: any
+  end_date: any | null
   has_certificate: boolean | null
   name: string
   ects: string | null
@@ -5336,8 +5347,8 @@ export type EditorCourseFieldsFragment = {
   support_email: string | null
   teacher_in_charge_email: string
   teacher_in_charge_name: string
-  start_date: string
-  end_date: string | null
+  start_date: any
+  end_date: any | null
   has_certificate: boolean | null
   name: string
   ects: string | null
@@ -5436,8 +5447,8 @@ export type EditorCourseDetailedFieldsFragment = {
   support_email: string | null
   teacher_in_charge_email: string
   teacher_in_charge_name: string
-  start_date: string
-  end_date: string | null
+  start_date: any
+  end_date: any | null
   has_certificate: boolean | null
   name: string
   ects: string | null
@@ -5591,7 +5602,7 @@ export type CourseDashboardCourseFieldsFragment = {
   __typename?: "Course"
   teacher_in_charge_name: string
   teacher_in_charge_email: string
-  start_date: string
+  start_date: any
   name: string
   ects: string | null
   language: string | null
@@ -6185,8 +6196,8 @@ export type StudyModuleFieldsWithCoursesFragment = {
     support_email: string | null
     teacher_in_charge_email: string
     teacher_in_charge_name: string
-    start_date: string
-    end_date: string | null
+    start_date: any
+    end_date: any | null
     has_certificate: boolean | null
     name: string
     ects: string | null
@@ -6265,8 +6276,8 @@ export type NewStudyModuleFieldsWithCoursesFragment = {
     support_email: string | null
     teacher_in_charge_email: string
     teacher_in_charge_name: string
-    start_date: string
-    end_date: string | null
+    start_date: any
+    end_date: any | null
     has_certificate: boolean | null
     name: string
     ects: string | null
@@ -8431,8 +8442,8 @@ export type AddCourseMutation = {
     support_email: string | null
     teacher_in_charge_email: string
     teacher_in_charge_name: string
-    start_date: string
-    end_date: string | null
+    start_date: any
+    end_date: any | null
     has_certificate: boolean | null
     name: string
     ects: string | null
@@ -8580,8 +8591,8 @@ export type UpdateCourseMutation = {
     support_email: string | null
     teacher_in_charge_email: string
     teacher_in_charge_name: string
-    start_date: string
-    end_date: string | null
+    start_date: any
+    end_date: any | null
     has_certificate: boolean | null
     name: string
     ects: string | null
@@ -9457,8 +9468,8 @@ export type CoursesQuery = {
     support_email: string | null
     teacher_in_charge_email: string
     teacher_in_charge_name: string
-    start_date: string
-    end_date: string | null
+    start_date: any
+    end_date: any | null
     has_certificate: boolean | null
     name: string
     ects: string | null
@@ -9533,8 +9544,8 @@ export type NewCoursesQuery = {
     support_email: string | null
     teacher_in_charge_email: string
     teacher_in_charge_name: string
-    start_date: string
-    end_date: string | null
+    start_date: any
+    end_date: any | null
     has_certificate: boolean | null
     name: string
     ects: string | null
@@ -9619,8 +9630,8 @@ export type FrontpageCoursesModulesQuery = {
     support_email: string | null
     teacher_in_charge_email: string
     teacher_in_charge_name: string
-    start_date: string
-    end_date: string | null
+    start_date: any
+    end_date: any | null
     has_certificate: boolean | null
     name: string
     ects: string | null
@@ -9684,8 +9695,8 @@ export type NewFrontpageCoursesModulesQuery = {
     support_email: string | null
     teacher_in_charge_email: string
     teacher_in_charge_name: string
-    start_date: string
-    end_date: string | null
+    start_date: any
+    end_date: any | null
     has_certificate: boolean | null
     name: string
     ects: string | null
@@ -9763,8 +9774,8 @@ export type EditorCoursesQuery = {
     support_email: string | null
     teacher_in_charge_email: string
     teacher_in_charge_name: string
-    start_date: string
-    end_date: string | null
+    start_date: any
+    end_date: any | null
     has_certificate: boolean | null
     name: string
     ects: string | null
@@ -9944,8 +9955,8 @@ export type CourseEditorDetailsQuery = {
     support_email: string | null
     teacher_in_charge_email: string
     teacher_in_charge_name: string
-    start_date: string
-    end_date: string | null
+    start_date: any
+    end_date: any | null
     has_certificate: boolean | null
     name: string
     ects: string | null
@@ -10076,7 +10087,7 @@ export type EmailTemplateEditorCoursesQuery = {
     __typename?: "Course"
     teacher_in_charge_name: string
     teacher_in_charge_email: string
-    start_date: string
+    start_date: any
     name: string
     ects: string | null
     language: string | null
@@ -10122,7 +10133,7 @@ export type CourseDashboardQuery = {
     __typename?: "Course"
     teacher_in_charge_name: string
     teacher_in_charge_email: string
-    start_date: string
+    start_date: any
     name: string
     ects: string | null
     language: string | null
@@ -10201,7 +10212,14 @@ export type EmailTemplateQuery = {
   } | null
 }
 
-export type OrganizationsQueryVariables = Exact<{ [key: string]: never }>
+export type OrganizationsQueryVariables = Exact<{
+  take?: InputMaybe<Scalars["Int"]["input"]>
+  skip?: InputMaybe<Scalars["Int"]["input"]>
+  cursor?: InputMaybe<OrganizationWhereUniqueInput>
+  orderBy?: InputMaybe<OrganizationOrderByWithRelationAndSearchRelevanceInput>
+  hidden?: InputMaybe<Scalars["Boolean"]["input"]>
+  disabled?: InputMaybe<Scalars["Boolean"]["input"]>
+}>
 
 export type OrganizationsQuery = {
   __typename?: "Query"
@@ -10341,8 +10359,8 @@ export type StudyModulesWithCoursesQuery = {
       support_email: string | null
       teacher_in_charge_email: string
       teacher_in_charge_name: string
-      start_date: string
-      end_date: string | null
+      start_date: any
+      end_date: any | null
       has_certificate: boolean | null
       name: string
       ects: string | null
@@ -10428,8 +10446,8 @@ export type NewStudyModulesWithCoursesQuery = {
       support_email: string | null
       teacher_in_charge_email: string
       teacher_in_charge_name: string
-      start_date: string
-      end_date: string | null
+      start_date: any
+      end_date: any | null
       has_certificate: boolean | null
       name: string
       ects: string | null
@@ -30289,7 +30307,16 @@ export const CoursesDocument = {
                     {
                       kind: "ObjectField",
                       name: { kind: "Name", value: "order" },
-                      value: { kind: "EnumValue", value: "asc" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "sort" },
+                            value: { kind: "EnumValue", value: "asc" },
+                          },
+                        ],
+                      },
                     },
                   ],
                 },
@@ -30656,7 +30683,16 @@ export const NewCoursesDocument = {
                     {
                       kind: "ObjectField",
                       name: { kind: "Name", value: "order" },
-                      value: { kind: "EnumValue", value: "asc" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "sort" },
+                            value: { kind: "EnumValue", value: "asc" },
+                          },
+                        ],
+                      },
                     },
                   ],
                 },
@@ -31100,7 +31136,16 @@ export const FrontpageCoursesModulesDocument = {
                     {
                       kind: "ObjectField",
                       name: { kind: "Name", value: "order" },
-                      value: { kind: "EnumValue", value: "asc" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "sort" },
+                            value: { kind: "EnumValue", value: "asc" },
+                          },
+                        ],
+                      },
                     },
                   ],
                 },
@@ -31421,7 +31466,16 @@ export const NewFrontpageCoursesModulesDocument = {
                     {
                       kind: "ObjectField",
                       name: { kind: "Name", value: "order" },
-                      value: { kind: "EnumValue", value: "asc" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "sort" },
+                            value: { kind: "EnumValue", value: "asc" },
+                          },
+                        ],
+                      },
                     },
                   ],
                 },
@@ -33797,12 +33851,115 @@ export const OrganizationsDocument = {
       kind: "OperationDefinition",
       operation: "query",
       name: { kind: "Name", value: "Organizations" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "take" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "skip" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "cursor" },
+          },
+          type: {
+            kind: "NamedType",
+            name: { kind: "Name", value: "OrganizationWhereUniqueInput" },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "orderBy" },
+          },
+          type: {
+            kind: "NamedType",
+            name: {
+              kind: "Name",
+              value: "OrganizationOrderByWithRelationAndSearchRelevanceInput",
+            },
+          },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "hidden" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Boolean" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "disabled" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Boolean" } },
+        },
+      ],
       selectionSet: {
         kind: "SelectionSet",
         selections: [
           {
             kind: "Field",
             name: { kind: "Name", value: "organizations" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "take" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "take" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "skip" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "skip" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "cursor" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "cursor" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "orderBy" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "orderBy" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "hidden" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "hidden" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "disabled" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "disabled" },
+                },
+              },
+            ],
             selectionSet: {
               kind: "SelectionSet",
               selections: [

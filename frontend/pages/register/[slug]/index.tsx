@@ -1,4 +1,4 @@
-import { createRef, useEffect, useState } from "react"
+import { createRef, useEffect, useMemo, useState } from "react"
 
 import { useMutation, useQuery } from "@apollo/client"
 import Send from "@mui/icons-material/Send"
@@ -28,7 +28,6 @@ import {
   DeleteUserOrganizationDocument,
   OrganizationDocument,
   RequestNewUserOrganizationJoinConfirmationDocument,
-  UserOrganizationWithUserOrganizationJoinConfirmationFieldsFragment,
 } from "/graphql/generated"
 
 const Container = styled("div")`
@@ -76,6 +75,7 @@ const mockOrganization = {
   email: "test@university.xyz",
 }
 
+// eslint-disable-next-line complexity
 const RegisterToOrganization = () => {
   const { currentUser, admin } = useLoginStateContext()
   const slug = useQueryParameter("slug")
@@ -86,15 +86,7 @@ const RegisterToOrganization = () => {
   const [organizationalIdentifier, setOrganizationalIdentifier] = useState(
     currentUser?.student_number,
   )
-  const [memberships, setMemberships] = useState<Array<string>>([])
   const formRef = createRef<HTMLFormElement>()
-  const [
-    currentUserOrganizationMembership,
-    setCurrentUserOrganizationMembership,
-  ] = useState<
-    | UserOrganizationWithUserOrganizationJoinConfirmationFieldsFragment
-    | undefined
-  >()
 
   const {
     data: organizationData,
@@ -142,64 +134,56 @@ const RegisterToOrganization = () => {
     },
   ])
 
-  useEffect(() => {
-    if (!userOrganizationsData || !organizationData) {
-      return
+  const memberships = useMemo(() => {
+    if (!userOrganizationsData) {
+      return []
     }
-
     const mSlugs =
       userOrganizationsData.currentUser?.user_organizations
         ?.map((uo) => uo?.organization?.slug)
         .filter(isDefinedAndNotEmpty) ?? []
-    const currentMembership =
-      userOrganizationsData.currentUser?.user_organizations.find(
-        (uo) => uo?.organization?.slug === slug,
-      )
+    return mSlugs
+  }, [userOrganizationsData])
 
-    setMemberships(mSlugs)
-    setCurrentUserOrganizationMembership(currentMembership)
-  }, [organizationData, userOrganizationsData])
+  const currentUserOrganizationMembership = useMemo(() => {
+    return userOrganizationsData?.currentUser?.user_organizations.find(
+      (uo) => uo?.organization?.slug === slug,
+    )
+  }, [slug, userOrganizationsData])
 
   useEffect(() => {
-    if (!userOrganizationsData || !organizationData) {
+    if (!currentUserOrganizationMembership) {
       return
     }
 
-    const fetchConfirmationSentInformation = async () => {
-      const currentMembership =
-        userOrganizationsData?.currentUser?.user_organizations.find(
-          (uo) => uo?.organization?.slug === slug,
-        )
-      const isMember = Boolean(currentMembership?.confirmed)
-      const isSentButNotJoined = Boolean(currentMembership?.id)
-      const isExpired = Boolean(
-        new Date().getTime() >
-          new Date(currentMembership?.created_at).getTime() +
-            3 * 1000 * 60 * 60 * 24,
-      )
-      if (isMember) {
-        setConfirmationStatus("confirmed")
-      } else if (isSentButNotJoined && isExpired) {
-        setConfirmationStatus("expired")
-      } else if (isSentButNotJoined) {
-        setConfirmationStatus("sent")
-      } else {
-        setConfirmationStatus("notSent")
-      }
+    const isMember = Boolean(currentUserOrganizationMembership?.confirmed)
+    const isSentButNotJoined = Boolean(currentUserOrganizationMembership?.id)
+    const isExpired =
+      new Date().getTime() >
+      new Date(currentUserOrganizationMembership?.created_at).getTime() +
+        3 * 1000 * 60 * 60 * 24
+
+    if (isMember) {
+      setConfirmationStatus("confirmed")
+    } else if (isSentButNotJoined && isExpired) {
+      setConfirmationStatus("expired")
+    } else if (isSentButNotJoined) {
+      setConfirmationStatus("sent")
+    } else {
+      setConfirmationStatus("notSent")
     }
-    fetchConfirmationSentInformation()
-  }, [])
+  }, [currentUserOrganizationMembership])
 
   const handleSubmit = () => {
     const potentialEmail = (
       document.getElementById("email") as HTMLInputElement
     ).value
-    const organizationRegex = new RegExp("^.*..*@.*..*$")
+    const organizationRegex = /^.*..*@.*..*$/
     const orgId = (
       document.getElementById("organizational-identifier") as HTMLInputElement
     ).value
 
-    if (!potentialEmail.match(organizationRegex)) {
+    if (!RegExp(organizationRegex).exec(potentialEmail)) {
       setConfirmationStatus("incorrectFormat")
     } else {
       setEmail(potentialEmail)
@@ -226,7 +210,6 @@ const RegisterToOrganization = () => {
     const fieldValue = [...memberships, slug]
     await updateUserDetails(fieldName, fieldValue)
 
-    setMemberships(fieldValue)
     await addUserOrganization({
       variables: {
         organization_id: organizationData!.organization!.id,
@@ -240,7 +223,6 @@ const RegisterToOrganization = () => {
     const fieldValue = [...memberships, slug]
     await updateUserDetails(fieldName, fieldValue)
 
-    setMemberships(fieldValue)
     await addUserOrganization({
       variables: {
         organization_id: organizationData!.organization!.id,
@@ -275,9 +257,9 @@ const RegisterToOrganization = () => {
         id: currentUserOrganizationMembership.id,
       },
     })
-    setMemberships(memberships.filter((i) => i !== slug))
+    const fieldValue = memberships.filter((s) => s !== slug)
     const fieldName = "joined_organizations"
-    await updateUserDetails(fieldName, memberships)
+    await updateUserDetails(fieldName, fieldValue)
   }
 
   /* const { loading, error, data } = useQuery(
@@ -307,8 +289,7 @@ const RegisterToOrganization = () => {
   return confirmationStatus === "confirmed" ? (
     <Container>
       <h1>
-        {t("memberTitle")}{" "}
-        {organizationData.organization.organization_translations?.[0]?.name}
+        {t("memberTitle")} {organizationData.organization?.name}
       </h1>
 
       <TextBox>
@@ -368,8 +349,7 @@ const RegisterToOrganization = () => {
   ) : (
     <Container>
       <h1>
-        {t("title2")}{" "}
-        {organizationData.organization.organization_translations?.[0]?.name}
+        {t("title2")} {organizationData.organization?.name}
       </h1>
 
       <TextBox>
@@ -393,8 +373,7 @@ const RegisterToOrganization = () => {
       </TextBox>
 
       <TextBox>
-        {t("joiningInformation5")}{" "}
-        {organizationData.organization.organization_translations?.[0]?.name}{" "}
+        {t("joiningInformation5")} {organizationData.organization?.name}{" "}
         {t("joiningInformation6")}
       </TextBox>
 
@@ -403,8 +382,7 @@ const RegisterToOrganization = () => {
           <div>
             <FormControlLabel
               label={`${t("joiningCheckbox")} ${
-                organizationData.organization.organization_translations?.[0]
-                  ?.name
+                organizationData.organization?.name
               }`}
               control={
                 <Checkbox
@@ -481,8 +459,7 @@ const RegisterToOrganization = () => {
           <div>
             <FormControlLabel
               label={`${t("joiningCheckbox")} ${
-                organizationData.organization.organization_translations?.[0]
-                  ?.name
+                organizationData.organization?.name
               }`}
               control={
                 <Checkbox
