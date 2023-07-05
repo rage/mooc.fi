@@ -29,7 +29,7 @@ exports[`Course queries course admin returns full course on id and slug 1`] = `
   ],
   "course_variants": [],
   "ects": null,
-  "end_date": "12/31/2100",
+  "end_date": "2100-12-31T00:00:00.000Z",
   "exercise_completions_needed": 1,
   "exercises": [
     {
@@ -62,7 +62,7 @@ exports[`Course queries course admin returns full course on id and slug 1`] = `
   "points_needed": 3,
   "promote": null,
   "slug": "course1",
-  "start_date": "01/01/1900",
+  "start_date": "1900-01-01T00:00:00.000Z",
   "start_point": null,
   "status": "Upcoming",
   "study_module_order": null,
@@ -175,7 +175,7 @@ exports[`Course queries course admin returns full course on id and slug 2`] = `
   ],
   "course_variants": [],
   "ects": null,
-  "end_date": "12/31/2100",
+  "end_date": "2100-12-31T00:00:00.000Z",
   "exercise_completions_needed": 1,
   "exercises": [
     {
@@ -208,7 +208,7 @@ exports[`Course queries course admin returns full course on id and slug 2`] = `
   "points_needed": 3,
   "promote": null,
   "slug": "course1",
-  "start_date": "01/01/1900",
+  "start_date": "1900-01-01T00:00:00.000Z",
   "start_point": null,
   "status": "Upcoming",
   "study_module_order": null,
@@ -321,7 +321,7 @@ exports[`Course queries course admin should include deleted exercises if specifi
   ],
   "course_variants": [],
   "ects": null,
-  "end_date": "12/31/2100",
+  "end_date": "2100-12-31T00:00:00.000Z",
   "exercise_completions_needed": 1,
   "exercises": [
     {
@@ -359,7 +359,7 @@ exports[`Course queries course admin should include deleted exercises if specifi
   "points_needed": 3,
   "promote": null,
   "slug": "course1",
-  "start_date": "01/01/1900",
+  "start_date": "1900-01-01T00:00:00.000Z",
   "start_point": null,
   "status": "Upcoming",
   "study_module_order": null,
