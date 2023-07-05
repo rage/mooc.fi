@@ -47,7 +47,7 @@ function CourseStatusBadge({
       size="small"
       label={
         t(
-          status as string as KeyOfTranslationDictionary<
+          `course${status}` as KeyOfTranslationDictionary<
             typeof CoursesTranslations
           >,
         ) ?? "Unknown"

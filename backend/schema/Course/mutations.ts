@@ -136,7 +136,10 @@ export const CourseMutations = extendType({
             tags: { connect: (tags ?? []).map((tag) => ({ id: tag.id })) },
             sponsors: {
               create: (sponsors ?? []).map((sponsor) => ({
-                sponsor: { connect: { id: sponsor.id } },
+                sponsor: {
+                  connect: { id: sponsor.id },
+                  order: sponsor.order,
+                },
               })),
             },
           },
@@ -408,8 +411,8 @@ function getSponsorMutation<C extends Course>(
     | null,
 ): Prisma.CourseSponsorUpdateManyWithoutCourseNestedInput | undefined {
   const sponsorIds = getIds(sponsors ?? [])
-  const newSponsorIds = sponsorIds?.filter(
-    (id) =>
+  const newSponsors = (sponsors ?? []).filter(
+    ({ id }) =>
       !existingCourse.sponsors.some(
         (courseSponsor) => id === courseSponsor.sponsor_id,
       ),
@@ -422,8 +425,22 @@ function getSponsorMutation<C extends Course>(
       .map((courseSponsor) => courseSponsor.sponsor_id) ?? []
 
   return {
-    create: newSponsorIds.length
-      ? newSponsorIds.map((id) => ({ sponsor: { connect: { id } } }))
+    upsert: newSponsors.length
+      ? newSponsors.map(({ id, order }) => ({
+          where: {
+            course_id_sponsor_id: {
+              course_id: existingCourse.id,
+              sponsor_id: id,
+            },
+          },
+          create: {
+            sponsor: { connect: { id } },
+            order,
+          },
+          update: {
+            order,
+          },
+        }))
       : undefined,
     deleteMany: removedSponsorIds.length
       ? { sponsor_id: { in: removedSponsorIds } }

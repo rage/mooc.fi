@@ -55,7 +55,7 @@ export const CourseCreateArg = inputObjectType({
       type: "TagCreateInput",
     })
     t.list.nonNull.field("sponsors", {
-      type: "SponsorUniqueInput",
+      type: "SponsorUniqueWithOrderInput",
     })
     t.string("language")
   },
@@ -119,7 +119,7 @@ export const CourseUpsertArg = inputObjectType({
       type: "TagUpsertInput",
     })
     t.list.nonNull.field("sponsors", {
-      type: "SponsorUniqueInput",
+      type: "SponsorUniqueWithOrderInput",
     })
     t.string("language")
   },

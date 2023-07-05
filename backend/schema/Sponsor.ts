@@ -135,6 +135,14 @@ export const SponsorUniqueInput = inputObjectType({
   },
 })
 
+export const SponsorUniqueWithOrderInput = inputObjectType({
+  name: "SponsorUniqueWithOrderInput",
+  definition(t) {
+    t.nonNull.string("id")
+    t.nonNull.int("order")
+  },
+})
+
 export const SponsorQueries = extendType({
   type: "Query",
   definition(t) {

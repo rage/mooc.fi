@@ -59,7 +59,8 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "skipLibCheck": true
   },
   "exclude": [
     "node_modules",

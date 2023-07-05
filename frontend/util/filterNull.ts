@@ -17,6 +17,18 @@ export function filterNull<T extends Record<PropertyKey, unknown>>(
 export function filterNull<T extends Record<PropertyKey, unknown>>(
   o?: T | null,
 ): NullFiltered<T> | undefined {
+  if (
+    typeof o === "string" ||
+    typeof o === "number" ||
+    typeof o === "boolean"
+  ) {
+    return o
+  }
+
+  if (Array.isArray(o)) {
+    return o.map(filterNull) as NullFiltered<T>
+  }
+
   return o
     ? (Object.fromEntries(
         Object.entries(o).map(([k, v]) => [k, v === null ? undefined : v]),
@@ -37,10 +49,22 @@ export function filterNullRecursive<T extends Record<PropertyKey, unknown>>(
     return undefined
   }
 
+  if (
+    typeof o === "string" ||
+    typeof o === "number" ||
+    typeof o === "boolean"
+  ) {
+    return o
+  }
+
   const filtered = filterNull(o)
 
   if (!filtered) {
     return undefined
+  }
+
+  if (Array.isArray(filtered)) {
+    return filtered.map(filterNullRecursive) as NullFiltered<T>
   }
 
   return Object.fromEntries(
