@@ -20,6 +20,6 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
   },
-  "include": [".", "./bin/**/*", "./types", "types.d.ts"],
+  "include": [".", "./bin/**/*"],
   "exclude": ["node_modules", "dist"]
 }

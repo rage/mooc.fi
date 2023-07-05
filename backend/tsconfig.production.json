@@ -23,6 +23,6 @@
     "resolveJsonModule": true,
     "sourceRoot": "/"
   },
-  "include": [".", "./types", "types.d.ts"],
+  "include": [".", "./bin/**/*"],
   "exclude": ["node_modules", "__mocks__"]
 }
