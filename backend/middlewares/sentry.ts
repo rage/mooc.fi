@@ -2,7 +2,6 @@ import { plugin } from "nexus"
 
 import { isProduction } from "../config"
 import { Context } from "../context"
-// import { log } from "nexus"
 import { Sentry } from "../services/sentry"
 
 export const sentryPlugin = () =>

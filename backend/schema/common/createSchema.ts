@@ -24,24 +24,6 @@ if (NEXUS_REFLECTION) {
   require("sharp") // image library sharp seems to crash without this require
 }
 
-/*const DateTime = decorateType(DateTimeResolver, {
-  sourceType: "Date",
-  asNexusMethod: "datetime"
-})
-const DateType = decorateType(DateResolver, {
-  sourceType: "Date",
-  asNexusMethod: "date"
-})
-const Decimal = asNexusMethod(GraphQLDecimal, "decimal")
-const JSONObject = decorateType(JSONObjectResolver, {
-  sourceType: "PrismaClient.Prisma.JsonObject",
-  asNexusMethod: "jsonObject"
-})
-const Json = decorateType(JSONResolver, {
-  sourceType: "PrismaClient.Prisma.JsonValue",
-  asNexusMethod: "json",
-})*/
-
 const createPlugins = () => {
   const plugins = [
     nexusPrisma({
@@ -99,14 +81,6 @@ export const createSchema = () => {
       JSON: types.Json,
       Date: types.DateType,
     },
-    /*: {
-      ...types,
-      DateTime,
-      Date: DateType,
-      Decimal,
-       Json,
-      JSONObject,
-  },*/
     contextType: {
       module: path.join(process.cwd(), "context.ts"),
       export: "Context",
