@@ -1,11 +1,6 @@
-import { Knex } from "knex"
-import * as winston from "winston"
+import { BaseContext } from "/context"
 
-import { ExtendedPrismaClient } from "../../../../../prisma"
-
-export type TemplateContext = {
-  prisma: ExtendedPrismaClient
-  logger?: winston.Logger
-  knex?: Knex
-  test?: boolean
-}
+export type TemplateContext = Pick<BaseContext, "prisma"> &
+  Partial<Pick<BaseContext, "logger" | "knex">> & {
+    test?: boolean // If true, don't send the email, just log it
+  }

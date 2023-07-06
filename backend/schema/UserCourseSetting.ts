@@ -13,8 +13,7 @@ import { Prisma } from "@prisma/client"
 
 import { isAdmin } from "../accessControl"
 import { GraphQLForbiddenError, GraphQLUserInputError } from "../lib/errors"
-import { isDefined } from "../util"
-import { buildUserSearch } from "./common"
+import { buildUserSearch, isDefined } from "../util"
 
 export const UserCourseSetting = objectType({
   name: "UserCourseSetting",
@@ -382,7 +381,8 @@ const getUserCourseSettingSearch = ({
   user_id,
   user_upstream_id,
 }: GetUserCourseSettingSearchArgs) => {
-  const userSearch = search && search !== "" ? buildUserSearch(search) : null
+  const userSearch =
+    search && search !== "" ? { OR: buildUserSearch(search) } : null
 
   const userConditions: Prisma.UserWhereInput[] = [
     user_id || user_upstream_id

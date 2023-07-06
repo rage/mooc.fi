@@ -40,7 +40,7 @@ email:
 
 expireUserOrganizationJoinConfirmations:
   # controls whether the background service to expire user organization join confirmations should be running
-  enabled: true
+  enabled: false
 
 image:
   repository: eu.gcr.io/moocfi

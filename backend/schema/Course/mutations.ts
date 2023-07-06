@@ -18,11 +18,6 @@ import {
 } from "../../util/courseMutationHelpers"
 import { deleteImage, uploadImage } from "../Image"
 
-/*** TODO
- *
- * - course start_date and end_date to datetime in the db and in the schema
- *   - needs to be updated in the serialization, input parameters and so on
- */
 // @ts-ignore: not used for now
 const hasId = <T>(value: any): value is T & { id: string } => Boolean(value?.id)
 

@@ -7,7 +7,7 @@ import { Prisma } from "@prisma/client"
 
 import { isAdmin, isOrganization, or } from "../../accessControl"
 import { GraphQLForbiddenError, GraphQLUserInputError } from "../../lib/errors"
-import { buildUserSearch } from "../../util/db-functions"
+import { buildUserSearch } from "../../util"
 
 export const CompletionQueries = extendType({
   type: "Query",
