@@ -39,6 +39,7 @@ export const Progress = objectType({
           .user_course_progresses({
             where: { user_id },
             orderBy: { created_at: "asc" },
+            take: 1,
           })
 
         return progresses?.[0] ?? null

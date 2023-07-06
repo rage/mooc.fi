@@ -133,8 +133,8 @@ export const CourseMutations = extendType({
               create: (sponsors ?? []).map((sponsor) => ({
                 sponsor: {
                   connect: { id: sponsor.id },
-                  order: sponsor.order,
                 },
+                order: sponsor.order ?? undefined,
               })),
             },
           },

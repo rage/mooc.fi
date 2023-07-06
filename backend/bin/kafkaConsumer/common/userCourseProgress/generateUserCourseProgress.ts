@@ -60,7 +60,7 @@ export const generateUserCourseProgress = async ({
   return context.prisma.userCourseProgress.update({
     where: { id: userCourseProgress.id },
     data: {
-      progress: combined.progress ?? Prisma.JsonNull, // errors unless typed as any
+      progress: combined.progress ?? Prisma.JsonNull,
       max_points: { set: combined.total_max_points },
       n_points: { set: combined.total_n_points },
     },

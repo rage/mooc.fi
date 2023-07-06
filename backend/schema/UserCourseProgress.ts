@@ -42,7 +42,7 @@ export const UserCourseProgress = objectType({
     t.model.course_id()
     t.model.course()
     t.model.created_at()
-    t.model.extra()
+    // t.model.extra()
     t.model.max_points()
     t.model.n_points()
     // TODO/FIXME: this was borked on some previous version because of JSON, might work now
@@ -101,6 +101,7 @@ export const UserCourseProgress = objectType({
             orderBy: {
               created_at: "asc",
             },
+            take: 1,
           })
 
         return settings?.[0] ?? null
@@ -207,6 +208,7 @@ export const UserCourseProgress = objectType({
             const exercisePercentage = exerciseCompletions / BAIExerciseCount
 
             return {
+              ...tierValue,
               id: BAItiers[tier],
               name: tierKey,
               tier,
@@ -214,7 +216,6 @@ export const UserCourseProgress = objectType({
               exerciseCount: BAIExerciseCount,
               exercisePercentage,
               exercisesNeededPercentage,
-              ...tierValue,
             }
           },
         )

@@ -139,7 +139,7 @@ export const SponsorUniqueWithOrderInput = inputObjectType({
   name: "SponsorUniqueWithOrderInput",
   definition(t) {
     t.nonNull.string("id")
-    t.nonNull.int("order")
+    t.int("order", { default: 0 })
   },
 })
 
