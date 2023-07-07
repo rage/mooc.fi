@@ -69,7 +69,7 @@ export class UserCourseSettingsController extends Controller {
       )
     }
 
-    res.status(200).json(
+    return res.status(200).json(
       userCourseSettings
         ? {
             ...omit(userCourseSettings, "other"),

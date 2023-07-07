@@ -1,6 +1,6 @@
 import { Course, Prisma } from "@prisma/client"
 
-import { isNotNullOrUndefined } from "./isNullOrUndefined"
+import { isDefinedAndNotEmpty } from "./guards"
 import { Context } from "/context"
 
 export const getIds = (arr: any[], idField = "id") =>
@@ -98,7 +98,7 @@ const createCourseMutationFunction =
     slug: string,
   ): CourseMutationFunction<Relation> =>
   async ({ data, relation, id = "id" as IdKey }) => {
-    if (!isNotNullOrUndefined(data)) {
+    if (!isDefinedAndNotEmpty(data)) {
       return undefined
     }
 
@@ -123,7 +123,7 @@ const createCourseMutationFunction =
       .filter(hasNotIdFilter)
       .map((t) => Object.assign({}, t, { [id]: undefined }))
     mutation.updateMany = data
-      .filter(isNotNullOrUndefined)
+      .filter(isDefinedAndNotEmpty)
       .filter(hasIdFilter)
       .map((t) => {
         return {

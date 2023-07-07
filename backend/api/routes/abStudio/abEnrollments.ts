@@ -2,8 +2,8 @@ import { Request, Response, Router } from "express"
 
 import { AbEnrollment } from "@prisma/client"
 
-import { getUser } from "../../../util/server-functions"
 import { ApiContext } from "../../types"
+import { getUser } from "../../utils"
 
 export function abEnrollmentRouter(ctx: ApiContext) {
   async function abEnrollmentGet(

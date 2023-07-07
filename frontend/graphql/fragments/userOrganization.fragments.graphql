@@ -1,9 +1,12 @@
-fragment UserOrganizationCoreFields on UserOrganization {
+fragment UserOrganizationFields on UserOrganization {
   id
   user_id
   organization_id
-  # confirmed
-  # consented
+  confirmed
+  confirmed_at
+  consented
+  organizational_email
+  organizational_identifier
   organization {
     ...OrganizationCoreFields
   }
@@ -11,22 +14,25 @@ fragment UserOrganizationCoreFields on UserOrganization {
   updated_at
 }
 
-#  fragment UserOrganizationJoinConfirmationData on UserOrganizationJoinConfirmation {
-#    id
-#    email
-#    confirmed
-#    confirmed_at
-#    created_at
-#    updated_at
-#    expired
-#    expires_at
-#    redirect
-#    language
-#    email_delivery {
-#      id
-#      email
-#      sent
-#      error
-#      updated_at
-#    }
-#  }
+fragment UserOrganizationJoinConfirmationFields on UserOrganizationJoinConfirmation {
+  id
+  email
+  confirmed
+  confirmed_at
+  expired
+  expires_at
+  redirect
+  language
+  created_at
+  updated_at
+  email_delivery {
+    ...EmailDeliveryFields
+  }
+}
+
+fragment UserOrganizationWithUserOrganizationJoinConfirmationFields on UserOrganization {
+  ...UserOrganizationFields
+  user_organization_join_confirmations {
+    ...UserOrganizationJoinConfirmationFields
+  }
+}

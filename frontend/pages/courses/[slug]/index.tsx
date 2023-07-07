@@ -6,7 +6,6 @@ import { NextSeo } from "next-seo"
 import { useApolloClient, useMutation, useQuery } from "@apollo/client"
 import {
   Button,
-  Card,
   EnhancedLink,
   Link as MUILink,
   Paper,
@@ -181,9 +180,9 @@ const Course = () => {
                 prefetch={false}
                 passHref
               >
-                <Card style={{ width: "300px", minHeight: "50px" }}>
-                  Completion Email: {data.course.completion_email?.name}
-                </Card>
+                <Button color="info">
+                  Completion email: {data.course.completion_email?.name}
+                </Button>
               </Link>
             ) : (
               <CreateEmailTemplateDialog
@@ -199,9 +198,9 @@ const Course = () => {
                   prefetch={false}
                   passHref
                 >
-                  <Card style={{ width: "300px", minHeight: "50px" }}>
+                  <Button color="info">
                     Course stats email: {data.course.course_stats_email?.name}
-                  </Card>
+                  </Button>
                 </Link>
                 <Button onClick={handleSubscribe} disabled={subscribing}>
                   {isSubscribed ? "Unsubscribe" : "Subscribe"}
@@ -214,21 +213,23 @@ const Course = () => {
                 type="course-stats"
               />
             )}
-            <Button
-              color="primary"
-              onClick={() => {
-                confirm({
-                  title: "Are you sure?",
-                  description:
-                    "Don't do this unless you really know what you're doing. This might mess things up!",
-                  confirmationText: "Yes, I'm sure",
-                  cancellationText: "Cancel",
-                }).then(handleRecheck)
-              }}
-              disabled={checking}
-            >
-              Re-check completions
-            </Button>
+            <div>
+              <Button
+                color="primary"
+                onClick={() => {
+                  confirm({
+                    title: "Are you sure?",
+                    description:
+                      "Don't do this unless you really know what you're doing. This might mess things up!",
+                    confirmationText: "Yes, I'm sure",
+                    cancellationText: "Cancel",
+                  }).then(handleRecheck)
+                }}
+                disabled={checking}
+              >
+                Re-check completions
+              </Button>
+            </div>
             {checkMessage !== "" && <Typography>{checkMessage}</Typography>}
           </Row>
           <CourseDashboard />

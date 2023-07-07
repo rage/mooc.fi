@@ -6,7 +6,7 @@ import { User } from "@prisma/client"
 
 import { USER_HASH_SECRET } from "../config"
 
-const hashUser = (user: User) =>
+export const hashUser = (user: User) =>
   createHash("sha512")
     .update(
       Object.values(

@@ -29,7 +29,7 @@ import { H1NoBackground } from "/components/Text/headers"
 import UserSearchContext from "/contexts/UserSearchContext"
 import { useTranslator } from "/hooks/useTranslator"
 import UsersTranslations from "/translations/users"
-import notEmpty from "/util/notEmpty"
+import { isDefinedAndNotEmpty } from "/util/guards"
 
 const StyledForm = styled("form")`
   display: flex;
@@ -147,7 +147,7 @@ const SearchForm = () => {
       return (
         <>
           {t("searchInProgress")}
-          {notEmpty(meta.fieldIndex) &&
+          {isDefinedAndNotEmpty(meta.fieldIndex) &&
             `: ${t("searchCondition")} ${meta.fieldIndex}/${meta.fieldCount}`}
         </>
       )

@@ -3,8 +3,7 @@ import { DateTime } from "luxon"
 import { User } from "@prisma/client"
 
 import { DatabaseInputError, TMCError } from "../../../../lib/errors"
-import { err, ok } from "../../../../util/result"
-import { parseTimestamp } from "../../util"
+import { err, ok, parseTimestamp } from "../../../../util"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 import { KafkaContext } from "../kafkaContext"
 

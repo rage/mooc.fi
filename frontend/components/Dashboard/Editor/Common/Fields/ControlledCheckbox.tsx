@@ -1,6 +1,11 @@
-import React from "react"
+import React, { useCallback } from "react"
 
-import { FieldValues, useController } from "react-hook-form"
+import {
+  ControllerRenderProps,
+  FieldPath,
+  FieldValues,
+  useController,
+} from "react-hook-form"
 
 import { Checkbox, FormControlLabel } from "@mui/material"
 import { styled } from "@mui/material/styles"
@@ -17,8 +22,9 @@ const AlignedSpan = styled("span")`
 
 interface ControlledCheckboxProps<
   TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 > extends ControlledFieldProps<TFieldValues> {
-  onChange?: (e: React.SyntheticEvent<Element, Event>, checked: boolean) => void
+  onChange?: ControllerRenderProps<TFieldValues, TName>["onChange"]
 }
 
 const ControlledCheckboxLabel = React.memo(
@@ -33,16 +39,24 @@ const ControlledCheckboxLabel = React.memo(
   },
 )
 
-function ControlledCheckboxImpl<TFieldValues extends FieldValues = FieldValues>(
-  props: ControlledCheckboxProps<TFieldValues>,
-) {
-  const { name, label, tip, required, onChange } = props
+function ControlledCheckboxImpl<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+>(props: ControlledCheckboxProps<TFieldValues, TName>) {
+  const { name, label, tip, required, onChange: propsOnChange } = props
   const anchor = useAnchor(name)
   const { field } = useController({
     name,
     rules: { required },
   })
-  const _onChange = onChange ?? field.onChange
+  const onChange = useCallback(
+    (event: React.SyntheticEvent<Element, Event>) => {
+      const onChangeFn = propsOnChange ?? field.onChange
+
+      onChangeFn?.(event as any)
+    },
+    [propsOnChange, field],
+  )
 
   return (
     <div>
@@ -51,7 +65,7 @@ function ControlledCheckboxImpl<TFieldValues extends FieldValues = FieldValues>(
         label={<ControlledCheckboxLabel label={label} tip={tip} />}
         value={field.value}
         checked={Boolean(field.value)}
-        onChange={_onChange}
+        onChange={onChange}
         control={<Checkbox />}
         inputRef={(el) => {
           field.ref(el)

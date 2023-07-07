@@ -3,7 +3,7 @@ import { useId, useMemo, useState } from "react"
 import Router from "next/router"
 import { omit } from "remeda"
 
-import { useApolloClient, useQuery } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client"
 import {
   Button,
   Dialog,
@@ -19,7 +19,8 @@ import {
 import ErrorMessage from "./ErrorMessage"
 import CustomSnackbar from "/components/CustomSnackbar"
 import Spinner from "/components/Spinner"
-import notEmpty from "/util/notEmpty"
+import { EmailTemplateType } from "/types/emailTemplates"
+import { isDefinedAndNotEmpty } from "/util/guards"
 
 import {
   AddEmailTemplateDocument,
@@ -27,28 +28,37 @@ import {
   CourseUpsertArg,
   EmailTemplateEditorCoursesDocument,
   UpdateCourseDocument,
+  UpdateOrganizationEmailTemplateDocument,
 } from "/graphql/generated"
 
-interface CreateEmailTemplateDialogParams {
+interface CreateEmailTemplateDialogProps {
   course?: CourseDashboardCourseFieldsFragment
   buttonText: string
-  type?: string
+  organization?: any // TODO: type, actually query this somewhere
+  type?: EmailTemplateType
 }
 
 const CreateEmailTemplateDialog = ({
   course,
+  organization,
   buttonText,
   type = "completion",
-}: CreateEmailTemplateDialogParams) => {
-  const [openDialog, setOpenDialog] = useState(false)
-  const [nameInput, setNameInput] = useState("")
-  const [templateType, setTemplateType] = useState(type)
+}: CreateEmailTemplateDialogProps) => {
   const [selectedCourse, setSelectedCourse] =
     useState<CourseDashboardCourseFieldsFragment | null>(null)
   const [isErrorSnackbarOpen, setIsErrorSnackbarOpen] = useState(false)
   const { loading, error, data } = useQuery(EmailTemplateEditorCoursesDocument)
-  const client = useApolloClient()
   const dialogTitleId = useId()
+
+  const [openDialog, setOpenDialog] = useState(false)
+  const [nameInput, setNameInput] = useState("")
+  const [templateType, setTemplateType] = useState(type)
+
+  const [addEmailTemplateMutation] = useMutation(AddEmailTemplateDocument)
+  const [updateCourseMutation] = useMutation(UpdateCourseDocument)
+  const [updateOrganizationEmailTemplateMutation] = useMutation(
+    UpdateOrganizationEmailTemplateDocument,
+  )
 
   const handleDialogClickOpen = () => {
     setOpenDialog(true)
@@ -63,7 +73,7 @@ const CreateEmailTemplateDialog = ({
       return []
     }
 
-    let courseData = data.courses?.filter(notEmpty) ?? []
+    let courseData = data.courses?.filter(isDefinedAndNotEmpty) ?? []
 
     if (templateType === "completion") {
       courseData = courseData.filter((c) => c.completion_email == null)
@@ -78,8 +88,7 @@ const CreateEmailTemplateDialog = ({
 
   const handleCreate = async () => {
     try {
-      const { data } = await client.mutate({
-        mutation: AddEmailTemplateDocument,
+      const { data: addEmailTemplateData } = await addEmailTemplateMutation({
         variables: {
           name: nameInput,
           template_type: templateType,
@@ -90,18 +99,19 @@ const CreateEmailTemplateDialog = ({
 
       const updateableCourse = course ?? selectedCourse
 
-      if (updateableCourse) {
+      if (updateableCourse && templateType !== "join-organization") {
         const connectVariables = {} as CourseUpsertArg
 
         if (templateType === "completion") {
-          connectVariables.completion_email_id = data?.addEmailTemplate?.id
+          connectVariables.completion_email_id =
+            addEmailTemplateData?.addEmailTemplate?.id
         }
         if (templateType === "course-stats") {
-          connectVariables.course_stats_email_id = data?.addEmailTemplate?.id
+          connectVariables.course_stats_email_id =
+            addEmailTemplateData?.addEmailTemplate?.id
         }
 
-        await client.mutate({
-          mutation: UpdateCourseDocument,
+        await updateCourseMutation({
           variables: {
             course: {
               // - already has slug and can't have both
@@ -120,7 +130,17 @@ const CreateEmailTemplateDialog = ({
         })
       }
 
-      const url = "/email-templates/" + data?.addEmailTemplate?.id
+      if (organization && templateType === "join-organization") {
+        await updateOrganizationEmailTemplateMutation({
+          variables: {
+            id: organization.id,
+            email_template_id: addEmailTemplateData!.addEmailTemplate!.id,
+          },
+        })
+      }
+
+      const url =
+        "/email-templates/" + addEmailTemplateData!.addEmailTemplate!.id
       Router.push(url)
     } catch {
       setIsErrorSnackbarOpen(true)
@@ -166,13 +186,13 @@ const CreateEmailTemplateDialog = ({
             onChange={(e) => setNameInput(e.target.value)}
           />
           {/* If we have a course, we are coming from the course dashboard */}
-          {!course && (
+          {!course && !organization && (
             <>
               <InputLabel htmlFor="select">Template type</InputLabel>
               <NativeSelect
                 onChange={(e) => {
                   e.preventDefault()
-                  setTemplateType(e.target.value)
+                  setTemplateType(e.target.value as EmailTemplateType)
                 }}
                 id="selectType"
                 value={templateType}
@@ -180,23 +200,32 @@ const CreateEmailTemplateDialog = ({
                 <option value="completion">Completion e-mail</option>
                 <option value="threshold">Threshold e-mail</option>
                 <option value="course-stats">Course stats e-mail</option>
+                <option value="join-organization">
+                  Join organization e-mail
+                </option>
               </NativeSelect>
-              <br />
-              <br />
-              <InputLabel htmlFor="selectCourse">For course</InputLabel>
-              <NativeSelect
-                onChange={(e) => {
-                  e.preventDefault()
-                  setSelectedCourse(
-                    data?.courses?.[Number(e.target.value)] ?? null,
-                  )
-                }}
-                id="selectCourse"
-                defaultValue="Select course"
-              >
-                <option value="Select course">Select...</option>
-                {courseOptions}
-              </NativeSelect>
+              {templateType !== "join-organization" && (
+                <>
+                  <br />
+                  <br />
+                  <InputLabel htmlFor="selectCourse">For course</InputLabel>
+                  <NativeSelect
+                    onChange={(e) => {
+                      e.preventDefault()
+                      setSelectedCourse(
+                        data.courses
+                          ?.filter(isDefinedAndNotEmpty)
+                          .find((c) => c.id === e.target.value) ?? null,
+                      )
+                    }}
+                    id="selectCourse"
+                    defaultValue="Select course"
+                  >
+                    <option value="Select course">Select...</option>
+                    {courseOptions}
+                  </NativeSelect>
+                </>
+              )}
             </>
           )}
         </DialogContent>

@@ -1,8 +1,8 @@
 const fs = require("fs")
 const path = require("path")
 
-const DIRECTORY = "graphql"
-const IGNORED_FILES = ["__test__"]
+const DIRECTORY = "schema"
+const IGNORED_FILES = ["__test__", "common"]
 const OUTPUT_FILE = "index.ts"
 
 // @ts-ignore: not used for now
@@ -32,7 +32,7 @@ const createExports = (dir) => {
 const outputExports = (exports, dir) => {
   const exportFileContents = `// generated ${new Date()}\n\n${exports.join(
     "\n",
-  )}`
+  )}\n`
   const exportFile = `${dir ? dir + "/" : ""}${OUTPUT_FILE}`
   fs.writeFileSync(exportFile, exportFileContents)
   console.log("wrote", exportFile)

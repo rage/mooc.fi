@@ -1,7 +1,7 @@
 import memoize from "just-memoize"
 import { NextRouter } from "next/router"
 
-import notEmpty from "/util/notEmpty"
+import { isDefined, isDefinedAndNotEmpty } from "/util/guards"
 
 export type LanguageKey = string
 const defaultLanguage = "en" as const
@@ -109,7 +109,7 @@ export type Translator<T extends TranslationObjectEntry> = <
 >(
   key: K,
   variables?: TranslationVariables<T>,
-) => K extends keyof T ? T[K] : K
+) => TranslationReturn<T, K>
 
 const getTranslator =
   <D extends TranslationDictionary = TranslationDictionary>(dicts: D) =>
@@ -121,24 +121,20 @@ const getTranslator =
       <Key extends Extract<keyof D[Language], string>>(
         key: Key,
         variables?: TranslationVariables<D[Language]>,
-      ): TranslationReturn<D[Language], Key> => {
+      ) => {
         const translation =
           dicts[lng]?.[key] || dicts[defaultLanguage]?.[key as any]
 
         if (!translation) {
           console.warn(`WARNING: no translation for ${lng}:${String(key)}`)
-          return key as TranslationReturn<D[Language], Key>
+          return key
         }
-        if (isArrayTranslation(translation)) {
-          return translation.map((t) =>
-            // @ts-ignore: TODO: fix infinite recursion
-            substitute(t, variables, router),
-          ) as TranslationReturn<D[Language], Key>
-        }
-        return substitute(translation, variables, router) as TranslationReturn<
-          D[Language],
-          Key
-        >
+
+        return substitute({
+          translation,
+          variables,
+          router,
+        })
       },
       (key, variables) =>
         // cached value is supposed to depend on possible given variables
@@ -148,28 +144,39 @@ const getTranslator =
           }
           return `${String(acc)}_${String(curr)}`
         }, ""),
-    )
+    ) as Translator<D[Language]>
 
-const substitute = <TE extends TranslationEntry>(
-  translation: TE,
-  variables?: TranslationVariables<TE>,
-  router?: NextRouter,
-): TE => {
+type SubstituteArgs<
+  T extends TranslationEntry,
+  D extends TranslationDictionary,
+> = {
+  translation: T
+  variables?: TranslationVariables<D[keyof D]>
+  router?: NextRouter
+}
+
+const substitute = <
+  T extends TranslationEntry = TranslationEntry,
+  D extends TranslationDictionary = TranslationDictionary,
+>({
+  translation,
+  variables,
+  router,
+}: SubstituteArgs<T, D>): T => {
   if (isArrayTranslation(translation)) {
     return translation.map((t) =>
-      // @ts-ignore: TODO: fix infinite recursion
-      substitute(t, variables, router),
-    ) as TE
+      substitute({ translation: t, variables, router }),
+    ) as typeof translation
   }
   if (isObjectTranslation(translation)) {
     const substituteObject = {} as typeof translation
 
     for (const key of Object.keys(translation)) {
-      substituteObject[key] = substitute(
-        translation[key],
+      substituteObject[key] = substitute({
+        translation: translation[key],
         variables,
         router,
-      ) as TE
+      })
     }
     return substituteObject
   }
@@ -202,10 +209,10 @@ const substitute = <TE extends TranslationEntry>(
         `WARNING: no router given to translator - needed to access query parameters in ${translation}`,
       )
     }
-    keyGroups?.forEach((g: string) => {
-      const key = g.slice(2, g.length - 2)
+    for (const group of keyGroups) {
+      const key = group.slice(2, group.length - 2)
       const replaceRegExp = new RegExp(`\\[\\[${key}\\]\\]`, "g")
-      const queryParam = router?.query?.[key] ?? "..."
+      const queryParam = router?.query?.[key]
 
       if (!queryParam) {
         console.warn(
@@ -215,9 +222,9 @@ const substitute = <TE extends TranslationEntry>(
 
       ret = ret.replace(
         replaceRegExp,
-        Array.isArray(queryParam) ? queryParam[0] : queryParam,
+        (Array.isArray(queryParam) ? queryParam[0] : queryParam) ?? "...",
       ) as typeof translation
-    })
+    }
   }
 
   if (!variables && replaceGroups) {
@@ -227,11 +234,11 @@ const substitute = <TE extends TranslationEntry>(
     return ret
   }
 
-  ;(replaceGroups ?? []).forEach((g: string) => {
-    const key = g.slice(2, g.length - 2)
+  for (const group of replaceGroups ?? []) {
+    const key = group.slice(2, group.length - 2)
     const variable = variables?.[key]
 
-    if (variable === null || typeof variable === "undefined") {
+    if (!isDefined(variable)) {
       console.warn(
         `WARNING: no variable present for translation string "${translation}" and key "${key}"`,
       )
@@ -239,7 +246,7 @@ const substitute = <TE extends TranslationEntry>(
       const replaceRegExp = new RegExp(`{{${key}}}`, "g")
       ret = ret.replace(replaceRegExp, `${variable}`) as typeof translation
     }
-  })
+  }
 
   return ret
 }
@@ -257,7 +264,7 @@ const _combineDictionaries = <
 ): TranslationDictionary<T & U & V> => {
   const combined: TranslationDictionary<T & U & V> = {}
 
-  for (const dict of dicts.filter(notEmpty)) {
+  for (const dict of dicts.filter(isDefinedAndNotEmpty)) {
     for (const lang of Object.keys(dict)) {
       combined[lang] = Object.assign(combined[lang] ?? {}, dict[lang] ?? {})
     }

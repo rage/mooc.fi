@@ -7,8 +7,8 @@ import SignOut from "@fortawesome/fontawesome-free/svgs/solid/right-from-bracket
 import User from "@fortawesome/fontawesome-free/svgs/solid/user.svg?icon"
 import {
   Button,
-  ButtonProps,
   EnhancedButton,
+  EnhancedButtonProps,
   SvgIconProps,
   useMediaQuery,
 } from "@mui/material"
@@ -55,6 +55,11 @@ const NavigationLinksWrapper = styled("div")(
 `,
 )
 
+interface MenuButtonProps {
+  Icon?: React.FunctionComponent<SvgIconProps>
+  narrow?: boolean
+}
+
 const MenuButtonBase = styled(Button)`
   display: flex;
   max-height: 8vh;
@@ -65,12 +70,7 @@ const MenuButtonBase = styled(Button)`
   overflow: hidden;
   word-wrap: break-word;
   overflow-wrap: normal;
-` as EnhancedButton<"button", MenuButtonProps>
-
-interface MenuButtonProps {
-  Icon?: React.FunctionComponent<SvgIconProps>
-  narrow?: boolean
-}
+` as EnhancedButton
 
 const MenuButton = React.memo(
   ({
@@ -78,7 +78,7 @@ const MenuButton = React.memo(
     narrow,
     children,
     ...props
-  }: React.PropsWithChildren<MenuButtonProps & ButtonProps>) => {
+  }: React.PropsWithChildren<MenuButtonProps & EnhancedButtonProps>) => {
     return (
       <MenuButtonBase {...props}>
         {Icon && <Icon fontSize="small" />}

@@ -17,11 +17,12 @@ import CourseStatusBadge from "./CourseStatusBadge"
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import CourseImage from "/components/CourseImage"
 import { CardTitle } from "/components/Text/headers"
+import { useFilterContext } from "/contexts/FilterContext"
 import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/courses"
 import { formatDateTime } from "/util/dataFormatFunctions"
 
-import { CourseStatus, EditorCourseFieldsFragment } from "/graphql/generated"
+import { EditorCourseFieldsFragment } from "/graphql/generated"
 
 const CardBase = styled("div", {
   shouldForwardProp: (prop) => prop !== "isHidden",
@@ -176,15 +177,14 @@ const CourseInfo = ({
     {children}
   </CourseInfoLine>
 )
-
 interface CourseCardProps {
   course?: EditorCourseFieldsFragment
   loading?: boolean
-  onClickStatus?: (value: CourseStatus | null) => (_: any) => void
 }
 
-const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
+const CourseCard = ({ course, loading }: CourseCardProps) => {
   const t = useTranslator(CoursesTranslations)
+  const { onStatusClick } = useFilterContext()
   const courseFound = !loading && !!course
   const courseNotFound = !course && !loading
 
@@ -212,10 +212,8 @@ const CourseCard = ({ course, loading, onClickStatus }: CourseCardProps) => {
                 {course.name}
                 <CourseStatusBadge
                   status={course?.status}
-                  clickable={Boolean(onClickStatus)}
-                  onClick={
-                    onClickStatus ? onClickStatus(course?.status) : undefined
-                  }
+                  clickable={Boolean(onStatusClick)}
+                  onClick={onStatusClick?.(course?.status)}
                 />
               </CourseTitleBadgeContainer>
             )}

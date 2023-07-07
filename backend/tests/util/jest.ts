@@ -1,8 +1,8 @@
 import { toMatchSnapshot, type Context } from "jest-snapshot"
-import { find, omit } from "lodash"
+import { find, omit, orderBy } from "lodash"
 import { DateTime } from "luxon"
 
-import { isNullOrUndefined } from "../../util/isNullOrUndefined"
+import { isNullish } from "../../util"
 
 export const ID_REGEX = new RegExp(
   /[a-f\d]{8}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{12}/,
@@ -30,7 +30,7 @@ export function stripDates<T>(obj: undefined): undefined
 export function stripDates<T>(
   obj?: T | null,
 ): Omit<T, "created_at" | "updated_at"> | null | undefined {
-  if (!isObject(obj) || isNullOrUndefined(obj)) {
+  if (!isObject(obj) || isNullish(obj)) {
     return obj
   }
 
@@ -113,7 +113,7 @@ export function stripFields<
     ) as unknown as DeepOmit<T, Fields[number]>
   }
 
-  if (!isObject(obj) || isNullOrUndefined(obj)) {
+  if (!isObject(obj) || isNullish(obj)) {
     return obj as DeepOmit<T, Fields[number]>
   }
   const ret = {} as DeepOmit<T, Fields[number]>
@@ -249,7 +249,7 @@ export function idsToExpect<
   options: StrippedSnapshotFinalOptions<T> = {} as StrippedSnapshotFinalOptions<T>,
   path = "" as Path<T>,
 ): Partial<U> {
-  if (!isObject(obj) || Array.isArray(obj) || isNullOrUndefined(obj)) {
+  if (!isObject(obj) || Array.isArray(obj) || isNullish(obj)) {
     return propertyMatchers
   }
 
@@ -418,6 +418,65 @@ function toMatchStrippedSnapshot<
 expect.extend({
   toMatchStrippedSnapshot,
 })
+
+const ORDER_ROOT = "__root"
+type OrderRecord<T> = (T extends (infer E)[]
+  ? { [key in keyof E]?: string | Array<string> }
+  : { [key in keyof T]?: string | Array<string> }) & {
+  [ORDER_ROOT]?: string | Array<string>
+}
+
+export function orderedSnapshot<T extends Record<string, any>>(
+  data: T,
+  order?: OrderRecord<T>,
+): T
+export function orderedSnapshot<T extends Record<string, any>>(
+  data: Array<T>,
+  order?: OrderRecord<T>,
+): Array<T>
+export function orderedSnapshot<T extends Record<string, any>>(
+  data: T | Array<T>,
+  order: OrderRecord<T> = {} as OrderRecord<T>,
+) {
+  if (Array.isArray(data)) {
+    return orderBy(
+      data.map((v) => orderedSnapshot(v, order), order[ORDER_ROOT] ?? "id"),
+    )
+  }
+
+  return Object.entries(data).reduce((acc, [key, value]) => {
+    if (Array.isArray(value)) {
+      return {
+        ...acc,
+        [key]: orderBy(
+          value.map((v) => orderedSnapshot(v, order)),
+          order[key] ?? "id",
+        ),
+      }
+    }
+
+    // don't order class instances such as Date
+    if (
+      typeof value === "object" &&
+      value !== null &&
+      !isClassInstance(value)
+    ) {
+      return {
+        ...acc,
+        [key]: orderedSnapshot(value, order),
+      }
+    }
+
+    return {
+      ...acc,
+      [key]: value,
+    }
+  }, {} as T)
+}
+
+function isClassInstance(obj: object) {
+  return obj.constructor && obj.constructor.name !== "Object"
+}
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace

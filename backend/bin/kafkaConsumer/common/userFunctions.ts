@@ -12,7 +12,11 @@ import {
 } from "../../../config/languageConfig"
 import { BaseContext } from "../../../context"
 import { DatabaseInputError } from "../../../lib/errors"
-import { isNullOrUndefined } from "../../../util/isNullOrUndefined"
+import {
+  emptyOrNullToUndefined,
+  ensureDefinedArray,
+  isNullish,
+} from "../../../util"
 import { MessageType, pushMessageToClient } from "../../../wsServer"
 import {
   ExerciseCompletionPart,
@@ -56,7 +60,7 @@ export const getCombinedUserCourseProgress = async ({
 
   const combined = new CombinedUserCourseProgress()
   progresses.forEach((entry) => {
-    const entries = Array.isArray(entry) ? entry : [entry]
+    const entries = ensureDefinedArray(entry)
 
     entries.forEach((p: ServiceProgressPartType) => {
       combined.addProgress(p)
@@ -106,10 +110,14 @@ export const getExerciseCompletionsForCourses = async ({
 }: GetExerciseCompletionsForCoursesArgs) => {
   // picks only one exercise completion per exercise/user:
   // the one with the latest timestamp and latest updated_at
-  const exercise_completions: ExerciseCompletionPart[] = await knex(
-    "exercise_completion as ec",
-  )
-    .select("course_id", "custom_id", "max_points", "exercise_id", "n_points")
+  const exercise_completions = await knex("exercise_completion as ec")
+    .select<Array<ExerciseCompletionPart>>(
+      "course_id",
+      "custom_id",
+      "max_points",
+      "exercise_id",
+      "n_points",
+    )
     .distinctOn("ec.exercise_id")
     .join("exercise as e", { "ec.exercise_id": "e.id" })
     .where("ec.user_id", user.id)
@@ -173,9 +181,7 @@ export const pruneDuplicateExerciseCompletions = async ({
     .returning("id")*/
 
   // we probably can just delete all even if they have required actions
-  const deleted: Array<Pick<ExerciseCompletion, "id">> = await knex(
-    "exercise_completion",
-  )
+  const deleted = await knex("exercise_completion")
     .whereIn(
       "id",
       knex
@@ -202,7 +208,7 @@ export const pruneDuplicateExerciseCompletions = async ({
       //.andWhere("action_count", "=", 0),
     )
     .delete()
-    .returning("id")
+    .returning<Array<Pick<ExerciseCompletion, "id">>>("id")
 
   return deleted
 }
@@ -210,11 +216,10 @@ export const pruneDuplicateExerciseCompletions = async ({
 export const pruneOrphanedExerciseCompletionRequiredActions = async ({
   context: { knex },
 }: WithBaseContext) => {
-  const deleted: Array<Pick<ExerciseCompletionRequiredAction, "id">> =
-    await knex("exercise_completion_required_actions")
-      .whereNull("exercise_completion_id")
-      .delete()
-      .returning("id")
+  const deleted = await knex("exercise_completion_required_actions")
+    .whereNull("exercise_completion_id")
+    .delete()
+    .returning<Array<Pick<ExerciseCompletionRequiredAction, "id">>>("id")
 
   return deleted
 }
@@ -325,7 +330,7 @@ export const createCompletion = async ({
             ? false
             : handlerCourse.automatic_completions_eligible_for_ects,
         completion_date: new Date(),
-        tier: !isNullOrUndefined(tier) ? tier : undefined,
+        tier: emptyOrNullToUndefined(tier),
       },
     })
 
@@ -352,7 +357,7 @@ export const createCompletion = async ({
         },
       })
     }
-  } else if (!isNullOrUndefined(tier)) {
+  } else if (!isNullish(tier)) {
     // TODO: prune extra completions here?
     const eligible_for_ects =
       tier === 1 ? false : handlerCourse.automatic_completions_eligible_for_ects

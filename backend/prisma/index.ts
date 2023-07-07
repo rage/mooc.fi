@@ -38,4 +38,9 @@ if (isDev) {
 }
 
 export type ExtendedPrismaClient = ReturnType<typeof createPrismaClient>
+export type ExtendedTransactionClient = Omit<
+  ExtendedPrismaClient,
+  "$extends" | "$transaction" | "$disconnect" | "$connect" | "$on" | "$use"
+>
+
 export default prisma

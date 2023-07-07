@@ -1,8 +1,10 @@
 import { EmailDelivery } from "@prisma/client"
 
+import { isProduction } from "../config"
 import { EmailTemplaterError } from "../lib/errors"
 import sentryLogger from "../lib/logger"
 import prisma from "../prisma"
+import { emptyOrNullToUndefined } from "../util"
 import { sendEmailTemplateToUser } from "./kafkaConsumer/common/EmailTemplater/sendEmailTemplate"
 
 const BATCH_SIZE = 100
@@ -10,21 +12,17 @@ const BATCH_SIZE = 100
 const logger = sentryLogger({ service: "background-emailer" })
 
 const sendEmail = async (emailDelivery: EmailDelivery) => {
-  const { user, email_template } =
+  const { user, email_template, organization } =
     (await prisma.emailDelivery.findUnique({
       where: { id: emailDelivery.id },
       select: {
         user: true,
+        organization: true,
         email_template: true,
       },
     })) ?? {}
+
   if (!email_template || !user) {
-    logger.error(
-      new EmailTemplaterError(
-        "No email template or user found while sending email",
-        { email_template, user_id: user?.id },
-      ),
-    )
     await prisma.emailDelivery.update({
       where: { id: emailDelivery.id },
       data: {
@@ -33,14 +31,32 @@ const sendEmail = async (emailDelivery: EmailDelivery) => {
       },
     })
 
+    logger.error(
+      new EmailTemplaterError(
+        "No email template or user found while sending email",
+        { email_template, user_id: user?.id },
+      ),
+    )
+
     return
   }
 
-  logger.info(`Delivering email ${email_template.name} to ${user.email}`)
+  const email = emailDelivery.email ?? user.email
+
+  logger.info(
+    `Delivering email "${email_template.name}" to ${email} (user upstream_id ${user.upstream_id})`,
+  )
 
   try {
-    await sendEmailTemplateToUser(user, email_template)
+    await sendEmailTemplateToUser({
+      user,
+      template: email_template,
+      email,
+      organization: emptyOrNullToUndefined(organization),
+      context: { prisma, logger, test: !isProduction },
+    })
     logger.info("Marking email as delivered")
+
     await prisma.emailDelivery.update({
       where: { id: emailDelivery.id },
       data: {
@@ -49,13 +65,6 @@ const sendEmail = async (emailDelivery: EmailDelivery) => {
       },
     })
   } catch (e: any) {
-    logger.error(
-      new EmailTemplaterError(
-        "Sending failed",
-        { user_id: user.id, email_template },
-        e,
-      ),
-    )
     await prisma.emailDelivery.update({
       where: { id: emailDelivery.id },
       data: {
@@ -63,6 +72,13 @@ const sendEmail = async (emailDelivery: EmailDelivery) => {
         error_message: e.message,
       },
     })
+    logger.error(
+      new EmailTemplaterError(
+        "Sending failed",
+        { user_id: user.id, email_template },
+        e,
+      ),
+    )
   }
 }
 

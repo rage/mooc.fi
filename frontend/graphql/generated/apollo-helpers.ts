@@ -403,28 +403,38 @@ export type CourseVariantFieldPolicy = {
 }
 export type EmailDeliveryKeySpecifier = (
   | "created_at"
+  | "email"
   | "email_template"
   | "email_template_id"
   | "error"
   | "error_message"
   | "id"
+  | "organization"
+  | "organization_id"
   | "sent"
   | "updated_at"
   | "user"
   | "user_id"
+  | "user_organization_join_confirmation"
   | EmailDeliveryKeySpecifier
 )[]
 export type EmailDeliveryFieldPolicy = {
   created_at?: FieldPolicy<any> | FieldReadFunction<any>
+  email?: FieldPolicy<any> | FieldReadFunction<any>
   email_template?: FieldPolicy<any> | FieldReadFunction<any>
   email_template_id?: FieldPolicy<any> | FieldReadFunction<any>
   error?: FieldPolicy<any> | FieldReadFunction<any>
   error_message?: FieldPolicy<any> | FieldReadFunction<any>
   id?: FieldPolicy<any> | FieldReadFunction<any>
+  organization?: FieldPolicy<any> | FieldReadFunction<any>
+  organization_id?: FieldPolicy<any> | FieldReadFunction<any>
   sent?: FieldPolicy<any> | FieldReadFunction<any>
   updated_at?: FieldPolicy<any> | FieldReadFunction<any>
   user?: FieldPolicy<any> | FieldReadFunction<any>
   user_id?: FieldPolicy<any> | FieldReadFunction<any>
+  user_organization_join_confirmation?:
+    | FieldPolicy<any>
+    | FieldReadFunction<any>
 }
 export type EmailTemplateKeySpecifier = (
   | "course_instance_language"
@@ -435,6 +445,7 @@ export type EmailTemplateKeySpecifier = (
   | "exercise_completions_threshold"
   | "html_body"
   | "id"
+  | "joined_organizations"
   | "name"
   | "points_threshold"
   | "template_type"
@@ -453,6 +464,7 @@ export type EmailTemplateFieldPolicy = {
   exercise_completions_threshold?: FieldPolicy<any> | FieldReadFunction<any>
   html_body?: FieldPolicy<any> | FieldReadFunction<any>
   id?: FieldPolicy<any> | FieldReadFunction<any>
+  joined_organizations?: FieldPolicy<any> | FieldReadFunction<any>
   name?: FieldPolicy<any> | FieldReadFunction<any>
   points_threshold?: FieldPolicy<any> | FieldReadFunction<any>
   template_type?: FieldPolicy<any> | FieldReadFunction<any>
@@ -614,6 +626,7 @@ export type MutationKeySpecifier = (
   | "addUserCourseServiceProgress"
   | "addUserOrganization"
   | "addVerifiedUser"
+  | "confirmUserOrganizationJoin"
   | "createCourseStatsSubscription"
   | "createRegistrationAttemptDate"
   | "createSponsor"
@@ -636,6 +649,7 @@ export type MutationKeySpecifier = (
   | "deleteUserOrganization"
   | "recheckCompletions"
   | "registerCompletion"
+  | "requestNewUserOrganizationJoinConfirmation"
   | "updateAbEnrollment"
   | "updateAbStudy"
   | "updateCourse"
@@ -643,6 +657,7 @@ export type MutationKeySpecifier = (
   | "updateCourseVariant"
   | "updateEmailTemplate"
   | "updateOpenUniversityRegistrationLink"
+  | "updateOrganizationEmailTemplate"
   | "updateResearchConsent"
   | "updateService"
   | "updateSponsor"
@@ -651,8 +666,10 @@ export type MutationKeySpecifier = (
   | "updateTag"
   | "updateTagTranslation"
   | "updateTagType"
+  | "updateUser"
   | "updateUserName"
-  | "updateUserOrganization"
+  | "updateUserOrganizationConsent"
+  | "updateUserOrganizationOrganizationalMail"
   | MutationKeySpecifier
 )[]
 export type MutationFieldPolicy = {
@@ -679,6 +696,7 @@ export type MutationFieldPolicy = {
   addUserCourseServiceProgress?: FieldPolicy<any> | FieldReadFunction<any>
   addUserOrganization?: FieldPolicy<any> | FieldReadFunction<any>
   addVerifiedUser?: FieldPolicy<any> | FieldReadFunction<any>
+  confirmUserOrganizationJoin?: FieldPolicy<any> | FieldReadFunction<any>
   createCourseStatsSubscription?: FieldPolicy<any> | FieldReadFunction<any>
   createRegistrationAttemptDate?: FieldPolicy<any> | FieldReadFunction<any>
   createSponsor?: FieldPolicy<any> | FieldReadFunction<any>
@@ -701,6 +719,9 @@ export type MutationFieldPolicy = {
   deleteUserOrganization?: FieldPolicy<any> | FieldReadFunction<any>
   recheckCompletions?: FieldPolicy<any> | FieldReadFunction<any>
   registerCompletion?: FieldPolicy<any> | FieldReadFunction<any>
+  requestNewUserOrganizationJoinConfirmation?:
+    | FieldPolicy<any>
+    | FieldReadFunction<any>
   updateAbEnrollment?: FieldPolicy<any> | FieldReadFunction<any>
   updateAbStudy?: FieldPolicy<any> | FieldReadFunction<any>
   updateCourse?: FieldPolicy<any> | FieldReadFunction<any>
@@ -710,6 +731,7 @@ export type MutationFieldPolicy = {
   updateOpenUniversityRegistrationLink?:
     | FieldPolicy<any>
     | FieldReadFunction<any>
+  updateOrganizationEmailTemplate?: FieldPolicy<any> | FieldReadFunction<any>
   updateResearchConsent?: FieldPolicy<any> | FieldReadFunction<any>
   updateService?: FieldPolicy<any> | FieldReadFunction<any>
   updateSponsor?: FieldPolicy<any> | FieldReadFunction<any>
@@ -718,8 +740,12 @@ export type MutationFieldPolicy = {
   updateTag?: FieldPolicy<any> | FieldReadFunction<any>
   updateTagTranslation?: FieldPolicy<any> | FieldReadFunction<any>
   updateTagType?: FieldPolicy<any> | FieldReadFunction<any>
+  updateUser?: FieldPolicy<any> | FieldReadFunction<any>
   updateUserName?: FieldPolicy<any> | FieldReadFunction<any>
-  updateUserOrganization?: FieldPolicy<any> | FieldReadFunction<any>
+  updateUserOrganizationConsent?: FieldPolicy<any> | FieldReadFunction<any>
+  updateUserOrganizationOrganizationalMail?:
+    | FieldPolicy<any>
+    | FieldReadFunction<any>
 }
 export type OpenUniversityRegistrationLinkKeySpecifier = (
   | "course"
@@ -762,6 +788,8 @@ export type OrganizationKeySpecifier = (
   | "hidden"
   | "id"
   | "information"
+  | "join_organization_email_template"
+  | "join_organization_email_template_id"
   | "logo_content_type"
   | "logo_file_name"
   | "logo_file_size"
@@ -770,6 +798,8 @@ export type OrganizationKeySpecifier = (
   | "organization_translations"
   | "phone"
   | "pinned"
+  | "required_confirmation"
+  | "required_organization_email"
   | "slug"
   | "tmc_created_at"
   | "tmc_updated_at"
@@ -795,6 +825,10 @@ export type OrganizationFieldPolicy = {
   hidden?: FieldPolicy<any> | FieldReadFunction<any>
   id?: FieldPolicy<any> | FieldReadFunction<any>
   information?: FieldPolicy<any> | FieldReadFunction<any>
+  join_organization_email_template?: FieldPolicy<any> | FieldReadFunction<any>
+  join_organization_email_template_id?:
+    | FieldPolicy<any>
+    | FieldReadFunction<any>
   logo_content_type?: FieldPolicy<any> | FieldReadFunction<any>
   logo_file_name?: FieldPolicy<any> | FieldReadFunction<any>
   logo_file_size?: FieldPolicy<any> | FieldReadFunction<any>
@@ -803,6 +837,8 @@ export type OrganizationFieldPolicy = {
   organization_translations?: FieldPolicy<any> | FieldReadFunction<any>
   phone?: FieldPolicy<any> | FieldReadFunction<any>
   pinned?: FieldPolicy<any> | FieldReadFunction<any>
+  required_confirmation?: FieldPolicy<any> | FieldReadFunction<any>
+  required_organization_email?: FieldPolicy<any> | FieldReadFunction<any>
   slug?: FieldPolicy<any> | FieldReadFunction<any>
   tmc_created_at?: FieldPolicy<any> | FieldReadFunction<any>
   tmc_updated_at?: FieldPolicy<any> | FieldReadFunction<any>
@@ -953,6 +989,7 @@ export type QueryKeySpecifier = (
   | "userCourseSettingCount"
   | "userCourseSettings"
   | "userDetailsContains"
+  | "userOrganizationJoinConfirmation"
   | "userOrganizations"
   | "users"
   | QueryKeySpecifier
@@ -1000,6 +1037,7 @@ export type QueryFieldPolicy = {
   userCourseSettingCount?: FieldPolicy<any> | FieldReadFunction<any>
   userCourseSettings?: FieldPolicy<any> | FieldReadFunction<any>
   userDetailsContains?: FieldPolicy<any> | FieldReadFunction<any>
+  userOrganizationJoinConfirmation?: FieldPolicy<any> | FieldReadFunction<any>
   userOrganizations?: FieldPolicy<any> | FieldReadFunction<any>
   users?: FieldPolicy<any> | FieldReadFunction<any>
 }
@@ -1569,25 +1607,72 @@ export type UserEdgeFieldPolicy = {
   node?: FieldPolicy<any> | FieldReadFunction<any>
 }
 export type UserOrganizationKeySpecifier = (
+  | "confirmed"
+  | "confirmed_at"
+  | "consented"
   | "created_at"
   | "id"
   | "organization"
   | "organization_id"
+  | "organizational_email"
+  | "organizational_identifier"
   | "role"
   | "updated_at"
   | "user"
   | "user_id"
+  | "user_organization_join_confirmations"
   | UserOrganizationKeySpecifier
 )[]
 export type UserOrganizationFieldPolicy = {
+  confirmed?: FieldPolicy<any> | FieldReadFunction<any>
+  confirmed_at?: FieldPolicy<any> | FieldReadFunction<any>
+  consented?: FieldPolicy<any> | FieldReadFunction<any>
   created_at?: FieldPolicy<any> | FieldReadFunction<any>
   id?: FieldPolicy<any> | FieldReadFunction<any>
   organization?: FieldPolicy<any> | FieldReadFunction<any>
   organization_id?: FieldPolicy<any> | FieldReadFunction<any>
+  organizational_email?: FieldPolicy<any> | FieldReadFunction<any>
+  organizational_identifier?: FieldPolicy<any> | FieldReadFunction<any>
   role?: FieldPolicy<any> | FieldReadFunction<any>
   updated_at?: FieldPolicy<any> | FieldReadFunction<any>
   user?: FieldPolicy<any> | FieldReadFunction<any>
   user_id?: FieldPolicy<any> | FieldReadFunction<any>
+  user_organization_join_confirmations?:
+    | FieldPolicy<any>
+    | FieldReadFunction<any>
+}
+export type UserOrganizationJoinConfirmationKeySpecifier = (
+  | "confirmed"
+  | "confirmed_at"
+  | "created_at"
+  | "email"
+  | "email_delivery"
+  | "email_delivery_id"
+  | "expired"
+  | "expires_at"
+  | "id"
+  | "language"
+  | "redirect"
+  | "updated_at"
+  | "user_organization"
+  | "user_organization_id"
+  | UserOrganizationJoinConfirmationKeySpecifier
+)[]
+export type UserOrganizationJoinConfirmationFieldPolicy = {
+  confirmed?: FieldPolicy<any> | FieldReadFunction<any>
+  confirmed_at?: FieldPolicy<any> | FieldReadFunction<any>
+  created_at?: FieldPolicy<any> | FieldReadFunction<any>
+  email?: FieldPolicy<any> | FieldReadFunction<any>
+  email_delivery?: FieldPolicy<any> | FieldReadFunction<any>
+  email_delivery_id?: FieldPolicy<any> | FieldReadFunction<any>
+  expired?: FieldPolicy<any> | FieldReadFunction<any>
+  expires_at?: FieldPolicy<any> | FieldReadFunction<any>
+  id?: FieldPolicy<any> | FieldReadFunction<any>
+  language?: FieldPolicy<any> | FieldReadFunction<any>
+  redirect?: FieldPolicy<any> | FieldReadFunction<any>
+  updated_at?: FieldPolicy<any> | FieldReadFunction<any>
+  user_organization?: FieldPolicy<any> | FieldReadFunction<any>
+  user_organization_id?: FieldPolicy<any> | FieldReadFunction<any>
 }
 export type UserSearchKeySpecifier = (
   | "allMatchIds"
@@ -2039,6 +2124,16 @@ export type StrictTypedTypePolicies = {
       | UserOrganizationKeySpecifier
       | (() => undefined | UserOrganizationKeySpecifier)
     fields?: UserOrganizationFieldPolicy
+  }
+  UserOrganizationJoinConfirmation?: Omit<
+    TypePolicy,
+    "fields" | "keyFields"
+  > & {
+    keyFields?:
+      | false
+      | UserOrganizationJoinConfirmationKeySpecifier
+      | (() => undefined | UserOrganizationJoinConfirmationKeySpecifier)
+    fields?: UserOrganizationJoinConfirmationFieldPolicy
   }
   UserSearch?: Omit<TypePolicy, "fields" | "keyFields"> & {
     keyFields?:

@@ -1,8 +1,11 @@
+import { useMemo } from "react"
+
 import {
   useUserPointsSummaryContext,
   useUserPointsSummaryFunctionsContext,
 } from "./contexts"
 import FilterMenu from "/components/FilterMenu"
+import { FilterContext } from "/contexts/FilterContext"
 import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
 import ProfileTranslations from "/translations/profile"
@@ -18,18 +21,26 @@ const CourseFilterMenu = () => {
   const { loading, searchVariables } = useUserPointsSummaryContext()
   const { setSearchVariables } = useUserPointsSummaryFunctionsContext()
 
+  const value = useMemo(
+    () => ({
+      loading: loading ?? false,
+      searchVariables,
+      setSearchVariables,
+    }),
+    [loading, searchVariables, setSearchVariables],
+  )
+
   return (
-    <FilterMenu
-      searchVariables={searchVariables}
-      setSearchVariables={setSearchVariables}
-      loading={loading ?? true}
-      label={t("searchInCourses")}
-      fields={{
-        hidden: false,
-        status: false,
-        handler: false,
-      }}
-    />
+    <FilterContext.Provider value={value}>
+      <FilterMenu
+        label={t("searchInCourses")}
+        fields={{
+          hidden: false,
+          status: false,
+          handler: false,
+        }}
+      />
+    </FilterContext.Provider>
   )
 }
 

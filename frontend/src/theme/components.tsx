@@ -1,4 +1,11 @@
-import { ButtonBaseProps, MenuItemProps } from "@mui/material"
+import {
+  ButtonBaseProps,
+  ButtonProps,
+  FormControlProps,
+  LinkProps,
+  MenuItemProps,
+  TextFieldProps,
+} from "@mui/material"
 import { createTheme, Theme } from "@mui/material/styles"
 
 import { headerFontDeclaration } from "./typography"
@@ -10,19 +17,19 @@ export const withComponents = (theme: Theme) =>
       MuiLink: {
         defaultProps: {
           component: LinkBehavior,
-        },
+        } as LinkProps,
       },
       MuiTextField: {
         defaultProps: {
           variant: "outlined",
           fullWidth: true,
-        },
+        } as TextFieldProps,
       },
       MuiFormControl: {
         defaultProps: {
           variant: "outlined",
           fullWidth: true,
-        },
+        } as FormControlProps,
         styleOverrides: {
           root: {
             margin: "", // invalid style actually, but anything else would override the text field in forms
@@ -32,18 +39,19 @@ export const withComponents = (theme: Theme) =>
       MuiButtonBase: {
         defaultProps: {
           LinkComponent: LinkBehavior,
-        },
-      } as ButtonBaseProps,
+        } as ButtonBaseProps,
+      },
       MuiMenuItem: {
         defaultProps: {
           LinkComponent: LinkBehavior,
-        },
-      } as MenuItemProps,
+        } as MenuItemProps,
+      },
       MuiButton: {
         defaultProps: {
           variant: "contained",
           color: "primary",
-        },
+          LinkComponent: LinkBehavior,
+        } as ButtonProps,
         styleOverrides: {
           root: {
             textTransform: "none",

@@ -9,7 +9,7 @@ import { SummaryCard } from "/components/Dashboard/Users/Summary/common"
 import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
 import { formatDateTime } from "/util/dataFormatFunctions"
-import notEmpty from "/util/notEmpty"
+import { isDefinedAndNotEmpty } from "/util/guards"
 
 import {
   UserCourseSummaryCoreFieldsFragment,
@@ -71,9 +71,11 @@ function Milestones({ data }: MilestonesProps) {
   const exerciseCompletions = isTieredCourse
     ? data?.tier_summaries
         ?.flatMap((ts) => ts.exercise_completions)
-        .filter(notEmpty)
+        .filter(isDefinedAndNotEmpty)
         .filter((ec) => ec.attempted)
-    : data?.exercise_completions?.filter(notEmpty).filter((ec) => ec.attempted)
+    : data?.exercise_completions
+        ?.filter(isDefinedAndNotEmpty)
+        .filter((ec) => ec.attempted)
   const firstExerciseDate = minBy(
     exerciseCompletions ?? [],
     (ec) => ec.created_at,

@@ -5,7 +5,7 @@ import { omit } from "remeda"
 import { initialValues } from "./form-validation"
 import { CourseFormValues, CourseTranslationFormValues } from "./types"
 import { filterNullRecursive } from "/util/filterNull"
-import notEmpty from "/util/notEmpty"
+import { isDefinedAndNotEmpty } from "/util/guards"
 
 import {
   CourseCreateArg,
@@ -242,12 +242,12 @@ export const fromCourseForm = ({
           "",
       }
     })
-    .filter(notEmpty) as
+    .filter(isDefinedAndNotEmpty) as
     | CourseCreateArg["open_university_registration_links"]
     | CourseUpsertArg["open_university_registration_links"]
 
   const study_modules = (values.study_modules ?? [])
-    .filter(notEmpty)
+    .filter(isDefinedAndNotEmpty)
     .map((id) => ({ id })) as
     | CourseCreateArg["study_modules"]
     | CourseUpsertArg["study_modules"]

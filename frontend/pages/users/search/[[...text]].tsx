@@ -15,8 +15,7 @@ import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useSearch } from "/hooks/useSearch"
 import withAdmin from "/lib/with-admin"
-import { notEmptyOrEmptyString } from "/util/guards"
-import notEmpty from "/util/notEmpty"
+import { isDefinedAndNotEmpty } from "/util/guards"
 
 import {
   UserSearchDocument,
@@ -41,7 +40,7 @@ const UserSearch = () => {
   const fieldsParam = useQueryParameter("fields", {
     enforce: false,
     array: true,
-  }).filter(notEmptyOrEmptyString) as Array<UserSearchField>
+  }).filter(isDefinedAndNotEmpty) as Array<UserSearchField>
   const isSearching = useRef(false)
   const prevSearch = useRef("")
   const prevFields = useRef<Array<UserSearchField> | undefined>(fieldsParam)
@@ -83,7 +82,7 @@ const UserSearch = () => {
 
       if (
         data.data &&
-        notEmpty(data.data.userSearch) &&
+        isDefinedAndNotEmpty(data.data.userSearch) &&
         data.data.userSearch.search === searchVariables.search
       ) {
         setResults((prev) => {

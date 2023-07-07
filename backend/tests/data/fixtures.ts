@@ -53,7 +53,7 @@ export const adminUserDetails = {
 export const thirdUserDetails: UserInfo = {
   id: 3,
   administrator: false,
-  email: "third@mail.com",
+  email: "third@organization.fi",
   user_field: {
     first_name: "first",
     last_name: "last",
@@ -61,16 +61,53 @@ export const thirdUserDetails: UserInfo = {
     html1: "",
     organizational_id: "",
   },
-  username: "third_user",
+  username: "third_user_with_organization",
   extra_fields: {},
 }
+
+export const emailTemplateOrganizations: Prisma.EmailTemplateCreateInput[] = [
+  {
+    id: "48383100000000000000000000000101",
+    name: "organization join email",
+    title: "organization join email",
+    txt_body:
+      "You're joining organization {{ organization_name }}. Click this to confirm: {{ organization_activation_link }}",
+    template_type: "join-organization",
+  },
+]
 
 export const organizations: Prisma.OrganizationCreateInput[] = [
   {
     id: "10000000000000000000000000000102",
+    name: "test organization 1",
     secret_key: "kissa",
     slug: "test",
-    name: "test organization",
+    required_confirmation: true,
+    required_organization_email: "organization.fi$",
+    join_organization_email_template: {
+      connect: { id: "48383100000000000000000000000101" },
+    },
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
+  },
+  {
+    id: "10000000000000000000000000000103",
+    name: "test organization 2",
+    secret_key: "koira",
+    slug: "test2",
+    required_confirmation: false,
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
+  },
+  {
+    id: "10000000000000000000000000000104",
+    name: "test organization 3",
+    secret_key: "joku_kolmas_eläin",
+    slug: "test3",
+    required_confirmation: true,
+    join_organization_email_template: {
+      connect: { id: "48383100000000000000000000000101" },
+    },
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
   },
@@ -130,8 +167,8 @@ export const courses: Prisma.CourseCreateInput[] = [
     id: "00000000000000000000000000000002",
     name: "course1",
     slug: "course1",
-    start_date: "01/01/1900",
-    end_date: "12/31/2100",
+    start_date: "1900-01-01T02:00:00.00+02:00",
+    end_date: "2100-12-31T02:00:00.00+02:00",
     teacher_in_charge_email: "e@mail.com",
     teacher_in_charge_name: "teacher1",
     tags: {
@@ -195,8 +232,8 @@ export const courses: Prisma.CourseCreateInput[] = [
     id: "00000000000000000000000000000001",
     name: "course2",
     slug: "course2",
-    start_date: "01/01/1900",
-    end_date: "12/31/2100",
+    start_date: "1900-01-01T02:00:00.00+02:00",
+    end_date: "2100-12-31T02:00:00.00+02:00",
     teacher_in_charge_email: "e@mail.com",
     teacher_in_charge_name: "teacher2",
     tags: {
@@ -237,8 +274,8 @@ export const courses: Prisma.CourseCreateInput[] = [
     id: "00000000-0000-0000-0000-000000000666",
     name: "handler",
     slug: "handler",
-    start_date: "01/01/1900",
-    end_date: "12/31/2100",
+    start_date: "1900-01-01T02:00:00.00+02:00",
+    end_date: "2100-12-31T02:00:00.00+02:00",
     teacher_in_charge_email: "t@mail.com",
     teacher_in_charge_name: "foo",
     hidden: false,
@@ -250,8 +287,8 @@ export const courses: Prisma.CourseCreateInput[] = [
     id: "00000000-0000-0000-0000-000000000667",
     name: "handled",
     slug: "handled",
-    start_date: "01/01/1900",
-    end_date: "12/31/2100",
+    start_date: "1900-01-01T02:00:00.00+02:00",
+    end_date: "2100-12-31T02:00:00.00+02:00",
     teacher_in_charge_email: "t@mail.com",
     teacher_in_charge_name: "foo",
     hidden: true,
@@ -267,8 +304,8 @@ export const courses: Prisma.CourseCreateInput[] = [
     id: "00000000-0000-0000-0000-000000000668",
     name: "inherits",
     slug: "inherits",
-    start_date: "01/01/1900",
-    end_date: "12/31/2100",
+    start_date: "1900-01-01T02:00:00.00+02:00",
+    end_date: "2100-12-31T02:00:00.00+02:00",
     teacher_in_charge_email: "t@mail.com",
     teacher_in_charge_name: "foo",
     hidden: true,
@@ -302,9 +339,9 @@ export const users: Prisma.UserCreateInput[] = [
   {
     id: "20000000000000000000000000000104",
     administrator: false,
-    email: "g@mail.com",
+    email: "third@organization.fi",
     upstream_id: 3,
-    username: "third_user",
+    username: "third_user_with_organization",
     created_at: "1900-01-01T10:00:00.00+02:00",
     updated_at: "1900-01-01T10:00:00.00+02:00",
   },
@@ -927,6 +964,53 @@ export const courseOwnerships: Prisma.CourseOwnershipCreateInput[] = [
     updated_at: "1900-01-01T10:00:00.00+02:00",
   },
 ]
+
+export const userOrganizations: Prisma.UserOrganizationCreateInput[] = [
+  {
+    id: "96900000000000000000000000000101",
+    user: { connect: { id: "20000000000000000000000000000102" } },
+    organization: { connect: { id: "10000000000000000000000000000103" } },
+    created_at: "1900-01-01T10:00:00.00+02:00",
+    updated_at: "1900-01-01T10:00:00.00+02:00",
+    confirmed: true,
+    consented: true,
+  },
+]
+
+export const userOrganizationJoinConfirmations: Prisma.UserOrganizationJoinConfirmationCreateInput[] =
+  [
+    {
+      id: "61300000-0000-0000-0000-000000000001",
+      user_organization: {
+        connect: { id: "96900000000000000000000000000101" },
+      },
+      /*
+      associated with:
+        user: { connect: { id: "20000000000000000000000000000102" } },
+        organization: { connect: { id: "10000000000000000000000000000103" } },
+    */
+      language: "fi",
+      email_delivery: {
+        create: {
+          id: "61400000-0000-0000-0000-000000000001",
+          email_template: {
+            connect: { id: "48383100000000000000000000000101" },
+          },
+          user: { connect: { id: "20000000000000000000000000000102" } },
+          organization: { connect: { id: "10000000000000000000000000000103" } },
+          email: "what@ever.com",
+          error: false,
+          sent: false,
+          created_at: "1900-01-01T10:00:00.00+02:00",
+          updated_at: "1900-01-01T10:00:00.00+02:00",
+        },
+      },
+      created_at: "1900-01-01T10:00:00.00+02:00",
+      updated_at: "1900-01-01T10:00:00.00+02:00",
+      confirmed: true,
+      email: "what@ever.com",
+    },
+  ]
 
 export const tagTypes: Prisma.TagTypeCreateInput[] = [
   {

@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch", "clientExtensions", "postgresqlExtensions", "extendedWhereUnique", "filteredRelationCount"]
+  previewFeatures = ["fullTextSearch", "postgresqlExtensions", "extendedWhereUnique", "jsonProtocol"]
   // , "fieldReference", 
 }
 
@@ -91,8 +91,8 @@ model Course {
   teacher_in_charge_name                  String
   teacher_in_charge_email                 String
   support_email                           String?
-  start_date                              String
-  end_date                                String?
+  start_date                              DateTime?
+  end_date                                DateTime?
   ects                                    String?
   promote                                 Boolean?
   status                                  CourseStatus?                    @default(Upcoming)
@@ -209,16 +209,21 @@ model CourseVariant {
 }
 
 model EmailDelivery {
-  id                String         @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
-  sent              Boolean        @default(false)
-  error             Boolean        @default(false)
-  error_message     String?
-  user_id           String?        @db.Uuid
-  email_template_id String?        @db.Uuid
-  created_at        DateTime       @default(now())
-  updated_at        DateTime       @default(now()) @updatedAt
-  email_template    EmailTemplate? @relation(fields: [email_template_id], references: [id], onUpdate: NoAction)
-  user              User?          @relation(fields: [user_id], references: [id], onUpdate: NoAction)
+  id                                     String                            @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  sent                                   Boolean                           @default(false)
+  error                                  Boolean                           @default(false)
+  /// use either this email to send to or if not specified, the one in the user profile
+  email                                  String?
+  error_message                          String?
+  user_id                                String?                           @db.Uuid
+  email_template_id                      String?                           @db.Uuid
+  organization_id                        String?                           @db.Uuid
+  created_at                             DateTime                          @default(now())
+  updated_at                             DateTime                          @default(now()) @updatedAt
+  email_template                         EmailTemplate?                    @relation(fields: [email_template_id], references: [id], onUpdate: NoAction)
+  user                                   User?                             @relation(fields: [user_id], references: [id], onUpdate: NoAction)
+  user_organization_join_confirmation    UserOrganizationJoinConfirmation?
+  organization                           Organization?                     @relation(fields: [organization_id], references: [id])
 
   @@index([email_template_id])
   @@index([user_id, email_template_id])
@@ -242,6 +247,7 @@ model EmailTemplate {
   stats_courses                        Course[]                  @relation("EmailTemplate_Course_stats_email")
   course_stats_subscriptions           CourseStatsSubscription[]
   email_deliveries                     EmailDelivery[]
+  joined_organizations                 Organization[]
   triggered_automatically_by_course    Course?                   @relation("EmailTemplate_Course_triggered_automatically_by", fields: [triggered_automatically_by_course_id], references: [id], onUpdate: NoAction)
 
   @@index([triggered_automatically_by_course_id, template_type])
@@ -335,37 +341,42 @@ model OpenUniversityRegistrationLink {
 }
 
 model Organization {
-  id                        String                    @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
-  slug                      String                    @unique
-  secret_key                String                    @unique
-  name                      String
-  information               String?
-  verified_at               DateTime?
-  verified                  Boolean?
-  disabled                  Boolean?
-  disabled_reason           String?
-  hidden                    Boolean?
-  tmc_created_at            DateTime?
-  tmc_updated_at            DateTime?
-  logo_file_name            String?
-  logo_content_type         String?
-  logo_file_size            Int?
-  logo_updated_at           DateTime?
-  phone                     String?
-  contact_information       String?
-  email                     String?
-  website                   String?
-  pinned                    Boolean?
-  creator_id                String?                   @db.Uuid
-  created_at                DateTime                  @default(now())
-  updated_at                DateTime                  @default(now()) @updatedAt
-  completions_registered    CompletionRegistered[]
-  courses                   Course[]
-  course_organizations      CourseOrganization[]
-  creator                   User?                     @relation(fields: [creator_id], references: [id], onUpdate: NoAction)
-  organization_translations OrganizationTranslation[]
-  user_organizations        UserOrganization[]
-  verified_users            VerifiedUser[]
+  id                                      String                    @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  slug                                    String                    @unique
+  secret_key                              String                    @unique
+  name                                    String
+  information                             String?
+  verified_at                             DateTime?
+  verified                                Boolean?
+  disabled                                Boolean?
+  disabled_reason                         String?
+  hidden                                  Boolean?
+  tmc_created_at                          DateTime?
+  tmc_updated_at                          DateTime?
+  logo_file_name                          String?
+  logo_content_type                       String?
+  logo_file_size                          Int?
+  logo_updated_at                         DateTime?
+  phone                                   String?
+  contact_information                     String?
+  email                                   String?
+  website                                 String?
+  pinned                                  Boolean?
+  required_confirmation                   Boolean?                  @default(true)
+  required_organization_email             String?
+  creator_id                              String?                   @db.Uuid
+  created_at                              DateTime                  @default(now())
+  updated_at                              DateTime                  @default(now()) @updatedAt
+  join_organization_email_template_id     String?                   @db.Uuid
+  completions_registered                  CompletionRegistered[]
+  courses                                 Course[]
+  course_organizations                    CourseOrganization[]
+  creator                                 User?                     @relation(fields: [creator_id], references: [id], onUpdate: NoAction)
+  join_organization_email_template        EmailTemplate?            @relation(fields: [join_organization_email_template_id], references: [id], onUpdate: NoAction)
+  organization_translations               OrganizationTranslation[]
+  user_organizations                      UserOrganization[]
+  verified_users                          VerifiedUser[]
+  email_deliveries                        EmailDelivery[]
 
   @@index([creator_id])
   @@map("organization")
@@ -559,16 +570,20 @@ model UserCourseSettingsVisibility {
 }
 
 model UserOrganization {
-  id              String            @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
-  role            OrganizationRole? @default(Student)
-  organization_id String?           @db.Uuid
-  user_id         String?           @db.Uuid
-  consented       Boolean?          @default(false)
-  created_at      DateTime          @default(now())
-  updated_at      DateTime          @default(now()) @updatedAt
-  organization    Organization?     @relation(fields: [organization_id], references: [id], onUpdate: NoAction)
-  user            User?             @relation(fields: [user_id], references: [id], onUpdate: NoAction)
-
+  id                                      String            @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  organizational_email                    String?
+  organizational_identifier               String?
+  confirmed                               Boolean?          @default(false)
+  confirmed_at                            DateTime?
+  role                                    OrganizationRole? @default(Student)
+  user_id                                 String?           @db.Uuid
+  organization_id                         String?           @db.Uuid
+  consented                               Boolean?          @default(false)
+  created_at                              DateTime          @default(now())
+  updated_at                              DateTime          @default(now()) @updatedAt
+  organization                            Organization?     @relation(fields: [organization_id], references: [id], onUpdate: NoAction)
+  user                                    User?             @relation(fields: [user_id], references: [id], onUpdate: NoAction)
+  user_organization_join_confirmations    UserOrganizationJoinConfirmation[]
   @@map("user_organization")
 }
 
@@ -616,6 +631,26 @@ model CourseStatsSubscription {
 
   @@unique([user_id, email_template_id])
   @@map("course_stats_subscription")
+}
+
+model UserOrganizationJoinConfirmation {
+  id                   String           @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  email                String
+  /// UI language (and potential email template language if ever implemented)
+  language             String?          @default("fi")
+  redirect             String?
+  expires_at           DateTime?
+  confirmed_at         DateTime?
+  expired              Boolean?         @default(false)
+  confirmed            Boolean?         @default(false)
+  created_at           DateTime?        @default(now())
+  updated_at           DateTime?        @default(now()) @updatedAt
+  user_organization_id String           @db.Uuid
+  email_delivery_id    String?          @unique @db.Uuid
+  user_organization    UserOrganization @relation(fields: [user_organization_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  email_delivery       EmailDelivery?   @relation(fields: [email_delivery_id], references: [id])
+
+  @@map("user_organization_join_confirmation")
 }
 
 model Tag {
@@ -696,11 +731,11 @@ model SponsorImage {
 }
 
 model CourseSponsor {
-  course_id  String
+  course_id  String   @db.Uuid
   sponsor_id String
-  order      Int?   @default(0)
-  course     Course @relation(fields: [course_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  sponsor    Sponsor @relation(fields: [sponsor_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  order      Int?     @default(0)
+  course     Course   @relation(fields: [course_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  sponsor    Sponsor  @relation(fields: [sponsor_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   created_at DateTime @default(now())
   updated_at DateTime @default(now()) @updatedAt
 

@@ -5,7 +5,7 @@ import { ServerContext } from "./context"
 import prisma from "./prisma"
 import server from "./server"
 import knex from "./services/knex"
-import { attachPrismaEvents } from "./util/prismaLogger"
+import { attachPrismaEvents } from "./util"
 import { wsListen } from "./wsServer"
 
 require("sharp") // image library sharp seems to crash without this require

@@ -8,7 +8,7 @@ import { DatabaseInputError, TMCError } from "../lib/errors"
 import sentryLogger from "../lib/logger"
 import prisma from "../prisma"
 import TmcClient from "../services/tmc"
-import { notEmpty } from "../util/notEmpty"
+import { isDefined } from "../util"
 
 const USER_APP_DATUM_CONFIG_NAME = CONFIG_NAME ?? "userAppDatum"
 
@@ -42,7 +42,7 @@ const fetchUserAppDatum = async () => {
       DateTime.fromISO(b.updated_at).toMillis(),
   )
 
-  const data = tmcData.filter(notEmpty).filter((e) => e.user_id !== null)
+  const data = tmcData.filter(isDefined).filter((e) => e.user_id !== null)
 
   //  logger.info(data)
   // logger.info("sorted")
@@ -93,6 +93,8 @@ const fetchUserAppDatum = async () => {
       process.exit(1)
     }
 
+    // TODO: prune duplicates here
+    // TODO: refactor not to use a global variable!
     const existingUserCourseSetting = (
       await prisma.user
         .findUnique({

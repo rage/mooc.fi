@@ -1,0 +1,56 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Course model completions shouldn't return anything with non-existent user 1`] = `
+{
+  "course": {
+    "completions": [],
+    "id": "00000000-0000-0000-0000-000000000002",
+    "name": "course1",
+    "slug": "course1",
+  },
+}
+`;
+
+exports[`Course model completions works with user_id 1`] = `
+{
+  "course": {
+    "completions": [
+      {
+        "completion_language": null,
+        "email": "what@ever.com",
+        "id": "12400000-0000-0000-0000-000000000001",
+        "user": {
+          "id": "20000000-0000-0000-0000-000000000103",
+          "username": "admin",
+        },
+        "user_upstream_id": null,
+      },
+    ],
+    "id": "00000000-0000-0000-0000-000000000002",
+    "name": "course1",
+    "slug": "course1",
+  },
+}
+`;
+
+exports[`Course model completions works with user_upstream_id 1`] = `
+{
+  "course": {
+    "completions": [
+      {
+        "completion_language": null,
+        "email": "e@mail.com",
+        "id": "30000000-0000-0000-0000-000000000102",
+        "user": {
+          "id": "20000000-0000-0000-0000-000000000102",
+          "username": "existing_user",
+        },
+        "user_upstream_id": 1,
+      },
+    ],
+    "id": "00000000-0000-0000-0000-000000000002",
+    "name": "course1",
+    "slug": "course1",
+  },
+}
+`;

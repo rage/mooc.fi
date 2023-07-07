@@ -7,11 +7,20 @@ import {
 import { redisify } from "../../../../../services/redis"
 import Template from "../types/Template"
 
-export class StartedCourseCount extends Template {
-  async resolve() {
-    const course = await this.prisma.course.findFirst({
+// TODO: why not have the course in the actual template as well?
+abstract class CourseStatsTemplate extends Template {
+  async getCourse() {
+    const course = await this.context.prisma.course.findFirst({
       where: { course_stats_email: { id: this.emailTemplate.id } },
     })
+
+    return course
+  }
+}
+
+export class StartedCourseCount extends CourseStatsTemplate {
+  async resolve() {
+    const course = await this.getCourse()
 
     if (!course) {
       return ""
@@ -31,7 +40,7 @@ export class StartedCourseCount extends Template {
         }
         const where = Prisma.sql`WHERE ${Prisma.join(conditions, " AND ")}`
         const count = (
-          await this.prisma.$queryRaw<Array<{ count: number }>>`
+          await this.context.prisma.$queryRaw<Array<{ count: number }>>`
             SELECT
               COUNT(DISTINCT user_id)
             FROM user_course_setting
@@ -54,11 +63,9 @@ export class StartedCourseCount extends Template {
   }
 }
 
-export class CompletedCourseCount extends Template {
+export class CompletedCourseCount extends CourseStatsTemplate {
   async resolve() {
-    const course = await this.prisma.course.findFirst({
-      where: { course_stats_email: { id: this.emailTemplate.id } },
-    })
+    const course = await this.getCourse()
 
     if (!course) {
       return ""
@@ -83,7 +90,7 @@ export class CompletedCourseCount extends Template {
         }
         const where = Prisma.sql`WHERE ${Prisma.join(conditions, " AND ")}`
         const count = (
-          await this.prisma.$queryRaw<Array<{ count: number }>>`
+          await this.context.prisma.$queryRaw<Array<{ count: number }>>`
           SELECT
             COUNT(DISTINCT user_id)
           FROM completion
@@ -106,11 +113,9 @@ export class CompletedCourseCount extends Template {
   }
 }
 
-export class AtLeastOneExerciseCount extends Template {
+export class AtLeastOneExerciseCount extends CourseStatsTemplate {
   async resolve() {
-    const course = await this.prisma.course.findFirst({
-      where: { course_stats_email: { id: this.emailTemplate.id } },
-    })
+    const course = await this.getCourse()
 
     if (!course) {
       return ""
@@ -119,7 +124,7 @@ export class AtLeastOneExerciseCount extends Template {
     const atLeastOneExercise = await redisify<string>(
       async () => {
         const count = (
-          await this.prisma.$queryRaw<Array<{ count: number }>>`
+          await this.context.prisma.$queryRaw<Array<{ count: number }>>`
             SELECT
               COUNT(DISTINCT user_id)
             FROM exercise_completion ec
@@ -142,22 +147,22 @@ export class AtLeastOneExerciseCount extends Template {
   }
 }
 
-export class AtLeastOneExerciseButNotCompletedEmails extends Template {
+export class AtLeastOneExerciseButNotCompletedEmails extends CourseStatsTemplate {
   async resolve() {
-    const course = await this.prisma.course.findFirst({
-      where: { course_stats_email: { id: this.emailTemplate.id } },
-    })
+    const course = await this.getCourse()
 
     if (!course) {
       return ""
     }
 
-    const courseOwnership = await this.prisma.courseOwnership.findFirst({
-      where: {
-        course_id: course.id,
-        user_id: this.user.id,
+    const courseOwnership = await this.context.prisma.courseOwnership.findFirst(
+      {
+        where: {
+          course_id: course.id,
+          user_id: this.user.id,
+        },
       },
-    })
+    )
 
     if (!courseOwnership) {
       throw new Error("no permission - user is not the owner of this course")
@@ -185,7 +190,9 @@ export class AtLeastOneExerciseButNotCompletedEmails extends Template {
           conditions,
           " AND ",
         )}`
-        const result = await this.prisma.$queryRaw<Array<{ email: string }>>`
+        const result = await this.context.prisma.$queryRaw<
+          Array<{ email: string }>
+        >`
             SELECT DISTINCT u.email
               FROM exercise_completion ec
               JOIN exercise e ON ec.exercise_id = e.id

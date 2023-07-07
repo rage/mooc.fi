@@ -7,8 +7,14 @@ import { Course, Prisma } from "@prisma/client"
 
 import { EXTENSION_PATH } from "../config"
 import { BaseContext } from "../context"
-import { isNullOrUndefined } from "./isNullOrUndefined"
-import { notEmpty } from "./notEmpty"
+import {
+  isDefined,
+  isNull,
+  isNullish,
+  isNullishOrEmpty,
+  Nullish,
+  Optional,
+} from "./guards"
 
 const getNameCombinations = (search: string) => {
   const parts = search.match(/[^\s\n]+/g) ?? []
@@ -37,7 +43,7 @@ export const buildUserSearch = (
   search?: string | null,
   fields: Array<keyof Prisma.UserWhereInput | "full_name"> = defaultFields,
 ): Array<Prisma.UserWhereInput> => {
-  if (isNullOrUndefined(search)) {
+  if (!isDefined(search)) {
     return []
   }
 
@@ -113,15 +119,15 @@ export const convertPagination = (
   let take = 0
   let cursor = undefined
 
-  if (notEmpty(before)) {
+  if (isDefined(before)) {
     skip += 1
     cursor = { [field]: before }
-  } else if (notEmpty(after)) {
+  } else if (isDefined(after)) {
     cursor = { [field]: after }
   }
-  if (notEmpty(last)) {
+  if (isDefined(last)) {
     take = -(last ?? 0)
-  } else if (notEmpty(first)) {
+  } else if (isDefined(first)) {
     take = first
   }
 
@@ -150,6 +156,15 @@ export const filterNull = <T extends Record<string | symbol | number, unknown>>(
         Object.entries(o).map(([k, v]) => [k, v === null ? undefined : v]),
       ) as NullFiltered<T>)
     : undefined
+
+export const ensureDefinedArray = <T>(
+  value: Optional<T | Array<Optional<T>>>,
+): Array<T> => {
+  if (!value) return []
+  if (Array.isArray(value)) return value.filter(isDefined)
+
+  return [value]
+}
 
 export const filterNullRecursive = <
   T extends Record<string | symbol | number, unknown>,
@@ -182,6 +197,46 @@ export const filterNullRecursive = <
   ) as NullFiltered<T>
 }
 
+type NonNullable<T> = T extends null ? Exclude<T, null> : T
+
+type NonNullFields<
+  T extends Record<PropertyKey, any>,
+  U = T | Nullish,
+> = U extends Nullish // null or undefined returns undefined
+  ? undefined
+  : [keyof T] extends [never] // empty object returns undefined
+  ? undefined
+  : Partial<T> extends T // all fields are optional, can be undefined as well
+  ?
+      | {
+          [K in keyof T]: NonNullable<T[K]>
+        }
+      | undefined
+  : {
+      [K in keyof T]: NonNullable<T[K]>
+    }
+
+export function filterNullFields<T extends Record<string, any>>(
+  obj: Optional<T>,
+): NonNullFields<T> {
+  if (isNullish(obj)) {
+    return undefined
+  }
+
+  const ret = { ...obj }
+
+  for (const key in obj) {
+    if (isNull(obj[key])) {
+      delete ret[key]
+    }
+  }
+
+  if (Object.keys(ret).length === 0) {
+    return undefined
+  }
+
+  return ret as NonNullFields<T>
+}
 export const createExtensions = async (knex: Knex) => {
   /*if (CIRCLECI) {
     return
@@ -217,6 +272,45 @@ export const createExtensions = async (knex: Knex) => {
   } catch {
     // we can probably ignore this
   }
+}
+
+// https://github.com/prisma/prisma/issues/5042#issuecomment-1191275514
+type A<T extends string> = T extends `${infer U}ScalarFieldEnum` ? U : never
+type Entity = A<keyof typeof Prisma>
+type Keys<T extends Entity> = Extract<
+  keyof (typeof Prisma)[keyof Pick<typeof Prisma, `${T}ScalarFieldEnum`>],
+  string
+>
+
+export function excludeFields<T extends Entity, K extends Keys<T>>(
+  type: T,
+  omit: K[],
+) {
+  type Key = Exclude<Keys<T>, K>
+  type TMap = Record<Key, true>
+  const result: TMap = {} as TMap
+  for (const key in Prisma[`${type}ScalarFieldEnum`]) {
+    if (!omit.includes(key as K)) {
+      result[key as Key] = true
+    }
+  }
+  return result
+}
+
+export function includeFields<T extends Entity, K extends Keys<T>>(
+  _type: T,
+  inc: K[],
+) {
+  type TMap = Record<K, true>
+  const result: TMap = {} as TMap
+  for (const key of inc) {
+    result[key as K] = true
+  }
+  return result
+}
+
+export function emptyOrNullToUndefined<T>(value: T | Nullish): T | undefined {
+  return isNullishOrEmpty(value) ? undefined : value
 }
 
 interface GetCourseInput {

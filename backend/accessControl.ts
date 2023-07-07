@@ -1,24 +1,49 @@
 import { FieldAuthorizeResolver } from "nexus/dist/plugins/fieldAuthorizePlugin"
 
+import { Organization, User } from "@prisma/client"
+
+import { Context } from "./context"
+
 export enum Role {
   VISITOR = 0,
   USER = 1,
   ADMIN = 2,
   ORGANIZATION = 3, //for automated scripts, not for accounts
 }
+// TODO: caching?
 
 type AuthorizeFunction = <TypeName extends string, FieldName extends string>(
   ...args: Parameters<FieldAuthorizeResolver<TypeName, FieldName>>
 ) => ReturnType<FieldAuthorizeResolver<TypeName, FieldName>>
 
-// TODO: caching?
-export const isAdmin: AuthorizeFunction = (_root, _args, ctx, _info) =>
-  ctx.role === Role.ADMIN
-export const isUser: AuthorizeFunction = (_root, _args, ctx, _info) =>
-  ctx.role === Role.USER
-export const isOrganization: AuthorizeFunction = (_root, _args, ctx, _info) =>
-  ctx.role === Role.ORGANIZATION
-export const isVisitor: AuthorizeFunction = (_root, _args, ctx, _info) =>
+export const isAdmin: AuthorizeFunction = (
+  _root,
+  _args,
+  ctx,
+  _info,
+): ctx is Context & { user: User; organization: undefined } => {
+  return Boolean(ctx.user) && ctx.role === Role.ADMIN
+}
+export const isUser: AuthorizeFunction = (
+  _root,
+  _args,
+  ctx,
+  _info,
+): ctx is Context & { user: User; organization: undefined } =>
+  Boolean(ctx.user) && ctx.role === Role.USER
+export const isOrganization: AuthorizeFunction = (
+  _root,
+  _args,
+  ctx,
+  _info,
+): ctx is Context & { user: undefined; organization: Organization } =>
+  Boolean(ctx.organization) && ctx.role === Role.ORGANIZATION
+export const isVisitor: AuthorizeFunction = (
+  _root,
+  _args,
+  ctx,
+  _info,
+): ctx is Context & { user: undefined; organization: undefined } =>
   ctx.role === Role.VISITOR
 export const isSameOrganization: FieldAuthorizeResolver<
   "Organization",
@@ -51,15 +76,15 @@ export const isCourseOwner =
 
 export const or =
   (...predicates: AuthorizeFunction[]): AuthorizeFunction =>
-  (root, args, ctx, info) =>
-    predicates.some((p) => p(root, args, ctx, info))
+  (...params) =>
+    predicates.some((p) => p(...params))
 
 export const and =
   (...predicates: AuthorizeFunction[]): AuthorizeFunction =>
-  (root, args, ctx, info) =>
-    predicates.every((p) => p(root, args, ctx, info))
+  (...params) =>
+    predicates.every((p) => p(...params))
 
 export const not =
   (fn: AuthorizeFunction): AuthorizeFunction =>
-  (root, args, ctx, info) =>
-    !fn(root, args, ctx, info)
+  (...params) =>
+    !fn(...params)

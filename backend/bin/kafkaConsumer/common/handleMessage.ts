@@ -8,8 +8,8 @@ import {
   ValidationError,
   Warning,
 } from "../../../lib/errors"
+import { Result } from "../../../util"
 import { stringifyWithIndent } from "../../../util/json"
-import { Result } from "../../../util/result"
 import config from "../kafkaConfig"
 import { KafkaContext } from "./kafkaContext"
 

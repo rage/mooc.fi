@@ -2,7 +2,7 @@ import { Reducer } from "react"
 
 import { sortBy } from "remeda"
 
-import { SearchVariables } from "/components/FilterMenu"
+import { SearchVariables } from "/contexts/FilterContext"
 
 import {
   UserCourseSummaryCoreFieldsFragment,

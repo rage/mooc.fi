@@ -33,21 +33,68 @@ class CustomGraphQLError extends GraphQLError {
   }
 }
 
-export class GraphQLUserInputError extends CustomGraphQLError {
+export class GraphQLGenericError extends CustomGraphQLError {
   constructor(message: string, options?: GraphQLErrorOptions) {
     super(message, options)
+  }
+}
+
+export class GraphQLUserInputError extends CustomGraphQLError {
+  constructor(message: string, options?: GraphQLErrorOptions)
+  constructor(
+    message: string,
+    argumentName: string | string[],
+    options?: GraphQLErrorOptions,
+  )
+  constructor(
+    message: string,
+    argumentNameOrOptions?: string | string[] | GraphQLErrorOptions,
+    options?: GraphQLErrorOptions,
+  ) {
+    let argumentName: string | string[] | undefined
+    let opt = options
+
+    if (
+      typeof argumentNameOrOptions === "string" ||
+      Array.isArray(argumentNameOrOptions)
+    ) {
+      argumentName = argumentNameOrOptions
+    } else {
+      opt = argumentNameOrOptions
+    }
+
+    super(message, {
+      ...opt,
+      extensions: {
+        ...opt?.extensions,
+        code: "BAD_USER_INPUT",
+        argumentName,
+      },
+    })
   }
 }
 
 export class GraphQLAuthenticationError extends CustomGraphQLError {
   constructor(message: string, options?: GraphQLErrorOptions) {
-    super(message, options)
+    super(message, {
+      ...options,
+      extensions: {
+        ...options?.extensions,
+        code: "UNAUTHENTICATED",
+      },
+    })
   }
 }
 
 export class GraphQLForbiddenError extends CustomGraphQLError {
   constructor(message: string, options?: GraphQLErrorOptions) {
-    super(message, options)
+    super(message, {
+      ...options,
+      extensions: {
+        ...options?.extensions,
+        code: "FORBIDDEN",
+      },
+    })
   }
 }
 

@@ -3,7 +3,7 @@ import { styled } from "@mui/material/styles"
 
 import InfoRow, { InfoRowContainer } from "./InfoRow"
 import Container from "/components/Container"
-import notEmpty from "/util/notEmpty"
+import { isDefinedAndNotEmpty } from "/util/guards"
 
 import { UserDetailedFieldsFragment } from "/graphql/generated"
 
@@ -62,7 +62,9 @@ const availableFields: Partial<
 
 const renderAvailableFields = (data: UserDetailedFieldsFragment) => {
   return fields
-    .filter((field) => field in availableFields && notEmpty(data[field]))
+    .filter(
+      (field) => field in availableFields && isDefinedAndNotEmpty(data[field]),
+    )
     .map((field) => {
       const availableField = availableFields[field]
       const title = isFieldWithGetter(availableField)
@@ -77,7 +79,7 @@ const renderAvailableFields = (data: UserDetailedFieldsFragment) => {
       }
       return <InfoRow key={title} title={title} data={content} copyable />
     })
-    .filter(notEmpty)
+    .filter(isDefinedAndNotEmpty)
 }
 
 function UserInfo({ data }: UserInfoProps) {

@@ -1,17 +1,17 @@
 query Courses($language: String) {
-  courses(orderBy: { order: asc }, language: $language, hidden: false) {
+  courses(orderBy: { order: { sort: asc } }, language: $language, hidden: false) {
     ...CourseFields
   }
 }
 
 query NewCourses($language: String) {
-  courses(orderBy: { order: asc }, language: $language, hidden: false) {
+  courses(orderBy: { order: { sort: asc } }, language: $language, hidden: false) {
     ...NewCourseFields
   }
 }
 
 query FrontpageCoursesModules($language: String) {
-  courses(orderBy: { order: asc }, language: $language, hidden: false) {
+  courses(orderBy: { order: { sort: asc } }, language: $language, hidden: false) {
     ...FrontpageCourseFields
   }
   study_modules(orderBy: { id: asc }, language: $language) {
@@ -20,7 +20,7 @@ query FrontpageCoursesModules($language: String) {
 }
 
 query NewFrontpageCoursesModules($language: String) {
-  courses(orderBy: { order: asc }, language: $language, hidden: false) {
+  courses(orderBy: { order: { sort: asc } }, language: $language, hidden: false) {
     ...NewFrontpageCourseFields
     sponsors(language: $language) {
       ...SponsorFields
@@ -54,11 +54,6 @@ query EditorCourses(
   ) {
     ...EditorCourseFields
   }
-  # is currentUser from this query ever used?
-  currentUser {
-    id
-    administrator
-  }
 }
 
 query CourseFromSlug($slug: String!, $language: String) {
@@ -87,6 +82,7 @@ query CourseEditorDetails($slug: String) {
   }
 }
 
+# TODO: the following two are currently identical
 query EmailTemplateEditorCourses {
   courses {
     ...CourseDashboardCourseFields

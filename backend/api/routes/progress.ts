@@ -5,7 +5,7 @@ import { Completion, User, UserCourseProgress } from "@prisma/client"
 
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
 import { BAIParentCourse, BAItiers } from "../../config/courseConfig"
-import { notEmpty } from "../../util/notEmpty"
+import { isDefined } from "../../util"
 import { ApiContext, Controller } from "../types"
 
 interface ExerciseCompletionResult {
@@ -85,7 +85,7 @@ export class ProgressController extends Controller {
       resObject[completion.exercise_id] = completion
     }
 
-    res.json({
+    return res.json({
       data: resObject,
     })
   }
@@ -164,7 +164,7 @@ export class ProgressController extends Controller {
         exerciseCompletion
     }
 
-    res.json({
+    return res.json({
       data: {
         course_id: course.id,
         user_id: user.id,
@@ -190,8 +190,8 @@ export class ProgressController extends Controller {
     if (user_id) {
       const adminRes = await this.requireAdmin(req, res)
 
-      if (adminRes !== true) {
-        return adminRes
+      if (adminRes.isErr()) {
+        return adminRes.error
       }
       user = (
         await knex("user")
@@ -232,7 +232,7 @@ export class ProgressController extends Controller {
       .andWhere("user_course_progress.user_id", user.id)
       .orderBy("created_at", "asc")
 
-    res.json({
+    return res.json({
       data: {
         course_id: id,
         ...(data[0]?.extra as object),
@@ -276,7 +276,7 @@ export class ProgressController extends Controller {
         },
       })
 
-    res.json({
+    return res.json({
       data: userCourseProgresses?.[0],
     })
   }
@@ -284,8 +284,8 @@ export class ProgressController extends Controller {
   recheckBAIUserCourseProgresses = async (req: Request, res: Response) => {
     const adminRes = await this.requireAdmin(req, res)
 
-    if (adminRes !== true) {
-      return adminRes
+    if (adminRes.isErr()) {
+      return adminRes.error
     }
 
     const { prisma, logger } = this.ctx
@@ -346,9 +346,9 @@ export class ProgressController extends Controller {
         })) ?? []
 
     const getUsers = (arr: Array<object & { user: User | null }>) =>
-      arr?.map((e) => e.user).filter(notEmpty) ?? []
+      arr?.map((e) => e.user).filter(isDefined) ?? []
     const getIds = (arr?: Array<object & { id: string }>) =>
-      arr?.map((e) => e.id).filter(notEmpty) ?? []
+      arr?.map((e) => e.id).filter(isDefined) ?? []
     const getUserIdsAndUpstreamIds = (users: Array<User>) => ({
       user_ids: getIds(users),
       user_upstream_ids: users.map((u) => u.upstream_id),
@@ -373,11 +373,11 @@ export class ProgressController extends Controller {
       >,
     ) => {
       const beforeIds = getIds(before)
-      const beforeUserIds = before.map((e) => e.user_id).filter(notEmpty)
+      const beforeUserIds = before.map((e) => e.user_id).filter(isDefined)
       const beforeMap = groupBy(before, "id")
 
       const afterIds = getIds(after)
-      const afterUsers = after.flatMap((e) => e.user).filter(notEmpty)
+      const afterUsers = after.flatMap((e) => e.user).filter(isDefined)
 
       const createdIds = afterIds.filter((id) => !beforeIds.includes(id))
       const createdUsers = afterUsers.filter(

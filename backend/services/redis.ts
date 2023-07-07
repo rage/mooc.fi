@@ -10,7 +10,7 @@ import {
   REDIS_URL,
 } from "../config"
 import { BaseContext } from "../context"
-import { isNullOrUndefined } from "../util/isNullOrUndefined"
+import { isDefined, isPromise } from "../util"
 
 const _logger = winston.createLogger({
   level: "info",
@@ -69,18 +69,6 @@ const getRedisClient = (): typeof redisClient => {
   return client
 }
 
-const isPromise = <T>(value: any): value is Promise<T> => {
-  return value && typeof value.then === "function"
-}
-// @ts-ignore: not used for now
-const isAsync = <T>(
-  fn: (...props: any[]) => Promise<T> | T,
-): fn is (...props: any[]) => Promise<T> => {
-  return (
-    fn && typeof fn === "function" && fn.constructor.name === "AsyncFunction"
-  )
-}
-
 interface RedisifyOptions {
   prefix: string
   expireTime: number
@@ -93,6 +81,19 @@ interface RedisifyOptions {
 
 type RedisifyContext = Partial<BaseContext> & { client?: typeof redisClient }
 
+/**
+ *
+ * @param fn Function (can be async) or a promise to be cached
+ * @param options
+ * @param options.prefix Prefix to be used in the redis cache key
+ * @param options.expireTime Time in **seconds** to expire the cache
+ * @param options.key Key to be used in the redis cache key
+ * @param [options.params] Parameters to be passed to the function (ignored if a promise is given)
+ * @param ctx
+ * @param [ctx.client = redisClient] Redis client to be used
+ * @param [ctx.logger = _logger] Winston logger to be used
+ * @returns
+ */
 export async function redisify<T>(
   fn: ((...args: any[]) => Promise<T> | T) | Promise<T>,
   options: RedisifyOptions,
@@ -123,7 +124,7 @@ export async function redisify<T>(
   }
 
   const prefixedKey = `${prefix}:${key}`
-  let value: T | undefined = undefined
+  let value: T | undefined
   let resolveSuccess = false
 
   try {
@@ -188,7 +189,7 @@ export async function redisify<T>(
 }
 
 const convertError = (err: unknown) => {
-  if (isNullOrUndefined(err) || err instanceof Error) {
+  if (!isDefined(err) || err instanceof Error) {
     return err
   }
 

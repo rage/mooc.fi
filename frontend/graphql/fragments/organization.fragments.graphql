@@ -1,13 +1,15 @@
 fragment OrganizationCoreFields on Organization {
   id
   slug
+  email
   hidden
+  disabled
   name
   information
   created_at
   updated_at
-  # required_confirmation
-  # required_organization_email
+  required_confirmation
+  required_organization_email
   organization_translations {
     id
     organization_id

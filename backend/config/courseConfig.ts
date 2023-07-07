@@ -1,11 +1,11 @@
+import env from "./env.json"
+
 interface ExerciseInfo {
   exercise: number
   tier: number
   title: string
   course_id: string
 }
-
-const env = require(__dirname + "/env.json")
 
 export const BAIexercises: Record<string, ExerciseInfo> = {
   [env.EX_ONE_BEGINNER]: {
@@ -176,17 +176,17 @@ export const BAIexercises: Record<string, ExerciseInfo> = {
     title: "Exercise 10: Naive Bayes classifier",
     course_id: env.BEGINNER_COURSE_ID,
   },
-  [env.EX_TEN_ADVANCED_ID]: {
-    exercise: 10,
-    tier: 3,
-    title: "Exercise 10: Naive Bayes classifier",
-    course_id: env.ADVANCED_COURSE_ID,
-  },
   [env.EX_TEN_INTERMEDIATE_ID]: {
     exercise: 10,
     tier: 2,
     title: "Exercise 10: Naive Bayes classifier",
     course_id: env.INTERMEDIATE_COURSE_ID,
+  },
+  [env.EX_TEN_ADVANCED_ID]: {
+    exercise: 10,
+    tier: 3,
+    title: "Exercise 10: Naive Bayes classifier",
+    course_id: env.ADVANCED_COURSE_ID,
   },
   [env.EX_ELEVEN_BEGINNER]: {
     exercise: 11,

@@ -1,9 +1,12 @@
-import { EmailTemplate, User } from "@prisma/client"
+import { EmailTemplate, Organization, User } from "@prisma/client"
 
-import { type ExtendedPrismaClient } from "../../../../../prisma"
+import { TemplateContext } from "./TemplateContext"
 
 export type TemplateParams = {
   emailTemplate: EmailTemplate
   user: User
-  prisma: ExtendedPrismaClient
+  email?: string
+  organization?: Organization
+  context: TemplateContext
+  field?: keyof Pick<EmailTemplate, "txt_body" | "title" | "html_body">
 }

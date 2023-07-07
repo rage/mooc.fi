@@ -1,4 +1,4 @@
-import { useCallback } from "react"
+import { useCallback, useMemo } from "react"
 
 import { Clear, Search } from "@mui/icons-material"
 import {
@@ -9,7 +9,6 @@ import {
   IconButton,
   InputAdornment,
   MenuItem,
-  OutlinedInput,
   Select,
   SelectChangeEvent,
   TextField,
@@ -17,11 +16,13 @@ import {
 import { styled } from "@mui/material/styles"
 import { useEventCallback } from "@mui/material/utils"
 
+import { useFilterContext } from "/contexts/FilterContext"
 import { useSearch } from "/hooks/useSearch"
 import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
+import { isDefinedAndNotEmpty } from "/util/guards"
 
-import { CourseCoreFieldsFragment, CourseStatus } from "/graphql/generated"
+import { CourseStatus } from "/graphql/generated"
 
 const Container = styled("div")`
   background-color: white;
@@ -89,34 +90,21 @@ interface FilterFields {
   handler: boolean
 }
 
-export interface SearchVariables {
-  search: string | undefined
-  hidden?: boolean
-  handledBy?: string | null
-  status?: CourseStatus[]
-}
-
 interface FilterProps {
-  searchVariables: SearchVariables
-  setSearchVariables: (
-    variables:
-      | SearchVariables
-      | ((prevVariables: SearchVariables) => SearchVariables),
-  ) => void
-  handlerCourses?: CourseCoreFieldsFragment[]
-  loading: boolean
   fields?: FilterFields
   label?: string
 }
 
-function FilterMenu({
-  searchVariables,
-  setSearchVariables,
-  loading,
-  handlerCourses = [],
-  fields,
-  label,
-}: FilterProps) {
+export default function FilterMenu({ fields, label }: FilterProps) {
+  const { searchVariables, setSearchVariables, handlerCoursesData, loading } =
+    useFilterContext()
+
+  const handlerCourses = useMemo(
+    () =>
+      handlerCoursesData?.handlerCourses?.filter(isDefinedAndNotEmpty) ?? [],
+    [handlerCoursesData],
+  )
+
   const t = useTranslator(CommonTranslations)
   const {
     hidden: showHidden = true,
@@ -228,7 +216,7 @@ function FilterMenu({
           }}
         />
       </Row>
-      {showHidden || showHandler || showStatus ? (
+      {(showHidden || showHandler || showStatus) && (
         <Row>
           {showHidden ? (
             <HiddenFormControl disabled={loading}>
@@ -270,13 +258,6 @@ function FilterMenu({
                 variant="outlined"
                 onChange={handleHandledByChange}
                 label={t("handledBy")}
-                input={
-                  <OutlinedInput
-                    notched={Boolean(handledBy)}
-                    name="handledBy"
-                    id="handledBy"
-                  />
-                }
               >
                 <MenuItem value="" key="handleempty">
                   &nbsp;
@@ -290,7 +271,7 @@ function FilterMenu({
             </HandledByFormControl>
           ) : null}
         </Row>
-      ) : null}
+      )}
       <ActionRow>
         <MarginButton
           disabled={loading}
@@ -313,5 +294,3 @@ function FilterMenu({
     </Container>
   )
 }
-
-export default FilterMenu

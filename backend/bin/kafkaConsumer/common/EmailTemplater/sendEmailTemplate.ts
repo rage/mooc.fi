@@ -1,25 +1,78 @@
-import { EmailTemplate, User } from "@prisma/client"
+import { EmailTemplate, Organization, User } from "@prisma/client"
 
-import prisma from "../../../../prisma"
-import { sendMail } from "../../../../util/sendMail"
+import { emptyOrNullToUndefined, sendMail } from "../../../../util"
 import { EmailTemplater } from "../EmailTemplater/EmailTemplater"
+import { TemplateContext } from "./types/TemplateContext"
 
-export async function sendEmailTemplateToUser(
-  user: User,
-  template: EmailTemplate,
-) {
-  const text = await applyTemplate(template, user)
+interface SendEmailTemplateToUserArgs {
+  user: User
+  organization?: Organization
+  template: EmailTemplate
+  email?: string
+  context: TemplateContext
+}
 
+export async function sendEmailTemplateToUser({
+  user,
+  organization,
+  template,
+  email,
+  context = {} as TemplateContext,
+}: SendEmailTemplateToUserArgs) {
+  const text = await applyTemplate(
+    { template, user, email, organization },
+    context,
+  )
+  const title = template.title
+    ? await applyTemplate(
+        { template, user, email, organization, field: "title" },
+        context,
+      )
+    : undefined
+  const html_body = template.html_body
+    ? await applyTemplate(
+        { template, user, email, organization, field: "html_body" },
+        context,
+      )
+    : undefined
+
+  if (context.test) {
+    ;(context.logger?.info || console.log)(
+      `To: ${
+        email ?? user.email
+      }\nSubject: ${title}\nText: ${text}\nHtml: ${html_body}`,
+    )
+
+    return
+  }
   await sendMail({
-    to: user.email,
-    subject: template.title ?? undefined,
+    to: email ?? user.email,
+    subject: emptyOrNullToUndefined(title),
     text,
-    html: template.html_body ?? undefined,
+    html: emptyOrNullToUndefined(html_body),
   })
 }
 
-const applyTemplate = async (email_template: EmailTemplate, user: User) => {
-  const templater = new EmailTemplater(email_template, user, prisma)
+interface ApplyTemplateArgs {
+  user: User
+  email?: string
+  organization?: Organization
+  template: EmailTemplate
+  field?: keyof Pick<EmailTemplate, "txt_body" | "title" | "html_body">
+}
+
+const applyTemplate = async (
+  { template, user, email, organization, field }: ApplyTemplateArgs,
+  context: TemplateContext,
+) => {
+  const templater = new EmailTemplater({
+    emailTemplate: template,
+    user,
+    email,
+    organization,
+    context,
+    field,
+  })
 
   return templater.resolve()
 }

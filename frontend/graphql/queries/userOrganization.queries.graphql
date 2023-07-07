@@ -1,19 +1,30 @@
-query CurrentUserOrganizations {
+query CurrentUserUserOrganizations {
   currentUser {
     user_organizations {
-      ...UserOrganizationCoreFields
-      # user_organization_join_confirmations {
-      #   ...UserOrganizationJoinConfirmationData
-      # }
+      ...UserOrganizationWithUserOrganizationJoinConfirmationFields
     }
   }
 }
 
-query UserOrganizations($user_id: ID) {
-  userOrganizations(user_id: $user_id) {
-    id
-    organization {
-      id
+query UserOrganizations(
+  $user_id: ID
+  $organization_id: ID
+  $organization_slug: String
+) {
+  userOrganizations(
+    user_id: $user_id
+    organization_id: $organization_id
+    organization_slug: $organization_slug
+  ) {
+    ...UserOrganizationFields
+  }
+}
+
+query UserOrganizationJoinConfirmation($id: ID!) {
+  userOrganizationJoinConfirmation(id: $id) {
+    ...UserOrganizationJoinConfirmationFields
+    user_organization {
+      ...UserOrganizationFields
     }
   }
 }

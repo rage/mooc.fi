@@ -199,7 +199,7 @@ export const getProgress = ({
     ],
     extra: {
       tiers: tierInfo,
-      exercises: tierProgressMap as any,
+      exercises: tierProgressMap,
       projectCompletion,
       highestTier,
       totalExerciseCompletions,

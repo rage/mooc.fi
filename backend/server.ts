@@ -20,8 +20,9 @@ import {
 
 import { apiRouter } from "./api"
 import { DEBUG, isProduction, isTest } from "./config"
+import { createDefaultData } from "./config/defaultData"
 import { ServerContext } from "./context"
-import createSchema from "./schema"
+import { createSchema } from "./schema/common"
 
 // wrapped so that the context isn't cached between test instances
 const createExpressAppWithContext = ({
@@ -46,13 +47,13 @@ const createExpressAppWithContext = ({
   return app
 }
 
-const addExpressMiddleware = (
+const addExpressMiddleware = async (
   app: Express,
   apolloServer: ApolloServer<ServerContext>,
   serverContext: ServerContext,
 ) => {
   const { prisma, logger, knex, extraContext } = serverContext
-
+  await createDefaultData(prisma)
   app.use(
     isProduction ? "/api" : "/",
     expressMiddleware(apolloServer, {
@@ -125,7 +126,7 @@ const server = async (serverContext: ServerContext) => {
     wsServer,
   )
 
-  addExpressMiddleware(app, apolloServer, serverContext)
+  await addExpressMiddleware(app, apolloServer, serverContext)
 
   return {
     apolloServer,

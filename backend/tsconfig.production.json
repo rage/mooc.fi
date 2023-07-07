@@ -15,14 +15,14 @@
     "noImplicitAny": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "skipLibCheck": true,
     "esModuleInterop": true,
     "sourceMap": true,
     "inlineSources": true,
     "noEmitHelpers": true,
     "importHelpers": true,
+    "resolveJsonModule": true,
     "sourceRoot": "/"
   },
-  "include": [".", "./types", "types.d.ts"],
-  "exclude": ["node_modules", "__mocks__"]
+  "include": [".", "./bin/**/*"],
+  "exclude": ["node_modules", "__mocks__", "dist"]
 }

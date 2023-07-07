@@ -1,12 +1,13 @@
 import { render } from "micromustache"
 
-import { EmailTemplate, User } from "@prisma/client"
+import { EmailTemplate, Organization, User } from "@prisma/client"
 
-import { type ExtendedPrismaClient } from "../../../../prisma"
 import * as Templates from "./templates"
 import ITemplateConstructor from "./types/ITemplateConstructor"
 import { KeyWordToTemplateType } from "./types/KeywordToTemplateType"
 import Template from "./types/Template"
+import { TemplateContext } from "./types/TemplateContext"
+import { TemplateParams } from "./types/TemplateParams"
 
 export class EmailTemplater {
   keyWordToTemplate: KeyWordToTemplateType = {
@@ -18,24 +19,42 @@ export class EmailTemplater {
     at_least_one_exercise_but_not_completed_emails:
       Templates.AtLeastOneExerciseButNotCompletedEmails,
     current_date: Templates.CurrentDate,
+    organization_activation_link: Templates.OrganizationActivationLink,
+    organization_activation_code: Templates.OrganizationActivationCode,
+    organization_activation_code_expiry_date:
+      Templates.OrganizationActivationCodeExpiryDate,
+    organization_name: Templates.OrganizationName,
+    user_full_name: Templates.UserFullName,
+    user_first_name: Templates.UserFirstName,
+    user_last_name: Templates.UserLastName,
   }
   emailTemplate: EmailTemplate
   user: User
-  prisma: ExtendedPrismaClient
+  email?: string
+  organization?: Organization
+  context: TemplateContext
+  field: keyof Pick<EmailTemplate, "txt_body" | "title" | "html_body">
 
-  constructor(
-    emailTemplate: EmailTemplate,
-    user: User,
-    prisma: ExtendedPrismaClient,
-  ) {
+  constructor({
+    emailTemplate,
+    user,
+    organization,
+    email,
+    context,
+    field = "txt_body",
+  }: TemplateParams) {
     this.emailTemplate = emailTemplate
     this.user = user
-    this.prisma = prisma
+    this.email = email
+    this.organization = organization
+    this.context = context
+    this.field = field
+
     this.prepare()
   }
 
   async resolve(): Promise<string> {
-    const template = this.emailTemplate.txt_body ?? ""
+    const template = this.emailTemplate[this.field] ?? ""
     await this.resolveAllTemplates()
     return render(template, this.keyWordToTemplate)
   }
@@ -47,7 +66,9 @@ export class EmailTemplater {
       ] as ITemplateConstructor)({
         emailTemplate: this.emailTemplate,
         user: this.user,
-        prisma: this.prisma,
+        organization: this.organization,
+        email: this.email,
+        context: this.context,
       }) as Template
     })
   }

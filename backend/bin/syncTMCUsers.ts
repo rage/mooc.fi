@@ -7,7 +7,7 @@ import { TMCError } from "../lib/errors"
 import sentryLogger from "../lib/logger"
 import { type ExtendedPrismaClient } from "../prisma"
 import { getAccessToken } from "../services/tmc"
-import { notEmpty } from "../util/notEmpty"
+import { isDefined } from "../util"
 
 const URL = `${TMC_HOST ?? ""}/api/v8/users/recently_changed_user_details`
 
@@ -76,7 +76,7 @@ export const deleteUsers = async (
   const deletedUsers = changes
     .filter((user) => user.change_type === "deleted" && user.new_value === "t")
     .map((user) => user.username)
-    .filter(notEmpty)
+    .filter(isDefined)
 
   logger.info(`found ${deletedUsers.length} deleted users in TMC`)
 

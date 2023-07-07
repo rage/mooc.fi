@@ -55,10 +55,12 @@ export const generateUserCourseProgress = async ({
     context,
   })
 
+  // TODO: maybe we shouldn't actually update it _again_ if we are BAI
+  // since we did update it just in checkBAICompletion?
   return context.prisma.userCourseProgress.update({
     where: { id: userCourseProgress.id },
     data: {
-      progress: combined.progress ?? Prisma.JsonNull, // errors unless typed as any
+      progress: combined.progress ?? Prisma.JsonNull,
       max_points: { set: combined.total_max_points },
       n_points: { set: combined.total_n_points },
     },

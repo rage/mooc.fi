@@ -31,7 +31,7 @@ import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useTranslator } from "/hooks/useTranslator"
 import CourseTranslations from "/translations/_new/courses"
 import CommonTranslations from "/translations/common"
-import { notEmptyOrEmptyString } from "/util/guards"
+import { isDefinedAndNotEmpty } from "/util/guards"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
 import {
@@ -204,7 +204,7 @@ const SearchResultStatus = ({
     (tags ?? [])
       .filter((tag) => tag.types?.includes("language"))
       .map((tag) => "<strong>" + tag.name + "</strong>")
-      .filter(notEmptyOrEmptyString),
+      .filter(isDefinedAndNotEmpty),
     t("resultOr"),
   )
   const difficultyTagResultStatus = joinWithCustomLastSeparator(
@@ -212,14 +212,14 @@ const SearchResultStatus = ({
       .filter((tag) => tag.types?.includes("difficulty"))
       .sort(sortByDifficulty)
       .map((tag) => "<strong>" + tag.name + "</strong>")
-      .filter(notEmptyOrEmptyString),
+      .filter(isDefinedAndNotEmpty),
     t("resultOr"),
   )
   const moduleTagResultStatus = joinWithCustomLastSeparator(
     (tags ?? [])
       .filter((tag) => tag.types?.includes("module"))
       .map((tag) => "<strong>" + tag.name + "</strong>")
-      .filter(notEmptyOrEmptyString),
+      .filter(isDefinedAndNotEmpty),
     t("resultOr"),
   )
 

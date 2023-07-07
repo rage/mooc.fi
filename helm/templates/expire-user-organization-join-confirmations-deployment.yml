@@ -1,0 +1,52 @@
+{{- if .Values.expireUserOrganizationJoinConfirmations.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: expire-user-organization-join-confirmations
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: expire-user-organization-join-confirmations
+      {{- include "helm.selectorLabels" . | nindent 6 }}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: expire-user-organization-join-confirmations
+        {{- include "helm.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: expire-user-organization-join-confirmations
+          image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          command: ["sh", "-c", "npm run expire-user-organization-join-confirmations"]
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: 512Mi
+              cpu: 100m
+            requests:
+              memory: 256Mi
+              cpu: 50m
+          envFrom:
+          - secretRef:
+              name: backend-secret
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis
+                  key: redis-password
+          volumeMounts:
+            - name: google-cloud-storage-serviceaccount
+              mountPath: "/etc/gcs"
+              readOnly: true
+      volumes:
+        - name: google-cloud-storage-serviceaccount
+          secret:
+            secretName: google-cloud-storage-serviceaccount
+            items:
+              - key: account.json
+                path: account.json
+{{- end }}

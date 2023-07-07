@@ -1,5 +1,3 @@
-import { DateTime } from "luxon"
-
 import sentryLogger from "../lib/logger"
 import prisma from "../prisma"
 import KafkaProducer, { ProducerMessage } from "../services/kafkaProducer"
@@ -14,29 +12,15 @@ const updateCourseStatuses = async () => {
 
   for (const course of courses) {
     logger.info(`Handling course ${course.id} (${course.name})`)
-    const { status } = course
+    const { status, start_date, end_date } = course
 
     let newStatus = status
 
-    const courseStartDate = course.start_date
-      ? DateTime.fromISO(course.start_date)
-      : null
-    const courseEndDate = course.end_date
-      ? DateTime.fromISO(course.end_date)
-      : null
-    const currentDate = DateTime.local()
-    if (
-      newStatus === "Upcoming" &&
-      courseStartDate &&
-      currentDate >= courseStartDate
-    ) {
+    const currentDate = new Date()
+    if (newStatus === "Upcoming" && start_date && currentDate >= start_date) {
       newStatus = "Active"
     }
-    if (
-      newStatus === "Active" &&
-      courseEndDate &&
-      currentDate > courseEndDate
-    ) {
+    if (newStatus === "Active" && end_date && currentDate > end_date) {
       newStatus = "Ended"
     }
 

@@ -1,8 +1,8 @@
 import { Request, Response } from "express"
 import { omit } from "lodash"
 
-import { requireCourseOwnership } from "../../util/server-functions"
 import { ApiContext, Controller } from "../types"
+import { requireCourseOwnership } from "../utils"
 
 export class StoredDataController extends Controller {
   constructor(override readonly ctx: ApiContext) {

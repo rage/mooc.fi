@@ -170,7 +170,7 @@ describe("API", () => {
     it("errors on non-existent secret", async () => {
       return postCompletions({
         data: { foo: 1 },
-        headers: { Authorization: "Basic koira" },
+        headers: { Authorization: "Basic ronsu" },
       })
         .then(() => fail())
         .catch(({ response }) => {

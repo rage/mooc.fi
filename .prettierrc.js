@@ -16,7 +16,7 @@ const config = {
     "",
     "^[./](?!graphql)",
     "",
-    "^/graphql",
+    "^/(graphql|schema)",
   ],
   importOrderParserPlugins: [
     "typescript",

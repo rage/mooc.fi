@@ -1,0 +1,275 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UserOrganization mutations addUserOrganization succeeds with confirmation required creating a user organization join confirmation and an email delivery 1`] = `
+{
+  "confirmed": false,
+  "confirmed_at": null,
+  "id": Any<String>,
+  "organization": {
+    "id": "10000000-0000-0000-0000-000000000104",
+    "slug": "test3",
+  },
+  "organizational_email": null,
+  "organizational_identifier": null,
+  "role": "Student",
+  "user_id": "20000000-0000-0000-0000-000000000102",
+  "user_organization_join_confirmations": [
+    {
+      "confirmed": false,
+      "confirmed_at": null,
+      "email": "e@mail.com",
+      "email_delivery": {
+        "email": "e@mail.com",
+        "email_template": {
+          "id": "48383100-0000-0000-0000-000000000101",
+          "name": "organization join email",
+        },
+        "error": false,
+        "error_message": null,
+        "id": Any<String>,
+        "sent": false,
+      },
+      "expired": false,
+      "expires_at": StringMatching /\\\\d\\{4\\}-\\\\d\\{2\\}-\\\\d\\{2\\}T\\\\d\\{2\\}:\\\\d\\{2\\}:\\\\d\\{2\\}\\(\\.\\\\d\\{3\\}\\)\\?Z/,
+      "id": Any<String>,
+      "language": "fi",
+      "redirect": null,
+    },
+  ],
+}
+`;
+
+exports[`UserOrganization mutations addUserOrganization succeeds with confirmation required creating a user organization join confirmation and an email delivery and correct required organizational email provided 1`] = `
+{
+  "confirmed": false,
+  "confirmed_at": null,
+  "id": Any<String>,
+  "organization": {
+    "id": "10000000-0000-0000-0000-000000000102",
+    "slug": "test",
+  },
+  "organizational_email": "user@organization.fi",
+  "organizational_identifier": null,
+  "role": "Student",
+  "user_id": "20000000-0000-0000-0000-000000000103",
+  "user_organization_join_confirmations": [
+    {
+      "confirmed": false,
+      "confirmed_at": null,
+      "email": "user@organization.fi",
+      "email_delivery": {
+        "email": "user@organization.fi",
+        "email_template": {
+          "id": "48383100-0000-0000-0000-000000000101",
+          "name": "organization join email",
+        },
+        "error": false,
+        "error_message": null,
+        "id": Any<String>,
+        "sent": false,
+      },
+      "expired": false,
+      "expires_at": StringMatching /\\\\d\\{4\\}-\\\\d\\{2\\}-\\\\d\\{2\\}T\\\\d\\{2\\}:\\\\d\\{2\\}:\\\\d\\{2\\}\\(\\.\\\\d\\{3\\}\\)\\?Z/,
+      "id": Any<String>,
+      "language": "fi",
+      "redirect": "https://foo.bar",
+    },
+  ],
+}
+`;
+
+exports[`UserOrganization mutations addUserOrganization succeeds with confirmation required creating a user organization join confirmation and an email delivery and user email matches required organizational email 1`] = `
+{
+  "confirmed": false,
+  "confirmed_at": null,
+  "id": Any<String>,
+  "organization": {
+    "id": "10000000-0000-0000-0000-000000000102",
+    "slug": "test",
+  },
+  "organizational_email": null,
+  "organizational_identifier": null,
+  "role": "Student",
+  "user_id": "20000000-0000-0000-0000-000000000104",
+  "user_organization_join_confirmations": [
+    {
+      "confirmed": false,
+      "confirmed_at": null,
+      "email": "third@organization.fi",
+      "email_delivery": {
+        "email": "third@organization.fi",
+        "email_template": {
+          "id": "48383100-0000-0000-0000-000000000101",
+          "name": "organization join email",
+        },
+        "error": false,
+        "error_message": null,
+        "id": Any<String>,
+        "sent": false,
+      },
+      "expired": false,
+      "expires_at": StringMatching /\\\\d\\{4\\}-\\\\d\\{2\\}-\\\\d\\{2\\}T\\\\d\\{2\\}:\\\\d\\{2\\}:\\\\d\\{2\\}\\(\\.\\\\d\\{3\\}\\)\\?Z/,
+      "id": Any<String>,
+      "language": "fi",
+      "redirect": null,
+    },
+  ],
+}
+`;
+
+exports[`UserOrganization mutations addUserOrganization succeeds with confirmation required using the default email template if one isn't specified 1`] = `
+{
+  "confirmed": false,
+  "confirmed_at": null,
+  "id": Any<String>,
+  "organization": {
+    "id": "10000000-0000-0000-0000-000000000102",
+    "slug": "test",
+  },
+  "organizational_email": "user@organization.fi",
+  "organizational_identifier": null,
+  "role": "Student",
+  "user_id": "20000000-0000-0000-0000-000000000103",
+  "user_organization_join_confirmations": [
+    {
+      "confirmed": false,
+      "confirmed_at": null,
+      "email": "user@organization.fi",
+      "email_delivery": {
+        "email": "user@organization.fi",
+        "email_template": {
+          "id": "99999999-9998-9997-9996-999999999995",
+          "name": "___default_join_organization",
+        },
+        "error": false,
+        "error_message": null,
+        "id": Any<String>,
+        "sent": false,
+      },
+      "expired": false,
+      "expires_at": StringMatching /\\\\d\\{4\\}-\\\\d\\{2\\}-\\\\d\\{2\\}T\\\\d\\{2\\}:\\\\d\\{2\\}:\\\\d\\{2\\}\\(\\.\\\\d\\{3\\}\\)\\?Z/,
+      "id": Any<String>,
+      "language": "fi",
+      "redirect": "https://foo.bar",
+    },
+  ],
+}
+`;
+
+exports[`UserOrganization mutations addUserOrganization succeeds with no confirmation required adding user to organization 1`] = `
+{
+  "confirmed": true,
+  "confirmed_at": StringMatching /\\\\d\\{4\\}-\\\\d\\{2\\}-\\\\d\\{2\\}T\\\\d\\{2\\}:\\\\d\\{2\\}:\\\\d\\{2\\}\\(\\.\\\\d\\{3\\}\\)\\?Z/,
+  "id": Any<String>,
+  "organization": {
+    "id": "10000000-0000-0000-0000-000000000103",
+    "slug": "test2",
+  },
+  "organizational_email": null,
+  "organizational_identifier": "kissa",
+  "role": "Student",
+  "user_id": "20000000-0000-0000-0000-000000000103",
+  "user_organization_join_confirmations": [],
+}
+`;
+
+exports[`UserOrganization mutations confirmUserOrganizationJoin succeeds confirming membership if all checks pass: Bearer normal 1`] = `
+{
+  "confirmed": true,
+  "confirmed_at": Any<Date>,
+  "created_at": 1900-01-01T08:00:00.000Z,
+  "email": "what@ever.com",
+  "email_delivery_id": "61400000-0000-0000-0000-000000000001",
+  "expired": false,
+  "expires_at": 2100-01-01T08:00:00.000Z,
+  "id": "61300000-0000-0000-0000-000000000001",
+  "language": "fi",
+  "redirect": null,
+  "updated_at": Any<Date>,
+  "user_organization": {
+    "confirmed": true,
+    "confirmed_at": Any<Date>,
+    "consented": true,
+    "created_at": 1900-01-01T08:00:00.000Z,
+    "id": "96900000-0000-0000-0000-000000000101",
+    "organization_id": "10000000-0000-0000-0000-000000000103",
+    "organizational_email": null,
+    "organizational_identifier": null,
+    "role": "Student",
+    "updated_at": Any<Date>,
+    "user_id": "20000000-0000-0000-0000-000000000102",
+  },
+  "user_organization_id": "96900000-0000-0000-0000-000000000101",
+}
+`;
+
+exports[`UserOrganization mutations confirmUserOrganizationJoin succeeds confirming membership not associated with self with admin credentials if all checks pass: Bearer admin 1`] = `
+{
+  "confirmed": true,
+  "confirmed_at": Any<Date>,
+  "created_at": 1900-01-01T08:00:00.000Z,
+  "email": "what@ever.com",
+  "email_delivery_id": "61400000-0000-0000-0000-000000000001",
+  "expired": false,
+  "expires_at": 2100-01-01T08:00:00.000Z,
+  "id": "61300000-0000-0000-0000-000000000001",
+  "language": "fi",
+  "redirect": null,
+  "updated_at": Any<Date>,
+  "user_organization": {
+    "confirmed": true,
+    "confirmed_at": Any<Date>,
+    "consented": true,
+    "created_at": 1900-01-01T08:00:00.000Z,
+    "id": "96900000-0000-0000-0000-000000000101",
+    "organization_id": "10000000-0000-0000-0000-000000000103",
+    "organizational_email": null,
+    "organizational_identifier": null,
+    "role": "Student",
+    "updated_at": Any<Date>,
+    "user_id": "20000000-0000-0000-0000-000000000102",
+  },
+  "user_organization_id": "96900000-0000-0000-0000-000000000101",
+}
+`;
+
+exports[`UserOrganization requestNewUserOrganizationJoinConfirmation succeeds with no extra arguments returning a confirmation 1`] = `
+{
+  "confirmed": false,
+  "confirmed_at": null,
+  "email": "e@mail.com",
+  "email_delivery": {
+    "email": "e@mail.com",
+    "email_template": {
+      "id": "48383100-0000-0000-0000-000000000101",
+      "name": "organization join email",
+    },
+    "error": false,
+    "error_message": null,
+    "id": Any<String>,
+    "sent": false,
+  },
+  "expired": false,
+  "expires_at": StringMatching /\\\\d\\{4\\}-\\\\d\\{2\\}-\\\\d\\{2\\}T\\\\d\\{2\\}:\\\\d\\{2\\}:\\\\d\\{2\\}\\(\\.\\\\d\\{3\\}\\)\\?Z/,
+  "id": Any<String>,
+  "language": "fi",
+  "redirect": null,
+  "user_organization": {
+    "confirmed": false,
+    "confirmed_at": null,
+    "consented": true,
+    "id": "96900000-0000-0000-0000-000000000101",
+    "organization": {
+      "id": "10000000-0000-0000-0000-000000000103",
+      "slug": "test2",
+    },
+    "organizational_email": null,
+    "organizational_identifier": null,
+    "role": "Student",
+    "user": {
+      "id": "20000000-0000-0000-0000-000000000102",
+      "upstream_id": 1,
+    },
+  },
+}
+`;

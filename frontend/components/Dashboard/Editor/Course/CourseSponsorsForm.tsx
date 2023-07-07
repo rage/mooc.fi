@@ -86,7 +86,6 @@ function CourseSponsorsForm() {
 
   const onChange = useEventCallback(
     (_: any, newValue: Array<SponsorFormValue>) => {
-      console.log("newValue", newValue)
       setValue("sponsors", newValue, { shouldDirty: true })
     },
   )

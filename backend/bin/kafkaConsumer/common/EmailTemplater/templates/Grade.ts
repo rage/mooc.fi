@@ -2,7 +2,7 @@ import Template from "../types/Template"
 
 export class Grade extends Template {
   async resolve() {
-    const course = await this.prisma.course.findFirst({
+    const course = await this.context.prisma.course.findFirst({
       where: { completion_email: { id: this.emailTemplate.id } },
     })
 
@@ -10,7 +10,7 @@ export class Grade extends Template {
       return ""
     }
     const grade = (
-      await this.prisma.course
+      await this.context.prisma.course
         .findUnique({
           where: { id: course.completions_handled_by_id ?? course.id },
         })

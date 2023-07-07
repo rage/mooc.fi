@@ -1,10 +1,6 @@
 import { BaseContext } from "../context"
-import { getCourseOrAliasKnex } from "../util/db-functions"
-import {
-  getOrganization,
-  getUser,
-  requireAdmin,
-} from "../util/server-functions"
+import { getCourseOrAliasKnex } from "../util"
+import { getOrganization, getUser, requireAdmin } from "./utils"
 
 export type ApiContext = BaseContext
 

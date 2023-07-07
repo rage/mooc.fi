@@ -1,4 +1,6 @@
-export { CompletionLink } from "./CompletionLink"
-export { Grade } from "./Grade"
+export * from "./CompletionLink"
+export * from "./Grade"
 export * from "./CourseStats"
 export * from "./CurrentDate"
+export * from "./Organization"
+export * from "./User"

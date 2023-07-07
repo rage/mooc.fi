@@ -6,7 +6,7 @@ import { styled } from "@mui/material/styles"
 import { useTranslator } from "/hooks/useTranslator"
 import { KeyOfTranslationDictionary } from "/translations"
 import CommonTranslations from "/translations/common"
-import notEmpty from "/util/notEmpty"
+import { isDefinedAndNotEmpty } from "/util/guards"
 
 import { TagCoreFieldsFragment } from "/graphql/generated"
 
@@ -44,7 +44,8 @@ const TagSelectDropdowns = ({
       (_: any, value: Array<string> | Array<TagCoreFieldsFragment>) => {
         setActiveTags((prevValue) => [
           ...prevValue.filter(
-            (tag) => notEmpty(tag) && !tag.types?.includes(category),
+            (tag) =>
+              isDefinedAndNotEmpty(tag) && !tag.types?.includes(category),
           ),
           ...value
             .map((s) => {
@@ -53,7 +54,7 @@ const TagSelectDropdowns = ({
               }
               return s
             })
-            .filter(notEmpty),
+            .filter(isDefinedAndNotEmpty),
         ])
       },
     [allTags],

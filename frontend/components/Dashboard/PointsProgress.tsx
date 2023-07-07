@@ -16,7 +16,7 @@ import { CardSubtitle } from "/components/Text/headers"
 import { CardCaption } from "/components/Text/paragraphs"
 import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
-import notEmpty from "/util/notEmpty"
+import { isDefinedAndNotEmpty } from "/util/guards"
 import round from "/util/round"
 
 const ProgressItem = styled("div")`
@@ -274,7 +274,7 @@ const PointsProgress = ({
   const t = useTranslator(CommonTranslations)
   const theme = useTheme()
 
-  const hasRequiredPercentage = notEmpty(requiredPercentage)
+  const hasRequiredPercentage = isDefinedAndNotEmpty(requiredPercentage)
 
   return (
     <Column>
@@ -291,7 +291,7 @@ const PointsProgress = ({
                 percentage={requiredPercentage}
                 color={theme.palette.grey[400]}
                 title={`${Math.round(requiredPercentage)}% ${
-                  notEmpty(required) && notEmpty(total)
+                  isDefinedAndNotEmpty(required) && isDefinedAndNotEmpty(total)
                     ? `(${required}/${total}) `
                     : ""
                 } ${requiredTitle}`}
@@ -315,7 +315,8 @@ const PointsProgress = ({
                   caption: t("required"),
                   valueCaption:
                     `${Math.round(requiredPercentage)}%` +
-                    (notEmpty(required) && notEmpty(total)
+                    (isDefinedAndNotEmpty(required) &&
+                    isDefinedAndNotEmpty(total)
                       ? ` (${round(required)}/${total})`
                       : ""),
                   percentage: requiredPercentage,
@@ -326,7 +327,7 @@ const PointsProgress = ({
           )}
         </ProgressItem>
       </ChartContainer>
-      {notEmpty(amount) && notEmpty(total) && (
+      {isDefinedAndNotEmpty(amount) && isDefinedAndNotEmpty(total) && (
         <CardCaption component="h4" variant="caption">
           <>
             {pointsTitle ?? ""}
@@ -334,7 +335,7 @@ const PointsProgress = ({
             <strong>
               {round(amount)} / {round(total)}
             </strong>
-            {notEmpty(required) && (
+            {isDefinedAndNotEmpty(required) && (
               <>
                 {" "}
                 ({required}

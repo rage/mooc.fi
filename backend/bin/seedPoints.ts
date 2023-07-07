@@ -111,7 +111,7 @@ const addUserCourseProgressess = async (courseId: string) => {
         },
       ]
 
-      const ucp: Prisma.UserCourseProgressCreateInput = {
+      const ucp = {
         user: {
           connect: {
             id: user.id,

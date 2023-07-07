@@ -6,7 +6,7 @@ import { omit } from "remeda"
 import { initialValues } from "./form-validation"
 import { CourseFormValues, CourseTranslationFormValues } from "./types"
 import { filterNull } from "/util/filterNull"
-import notEmpty from "/util/notEmpty"
+import { isDefinedAndNotEmpty } from "/util/guards"
 
 import {
   CourseCreateArg,
@@ -196,7 +196,7 @@ export function fromCourseForm<Values extends CourseFormValues>({
           course_translation.open_university_course_link.course_code.trim(),
       }
     })
-    .filter(notEmpty)
+    .filter(isDefinedAndNotEmpty)
 
   const study_modules = Object.keys(values.study_modules ?? {})
     .filter((key) => values?.study_modules?.[key])

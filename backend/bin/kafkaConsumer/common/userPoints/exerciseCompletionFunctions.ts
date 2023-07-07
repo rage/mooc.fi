@@ -4,7 +4,6 @@ import {
   Exercise,
   ExerciseCompletion,
   ExerciseCompletionRequiredAction,
-  Prisma,
 } from "@prisma/client"
 
 import {
@@ -12,9 +11,7 @@ import {
   TimestampWarning,
   ValidationError,
 } from "../../../../lib/errors"
-import { isNullOrUndefined } from "../../../../util/isNullOrUndefined"
-import { err, ok, Result } from "../../../../util/result"
-import { parseTimestamp } from "../../util"
+import { err, isNullish, ok, parseTimestamp, Result } from "../../../../util"
 import { KafkaContext } from "../kafkaContext"
 import { Message } from "./interfaces"
 
@@ -85,7 +82,7 @@ export const getCreatedAndUpdatedExerciseCompletions = async <
   logger.info("Getting the exercises")
 
   const messagesWithoutExerciseId = exercises.filter((m) =>
-    isNullOrUndefined(m.exercise_id),
+    isNullish(m.exercise_id),
   )
   if (messagesWithoutExerciseId.length > 0) {
     return err(
@@ -209,23 +206,22 @@ export const createExerciseCompletion = async (
 
   let savedExerciseCompletion: ExerciseCompletion
 
-  const exerciseCompletionCreateInputData: Prisma.ExerciseCompletionCreateInput =
-    {
-      exercise: {
-        connect: { id: exercise_id },
-      },
-      user: {
-        connect: { upstream_id: Number(message.user_id) },
-      },
-      n_points: Number(message.n_points),
-      completed: message.completed,
-      attempted: message.attempted ?? false,
-      exercise_completion_required_actions: {
-        create: required_actions.map((value) => ({ value })),
-      },
-      timestamp: timestamp.toJSDate(),
-      original_submission_date: originalSubmissionDate?.toJSDate(),
-    }
+  const exerciseCompletionCreateInputData = {
+    exercise: {
+      connect: { id: exercise_id },
+    },
+    user: {
+      connect: { upstream_id: Number(message.user_id) },
+    },
+    n_points: Number(message.n_points),
+    completed: message.completed,
+    attempted: message.attempted ?? false,
+    exercise_completion_required_actions: {
+      create: required_actions.map((value) => ({ value })),
+    },
+    timestamp: timestamp.toJSDate(),
+    original_submission_date: originalSubmissionDate?.toJSDate(),
+  }
   logger.info(`Inserting ${JSON.stringify(exerciseCompletionCreateInputData)}`)
   try {
     savedExerciseCompletion = await prisma.exerciseCompletion.create({

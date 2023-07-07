@@ -1,3 +1,7 @@
+import { Prisma } from "@prisma/client"
+import type { Types } from "@prisma/client/runtime"
+
+import { createDefaultData } from "../../config/defaultData"
 import { type ExtendedPrismaClient } from "../../prisma"
 import {
   abEnrollments,
@@ -7,6 +11,7 @@ import {
   courseAliases,
   courseOwnerships,
   courses,
+  emailTemplateOrganizations,
   emailTemplateThresholds,
   exerciseCompletions,
   exercises,
@@ -21,21 +26,27 @@ import {
   userCourseProgresses,
   userCourseServiceProgresses,
   userCourseSettings,
+  userOrganizationJoinConfirmations,
+  userOrganizations,
   users,
 } from "./"
 
-type ExcludeInternalKeys<K> = K extends `$${string}` ? never : K
+type ExcludeInternalKeys<K> = Exclude<K, `$${string}` | symbol>
 
 export const seed = async (prisma: ExtendedPrismaClient) => {
   const create = async <
     K extends ExcludeInternalKeys<keyof ExtendedPrismaClient>,
     T,
+    ResultType extends Types.DefaultSelection<
+      Prisma.TypeMap["model"][Capitalize<K>]["payload"]
+    > = Types.DefaultSelection<
+      Prisma.TypeMap["model"][Capitalize<K>]["payload"]
+    >,
   >(
     key: K,
     data: T[],
-  ) => {
-    const created = []
-    // @ts-ignore: key
+  ): Promise<Array<ResultType>> => {
+    const created: Array<ResultType> = []
     for (const datum of data) {
       // @ts-ignore: key
       created.push(await prisma[key].create({ data: datum }))
@@ -44,13 +55,23 @@ export const seed = async (prisma: ExtendedPrismaClient) => {
     return created
   }
 
+  await createDefaultData(prisma)
+
   const seededTagTypes = await create("tagType", tagTypes)
   const seededTags = await create("tag", tags)
   const seededSponsors = await create("sponsor", sponsors)
   const seededModules = await create("studyModule", study_modules)
   const seededCourses = await create("course", courses)
+  const seededEmailTemplateOrganizations = await create(
+    "emailTemplate",
+    emailTemplateOrganizations,
+  )
   const seededOrganizations = await create("organization", organizations)
   const seededUsers = await create("user", users)
+  const seededUserOrganizations = await create(
+    "userOrganization",
+    userOrganizations,
+  )
   const seededCompletions = await create("completion", completions)
   const seededServices = await create("service", services)
   const seededUserCourseSettings = await create(
@@ -90,6 +111,10 @@ export const seed = async (prisma: ExtendedPrismaClient) => {
     "courseOwnership",
     courseOwnerships,
   )
+  const seededUserOrganizationJoinConfirmations = await create(
+    "userOrganizationJoinConfirmation",
+    userOrganizationJoinConfirmations,
+  )
 
   return {
     courses: seededCourses,
@@ -111,6 +136,9 @@ export const seed = async (prisma: ExtendedPrismaClient) => {
     openUniversityRegistrationLink: seededOpenUniversityRegistrationLink,
     storedData: seededStoredData,
     courseOwnerships: seededCourseOwnerships,
+    emailTemplateOrganizations: seededEmailTemplateOrganizations,
+    userOrganizations: seededUserOrganizations,
+    userOrganizationJoinConfirmations: seededUserOrganizationJoinConfirmations,
     tags: seededTags,
     tagTypes: seededTagTypes,
     sponsors: seededSponsors,

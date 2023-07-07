@@ -20,7 +20,7 @@ export default {
   emailTemplates: "Email-mallit",
   emailTemplateEdit: "Muokkaa",
   researchConsent: "Osallistuminen tutkimukseen",
-  register: "Rekisteröi organisaatioon",
+  register: "Rekisteröidy organisaatioon",
   registerCompletion: "Rekisteröi suoritus",
   faq: "Usein kysytyt kysymykset",
   teachers: "Opettajille",

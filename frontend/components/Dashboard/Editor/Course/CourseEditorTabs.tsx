@@ -15,7 +15,7 @@ import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/courses"
 import { convertDotNotation } from "/util/convertDotNotation"
 import flattenKeys from "/util/flattenKeys"
-import notEmpty from "/util/notEmpty"
+import { isDefinedAndNotEmpty } from "/util/guards"
 
 const TabTitle = styled("span", {
   shouldForwardProp: (prop) => prop !== "error",
@@ -109,7 +109,7 @@ function CourseEditorTabs() {
         Object.keys(flattenedErrors).includes(convertDotNotation(anchor.name)),
       )
       .map((anchor) => anchor.tab)
-      .filter(notEmpty)
+      .filter(isDefinedAndNotEmpty)
 
     return errorAnchorTabs.reduce((acc, curr) => {
       if (acc[curr]) {

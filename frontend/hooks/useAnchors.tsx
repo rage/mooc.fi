@@ -15,7 +15,7 @@ import {
 } from "/components/Dashboard/Editor/EditorContext"
 import { convertDotNotation } from "/util/convertDotNotation"
 import flattenKeys from "/util/flattenKeys"
-import notEmpty from "/util/notEmpty"
+import { isDefinedAndNotEmpty } from "/util/guards"
 
 export type Anchor<ElemType extends HTMLElement = HTMLElement> = {
   id: number
@@ -92,7 +92,7 @@ export function useAnchors(initialAnchors?: Record<string, Anchor>) {
       const firstTab = firstErrorAnchor?.tab
 
       if (firstRef?.scrollIntoView && !isVisible(firstRef)) {
-        if (!notEmpty(firstTab) || Number(firstTab) === tab) {
+        if (!isDefinedAndNotEmpty(firstTab) || Number(firstTab) === tab) {
           scrollAndSetError(firstRef)
         } else {
           setTab?.(Number(firstTab))
@@ -103,7 +103,7 @@ export function useAnchors(initialAnchors?: Record<string, Anchor>) {
       }
       if (
         !firstRef &&
-        notEmpty(firstTab) &&
+        isDefinedAndNotEmpty(firstTab) &&
         Number(firstTab) !== tab &&
         !isRetry
       ) {

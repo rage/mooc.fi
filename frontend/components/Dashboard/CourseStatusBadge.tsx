@@ -7,6 +7,10 @@ import Schedule from "@mui/icons-material/Schedule"
 import { Chip, ChipProps } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import { useTranslator } from "/hooks/useTranslator"
+import { KeyOfTranslationDictionary } from "/translations"
+import CoursesTranslations from "/translations/courses"
+
 import { CourseStatus } from "/graphql/generated"
 
 const statusColor: Record<CourseStatus & string, string> = {
@@ -32,6 +36,8 @@ function CourseStatusBadge({
   status,
   ...props
 }: ChipProps & { status?: CourseStatus | null }) {
+  const t = useTranslator(CoursesTranslations)
+
   return (
     <StatusBadge
       {...props}
@@ -39,7 +45,13 @@ function CourseStatusBadge({
       status={status}
       color={status !== CourseStatus.Upcoming ? "primary" : undefined}
       size="small"
-      label={status ?? "Unknown"}
+      label={
+        t(
+          `course${status}` as KeyOfTranslationDictionary<
+            typeof CoursesTranslations
+          >,
+        ) ?? "Unknown"
+      }
     />
   )
 }

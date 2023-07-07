@@ -29,7 +29,7 @@ import CollapseContext, {
   collapseReducer,
   createCollapseState,
 } from "./CollapseContext"
-import { SearchVariables } from "/components/FilterMenu"
+import { SearchVariables } from "/contexts/FilterContext"
 import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
 import ProfileTranslations from "/translations/profile"

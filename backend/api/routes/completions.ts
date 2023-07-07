@@ -12,7 +12,7 @@ import {
 } from "@prisma/client"
 
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
-import { err } from "../../util/result"
+import { err, isDefined } from "../../util"
 import { ApiContext, Controller } from "../types"
 
 const languageMap: Record<string, string> = {
@@ -28,6 +28,18 @@ interface RegisterCompletionInput {
   tier?: number
   registration_date?: string
 }
+interface Tier {
+  tier: number
+  name: string
+  course_id: string
+  adjacent: Array<Tier>
+}
+
+interface TierData {
+  name: string
+  link: string | null
+}
+
 export class CompletionController extends Controller {
   constructor(override readonly ctx: ApiContext) {
     super(ctx)
@@ -81,6 +93,8 @@ export class CompletionController extends Controller {
 
     const stream = sql.stream().pipe(JSONStream.stringify()).pipe(res)
     req.on("close", stream.end.bind(stream))
+
+    return // NOSONAR
   }
 
   completionInstructions = async (
@@ -121,9 +135,6 @@ export class CompletionController extends Controller {
     const { user } = getUserResult.value
     const { slug } = req.params
 
-    // TODO: typing
-    const tierData: any = []
-
     const course = await this.getCourseKnex({ slug })
 
     if (!course) {
@@ -147,45 +158,47 @@ export class CompletionController extends Controller {
     // - as it's now only used in BAI, shouldn't be a problem?
     const tiers = (
       await knex
-        .select<any, OpenUniversityRegistrationLink[]>("tiers")
+        .select<"tiers", OpenUniversityRegistrationLink[]>("tiers")
         .from("open_university_registration_link")
         .where("course_id", course.id)
-    )?.[0].tiers
+    )?.[0].tiers as Array<Tier | null> | null
+
+    const tierData: Array<TierData> = []
 
     if (tiers) {
-      const t: any = tiers
+      const t = tiers.filter(isDefined)
 
-      for (let i = 0; i < t.length; i++) {
-        if (t[i].tier === completion.tier) {
+      for (const element of t) {
+        if (element.tier === completion.tier) {
           const tierRegister = (
             await knex
               .select<any, OpenUniversityRegistrationLink[]>("link")
               .from("open_university_registration_link")
-              .where("course_id", t[i].course_id)
+              .where("course_id", element.course_id)
           )?.[0]
 
-          tierData.push({ name: t[i].name, link: tierRegister.link })
+          tierData.push({ name: element.name, link: tierRegister.link })
 
-          if (t[i].adjacent) {
-            for (let j = 0; j < t[i].adjacent.length; j++) {
+          if (element.adjacent) {
+            for (const adjacentElement of element.adjacent) {
               const adjRegister = (
                 await knex
                   .select<any, OpenUniversityRegistrationLink[]>("link")
                   .from("open_university_registration_link")
-                  .where("course_id", t[i].adjacent[j].course_id)
+                  .where("course_id", adjacentElement.course_id)
               )?.[0]
 
               tierData.push({
-                name: t[i].adjacent[j].name,
+                name: adjacentElement.name,
                 link: adjRegister.link,
               })
             }
           }
         }
       }
-
-      return res.status(200).json({ tierData })
     }
+
+    return res.status(200).json({ tierData })
   }
 
   updateCertificateId = async (
@@ -204,8 +217,8 @@ export class CompletionController extends Controller {
     const { prisma } = this.ctx
     const adminRes = await this.requireAdmin(req, res)
 
-    if (adminRes !== true) {
-      return adminRes
+    if (adminRes.isErr()) {
+      return adminRes.error
     }
 
     const { slug } = req.params
@@ -288,8 +301,8 @@ export class CompletionController extends Controller {
     const { prisma } = this.ctx
     const adminRes = await this.requireAdmin(req, res)
 
-    if (adminRes !== true) {
-      return adminRes
+    if (adminRes.isErr()) {
+      return adminRes.error
     }
 
     const { course_id, slug, user_id, user_upstream_id } = req.body

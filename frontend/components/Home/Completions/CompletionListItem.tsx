@@ -9,8 +9,8 @@ import { styled } from "@mui/material/styles"
 import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
 import { formatDateTime, mapLangToLanguage } from "/util/dataFormatFunctions"
+import { isDefinedAndNotEmpty } from "/util/guards"
 import { addDomain } from "/util/imageUtils"
-import notEmpty from "/util/notEmpty"
 
 import {
   CompletionDetailedFieldsFragment,
@@ -135,14 +135,14 @@ export const CompletionListItem = ({
                       }`}
                     </CardSubtitle>
                   ) : null}
-                  {notEmpty(completion.tier) && (
+                  {isDefinedAndNotEmpty(completion.tier) && (
                     <CardSubtitle>
                       {`${t("completionTier")} ${t(
                         `completionTier-${completion.tier as 1 | 2 | 3}`,
                       )}`}
                     </CardSubtitle>
                   )}
-                  {notEmpty(completion?.grade) && (
+                  {isDefinedAndNotEmpty(completion?.grade) && (
                     <CardSubtitle>
                       {t("grade")} <strong>{completion.grade}</strong>
                     </CardSubtitle>
