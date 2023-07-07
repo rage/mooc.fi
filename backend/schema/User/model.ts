@@ -523,7 +523,7 @@ export const User = objectType({
           const courseHandlerIds = nonTiered
             .map((c) => c.course_id)
             .concat(Object.keys(tierCourseMap))
-          const completions = await prisma.completion.findMany({
+          const completions = await ctx.prisma.completion.findMany({
             where: {
               user_id: id,
               course_id: {

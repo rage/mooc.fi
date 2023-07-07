@@ -1,5 +1,6 @@
 import { PruneOldStoredDataError } from "../lib/errors"
 import sentryLogger from "../lib/logger"
+import prisma from "../prisma"
 import Knex from "../services/knex"
 
 const logger = sentryLogger({ service: "prune-old-stored-data" })
