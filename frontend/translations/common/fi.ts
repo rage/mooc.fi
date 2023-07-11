@@ -72,11 +72,11 @@ export default {
   ukraineLink: "https://www.punainenristi.fi/lahjoita/katastrofirahasto/",
   ukraineLinkText: "Lahjoita Suomen Punaisen Ristin katastrofirahastoon",
   myProfile: "Oma profiili",
-  ukraineHyText: "Helsingin yliopiston Ukraina-keräys",
+  ukraineHyText: "Helsingin yliopiston Ukraina‑keräys",
   ukraineHyLink:
     "https://www.helsinki.fi/fi/yhteistyo/lahjoittajille/ukraina-kerays",
   ukraineHyLinkText:
-    "Lahjoita Ukraina-keräykseen opiskelijoiden ja tutkijoiden tueksi",
+    "Lahjoita Ukraina‑keräykseen opiskelijoiden ja tutkijoiden tueksi",
   fi: "Suomeksi",
   en: "In English",
   selectAll: "Valitse kaikki",
