@@ -28,7 +28,9 @@ const Layout: React.FunctionComponent<React.PropsWithChildren> = ({
 }) => {
   const router = useRouter()
 
-  const isHomePage = !!router?.asPath?.replace(/#(.*)/, "").match(/^\/_new\/?$/)
+  const isHomePage = !!RegExp(/^\/_new\/?$/).exec(
+    router?.asPath?.replace(/#(.*)/, ""),
+  )
 
   return (
     <>

@@ -1,8 +1,8 @@
-import { Grid } from "@mui/material"
+import { EnhancedLinkProps, Grid, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { FullCoverTextBackground } from "/components/Images/CardBackgroundFullCover"
-import OutboundLink from "/components/OutboundLink"
+import OutboundLink, { OutboundLinkTextStyle } from "/components/OutboundLink"
 import { ShadowedDiv } from "/components/Surfaces/ClickableCard"
 import { CardTitle } from "/components/Text/headers"
 import { useTranslator } from "/hooks/useTranslator"
@@ -11,7 +11,7 @@ import CommonTranslations from "/translations/common"
 const NaviItemBase = styled(ShadowedDiv)`
   width: 100%;
   height: 100%;
-  max-height: 100px;
+  max-height: 160px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -19,6 +19,17 @@ const NaviItemBase = styled(ShadowedDiv)`
 
   @media (max-width: 600px) {
     max-height: 200px;
+  }
+`
+
+const InfoGrid = styled("div")`
+  width: 80%;
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: 1fr 1fr;
+
+  @media (max-width: 800px) {
+    width: 90%;
   }
 `
 
@@ -65,23 +76,36 @@ const WaveOverlay = styled("div")`
 `
 
 const InfoContainer = styled("div")`
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
   z-index: 1;
-  max-width: 70%;
   padding: 0rem;
 
   a {
     font-size: clamp(12px, 1.5vw, 18px);
   }
   h3 {
-    font-size: clamp(14px, 2vw, 24px);
+    font-size: clamp(18px, 2vw, 24px);
   }
 `
 
 const InfoTitle = styled(CardTitle)`
   margin-top: 0;
+  text-wrap: balance;
 ` as typeof CardTitle
+
+const OutboundLinkText = styled(Typography)`
+  ${OutboundLinkTextStyle.styles}
+` as typeof Typography
+
+const UkraineLink = ({
+  children,
+  ...props
+}: React.PropsWithChildren<EnhancedLinkProps>) => (
+  <OutboundLink skipLinkStyling {...props}>
+    <OutboundLinkText>{children}</OutboundLinkText>
+  </OutboundLink>
+)
 
 function UkraineInfo() {
   const t = useTranslator(CommonTranslations)
@@ -90,22 +114,24 @@ function UkraineInfo() {
     <Grid item xs={12}>
       <NaviItemBase>
         <FlagBackground>
-          <InfoContainer>
-            <InfoTitle component="h3" variant="h3">
-              {t("ukraineText")}
-            </InfoTitle>
-            <OutboundLink href={t("ukraineLink")}>
-              {t("ukraineLinkText")}
-            </OutboundLink>
-          </InfoContainer>
-          <InfoContainer>
-            <InfoTitle component="h3" variant="h3">
-              {t("ukraineHyText")}
-            </InfoTitle>
-            <OutboundLink href={t("ukraineHyLink")}>
-              {t("ukraineHyLinkText")}
-            </OutboundLink>
-          </InfoContainer>
+          <InfoGrid>
+            <InfoContainer>
+              <InfoTitle component="h3" variant="h3">
+                {t("ukraineText")}
+              </InfoTitle>
+              <UkraineLink href={t("ukraineLink")}>
+                {t("ukraineLinkText")}
+              </UkraineLink>
+            </InfoContainer>
+            <InfoContainer>
+              <InfoTitle component="h3" variant="h3">
+                {t("ukraineHyText")}
+              </InfoTitle>
+              <UkraineLink href={t("ukraineHyLink")}>
+                {t("ukraineHyLinkText")}
+              </UkraineLink>
+            </InfoContainer>
+          </InfoGrid>
         </FlagBackground>
       </NaviItemBase>
     </Grid>

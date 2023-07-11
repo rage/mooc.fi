@@ -45,7 +45,9 @@ const Layout = ({ children }: PropsWithChildren<unknown>) => {
   const router = useRouter()
   const { loggedIn, admin } = useLoginStateContext()
 
-  const isHomePage = !!router?.asPath?.replace(/#(.*)/, "").match(/^\/?$/)
+  const isHomePage = !!RegExp(/^\/?$/).exec(
+    router?.asPath?.replace(/#(.*)/, ""),
+  )
 
   return (
     <>
