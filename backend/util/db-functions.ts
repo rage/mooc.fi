@@ -87,6 +87,62 @@ export const buildUserSearch = (
   return userSearchQuery
 }
 
+const wrapQueryString = (query: string) => `%${query}%`
+
+export const buildUserSearchRaw = (
+  search?: string | null,
+  fields: Array<keyof Prisma.UserWhereInput | "full_name"> = defaultFields,
+): Prisma.Sql | undefined => {
+  if (!isDefined(search)) {
+    return
+  }
+
+  if (fields && fields.length === 0) {
+    fields = defaultFields
+  }
+
+  const conditions: Array<Prisma.Sql> = []
+
+  for (const field of fields) {
+    if (field === "full_name") {
+      const possibleNameCombinations = getNameCombinations(search)
+
+      if (possibleNameCombinations.length) {
+        const nameQueries = possibleNameCombinations.map(
+          ({ first_name, last_name }) =>
+            Prisma.sql`(first_name ILIKE ${wrapQueryString(
+              first_name,
+            )} AND last_name ILIKE ${wrapQueryString(last_name)})`,
+        )
+        conditions.push(Prisma.sql`(${Prisma.join(nameQueries, " OR ")})`)
+      }
+    } else if (field === "upstream_id") {
+      const searchAsNumber = parseInt(search)
+
+      if (!isNaN(searchAsNumber)) {
+        conditions.push(Prisma.sql`(upstream_id = ${searchAsNumber})`)
+      }
+    } else if (["student_number", "real_student_number"].includes(field)) {
+      conditions.push(
+        Prisma.sql`(${Prisma.raw(field)} LIKE ${wrapQueryString(search)})`,
+      )
+    } else {
+      conditions.push(
+        Prisma.sql`(${Prisma.raw(field)} ILIKE ${wrapQueryString(search)})`,
+      )
+    }
+  }
+
+  if (conditions.length === 0) {
+    return
+  }
+
+  return Prisma.sql`
+    SELECT * from "user"
+    WHERE ${Prisma.join(conditions, " OR ")};
+  `
+}
+
 interface ConvertPaginationInput {
   first?: number | null
   last?: number | null

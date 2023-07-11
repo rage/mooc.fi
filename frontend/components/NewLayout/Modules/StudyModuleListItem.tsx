@@ -190,7 +190,7 @@ export function ListItem({
     )
     if (description.clientHeight > cardHeight && currentSpan < 2) {
       const span = Math.ceil(description.scrollHeight / cardHeight) // the max size of row should be in a var
-      description.style.cssText = `--hero-span: ${span};`
+      description.style.setProperty("--hero-span", `${span}`)
     }
   }, [descriptionRef.current, moduleCardRef.current])
 
