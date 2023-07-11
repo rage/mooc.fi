@@ -17,18 +17,25 @@ const ModulesGrid = styled("ul")(
   ({ theme }) => `
   list-style: none;
   list-style-position: inside;
-  padding: 0;
   display: grid;
   grid-gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(15vw, 1fr));
   padding: 2rem;
   justify-content: center;
   width: 80%;
 
-  ${theme.breakpoints.down("sm")}}} {
-    padding: 0;
+  ${theme.breakpoints.down("lg")} {
+    grid-template-columns: repeat(auto-fit, minmax(30vw, 1fr));
+  }
+  ${theme.breakpoints.down("sm")} {
+    padding: 1rem;
     width: 100%;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+
+  ${theme.breakpoints.down("xxs")} {
+    width: 100%;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 `,
 )
