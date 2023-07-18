@@ -1,13 +1,13 @@
 import React, { PropsWithChildren, Component as ReactComponent } from "react"
 
-import { NextPageContext as NextContext } from "next"
+import { NextPageContext } from "next"
 
 import AdminError from "/components/Dashboard/AdminError"
 import { LoginStateContext } from "/contexts/LoginStateContext"
 import { isAdmin, isSignedIn } from "/lib/authentication"
 import redirect from "/lib/redirect"
 
-let prevContext: NextContext | null = null
+let prevContext: NextPageContext | null = null
 
 function withAdmin(Component: any) {
   class WithAdmin extends ReactComponent<
@@ -21,7 +21,7 @@ function withAdmin(Component: any) {
     })`
     static contextType = LoginStateContext
 
-    static async getInitialProps(context: NextContext) {
+    static async getInitialProps(context: NextPageContext) {
       const admin = isAdmin(context)
       const signedIn = isSignedIn(context)
 

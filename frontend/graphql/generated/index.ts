@@ -24,7 +24,7 @@ export type Incremental<T> =
   | {
       [P in keyof T]?: P extends " $fragmentName" | "__typename" ? T[P] : never
     }
-// Generated on 2023-07-03T18:00:52+03:00
+// Generated on 2023-07-18T22:40:49+03:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -355,7 +355,7 @@ export type Course = {
   services: Array<Service>
   slug: Scalars["String"]["output"]
   sponsors: Array<Sponsor>
-  start_date: Scalars["DateTime"]["output"]
+  start_date: Maybe<Scalars["DateTime"]["output"]>
   start_point: Maybe<Scalars["Boolean"]["output"]>
   status: Maybe<CourseStatus>
   study_module_order: Maybe<Scalars["Int"]["output"]>
@@ -536,7 +536,7 @@ export type CourseCreateArg = {
   points_needed?: InputMaybe<Scalars["Int"]["input"]>
   promote?: InputMaybe<Scalars["Boolean"]["input"]>
   slug: Scalars["String"]["input"]
-  sponsors?: InputMaybe<Array<SponsorUniqueInput>>
+  sponsors?: InputMaybe<Array<SponsorUniqueWithOrderInput>>
   start_date: Scalars["DateTime"]["input"]
   start_point?: InputMaybe<Scalars["Boolean"]["input"]>
   status?: InputMaybe<CourseStatus>
@@ -648,7 +648,7 @@ export type CourseOrderByWithRelationAndSearchRelevanceInput = {
   services?: InputMaybe<ServiceOrderByRelationAggregateInput>
   slug?: InputMaybe<SortOrder>
   sponsors?: InputMaybe<CourseSponsorOrderByRelationAggregateInput>
-  start_date?: InputMaybe<SortOrder>
+  start_date?: InputMaybe<SortOrderInput>
   start_point?: InputMaybe<SortOrderInput>
   status?: InputMaybe<SortOrderInput>
   stored_data?: InputMaybe<StoredDataOrderByRelationAggregateInput>
@@ -997,7 +997,7 @@ export type CourseUpsertArg = {
   points_needed?: InputMaybe<Scalars["Int"]["input"]>
   promote?: InputMaybe<Scalars["Boolean"]["input"]>
   slug: Scalars["String"]["input"]
-  sponsors?: InputMaybe<Array<SponsorUniqueInput>>
+  sponsors?: InputMaybe<Array<SponsorUniqueWithOrderInput>>
   start_date: Scalars["DateTime"]["input"]
   start_point?: InputMaybe<Scalars["Boolean"]["input"]>
   status?: InputMaybe<CourseStatus>
@@ -1123,7 +1123,7 @@ export type CourseWhereInput = {
   services?: InputMaybe<ServiceListRelationFilter>
   slug?: InputMaybe<StringFilter>
   sponsors?: InputMaybe<CourseSponsorListRelationFilter>
-  start_date?: InputMaybe<DateTimeFilter>
+  start_date?: InputMaybe<DateTimeNullableFilter>
   start_point?: InputMaybe<BoolNullableFilter>
   status?: InputMaybe<EnumCourseStatusNullableFilter>
   stored_data?: InputMaybe<StoredDataListRelationFilter>
@@ -1188,7 +1188,7 @@ export type CourseWhereUniqueInput = {
   services?: InputMaybe<ServiceListRelationFilter>
   slug?: InputMaybe<Scalars["String"]["input"]>
   sponsors?: InputMaybe<CourseSponsorListRelationFilter>
-  start_date?: InputMaybe<DateTimeFilter>
+  start_date?: InputMaybe<DateTimeNullableFilter>
   start_point?: InputMaybe<BoolNullableFilter>
   status?: InputMaybe<EnumCourseStatusNullableFilter>
   stored_data?: InputMaybe<StoredDataListRelationFilter>
@@ -1452,7 +1452,9 @@ export type Exercise = {
 export type Exerciseexercise_completionsArgs = {
   attempted?: InputMaybe<Scalars["Boolean"]["input"]>
   completed?: InputMaybe<Scalars["Boolean"]["input"]>
-  orderBy?: InputMaybe<ExerciseCompletionOrderByWithRelationAndSearchRelevanceInput>
+  orderBy?: InputMaybe<
+    Array<ExerciseCompletionOrderByWithRelationAndSearchRelevanceInput>
+  >
   user_id?: InputMaybe<Scalars["ID"]["input"]>
 }
 
@@ -2965,7 +2967,7 @@ export type QuerycoursesArgs = {
   handledBy?: InputMaybe<Scalars["String"]["input"]>
   hidden?: InputMaybe<Scalars["Boolean"]["input"]>
   language?: InputMaybe<Scalars["String"]["input"]>
-  orderBy?: InputMaybe<CourseOrderByWithRelationAndSearchRelevanceInput>
+  orderBy?: InputMaybe<Array<CourseOrderByWithRelationAndSearchRelevanceInput>>
   search?: InputMaybe<Scalars["String"]["input"]>
   status?: InputMaybe<Array<CourseStatus>>
   tag_types?: InputMaybe<Array<Scalars["String"]["input"]>>
@@ -3024,7 +3026,9 @@ export type QueryorganizationsArgs = {
   cursor?: InputMaybe<OrganizationWhereUniqueInput>
   disabled?: InputMaybe<Scalars["Boolean"]["input"]>
   hidden?: InputMaybe<Scalars["Boolean"]["input"]>
-  orderBy?: InputMaybe<OrganizationOrderByWithRelationAndSearchRelevanceInput>
+  orderBy?: InputMaybe<
+    Array<OrganizationOrderByWithRelationAndSearchRelevanceInput>
+  >
   skip?: InputMaybe<Scalars["Int"]["input"]>
   take?: InputMaybe<Scalars["Int"]["input"]>
 }
@@ -3061,7 +3065,9 @@ export type Querystudy_module_existsArgs = {
 
 export type Querystudy_modulesArgs = {
   language?: InputMaybe<Scalars["String"]["input"]>
-  orderBy?: InputMaybe<StudyModuleOrderByWithRelationAndSearchRelevanceInput>
+  orderBy?: InputMaybe<
+    Array<StudyModuleOrderByWithRelationAndSearchRelevanceInput>
+  >
 }
 
 export type QuerytagsArgs = {
@@ -3436,6 +3442,11 @@ export type SponsorUniqueInput = {
   id: Scalars["String"]["input"]
 }
 
+export type SponsorUniqueWithOrderInput = {
+  id: Scalars["String"]["input"]
+  order?: InputMaybe<Scalars["Int"]["input"]>
+}
+
 export type SponsorUpsertInput = {
   id: Scalars["String"]["input"]
   images?: InputMaybe<Array<SponsorImageUpsertInput>>
@@ -3537,8 +3548,10 @@ export type StudyModule = {
 }
 
 export type StudyModulecoursesArgs = {
+  hidden?: InputMaybe<Scalars["Boolean"]["input"]>
   language?: InputMaybe<Scalars["String"]["input"]>
-  orderBy?: InputMaybe<CourseOrderByWithRelationAndSearchRelevanceInput>
+  orderBy?: InputMaybe<Array<CourseOrderByWithRelationAndSearchRelevanceInput>>
+  statuses?: InputMaybe<Array<CourseStatus>>
 }
 
 export type StudyModulestudy_module_translationsArgs = {
@@ -5117,7 +5130,7 @@ export type FrontpageCourseFieldsFragment = {
   support_email: string | null
   teacher_in_charge_email: string
   teacher_in_charge_name: string
-  start_date: any
+  start_date: any | null
   end_date: any | null
   has_certificate: boolean | null
   name: string
@@ -5148,6 +5161,27 @@ export type FrontpageCourseFieldsFragment = {
   } | null
 }
 
+export type FrontpageModuleCourseFieldsFragment = {
+  __typename?: "Course"
+  description: string | null
+  link: string | null
+  order: number | null
+  study_module_order: number | null
+  status: CourseStatus | null
+  start_point: boolean | null
+  study_module_start_point: boolean | null
+  hidden: boolean | null
+  start_date: any | null
+  end_date: any | null
+  name: string
+  ects: string | null
+  language: string | null
+  created_at: any
+  updated_at: any
+  id: string
+  slug: string
+}
+
 export type NewFrontpageCourseFieldsFragment = {
   __typename?: "Course"
   description: string | null
@@ -5164,7 +5198,7 @@ export type NewFrontpageCourseFieldsFragment = {
   support_email: string | null
   teacher_in_charge_email: string
   teacher_in_charge_name: string
-  start_date: any
+  start_date: any | null
   end_date: any | null
   has_certificate: boolean | null
   name: string
@@ -5198,7 +5232,7 @@ export type CourseFieldsFragment = {
   support_email: string | null
   teacher_in_charge_email: string
   teacher_in_charge_name: string
-  start_date: any
+  start_date: any | null
   end_date: any | null
   has_certificate: boolean | null
   name: string
@@ -5267,7 +5301,7 @@ export type NewCourseFieldsFragment = {
   support_email: string | null
   teacher_in_charge_email: string
   teacher_in_charge_name: string
-  start_date: any
+  start_date: any | null
   end_date: any | null
   has_certificate: boolean | null
   name: string
@@ -5347,7 +5381,7 @@ export type EditorCourseFieldsFragment = {
   support_email: string | null
   teacher_in_charge_email: string
   teacher_in_charge_name: string
-  start_date: any
+  start_date: any | null
   end_date: any | null
   has_certificate: boolean | null
   name: string
@@ -5447,7 +5481,7 @@ export type EditorCourseDetailedFieldsFragment = {
   support_email: string | null
   teacher_in_charge_email: string
   teacher_in_charge_name: string
-  start_date: any
+  start_date: any | null
   end_date: any | null
   has_certificate: boolean | null
   name: string
@@ -5602,7 +5636,7 @@ export type CourseDashboardCourseFieldsFragment = {
   __typename?: "Course"
   teacher_in_charge_name: string
   teacher_in_charge_email: string
-  start_date: any
+  start_date: any | null
   name: string
   ects: string | null
   language: string | null
@@ -6196,7 +6230,7 @@ export type StudyModuleFieldsWithCoursesFragment = {
     support_email: string | null
     teacher_in_charge_email: string
     teacher_in_charge_name: string
-    start_date: any
+    start_date: any | null
     end_date: any | null
     has_certificate: boolean | null
     name: string
@@ -6276,7 +6310,7 @@ export type NewStudyModuleFieldsWithCoursesFragment = {
     support_email: string | null
     teacher_in_charge_email: string
     teacher_in_charge_name: string
-    start_date: any
+    start_date: any | null
     end_date: any | null
     has_certificate: boolean | null
     name: string
@@ -8442,7 +8476,7 @@ export type AddCourseMutation = {
     support_email: string | null
     teacher_in_charge_email: string
     teacher_in_charge_name: string
-    start_date: any
+    start_date: any | null
     end_date: any | null
     has_certificate: boolean | null
     name: string
@@ -8591,7 +8625,7 @@ export type UpdateCourseMutation = {
     support_email: string | null
     teacher_in_charge_email: string
     teacher_in_charge_name: string
-    start_date: any
+    start_date: any | null
     end_date: any | null
     has_certificate: boolean | null
     name: string
@@ -9468,7 +9502,7 @@ export type CoursesQuery = {
     support_email: string | null
     teacher_in_charge_email: string
     teacher_in_charge_name: string
-    start_date: any
+    start_date: any | null
     end_date: any | null
     has_certificate: boolean | null
     name: string
@@ -9544,7 +9578,7 @@ export type NewCoursesQuery = {
     support_email: string | null
     teacher_in_charge_email: string
     teacher_in_charge_name: string
-    start_date: any
+    start_date: any | null
     end_date: any | null
     has_certificate: boolean | null
     name: string
@@ -9630,7 +9664,7 @@ export type FrontpageCoursesModulesQuery = {
     support_email: string | null
     teacher_in_charge_email: string
     teacher_in_charge_name: string
-    start_date: any
+    start_date: any | null
     end_date: any | null
     has_certificate: boolean | null
     name: string
@@ -9673,6 +9707,60 @@ export type FrontpageCoursesModulesQuery = {
   }> | null
 }
 
+export type FrontpageCoursesQueryVariables = Exact<{
+  language?: InputMaybe<Scalars["String"]["input"]>
+}>
+
+export type FrontpageCoursesQuery = {
+  __typename?: "Query"
+  courses: Array<{
+    __typename?: "Course"
+    description: string | null
+    link: string | null
+    order: number | null
+    study_module_order: number | null
+    promote: boolean | null
+    status: CourseStatus | null
+    start_point: boolean | null
+    study_module_start_point: boolean | null
+    hidden: boolean | null
+    upcoming_active_link: boolean | null
+    tier: number | null
+    support_email: string | null
+    teacher_in_charge_email: string
+    teacher_in_charge_name: string
+    start_date: any | null
+    end_date: any | null
+    has_certificate: boolean | null
+    name: string
+    ects: string | null
+    language: string | null
+    created_at: any
+    updated_at: any
+    id: string
+    slug: string
+    study_modules: Array<{
+      __typename?: "StudyModule"
+      id: string
+      slug: string
+      name: string
+    }>
+    photo: {
+      __typename?: "Image"
+      id: string
+      name: string | null
+      original: string
+      original_mimetype: string
+      compressed: string | null
+      compressed_mimetype: string | null
+      uncompressed: string
+      uncompressed_mimetype: string
+      created_at: any
+      updated_at: any
+    } | null
+  }> | null
+}
+
 export type NewFrontpageCoursesModulesQueryVariables = Exact<{
   language?: InputMaybe<Scalars["String"]["input"]>
 }>
@@ -9695,7 +9783,7 @@ export type NewFrontpageCoursesModulesQuery = {
     support_email: string | null
     teacher_in_charge_email: string
     teacher_in_charge_name: string
-    start_date: any
+    start_date: any | null
     end_date: any | null
     has_certificate: boolean | null
     name: string
@@ -9774,7 +9862,7 @@ export type EditorCoursesQuery = {
     support_email: string | null
     teacher_in_charge_email: string
     teacher_in_charge_name: string
-    start_date: any
+    start_date: any | null
     end_date: any | null
     has_certificate: boolean | null
     name: string
@@ -9955,7 +10043,7 @@ export type CourseEditorDetailsQuery = {
     support_email: string | null
     teacher_in_charge_email: string
     teacher_in_charge_name: string
-    start_date: any
+    start_date: any | null
     end_date: any | null
     has_certificate: boolean | null
     name: string
@@ -10087,7 +10175,7 @@ export type EmailTemplateEditorCoursesQuery = {
     __typename?: "Course"
     teacher_in_charge_name: string
     teacher_in_charge_email: string
-    start_date: any
+    start_date: any | null
     name: string
     ects: string | null
     language: string | null
@@ -10133,7 +10221,7 @@ export type CourseDashboardQuery = {
     __typename?: "Course"
     teacher_in_charge_name: string
     teacher_in_charge_email: string
-    start_date: any
+    start_date: any | null
     name: string
     ects: string | null
     language: string | null
@@ -10216,7 +10304,10 @@ export type OrganizationsQueryVariables = Exact<{
   take?: InputMaybe<Scalars["Int"]["input"]>
   skip?: InputMaybe<Scalars["Int"]["input"]>
   cursor?: InputMaybe<OrganizationWhereUniqueInput>
-  orderBy?: InputMaybe<OrganizationOrderByWithRelationAndSearchRelevanceInput>
+  orderBy?: InputMaybe<
+    | Array<OrganizationOrderByWithRelationAndSearchRelevanceInput>
+    | OrganizationOrderByWithRelationAndSearchRelevanceInput
+  >
   hidden?: InputMaybe<Scalars["Boolean"]["input"]>
   disabled?: InputMaybe<Scalars["Boolean"]["input"]>
 }>
@@ -10327,8 +10418,49 @@ export type StudyModulesQuery = {
   }> | null
 }
 
+export type FrontpageModulesWithCoursesQueryVariables = Exact<{
+  language?: InputMaybe<Scalars["String"]["input"]>
+  statuses?: InputMaybe<Array<CourseStatus> | CourseStatus>
+}>
+
+export type FrontpageModulesWithCoursesQuery = {
+  __typename?: "Query"
+  study_modules: Array<{
+    __typename?: "StudyModule"
+    description: string | null
+    image: string | null
+    order: number | null
+    created_at: any
+    updated_at: any
+    id: string
+    slug: string
+    name: string
+    courses: Array<{
+      __typename?: "Course"
+      description: string | null
+      link: string | null
+      order: number | null
+      study_module_order: number | null
+      status: CourseStatus | null
+      start_point: boolean | null
+      study_module_start_point: boolean | null
+      hidden: boolean | null
+      start_date: any | null
+      end_date: any | null
+      name: string
+      ects: string | null
+      language: string | null
+      created_at: any
+      updated_at: any
+      id: string
+      slug: string
+    }> | null
+  }> | null
+}
+
 export type StudyModulesWithCoursesQueryVariables = Exact<{
   language?: InputMaybe<Scalars["String"]["input"]>
+  statuses?: InputMaybe<Array<CourseStatus> | CourseStatus>
 }>
 
 export type StudyModulesWithCoursesQuery = {
@@ -10359,7 +10491,7 @@ export type StudyModulesWithCoursesQuery = {
       support_email: string | null
       teacher_in_charge_email: string
       teacher_in_charge_name: string
-      start_date: any
+      start_date: any | null
       end_date: any | null
       has_certificate: boolean | null
       name: string
@@ -10446,7 +10578,7 @@ export type NewStudyModulesWithCoursesQuery = {
       support_email: string | null
       teacher_in_charge_email: string
       teacher_in_charge_name: string
-      start_date: any
+      start_date: any | null
       end_date: any | null
       has_certificate: boolean | null
       name: string
@@ -13792,6 +13924,82 @@ export const CompletionsQueryConnectionFieldsFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<CompletionsQueryConnectionFieldsFragment, unknown>
+export const FrontpageModuleCourseFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "FrontpageModuleCourseFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "description" } },
+          { kind: "Field", name: { kind: "Name", value: "link" } },
+          { kind: "Field", name: { kind: "Name", value: "order" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_module_order" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "status" } },
+          { kind: "Field", name: { kind: "Name", value: "start_point" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_module_start_point" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "hidden" } },
+          { kind: "Field", name: { kind: "Name", value: "start_date" } },
+          { kind: "Field", name: { kind: "Name", value: "end_date" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseKeyFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "slug" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseKeyFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<FrontpageModuleCourseFieldsFragment, unknown>
 export const StudyModuleKeyFieldsFragmentDoc = {
   kind: "Document",
   definitions: [
@@ -30302,21 +30510,26 @@ export const CoursesDocument = {
                 kind: "Argument",
                 name: { kind: "Name", value: "orderBy" },
                 value: {
-                  kind: "ObjectValue",
-                  fields: [
+                  kind: "ListValue",
+                  values: [
                     {
-                      kind: "ObjectField",
-                      name: { kind: "Name", value: "order" },
-                      value: {
-                        kind: "ObjectValue",
-                        fields: [
-                          {
-                            kind: "ObjectField",
-                            name: { kind: "Name", value: "sort" },
-                            value: { kind: "EnumValue", value: "asc" },
+                      kind: "ObjectValue",
+                      fields: [
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "order" },
+                          value: {
+                            kind: "ObjectValue",
+                            fields: [
+                              {
+                                kind: "ObjectField",
+                                name: { kind: "Name", value: "sort" },
+                                value: { kind: "EnumValue", value: "asc" },
+                              },
+                            ],
                           },
-                        ],
-                      },
+                        },
+                      ],
                     },
                   ],
                 },
@@ -30678,21 +30891,26 @@ export const NewCoursesDocument = {
                 kind: "Argument",
                 name: { kind: "Name", value: "orderBy" },
                 value: {
-                  kind: "ObjectValue",
-                  fields: [
+                  kind: "ListValue",
+                  values: [
                     {
-                      kind: "ObjectField",
-                      name: { kind: "Name", value: "order" },
-                      value: {
-                        kind: "ObjectValue",
-                        fields: [
-                          {
-                            kind: "ObjectField",
-                            name: { kind: "Name", value: "sort" },
-                            value: { kind: "EnumValue", value: "asc" },
+                      kind: "ObjectValue",
+                      fields: [
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "order" },
+                          value: {
+                            kind: "ObjectValue",
+                            fields: [
+                              {
+                                kind: "ObjectField",
+                                name: { kind: "Name", value: "sort" },
+                                value: { kind: "EnumValue", value: "asc" },
+                              },
+                            ],
                           },
-                        ],
-                      },
+                        },
+                      ],
                     },
                   ],
                 },
@@ -31131,21 +31349,26 @@ export const FrontpageCoursesModulesDocument = {
                 kind: "Argument",
                 name: { kind: "Name", value: "orderBy" },
                 value: {
-                  kind: "ObjectValue",
-                  fields: [
+                  kind: "ListValue",
+                  values: [
                     {
-                      kind: "ObjectField",
-                      name: { kind: "Name", value: "order" },
-                      value: {
-                        kind: "ObjectValue",
-                        fields: [
-                          {
-                            kind: "ObjectField",
-                            name: { kind: "Name", value: "sort" },
-                            value: { kind: "EnumValue", value: "asc" },
+                      kind: "ObjectValue",
+                      fields: [
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "order" },
+                          value: {
+                            kind: "ObjectValue",
+                            fields: [
+                              {
+                                kind: "ObjectField",
+                                name: { kind: "Name", value: "sort" },
+                                value: { kind: "EnumValue", value: "asc" },
+                              },
+                            ],
                           },
-                        ],
-                      },
+                        },
+                      ],
                     },
                   ],
                 },
@@ -31182,12 +31405,26 @@ export const FrontpageCoursesModulesDocument = {
                 kind: "Argument",
                 name: { kind: "Name", value: "orderBy" },
                 value: {
-                  kind: "ObjectValue",
-                  fields: [
+                  kind: "ListValue",
+                  values: [
                     {
-                      kind: "ObjectField",
-                      name: { kind: "Name", value: "id" },
-                      value: { kind: "EnumValue", value: "asc" },
+                      kind: "ObjectValue",
+                      fields: [
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "order" },
+                          value: {
+                            kind: "ObjectValue",
+                            fields: [
+                              {
+                                kind: "ObjectField",
+                                name: { kind: "Name", value: "sort" },
+                                value: { kind: "EnumValue", value: "asc" },
+                              },
+                            ],
+                          },
+                        },
+                      ],
                     },
                   ],
                 },
@@ -31433,6 +31670,282 @@ export const FrontpageCoursesModulesDocument = {
   FrontpageCoursesModulesQuery,
   FrontpageCoursesModulesQueryVariables
 >
+export const FrontpageCoursesDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "FrontpageCourses" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "language" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "courses" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "orderBy" },
+                value: {
+                  kind: "ListValue",
+                  values: [
+                    {
+                      kind: "ObjectValue",
+                      fields: [
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "order" },
+                          value: {
+                            kind: "ObjectValue",
+                            fields: [
+                              {
+                                kind: "ObjectField",
+                                name: { kind: "Name", value: "sort" },
+                                value: { kind: "EnumValue", value: "asc" },
+                              },
+                            ],
+                          },
+                        },
+                      ],
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "language" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "language" },
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "hidden" },
+                value: { kind: "BooleanValue", value: false },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "FrontpageCourseFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseKeyFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "slug" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseKeyFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ImageCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Image" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "original" } },
+          { kind: "Field", name: { kind: "Name", value: "original_mimetype" } },
+          { kind: "Field", name: { kind: "Name", value: "compressed" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "compressed_mimetype" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "uncompressed" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "uncompressed_mimetype" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseCoreFields" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "photo" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "ImageCoreFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "StudyModuleKeyFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "StudyModule" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "slug" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "StudyModuleCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "StudyModule" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "StudyModuleKeyFields" },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "FrontpageCourseFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseWithPhotoCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "description" } },
+          { kind: "Field", name: { kind: "Name", value: "link" } },
+          { kind: "Field", name: { kind: "Name", value: "order" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_module_order" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "promote" } },
+          { kind: "Field", name: { kind: "Name", value: "status" } },
+          { kind: "Field", name: { kind: "Name", value: "start_point" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_module_start_point" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "hidden" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "upcoming_active_link" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "tier" } },
+          { kind: "Field", name: { kind: "Name", value: "support_email" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_email" },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "teacher_in_charge_name" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "start_date" } },
+          { kind: "Field", name: { kind: "Name", value: "end_date" } },
+          { kind: "Field", name: { kind: "Name", value: "has_certificate" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_modules" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "StudyModuleCoreFields" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  FrontpageCoursesQuery,
+  FrontpageCoursesQueryVariables
+>
 export const NewFrontpageCoursesModulesDocument = {
   kind: "Document",
   definitions: [
@@ -31461,21 +31974,26 @@ export const NewFrontpageCoursesModulesDocument = {
                 kind: "Argument",
                 name: { kind: "Name", value: "orderBy" },
                 value: {
-                  kind: "ObjectValue",
-                  fields: [
+                  kind: "ListValue",
+                  values: [
                     {
-                      kind: "ObjectField",
-                      name: { kind: "Name", value: "order" },
-                      value: {
-                        kind: "ObjectValue",
-                        fields: [
-                          {
-                            kind: "ObjectField",
-                            name: { kind: "Name", value: "sort" },
-                            value: { kind: "EnumValue", value: "asc" },
+                      kind: "ObjectValue",
+                      fields: [
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "order" },
+                          value: {
+                            kind: "ObjectValue",
+                            fields: [
+                              {
+                                kind: "ObjectField",
+                                name: { kind: "Name", value: "sort" },
+                                value: { kind: "EnumValue", value: "asc" },
+                              },
+                            ],
                           },
-                        ],
-                      },
+                        },
+                      ],
                     },
                   ],
                 },
@@ -31567,12 +32085,26 @@ export const NewFrontpageCoursesModulesDocument = {
                 kind: "Argument",
                 name: { kind: "Name", value: "orderBy" },
                 value: {
-                  kind: "ObjectValue",
-                  fields: [
+                  kind: "ListValue",
+                  values: [
                     {
-                      kind: "ObjectField",
-                      name: { kind: "Name", value: "id" },
-                      value: { kind: "EnumValue", value: "asc" },
+                      kind: "ObjectValue",
+                      fields: [
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "order" },
+                          value: {
+                            kind: "ObjectValue",
+                            fields: [
+                              {
+                                kind: "ObjectField",
+                                name: { kind: "Name", value: "sort" },
+                                value: { kind: "EnumValue", value: "asc" },
+                              },
+                            ],
+                          },
+                        },
+                      ],
                     },
                   ],
                 },
@@ -31880,12 +32412,17 @@ export const EditorCoursesDocument = {
                 kind: "Argument",
                 name: { kind: "Name", value: "orderBy" },
                 value: {
-                  kind: "ObjectValue",
-                  fields: [
+                  kind: "ListValue",
+                  values: [
                     {
-                      kind: "ObjectField",
-                      name: { kind: "Name", value: "name" },
-                      value: { kind: "EnumValue", value: "asc" },
+                      kind: "ObjectValue",
+                      fields: [
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "name" },
+                          value: { kind: "EnumValue", value: "asc" },
+                        },
+                      ],
                     },
                   ],
                 },
@@ -33880,10 +34417,17 @@ export const OrganizationsDocument = {
             name: { kind: "Name", value: "orderBy" },
           },
           type: {
-            kind: "NamedType",
-            name: {
-              kind: "Name",
-              value: "OrganizationOrderByWithRelationAndSearchRelevanceInput",
+            kind: "ListType",
+            type: {
+              kind: "NonNullType",
+              type: {
+                kind: "NamedType",
+                name: {
+                  kind: "Name",
+                  value:
+                    "OrganizationOrderByWithRelationAndSearchRelevanceInput",
+                },
+              },
             },
           },
         },
@@ -34301,12 +34845,26 @@ export const StudyModulesDocument = {
                 kind: "Argument",
                 name: { kind: "Name", value: "orderBy" },
                 value: {
-                  kind: "ObjectValue",
-                  fields: [
+                  kind: "ListValue",
+                  values: [
                     {
-                      kind: "ObjectField",
-                      name: { kind: "Name", value: "id" },
-                      value: { kind: "EnumValue", value: "asc" },
+                      kind: "ObjectValue",
+                      fields: [
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "order" },
+                          value: {
+                            kind: "ObjectValue",
+                            fields: [
+                              {
+                                kind: "ObjectField",
+                                name: { kind: "Name", value: "sort" },
+                                value: { kind: "EnumValue", value: "asc" },
+                              },
+                            ],
+                          },
+                        },
+                      ],
                     },
                   ],
                 },
@@ -34390,13 +34948,13 @@ export const StudyModulesDocument = {
     },
   ],
 } as unknown as DocumentNode<StudyModulesQuery, StudyModulesQueryVariables>
-export const StudyModulesWithCoursesDocument = {
+export const FrontpageModulesWithCoursesDocument = {
   kind: "Document",
   definitions: [
     {
       kind: "OperationDefinition",
       operation: "query",
-      name: { kind: "Name", value: "StudyModulesWithCourses" },
+      name: { kind: "Name", value: "FrontpageModulesWithCourses" },
       variableDefinitions: [
         {
           kind: "VariableDefinition",
@@ -34405,6 +34963,23 @@ export const StudyModulesWithCoursesDocument = {
             name: { kind: "Name", value: "language" },
           },
           type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "statuses" },
+          },
+          type: {
+            kind: "ListType",
+            type: {
+              kind: "NonNullType",
+              type: {
+                kind: "NamedType",
+                name: { kind: "Name", value: "CourseStatus" },
+              },
+            },
+          },
         },
       ],
       selectionSet: {
@@ -34418,12 +34993,26 @@ export const StudyModulesWithCoursesDocument = {
                 kind: "Argument",
                 name: { kind: "Name", value: "orderBy" },
                 value: {
-                  kind: "ObjectValue",
-                  fields: [
+                  kind: "ListValue",
+                  values: [
                     {
-                      kind: "ObjectField",
-                      name: { kind: "Name", value: "id" },
-                      value: { kind: "EnumValue", value: "asc" },
+                      kind: "ObjectValue",
+                      fields: [
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "order" },
+                          value: {
+                            kind: "ObjectValue",
+                            fields: [
+                              {
+                                kind: "ObjectField",
+                                name: { kind: "Name", value: "sort" },
+                                value: { kind: "EnumValue", value: "asc" },
+                              },
+                            ],
+                          },
+                        },
+                      ],
                     },
                   ],
                 },
@@ -34450,10 +35039,396 @@ export const StudyModulesWithCoursesDocument = {
                   arguments: [
                     {
                       kind: "Argument",
+                      name: { kind: "Name", value: "orderBy" },
+                      value: {
+                        kind: "ListValue",
+                        values: [
+                          {
+                            kind: "ObjectValue",
+                            fields: [
+                              {
+                                kind: "ObjectField",
+                                name: {
+                                  kind: "Name",
+                                  value: "study_module_order",
+                                },
+                                value: {
+                                  kind: "ObjectValue",
+                                  fields: [
+                                    {
+                                      kind: "ObjectField",
+                                      name: { kind: "Name", value: "sort" },
+                                      value: {
+                                        kind: "EnumValue",
+                                        value: "asc",
+                                      },
+                                    },
+                                  ],
+                                },
+                              },
+                            ],
+                          },
+                          {
+                            kind: "ObjectValue",
+                            fields: [
+                              {
+                                kind: "ObjectField",
+                                name: { kind: "Name", value: "order" },
+                                value: {
+                                  kind: "ObjectValue",
+                                  fields: [
+                                    {
+                                      kind: "ObjectField",
+                                      name: { kind: "Name", value: "sort" },
+                                      value: {
+                                        kind: "EnumValue",
+                                        value: "asc",
+                                      },
+                                    },
+                                  ],
+                                },
+                              },
+                            ],
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      kind: "Argument",
                       name: { kind: "Name", value: "language" },
                       value: {
                         kind: "Variable",
                         name: { kind: "Name", value: "language" },
+                      },
+                    },
+                    {
+                      kind: "Argument",
+                      name: { kind: "Name", value: "hidden" },
+                      value: { kind: "BooleanValue", value: false },
+                    },
+                    {
+                      kind: "Argument",
+                      name: { kind: "Name", value: "statuses" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "statuses" },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "FragmentSpread",
+                        name: {
+                          kind: "Name",
+                          value: "FrontpageModuleCourseFields",
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "StudyModuleKeyFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "StudyModule" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "slug" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "StudyModuleCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "StudyModule" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "StudyModuleKeyFields" },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseKeyFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "slug" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CourseCoreFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseKeyFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "ects" } },
+          { kind: "Field", name: { kind: "Name", value: "language" } },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "StudyModuleFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "StudyModule" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "StudyModuleCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "description" } },
+          { kind: "Field", name: { kind: "Name", value: "image" } },
+          { kind: "Field", name: { kind: "Name", value: "order" } },
+          { kind: "Field", name: { kind: "Name", value: "created_at" } },
+          { kind: "Field", name: { kind: "Name", value: "updated_at" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "FrontpageModuleCourseFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Course" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "CourseCoreFields" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "description" } },
+          { kind: "Field", name: { kind: "Name", value: "link" } },
+          { kind: "Field", name: { kind: "Name", value: "order" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_module_order" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "status" } },
+          { kind: "Field", name: { kind: "Name", value: "start_point" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_module_start_point" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "hidden" } },
+          { kind: "Field", name: { kind: "Name", value: "start_date" } },
+          { kind: "Field", name: { kind: "Name", value: "end_date" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  FrontpageModulesWithCoursesQuery,
+  FrontpageModulesWithCoursesQueryVariables
+>
+export const StudyModulesWithCoursesDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "StudyModulesWithCourses" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "language" },
+          },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "statuses" },
+          },
+          type: {
+            kind: "ListType",
+            type: {
+              kind: "NonNullType",
+              type: {
+                kind: "NamedType",
+                name: { kind: "Name", value: "CourseStatus" },
+              },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "study_modules" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "orderBy" },
+                value: {
+                  kind: "ListValue",
+                  values: [
+                    {
+                      kind: "ObjectValue",
+                      fields: [
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "order" },
+                          value: {
+                            kind: "ObjectValue",
+                            fields: [
+                              {
+                                kind: "ObjectField",
+                                name: { kind: "Name", value: "sort" },
+                                value: { kind: "EnumValue", value: "asc" },
+                              },
+                            ],
+                          },
+                        },
+                      ],
+                    },
+                  ],
+                },
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "language" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "language" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "StudyModuleFields" },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "courses" },
+                  arguments: [
+                    {
+                      kind: "Argument",
+                      name: { kind: "Name", value: "orderBy" },
+                      value: {
+                        kind: "ListValue",
+                        values: [
+                          {
+                            kind: "ObjectValue",
+                            fields: [
+                              {
+                                kind: "ObjectField",
+                                name: {
+                                  kind: "Name",
+                                  value: "study_module_order",
+                                },
+                                value: {
+                                  kind: "ObjectValue",
+                                  fields: [
+                                    {
+                                      kind: "ObjectField",
+                                      name: { kind: "Name", value: "sort" },
+                                      value: {
+                                        kind: "EnumValue",
+                                        value: "asc",
+                                      },
+                                    },
+                                  ],
+                                },
+                              },
+                            ],
+                          },
+                          {
+                            kind: "ObjectValue",
+                            fields: [
+                              {
+                                kind: "ObjectField",
+                                name: { kind: "Name", value: "order" },
+                                value: {
+                                  kind: "ObjectValue",
+                                  fields: [
+                                    {
+                                      kind: "ObjectField",
+                                      name: { kind: "Name", value: "sort" },
+                                      value: {
+                                        kind: "EnumValue",
+                                        value: "asc",
+                                      },
+                                    },
+                                  ],
+                                },
+                              },
+                            ],
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      kind: "Argument",
+                      name: { kind: "Name", value: "language" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "language" },
+                      },
+                    },
+                    {
+                      kind: "Argument",
+                      name: { kind: "Name", value: "hidden" },
+                      value: { kind: "BooleanValue", value: false },
+                    },
+                    {
+                      kind: "Argument",
+                      name: { kind: "Name", value: "statuses" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "statuses" },
                       },
                     },
                   ],
@@ -34828,12 +35803,26 @@ export const NewStudyModulesWithCoursesDocument = {
                 kind: "Argument",
                 name: { kind: "Name", value: "orderBy" },
                 value: {
-                  kind: "ObjectValue",
-                  fields: [
+                  kind: "ListValue",
+                  values: [
                     {
-                      kind: "ObjectField",
-                      name: { kind: "Name", value: "id" },
-                      value: { kind: "EnumValue", value: "asc" },
+                      kind: "ObjectValue",
+                      fields: [
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "order" },
+                          value: {
+                            kind: "ObjectValue",
+                            fields: [
+                              {
+                                kind: "ObjectField",
+                                name: { kind: "Name", value: "sort" },
+                                value: { kind: "EnumValue", value: "asc" },
+                              },
+                            ],
+                          },
+                        },
+                      ],
                     },
                   ],
                 },
@@ -35305,12 +36294,26 @@ export const EditorStudyModulesDocument = {
                 kind: "Argument",
                 name: { kind: "Name", value: "orderBy" },
                 value: {
-                  kind: "ObjectValue",
-                  fields: [
+                  kind: "ListValue",
+                  values: [
                     {
-                      kind: "ObjectField",
-                      name: { kind: "Name", value: "id" },
-                      value: { kind: "EnumValue", value: "asc" },
+                      kind: "ObjectValue",
+                      fields: [
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "order" },
+                          value: {
+                            kind: "ObjectValue",
+                            fields: [
+                              {
+                                kind: "ObjectField",
+                                name: { kind: "Name", value: "sort" },
+                                value: { kind: "EnumValue", value: "asc" },
+                              },
+                            ],
+                          },
+                        },
+                      ],
                     },
                   ],
                 },

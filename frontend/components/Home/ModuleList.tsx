@@ -3,12 +3,12 @@ import PartnerDivider from "/components/PartnerDivider"
 import LUT from "/public/md_pages/modules/lut_module.mdx"
 
 import {
-  FrontpageCourseFieldsFragment,
+  FrontpageModuleCourseFieldsFragment,
   StudyModuleFieldsFragment,
 } from "/graphql/generated"
 
 type StudyModuleWithFrontpageCourse = StudyModuleFieldsFragment & {
-  courses: Array<FrontpageCourseFieldsFragment>
+  courses: Array<FrontpageModuleCourseFieldsFragment>
 }
 
 const moduleColors: Array<{

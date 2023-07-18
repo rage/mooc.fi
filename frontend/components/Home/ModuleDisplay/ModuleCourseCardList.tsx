@@ -7,10 +7,13 @@ import ModuleSmallCourseCard from "../ModuleSmallCourseCard"
 import { useTranslator } from "/hooks/useTranslator"
 import HomeTranslations from "/translations/home"
 
-import { CourseStatus, FrontpageCourseFieldsFragment } from "/graphql/generated"
+import {
+  CourseStatus,
+  FrontpageModuleCourseFieldsFragment,
+} from "/graphql/generated"
 
 interface CourseListProps {
-  courses: FrontpageCourseFieldsFragment[]
+  courses: FrontpageModuleCourseFieldsFragment[]
 }
 
 export const ThreeOrLessCoursesListing = (props: CourseListProps) => {

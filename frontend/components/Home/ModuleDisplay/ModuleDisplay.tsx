@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 
-import { sortBy } from "remeda"
+import { isDefined, sortBy } from "remeda"
 
 import { styled } from "@mui/material/styles"
 
@@ -10,12 +10,12 @@ import ModuleDisplaySkeleton from "/components/Home/ModuleDisplay/ModuleDisplayS
 
 import {
   CourseStatus,
-  FrontpageCourseFieldsFragment,
+  FrontpageModuleCourseFieldsFragment,
   StudyModuleFieldsFragment,
 } from "/graphql/generated"
 
 type StudyModuleWithFrontpageCourse = StudyModuleFieldsFragment & {
-  courses: Array<FrontpageCourseFieldsFragment>
+  courses: Array<FrontpageModuleCourseFieldsFragment>
 }
 
 interface ModuleProps {
@@ -37,7 +37,10 @@ function Module(props: ModuleProps) {
       sortBy(
         studyModule?.courses ?? [],
         [
-          (course) => course.study_module_order ?? Number.MAX_SAFE_INTEGER,
+          (course) =>
+            isDefined(course.study_module_order)
+              ? course.study_module_order
+              : Number.MAX_SAFE_INTEGER,
           "asc",
         ],
         [(course) => course.study_module_start_point === true, "desc"],

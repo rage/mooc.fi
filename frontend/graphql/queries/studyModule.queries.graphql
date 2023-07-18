@@ -1,20 +1,29 @@
 query StudyModules($language: String) {
-  study_modules(orderBy: { id: asc }, language: $language) {
+  study_modules(orderBy: [{ order: { sort: asc } }], language: $language) {
     ...StudyModuleFields
   }
 }
 
-query StudyModulesWithCourses($language: String) {
-  study_modules(orderBy: { id: asc }, language: $language) {
+query FrontpageModulesWithCourses($language: String, $statuses: [CourseStatus!]) {
+  study_modules(orderBy: [{ order: { sort: asc }  }] language: $language) {
     ...StudyModuleFields
-    courses(language: $language) {
+    courses(orderBy: [{ study_module_order: { sort: asc } }, { order: { sort: asc } }], language: $language, hidden: false, statuses: $statuses) {
+      ...FrontpageModuleCourseFields
+    }
+  }
+}
+
+query StudyModulesWithCourses($language: String, $statuses: [CourseStatus!]) {
+  study_modules(orderBy: [{ order: { sort: asc } }], language: $language) {
+    ...StudyModuleFields
+    courses(orderBy: [{ study_module_order: { sort: asc } }, { order: { sort: asc } }], language: $language, hidden: false, statuses: $statuses) {
       ...CourseFields
     }
   }
 }
 
 query NewStudyModulesWithCourses($language: String) {
-  study_modules(orderBy: { id: asc }, language: $language) {
+  study_modules(orderBy: [{ order: { sort: asc } }], language: $language) {
     ...StudyModuleFields
     courses(language: $language) {
       ...NewCourseFields
@@ -23,7 +32,7 @@ query NewStudyModulesWithCourses($language: String) {
 }
 
 query EditorStudyModules {
-  study_modules(orderBy: { id: asc }) {
+  study_modules(orderBy: [{ order: { sort: asc } }]) {
     ...StudyModuleDetailedFields
   }
 }

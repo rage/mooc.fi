@@ -1,5 +1,5 @@
 import { omit } from "lodash"
-import { arg, objectType, stringArg } from "nexus"
+import { arg, booleanArg, list, nonNull, objectType, stringArg } from "nexus"
 
 import { Course, CourseTranslation } from "@prisma/client"
 
@@ -22,14 +22,18 @@ export const StudyModule = objectType({
     t.list.nonNull.field("courses", {
       type: "Course",
       args: {
-        orderBy: arg({
-          type: "CourseOrderByWithRelationAndSearchRelevanceInput",
-        }),
+        orderBy: list(
+          nonNull(
+            arg({
+              type: "CourseOrderByWithRelationAndSearchRelevanceInput",
+            }),
+          ),
+        ),
         language: stringArg(),
+        hidden: booleanArg(),
+        statuses: list(nonNull(arg({ type: "CourseStatus" }))),
       },
-      resolve: async (parent, args, ctx) => {
-        const { language, orderBy } = args
-
+      resolve: async (parent, { language, orderBy, hidden, statuses }, ctx) => {
         const courses: (Course & {
           course_translations?: CourseTranslation[]
         })[] =
@@ -39,6 +43,34 @@ export const StudyModule = objectType({
             })
             .courses({
               orderBy: filterNullRecursive(orderBy),
+              where: {
+                ...(language
+                  ? {
+                      course_translations: {
+                        some: {
+                          language,
+                        },
+                      },
+                    }
+                  : {}),
+                ...(!hidden
+                  ? {
+                      OR: [
+                        {
+                          hidden: false,
+                        },
+                        {
+                          hidden: null,
+                        },
+                      ],
+                    }
+                  : {}),
+                ...(statuses && statuses.length > 0
+                  ? {
+                      status: { in: statuses },
+                    }
+                  : {}),
+              },
               ...(language
                 ? {
                     include: {

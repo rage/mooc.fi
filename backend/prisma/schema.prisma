@@ -99,8 +99,8 @@ model Course {
   start_point                             Boolean?
   hidden                                  Boolean?
   study_module_start_point                Boolean?
-  order                                   Int?
-  study_module_order                      Int?
+  order                                   Int?                             @default(0)
+  study_module_order                      Int?                             @default(0)
   automatic_completions                   Boolean?                         @default(false)
   automatic_completions_eligible_for_ects Boolean?                         @default(true)
   points_needed                           Int?
@@ -209,21 +209,21 @@ model CourseVariant {
 }
 
 model EmailDelivery {
-  id                                     String                            @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
-  sent                                   Boolean                           @default(false)
-  error                                  Boolean                           @default(false)
+  id                                  String                            @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  sent                                Boolean                           @default(false)
+  error                               Boolean                           @default(false)
   /// use either this email to send to or if not specified, the one in the user profile
-  email                                  String?
-  error_message                          String?
-  user_id                                String?                           @db.Uuid
-  email_template_id                      String?                           @db.Uuid
-  organization_id                        String?                           @db.Uuid
-  created_at                             DateTime                          @default(now())
-  updated_at                             DateTime                          @default(now()) @updatedAt
-  email_template                         EmailTemplate?                    @relation(fields: [email_template_id], references: [id], onUpdate: NoAction)
-  user                                   User?                             @relation(fields: [user_id], references: [id], onUpdate: NoAction)
-  user_organization_join_confirmation    UserOrganizationJoinConfirmation?
-  organization                           Organization?                     @relation(fields: [organization_id], references: [id])
+  email                               String?
+  error_message                       String?
+  user_id                             String?                           @db.Uuid
+  email_template_id                   String?                           @db.Uuid
+  organization_id                     String?                           @db.Uuid
+  created_at                          DateTime                          @default(now())
+  updated_at                          DateTime                          @default(now()) @updatedAt
+  email_template                      EmailTemplate?                    @relation(fields: [email_template_id], references: [id], onUpdate: NoAction)
+  user                                User?                             @relation(fields: [user_id], references: [id], onUpdate: NoAction)
+  user_organization_join_confirmation UserOrganizationJoinConfirmation?
+  organization                        Organization?                     @relation(fields: [organization_id], references: [id])
 
   @@index([email_template_id])
   @@index([user_id, email_template_id])
@@ -341,42 +341,42 @@ model OpenUniversityRegistrationLink {
 }
 
 model Organization {
-  id                                      String                    @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
-  slug                                    String                    @unique
-  secret_key                              String                    @unique
-  name                                    String
-  information                             String?
-  verified_at                             DateTime?
-  verified                                Boolean?
-  disabled                                Boolean?
-  disabled_reason                         String?
-  hidden                                  Boolean?
-  tmc_created_at                          DateTime?
-  tmc_updated_at                          DateTime?
-  logo_file_name                          String?
-  logo_content_type                       String?
-  logo_file_size                          Int?
-  logo_updated_at                         DateTime?
-  phone                                   String?
-  contact_information                     String?
-  email                                   String?
-  website                                 String?
-  pinned                                  Boolean?
-  required_confirmation                   Boolean?                  @default(true)
-  required_organization_email             String?
-  creator_id                              String?                   @db.Uuid
-  created_at                              DateTime                  @default(now())
-  updated_at                              DateTime                  @default(now()) @updatedAt
-  join_organization_email_template_id     String?                   @db.Uuid
-  completions_registered                  CompletionRegistered[]
-  courses                                 Course[]
-  course_organizations                    CourseOrganization[]
-  creator                                 User?                     @relation(fields: [creator_id], references: [id], onUpdate: NoAction)
-  join_organization_email_template        EmailTemplate?            @relation(fields: [join_organization_email_template_id], references: [id], onUpdate: NoAction)
-  organization_translations               OrganizationTranslation[]
-  user_organizations                      UserOrganization[]
-  verified_users                          VerifiedUser[]
-  email_deliveries                        EmailDelivery[]
+  id                                  String                    @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  slug                                String                    @unique
+  secret_key                          String                    @unique
+  name                                String
+  information                         String?
+  verified_at                         DateTime?
+  verified                            Boolean?
+  disabled                            Boolean?
+  disabled_reason                     String?
+  hidden                              Boolean?
+  tmc_created_at                      DateTime?
+  tmc_updated_at                      DateTime?
+  logo_file_name                      String?
+  logo_content_type                   String?
+  logo_file_size                      Int?
+  logo_updated_at                     DateTime?
+  phone                               String?
+  contact_information                 String?
+  email                               String?
+  website                             String?
+  pinned                              Boolean?
+  required_confirmation               Boolean?                  @default(true)
+  required_organization_email         String?
+  creator_id                          String?                   @db.Uuid
+  created_at                          DateTime                  @default(now())
+  updated_at                          DateTime                  @default(now()) @updatedAt
+  join_organization_email_template_id String?                   @db.Uuid
+  completions_registered              CompletionRegistered[]
+  courses                             Course[]
+  course_organizations                CourseOrganization[]
+  creator                             User?                     @relation(fields: [creator_id], references: [id], onUpdate: NoAction)
+  join_organization_email_template    EmailTemplate?            @relation(fields: [join_organization_email_template_id], references: [id], onUpdate: NoAction)
+  organization_translations           OrganizationTranslation[]
+  user_organizations                  UserOrganization[]
+  verified_users                      VerifiedUser[]
+  email_deliveries                    EmailDelivery[]
 
   @@index([creator_id])
   @@map("organization")
@@ -429,7 +429,7 @@ model StudyModule {
   slug                      String                   @unique
   name                      String
   image                     String?
-  order                     Int?
+  order                     Int?                     @default(0)
   created_at                DateTime                 @default(now())
   updated_at                DateTime                 @default(now()) @updatedAt
   study_module_translations StudyModuleTranslation[]
@@ -570,20 +570,21 @@ model UserCourseSettingsVisibility {
 }
 
 model UserOrganization {
-  id                                      String            @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
-  organizational_email                    String?
-  organizational_identifier               String?
-  confirmed                               Boolean?          @default(false)
-  confirmed_at                            DateTime?
-  role                                    OrganizationRole? @default(Student)
-  user_id                                 String?           @db.Uuid
-  organization_id                         String?           @db.Uuid
-  consented                               Boolean?          @default(false)
-  created_at                              DateTime          @default(now())
-  updated_at                              DateTime          @default(now()) @updatedAt
-  organization                            Organization?     @relation(fields: [organization_id], references: [id], onUpdate: NoAction)
-  user                                    User?             @relation(fields: [user_id], references: [id], onUpdate: NoAction)
-  user_organization_join_confirmations    UserOrganizationJoinConfirmation[]
+  id                                   String                             @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  organizational_email                 String?
+  organizational_identifier            String?
+  confirmed                            Boolean?                           @default(false)
+  confirmed_at                         DateTime?
+  role                                 OrganizationRole?                  @default(Student)
+  user_id                              String?                            @db.Uuid
+  organization_id                      String?                            @db.Uuid
+  consented                            Boolean?                           @default(false)
+  created_at                           DateTime                           @default(now())
+  updated_at                           DateTime                           @default(now()) @updatedAt
+  organization                         Organization?                      @relation(fields: [organization_id], references: [id], onUpdate: NoAction)
+  user                                 User?                              @relation(fields: [user_id], references: [id], onUpdate: NoAction)
+  user_organization_join_confirmations UserOrganizationJoinConfirmation[]
+
   @@map("user_organization")
 }
 

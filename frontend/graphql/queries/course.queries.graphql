@@ -1,26 +1,52 @@
 query Courses($language: String) {
-  courses(orderBy: { order: { sort: asc } }, language: $language, hidden: false) {
+  courses(
+    orderBy: [{ order: { sort: asc } }]
+    language: $language
+    hidden: false
+  ) {
     ...CourseFields
   }
 }
 
 query NewCourses($language: String) {
-  courses(orderBy: { order: { sort: asc } }, language: $language, hidden: false) {
+  courses(
+    orderBy: [{ order: { sort: asc } }]
+    language: $language
+    hidden: false
+  ) {
     ...NewCourseFields
   }
 }
 
 query FrontpageCoursesModules($language: String) {
-  courses(orderBy: { order: { sort: asc } }, language: $language, hidden: false) {
+  courses(
+    orderBy: [{ order: { sort: asc } }]
+    language: $language
+    hidden: false
+  ) {
     ...FrontpageCourseFields
   }
-  study_modules(orderBy: { id: asc }, language: $language) {
+  study_modules(orderBy: [{ order: { sort: asc } }], language: $language) {
     ...StudyModuleFields
   }
 }
 
+query FrontpageCourses($language: String) {
+  courses(
+    orderBy: [{ order: { sort: asc } }]
+    language: $language
+    hidden: false
+  ) {
+    ...FrontpageCourseFields
+  }
+}
+
 query NewFrontpageCoursesModules($language: String) {
-  courses(orderBy: { order: { sort: asc } }, language: $language, hidden: false) {
+  courses(
+    orderBy: [{ order: { sort: asc } }]
+    language: $language
+    hidden: false
+  ) {
     ...NewFrontpageCourseFields
     sponsors(language: $language) {
       ...SponsorFields
@@ -32,7 +58,7 @@ query NewFrontpageCoursesModules($language: String) {
       }
     }
   }
-  study_modules(orderBy: { id: asc }, language: $language) {
+  study_modules(orderBy: [{ order: { sort: asc } }], language: $language) {
     ...StudyModuleFields
   }
 }
@@ -45,7 +71,7 @@ query EditorCourses(
   $language: String
 ) {
   courses(
-    orderBy: { name: asc }
+    orderBy: [{ name: asc }]
     search: $search
     hidden: $hidden
     handledBy: $handledBy

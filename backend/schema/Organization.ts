@@ -7,6 +7,7 @@ import {
   extendType,
   idArg,
   intArg,
+  list,
   nonNull,
   objectType,
   stringArg,
@@ -130,9 +131,13 @@ export const OrganizationQueries = extendType({
         take: intArg(),
         skip: intArg(),
         cursor: arg({ type: "OrganizationWhereUniqueInput" }),
-        orderBy: arg({
-          type: "OrganizationOrderByWithRelationAndSearchRelevanceInput",
-        }),
+        orderBy: list(
+          nonNull(
+            arg({
+              type: "OrganizationOrderByWithRelationAndSearchRelevanceInput",
+            }),
+          ),
+        ),
         hidden: booleanArg(),
         disabled: booleanArg(),
       },

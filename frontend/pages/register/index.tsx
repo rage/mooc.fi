@@ -116,7 +116,7 @@ function useRegisterOrganization(searchFilter: string) {
     loading: organizationsLoading,
   } = useQuery(OrganizationsDocument, {
     variables: {
-      orderBy: { name: SortOrder.asc },
+      orderBy: [{ name: SortOrder.asc }],
     },
   })
   const {
