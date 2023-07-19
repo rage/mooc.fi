@@ -7,7 +7,7 @@ orbs:
 executors:
   node_postgres:
     docker:
-      - image: cimg/node:18.16.0
+      - image: cimg/node:18.17.0
       - image: cimg/postgres:15.3
         environment:
           POSTGRES_USER: root
@@ -17,7 +17,7 @@ executors:
 jobs:
   code_style:
     docker:
-      - image: cimg/node:18.16.0
+      - image: cimg/node:18.17.0
     steps:
       - checkout
       - node/install-packages
@@ -35,7 +35,7 @@ jobs:
 
   build_frontend:
     docker:
-      - image: cimg/gcp:2023.05
+      - image: cimg/gcp:2023.07
     working_directory: /mnt/ramdisk
     steps:
       - checkout
@@ -204,7 +204,7 @@ jobs:
   
   build_backend:
     docker:
-      - image: cimg/gcp:2023.05
+      - image: cimg/gcp:2023.07
     working_directory: /mnt/ramdisk
     steps:
       - checkout
@@ -319,7 +319,7 @@ jobs:
   #         command: "bin/push-docker-auth-image.sh"
   deploy_to_production:
     docker:
-      - image: cimg/gcp:2023.05
+      - image: cimg/gcp:2023.07
     working_directory: /mnt/ramdisk
     steps:
       - checkout
