@@ -24,11 +24,14 @@ type DefaultNextLinkProps = Omit<
 
 declare module "@mui/material/Link" {
   export type EnhancedLinkProps<
-    D extends React.ElementType = typeof LinkBehavior,
+    D extends React.ElementType = LinkTypeMap["defaultComponent"],
     P = {},
-  > = OverrideProps<LinkTypeMap<P & Partial<DefaultNextLinkProps>, D>, D>
+  > = OverrideProps<
+    LinkTypeMap<P & Partial<DefaultNextLinkProps>, D>,
+    D & typeof LinkBehavior
+  >
   export type EnhancedLink<
-    D extends React.ElementType = typeof LinkBehavior,
+    D extends React.ElementType = LinkTypeMap["defaultComponent"],
     P = {},
   > = OverridableComponent<LinkTypeMap<P & Partial<DefaultNextLinkProps>, D>>
   const Link: OverridableComponent<

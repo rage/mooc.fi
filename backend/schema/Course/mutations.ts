@@ -360,8 +360,8 @@ function getTagMutation<C extends Course>(
       )["tags"]
     | null,
 ): Prisma.TagUpdateManyWithoutCoursesNestedInput | undefined {
-  const languageTags = (tags ?? []).filter((tag) =>
-    tag.types?.includes("language"),
+  const languageTags = (tags ?? []).filter(
+    (tag) => tag.types?.includes("language"),
   )
   if (course.language) {
     if (languageTags.every((tag) => tag.id !== course.language)) {

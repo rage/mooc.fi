@@ -1,15 +1,15 @@
 import dynamic from "next/dynamic"
 
-import { AppBar, AppBarProps, BoxProps, Toolbar } from "@mui/material"
+import { AppBar, Toolbar } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-const StyledBottomNavigation = styled(AppBar)<AppBarProps & BoxProps>`
+const StyledBottomNavigation = styled(AppBar)`
   @media (min-width: 1050px) {
     display: none;
   }
   top: auto;
   bottom: 0;
-`
+` as typeof AppBar
 
 const LoggedInUserMenu = dynamic(() => import("./HeaderBar/LoggedInUserMenu"), {
   loading: () => null,

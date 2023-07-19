@@ -106,7 +106,8 @@ export const TabSection = React.memo(TabSectionImpl, (prevProps, nextProps) => {
 export function useCustomValidationResolver<
   TFieldValues extends FieldValues = FieldValues,
   TContext = any,
-  TSchema extends Yup.ObjectSchema<TFieldValues> = Yup.ObjectSchema<TFieldValues>,
+  TSchema extends
+    Yup.ObjectSchema<TFieldValues> = Yup.ObjectSchema<TFieldValues>,
 >(schema: TSchema): Resolver<TFieldValues, TContext> {
   return useCallback(
     (values, context, options) =>

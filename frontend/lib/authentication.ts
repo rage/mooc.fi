@@ -4,7 +4,7 @@ import Router from "next/router"
 import nookies from "nookies"
 import TmcClient from "tmc-client-js"
 
-import { type ApolloClient } from "@apollo/client"
+import { ApolloClient } from "@apollo/client"
 
 import { getCookie } from "/util/cookie"
 
@@ -30,18 +30,21 @@ interface SignInProps {
   shallow?: boolean
 }
 
-export const signIn = async ({
-  email,
-  password,
-  redirect = true,
-  shallow = true,
-}: SignInProps) => {
+export const signIn = async (
+  { email, password, redirect = true, shallow = true }: SignInProps,
+  apollo?: ApolloClient<object>,
+  cb?: (...args: any[]) => any,
+) => {
   const res = await tmcClient.authenticate({ username: email, password })
   const details = await userDetails(res.accessToken)
+
+  await apollo?.resetStore()
 
   document.cookie = `access_token=${res.accessToken};path=/`
 
   document.cookie = `admin=${details.administrator};path=/`
+
+  cb?.()
 
   const rawRedirectLocation = nookies.get()["redirect-back"]
 
@@ -56,7 +59,7 @@ export const signIn = async ({
     if (redirect) {
       setTimeout(() => {
         if (as && href) {
-          Router.push(href, as, { shallow })
+          Router.push(href, as, { shallow, locale: Router.locale })
         } else {
           window.history.back()
         }
@@ -65,7 +68,7 @@ export const signIn = async ({
   } catch (e) {
     // Mostly to catch invalid JSON in the cookie
     console.error("Redirecting back failed because of", e)
-    Router.push("/", undefined, { shallow })
+    Router.push("/", undefined, { shallow, locale: Router.locale })
   }
 
   return details
@@ -82,6 +85,7 @@ export const signOut = async (
   setTimeout(() => {
     cb()
     setTimeout(() => {
+      apollo.stop()
       apollo.resetStore()
     }, 100)
   }, 100)

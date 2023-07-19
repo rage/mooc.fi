@@ -1,8 +1,8 @@
 import {
   ButtonBaseProps,
   ButtonProps,
+  EnhancedLinkProps,
   FormControlProps,
-  LinkProps,
   MenuItemProps,
   TextFieldProps,
 } from "@mui/material"
@@ -17,7 +17,7 @@ export const withComponents = (theme: Theme) =>
       MuiLink: {
         defaultProps: {
           component: LinkBehavior,
-        } as LinkProps,
+        } as EnhancedLinkProps,
       },
       MuiTextField: {
         defaultProps: {

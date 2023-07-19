@@ -46,9 +46,16 @@ const renderOption = (
 const renderGroup = (params: AutocompleteRenderGroupParams) => (
   <li key={params.key}>
     <GroupHeader>
-      {params.group?.split(", ").map((type) => (
-        <TagTypeChip key={type} variant="outlined" label={type} size="small" />
-      ))}
+      {params.group
+        ?.split(", ")
+        .map((type) => (
+          <TagTypeChip
+            key={type}
+            variant="outlined"
+            label={type}
+            size="small"
+          />
+        ))}
     </GroupHeader>
     <GroupItems>{params.children}</GroupItems>
   </li>

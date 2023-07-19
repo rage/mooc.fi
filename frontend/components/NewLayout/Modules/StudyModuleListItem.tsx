@@ -224,19 +224,20 @@ export function ListItem({
             </ModuleCardDescriptionText>
           </ModuleCardDescription>
         </HeroContainer>
-        {[active, upcoming].flatMap((courses) =>
-          courses?.map((course, index) => (
-            <CourseCard
-              ref={(ref) => {
-                if (index === 0) {
-                  moduleCardRef.current = ref
-                }
-              }}
-              course={course}
-              studyModule={studyModule.slug}
-              key={course.id}
-            />
-          )),
+        {[active, upcoming].flatMap(
+          (courses) =>
+            courses?.map((course, index) => (
+              <CourseCard
+                ref={(ref) => {
+                  if (index === 0) {
+                    moduleCardRef.current = ref
+                  }
+                }}
+                course={course}
+                studyModule={studyModule.slug}
+                key={course.id}
+              />
+            )),
         )}
         {/* TODO: do something with ended courses */}
       </ModuleCardBody>

@@ -70,7 +70,8 @@ type CreateMutationReturn<Relation extends CourseRelation = CourseRelation> =
 
 type CreateMutationParams<
   Relation extends CourseRelation = CourseRelation,
-  RelationInstance extends CourseRelationType<Relation> = CourseRelationType<Relation>,
+  RelationInstance extends
+    CourseRelationType<Relation> = CourseRelationType<Relation>,
   IdKey extends CourseRelationKey<Relation> = CourseRelationKey<Relation>,
 > = IdKey extends IdKeyType
   ? {
@@ -177,8 +178,10 @@ type DataType = PartialAndNullable<Course> & {
 export const createCourseMutations =
   (ctx: Context, slug: string) =>
   <
-    MutableRelations extends readonly MutableRelation[] = readonly MutableRelation[],
-    Relations extends CourseRelationsFromMutableRelations<MutableRelations> = CourseRelationsFromMutableRelations<MutableRelations>,
+    MutableRelations extends
+      readonly MutableRelation[] = readonly MutableRelation[],
+    Relations extends
+      CourseRelationsFromMutableRelations<MutableRelations> = CourseRelationsFromMutableRelations<MutableRelations>,
   >(
     relations: MutableRelations,
   ) =>
@@ -230,7 +233,8 @@ const hasId =
     id: IdKey,
   ) =>
   <
-    RelationInstance extends CourseRelationType<Relation> = CourseRelationType<Relation>,
+    RelationInstance extends
+      CourseRelationType<Relation> = CourseRelationType<Relation>,
   >(
     data: any,
   ): data is RelationInstance & { [key in IdKey]: string | null } =>
@@ -244,7 +248,8 @@ const hasNotId =
     id: IdKey,
   ) =>
   <
-    RelationInstance extends CourseRelationType<Relation> = CourseRelationType<Relation>,
+    RelationInstance extends
+      CourseRelationType<Relation> = CourseRelationType<Relation>,
   >(
     data: any,
   ): data is RelationInstance & { [key in IdKey]: undefined } =>

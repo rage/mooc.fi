@@ -3,7 +3,7 @@ import React from "react"
 import { PropsOf } from "@emotion/react"
 import InfoIcon from "@mui/icons-material/Info"
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined"
-import { BoxProps, Typography, TypographyProps } from "@mui/material"
+import { Typography, TypographyProps } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 import MUITooltip, { tooltipClasses, TooltipProps } from "@mui/material/Tooltip"
 
@@ -67,8 +67,12 @@ const TooltipWrapper = styled("span")`
 
 interface InfoTooltipProps {
   label?: string
-  labelProps?: TypographyProps & BoxProps
-  titleProps?: TypographyProps & BoxProps
+  labelProps?: Omit<TypographyProps, "component"> & {
+    component?: React.ElementType
+  }
+  titleProps?: Omit<TypographyProps, "component"> & {
+    component?: React.ElementType
+  }
   outlined?: boolean
   IconProps?: PropsOf<typeof Info>
 }

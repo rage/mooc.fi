@@ -13,13 +13,13 @@ import { signOut } from "/lib/authentication"
 import CommonTranslations from "/translations/common"
 
 const UserOptionsMenu = () => {
-  const client = useApolloClient()
+  const apollo = useApolloClient()
   const { loggedIn, logInOrOut } = useLoginStateContext()
   const t = useTranslator(CommonTranslations)
 
   const onLogoutClick = useCallback(
-    () => signOut(client, logInOrOut),
-    [client, logInOrOut],
+    () => signOut(apollo, logInOrOut),
+    [apollo, logInOrOut],
   )
   const onLoginClick = useEventCallback(() =>
     nookies.destroy(undefined, "redirect-back"),

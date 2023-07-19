@@ -76,7 +76,7 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
 
   const t = useTranslator(CommonTranslations)
   const { admin, loggedIn, logInOrOut, currentUser } = useLoginStateContext()
-  const client = useApolloClient()
+  const apollo = useApolloClient()
 
   const onClick: MouseEventHandler<HTMLAnchorElement> = useEventCallback(
     (event) => {
@@ -99,8 +99,8 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
 
   const onSignOut = useCallback(() => {
     setAnchor(null)
-    signOut(client, logInOrOut)
-  }, [signOut, client, logInOrOut])
+    signOut(apollo, logInOrOut)
+  }, [apollo, signOut, logInOrOut])
 
   const userDisplayName = useMemo(() => {
     const name = currentUser?.full_name

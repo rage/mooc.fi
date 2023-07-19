@@ -81,8 +81,7 @@ const getRenderPointsCellStyle =
     props: Parameters<
       NonNullable<MRT_ColumnDef<TierExerciseCompletionRow>["Cell"]>
     >[0],
-  ) =>
-    props.cell.getValue<number>() === points ? { fontWeight: 800 } : {}
+  ) => (props.cell.getValue<number>() === points ? { fontWeight: 800 } : {})
 
 const TierExerciseCompletionsTitle = () => {
   const t = useTranslator(ProfileTranslations)
