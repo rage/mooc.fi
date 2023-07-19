@@ -7,5 +7,5 @@ export const LinkBehavior = React.forwardRef<
   React.AnchorHTMLAttributes<HTMLAnchorElement> & NextLinkProps
 >((props, ref) => {
   const { href, ...other } = props
-  return <NextLink ref={ref} href={href} {...other} />
+  return <NextLink ref={ref} href={href} prefetch={false} {...other} />
 })
