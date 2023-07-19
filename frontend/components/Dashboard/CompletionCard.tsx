@@ -1,14 +1,12 @@
 import CloseIcon from "@mui/icons-material/Close"
 import DoneIcon from "@mui/icons-material/Done"
 import {
-  BoxProps,
   Divider,
   Icon,
   ListItem,
   ListItemIcon,
   ListItemText,
   Typography,
-  TypographyProps,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
@@ -31,13 +29,9 @@ const ListItemArea = styled("div")`
   margin: 1rem auto 1rem auto;
 `
 
-const CompletionInfoText = styled(Typography)<TypographyProps & BoxProps>`
+const CompletionInfoText = styled(Typography)`
   display: block;
-`
-
-CompletionInfoText.defaultProps = {
-  component: "span",
-}
+` as typeof Typography
 
 interface CompletionCardProps {
   completer: CompletionsQueryNodeFieldsFragment
@@ -73,13 +67,15 @@ function CompletionCard({ completer }: CompletionCardProps) {
           primary={`${completer.user?.first_name} ${completer.user?.last_name}`}
           secondary={
             <>
-              <CompletionInfoText>
+              <CompletionInfoText component="span">
                 {completer.email} {studentId}
               </CompletionInfoText>
-              <CompletionInfoText>
+              <CompletionInfoText component="span">
                 Completion language: {completionLanguage}
               </CompletionInfoText>
-              <CompletionInfoText>{completionDate}</CompletionInfoText>
+              <CompletionInfoText component="span">
+                {completionDate}
+              </CompletionInfoText>
             </>
           }
         />

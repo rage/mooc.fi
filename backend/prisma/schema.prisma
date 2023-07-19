@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch", "postgresqlExtensions", "extendedWhereUnique", "jsonProtocol"]
+  previewFeatures = ["fullTextSearch", "postgresqlExtensions"]
   // , "fieldReference", 
 }
 

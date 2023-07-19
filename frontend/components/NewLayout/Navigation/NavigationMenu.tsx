@@ -91,7 +91,7 @@ const MenuButton = styled(Button)`
 `
 
 const UserOptionsMenu = () => {
-  const client = useApolloClient()
+  const apollo = useApolloClient()
   const { pathname } = useRouter()
   const { loggedIn, logInOrOut, currentUser } = useLoginStateContext()
   const t = useTranslator(CommonTranslations)
@@ -101,8 +101,8 @@ const UserOptionsMenu = () => {
     : t("myProfile")
 
   const onLogOut = useCallback(
-    () => signOut(client, logInOrOut),
-    [client, logInOrOut],
+    () => signOut(apollo, logInOrOut),
+    [apollo, logInOrOut],
   )
 
   if (loggedIn) {
@@ -166,7 +166,7 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
 
   const t = useTranslator(CommonTranslations)
   const { admin, loggedIn, logInOrOut, currentUser } = useLoginStateContext()
-  const client = useApolloClient()
+  const apollo = useApolloClient()
 
   const onClick: MouseEventHandler<HTMLButtonElement> = useEventCallback(
     (event) => {
@@ -194,8 +194,8 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
     : t("myProfile")
 
   const onLogOut = useCallback(
-    () => signOut(client, logInOrOut),
-    [client, logInOrOut],
+    () => signOut(apollo, logInOrOut),
+    [apollo, logInOrOut],
   )
 
   return (

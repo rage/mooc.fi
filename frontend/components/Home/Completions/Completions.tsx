@@ -43,13 +43,15 @@ export const Completions = ({ completions }: CompletionsProps) => {
       </Title>
 
       <CompletionsContainer>
-        {completions?.filter(completionHasCourse).map((completion) => (
-          <CompletionListItem
-            key={completion.id}
-            course={completion.course}
-            completion={completion}
-          />
-        ))}
+        {completions
+          ?.filter(completionHasCourse)
+          .map((completion) => (
+            <CompletionListItem
+              key={completion.id}
+              course={completion.course}
+              completion={completion}
+            />
+          ))}
         {!(completions?.length ?? 0) && (
           <Typography sx={{ textAlign: "center" }} variant="body2">
             {t("nocompletionsText")}

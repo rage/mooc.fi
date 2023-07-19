@@ -49,7 +49,7 @@ export const saveToDatabase = async (
       AND: {
         course_id: message.course_id,
         service_id: message.service_id,
-        custom_id: { not: { in: message.data.map((p) => p.id.toString()) } },
+        custom_id: { notIn: message.data.map((p) => p.id.toString()) },
       },
     },
     data: {

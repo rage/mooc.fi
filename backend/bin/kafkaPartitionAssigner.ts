@@ -204,7 +204,7 @@ export class KafkaPartitionAssigner {
       partitionOffsets = await Promise.all(
         partitions.map((p) =>
           this.queryWatermarkOffsets(topic, p.id, 5000).catch(
-            () => ({} as Kafka.WatermarkOffsets),
+            () => ({}) as Kafka.WatermarkOffsets,
           ),
         ),
       )

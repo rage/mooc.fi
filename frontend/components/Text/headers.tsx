@@ -1,4 +1,6 @@
-import { BoxProps, Typography, TypographyProps } from "@mui/material"
+import React from "react"
+
+import { Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 export const H1NoBackground = styled(Typography)`
@@ -43,10 +45,10 @@ interface TitleProps {
   titlebackground: string
 }
 
-export const H2Background = styled(Typography, {
+export const H2Background = styled<typeof Typography>(Typography, {
   shouldForwardProp: (prop) =>
     prop !== "fontcolor" && prop !== "titlebackground",
-})<TitleProps & TypographyProps & BoxProps>`
+})<TitleProps & { component?: React.ElementType }>`
   margin: 5rem auto 1rem auto;
   padding-left: 1rem;
   padding-right: 1rem;
@@ -77,7 +79,7 @@ interface SubTitleProps {
 
 export const SubtitleBackground = styled(Typography, {
   shouldForwardProp: (prop) => prop !== "fontcolor",
-})<SubTitleProps & TypographyProps & BoxProps>`
+})<SubTitleProps & { component?: React.ElementType }>`
   margin: 0rem auto 3rem auto;
   padding: 1rem;
   display: table;

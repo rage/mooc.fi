@@ -2,6 +2,7 @@ import { Component } from "react"
 
 import { NextRouter, withRouter } from "next/router"
 
+import { ApolloClient } from "@apollo/client"
 import {
   CircularProgress,
   Link,
@@ -66,6 +67,7 @@ export function capitalizeFirstLetter(string: string) {
 export interface CreateAccountFormProps {
   onComplete: (...args: any[]) => any
   router: NextRouter
+  apollo: ApolloClient<object>
 }
 
 const getSignUpTranslator = getTranslator(SignUpTranslations)
@@ -114,11 +116,14 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
         password_confirmation: this.state.password_confirmation,
       })
 
-      await authenticate({
-        email: this.state.email ?? "",
-        password: this.state.password ?? "",
-        redirect: false,
-      })
+      await authenticate(
+        {
+          email: this.state.email ?? "",
+          password: this.state.password ?? "",
+          redirect: false,
+        },
+        this.props.apollo,
+      )
 
       this.props.onComplete()
     } catch (error: any) {

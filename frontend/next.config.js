@@ -1,5 +1,9 @@
 // @ts-check
 const path = require("path")
+const dns = require("dns")
+
+// fix for undici
+dns.setDefaultResultOrder("ipv4first")
 
 const isProduction = process.env.NODE_ENV === "production"
 

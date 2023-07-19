@@ -111,15 +111,18 @@ function CourseEditorTabs() {
       .map((anchor) => anchor.tab)
       .filter(isDefinedAndNotEmpty)
 
-    return errorAnchorTabs.reduce((acc, curr) => {
-      if (acc[curr]) {
+    return errorAnchorTabs.reduce(
+      (acc, curr) => {
+        if (acc[curr]) {
+          return acc
+        }
+
+        acc[curr] = true
+
         return acc
-      }
-
-      acc[curr] = true
-
-      return acc
-    }, {} as Record<number, boolean>)
+      },
+      {} as Record<number, boolean>,
+    )
   }, [errors, anchors])
 
   const onChangeTab = useEventCallback((_: any, newTab: any) => setTab(newTab))

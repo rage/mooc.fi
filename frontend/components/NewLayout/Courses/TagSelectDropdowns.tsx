@@ -63,8 +63,8 @@ const TagSelectDropdowns = ({
   return (
     <TagsContainer>
       {Object.keys(tags).map((category) => {
-        const categoryActiveTags = activeTags.filter((tag) =>
-          tag.types?.includes(category),
+        const categoryActiveTags = activeTags.filter(
+          (tag) => tag.types?.includes(category),
         )
         return (
           <Autocomplete

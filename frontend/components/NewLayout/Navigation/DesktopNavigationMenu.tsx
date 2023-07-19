@@ -89,7 +89,7 @@ const MenuButton = React.memo(
 )
 
 const UserOptionsMenu = () => {
-  const client = useApolloClient()
+  const apollo = useApolloClient()
   const { pathname } = useRouter()
   const { loggedIn, logInOrOut, currentUser } = useLoginStateContext()
   const t = useTranslator(CommonTranslations)
@@ -117,8 +117,8 @@ const UserOptionsMenu = () => {
   }, [currentUser, t, isNarrow])
 
   const onLogOut = useCallback(
-    () => signOut(client, logInOrOut),
-    [client, logInOrOut],
+    () => signOut(apollo, logInOrOut),
+    [apollo, logInOrOut],
   )
 
   if (loggedIn) {

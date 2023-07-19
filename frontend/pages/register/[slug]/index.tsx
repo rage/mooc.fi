@@ -381,9 +381,8 @@ const RegisterToOrganization = () => {
         organizationData.organization.required_confirmation && (
           <div>
             <FormControlLabel
-              label={`${t("joiningCheckbox")} ${
-                organizationData.organization?.name
-              }`}
+              label={`${t("joiningCheckbox")} ${organizationData.organization
+                ?.name}`}
               control={
                 <Checkbox
                   id="consent-checkbox"
@@ -458,9 +457,8 @@ const RegisterToOrganization = () => {
         !organizationData.organization.required_confirmation && (
           <div>
             <FormControlLabel
-              label={`${t("joiningCheckbox")} ${
-                organizationData.organization?.name
-              }`}
+              label={`${t("joiningCheckbox")} ${organizationData.organization
+                ?.name}`}
               control={
                 <Checkbox
                   id="consent-checkbox"

@@ -1,7 +1,7 @@
 import { omit } from "lodash"
 
 import { Prisma, PrismaClient } from "@prisma/client"
-import type { Types } from "@prisma/client/runtime"
+import type { Types } from "@prisma/client/runtime/library"
 
 import TMCClient from "../services/tmc"
 import { isDefinedAndNotEmpty } from "../util"
@@ -90,7 +90,8 @@ export const courseFindUniqueFns = Prisma.defineExtension((client) =>
          */
         findUniqueOrAlias<
           A extends Types.Extensions.Args = Types.Extensions.DefaultArgs,
-          Args extends Prisma.CourseFindUniqueOrThrowArgs<A> = Prisma.CourseFindUniqueOrThrowArgs<A>,
+          Args extends
+            Prisma.CourseFindUniqueOrThrowArgs<A> = Prisma.CourseFindUniqueOrThrowArgs<A>,
         >(
           args: Args,
         ): Prisma.Prisma__CourseClient<
@@ -141,7 +142,8 @@ export const courseFindUniqueFns = Prisma.defineExtension((client) =>
          */
         findUniqueCompletionHandler<
           A extends Types.Extensions.Args = Types.Extensions.DefaultArgs,
-          Args extends Prisma.CourseFindUniqueArgs<A> = Prisma.CourseFindUniqueArgs<A>,
+          Args extends
+            Prisma.CourseFindUniqueArgs<A> = Prisma.CourseFindUniqueArgs<A>,
         >(
           args: Args,
         ): Prisma.Prisma__CourseClient<
@@ -226,7 +228,7 @@ export const findUsercourseSettings = Prisma.defineExtension((client) =>
         async findUserCourseSettings(
           args: UserFindUserCourseSettingsArgs,
         ): Promise<Prisma.Result<
-          Prisma.UserCourseSettingDelegate<false>,
+          Prisma.UserCourseSettingDelegate,
           Types.Extensions.DefaultArgs,
           "findFirst"
         > | null> {

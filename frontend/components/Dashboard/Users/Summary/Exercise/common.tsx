@@ -173,19 +173,18 @@ export const renderRequiredActionsBase =
   ) =>
   (
     values: ExerciseCompletionCoreFieldsFragment["exercise_completion_required_actions"],
-  ) =>
-    (
-      <RequiredActionsContainer {...ContainerProps}>
-        {values.map((action) => (
-          <Chip
-            key={action.id}
-            label={t(action.value)}
-            size="small"
-            {...ChipProps}
-          />
-        ))}
-      </RequiredActionsContainer>
-    )
+  ) => (
+    <RequiredActionsContainer {...ContainerProps}>
+      {values.map((action) => (
+        <Chip
+          key={action.id}
+          label={t(action.value)}
+          size="small"
+          {...ChipProps}
+        />
+      ))}
+    </RequiredActionsContainer>
+  )
 
 export const renderRequiredActions =
   <T extends Record<string, any>>(

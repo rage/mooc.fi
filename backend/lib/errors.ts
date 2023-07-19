@@ -100,7 +100,10 @@ export class GraphQLForbiddenError extends CustomGraphQLError {
 
 export class UserInputError extends CustomError {
   constructor(message: string, data?: object)
-  constructor(message: string, readonly data?: object) {
+  constructor(
+    message: string,
+    readonly data?: object,
+  ) {
     super(message)
   }
 }
@@ -120,7 +123,11 @@ export class ForbiddenError extends CustomError {
 export class TMCError extends CustomError {
   constructor(message: string, error?: any)
   constructor(message: string, data?: object, error?: any)
-  constructor(message: string, readonly data?: object, readonly error?: any) {
+  constructor(
+    message: string,
+    readonly data?: object,
+    readonly error?: any,
+  ) {
     super(message)
   }
 }
@@ -128,7 +135,11 @@ export class TMCError extends CustomError {
 export class DatabaseInputError extends CustomError {
   constructor(message: string, data?: object)
   constructor(message: string, data?: object, error?: Error)
-  constructor(message: string, readonly data?: object, readonly error?: Error) {
+  constructor(
+    message: string,
+    readonly data?: object,
+    readonly error?: Error,
+  ) {
     super(message)
   }
 }
@@ -146,13 +157,19 @@ export class KafkaMessageError extends CustomError {
 }
 
 export class KafkaCommitError extends CustomError {
-  constructor(message: string, readonly error?: Error) {
+  constructor(
+    message: string,
+    readonly error?: Error,
+  ) {
     super(message)
   }
 }
 
 export class KafkaError extends CustomError {
-  constructor(message: string, readonly error: any) {
+  constructor(
+    message: string,
+    readonly error: any,
+  ) {
     super(`${message}; original message: ${error?.message}`)
   }
 }
@@ -160,14 +177,21 @@ export class KafkaError extends CustomError {
 export class ValidationError extends CustomError {
   data_string: string
 
-  constructor(message: string, readonly data: object, readonly error?: Error) {
+  constructor(
+    message: string,
+    readonly data: object,
+    readonly error?: Error,
+  ) {
     super(message)
     this.data_string = stringifyWithIndent(data ?? {})
   }
 }
 
 export class SlackPosterError extends CustomError {
-  constructor(message: string, readonly error: Error) {
+  constructor(
+    message: string,
+    readonly error: Error,
+  ) {
     super(message)
   }
 }
@@ -175,36 +199,56 @@ export class SlackPosterError extends CustomError {
 export class EmailTemplaterError extends CustomError {
   constructor(message: string, error?: Error)
   constructor(message: string, data?: object, error?: Error)
-  constructor(message: string, readonly data?: object, readonly error?: Error) {
+  constructor(
+    message: string,
+    readonly data?: object,
+    readonly error?: Error,
+  ) {
     super(message)
   }
 }
 
 export class AvoinError extends CustomError {
-  constructor(message: string, readonly data: object, readonly error?: Error) {
+  constructor(
+    message: string,
+    readonly data: object,
+    readonly error?: Error,
+  ) {
     super(message)
   }
 }
 
 export class RemoveDuplicateCompletionsError extends CustomError {
-  constructor(message: string, readonly error?: Error) {
+  constructor(
+    message: string,
+    readonly error?: Error,
+  ) {
     super(message)
   }
 }
 
 export class RemoveDuplicateExerciseCompletionsError extends CustomError {
-  constructor(message: string, readonly error?: Error) {
+  constructor(
+    message: string,
+    readonly error?: Error,
+  ) {
     super(message)
   }
 }
 
 export class PruneOldStoredDataError extends CustomError {
-  constructor(message: string, readonly error?: Error) {
+  constructor(
+    message: string,
+    readonly error?: Error,
+  ) {
     super(message)
   }
 }
 export class CourseStatsEmailerError extends CustomError {
-  constructor(message: string, readonly Erorr?: Error) {
+  constructor(
+    message: string,
+    readonly Erorr?: Error,
+  ) {
     super(message)
   }
 }

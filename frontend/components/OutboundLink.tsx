@@ -1,7 +1,9 @@
 import React, { PropsWithChildren } from "react"
 
-import { EnhancedLink, EnhancedLinkProps, Link } from "@mui/material"
+import { EnhancedLink, EnhancedLinkProps, Link as MUILink } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
+
+const Link = MUILink as EnhancedLink
 
 // inlined svg from @fortawesome/fontawesome-free/svgs/solid/up-right-from-square.svg
 export const OutboundLinkTextStyle = css`
@@ -21,7 +23,7 @@ export const OutboundLinkTextStyle = css`
 `
 
 const StyledOutboundLink = styled(Link)`
-  ${OutboundLinkTextStyle.styles}
+  ${OutboundLinkTextStyle.styles};
 ` as EnhancedLink
 
 interface OutboundLinkProps extends PropsWithChildren<EnhancedLinkProps> {

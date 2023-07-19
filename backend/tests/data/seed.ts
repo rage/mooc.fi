@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client"
-import type { Types } from "@prisma/client/runtime"
+import type { Types } from "@prisma/client/runtime/library"
 
 import { createDefaultData } from "../../config/defaultData"
 import { type ExtendedPrismaClient } from "../../prisma"

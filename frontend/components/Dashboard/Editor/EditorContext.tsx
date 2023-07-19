@@ -40,7 +40,7 @@ const EditorMethodContextImpl = createContext<EditorMethodContext<any>>({
   onError: Nop,
   onCancel: Nop,
   onDelete: Nop,
-  addAnchor: () => ({} as Anchor<any>),
+  addAnchor: () => ({}) as Anchor<any>,
   scrollFirstErrorIntoView: Nop,
 })
 

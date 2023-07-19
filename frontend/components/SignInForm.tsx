@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 
+import { useApolloClient } from "@apollo/client"
 import {
   FormControl,
   FormHelperText,
@@ -22,7 +23,7 @@ const StyledForm = styled("form")`
 function SignIn() {
   const { logInOrOut } = useLoginStateContext()
   const t = useTranslator(CommonTranslations)
-
+  const apollo = useApolloClient()
   const [password, setPassword] = useState("")
   const [email, setEmail] = useState("")
   const [error, setError] = useState(false)
@@ -95,12 +96,11 @@ function SignIn() {
           // TODO: typing
           e.preventDefault()
           try {
-            await signIn({ email, password, shallow: false })
-            try {
-              await logInOrOut()
-            } catch (e) {
-              console.error("Login in or out failed")
-            }
+            await signIn(
+              { email, password, shallow: false },
+              apollo,
+              logInOrOut,
+            )
 
             if (errorTimeout) {
               clearTimeout(errorTimeout)

@@ -275,7 +275,7 @@ export const cancelEmailDeliveries = async ({
   const { count } = await ctx.prisma.emailDelivery.updateMany({
     where: {
       ...(ignoredDeliveryIds.length && {
-        id: { not: { in: ignoredDeliveryIds } },
+        id: { notIn: ignoredDeliveryIds },
       }),
       user_id: userId,
       email,

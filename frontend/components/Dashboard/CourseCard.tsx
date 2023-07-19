@@ -3,14 +3,7 @@ import { PropsWithChildren } from "react"
 import { AddCircle as AddCircleIcon, Add as AddIcon } from "@mui/icons-material"
 import DashboardIcon from "@mui/icons-material/Dashboard"
 import EditIcon from "@mui/icons-material/Edit"
-import {
-  BoxProps,
-  CardActions,
-  Link,
-  Skeleton,
-  Typography,
-  TypographyProps,
-} from "@mui/material"
+import { CardActions, Link, Skeleton, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import CourseStatusBadge from "./CourseStatusBadge"
@@ -131,15 +124,10 @@ const CourseCardBase = styled(CardBase)`
   grid-column: span 1;
 `
 
-const CourseInfoField = styled(Typography)<TypographyProps & BoxProps>`
+const CourseInfoField = styled(Typography)`
   display: block;
   margin-right: 0.5rem;
-`
-
-CourseInfoField.defaultProps = {
-  variant: "h4",
-  component: "h3",
-}
+` as typeof Typography
 
 const CourseTitleBadgeContainer = styled("div")`
   display: flex;
@@ -172,7 +160,11 @@ const CourseInfo = ({
 }: React.HTMLAttributes<HTMLLIElement> &
   PropsWithChildren<CourseInfoProps>) => (
   <CourseInfoLine {...props}>
-    {field && <CourseInfoField>{field}</CourseInfoField>}
+    {field && (
+      <CourseInfoField variant="h4" component="h3">
+        {field}
+      </CourseInfoField>
+    )}
     {value && <CourseInfoValue>{value}</CourseInfoValue>}
     {children}
   </CourseInfoLine>

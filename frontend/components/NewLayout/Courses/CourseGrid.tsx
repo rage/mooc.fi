@@ -333,19 +333,22 @@ function CourseGrid() {
   )
 
   const tags = useMemo(() => {
-    const res = (tagsData?.tags ?? []).reduce((acc, curr) => {
-      curr?.types?.forEach((t) => {
-        if (
-          t === "language" &&
-          curr.id &&
-          !allowedLanguages.includes(curr.id)
-        ) {
-          return acc
-        }
-        acc[t] = (acc[t] ?? []).concat(curr)
-      })
-      return acc
-    }, {} as Record<string, Array<TagCoreFieldsFragment>>)
+    const res = (tagsData?.tags ?? []).reduce(
+      (acc, curr) => {
+        curr?.types?.forEach((t) => {
+          if (
+            t === "language" &&
+            curr.id &&
+            !allowedLanguages.includes(curr.id)
+          ) {
+            return acc
+          }
+          acc[t] = (acc[t] ?? []).concat(curr)
+        })
+        return acc
+      },
+      {} as Record<string, Array<TagCoreFieldsFragment>>,
+    )
 
     if (res["language"]) {
       res["language"].sort(sortByLanguage)

@@ -108,17 +108,31 @@ function create(
     uri: production ? "https://www.mooc.fi/api/" : "http://localhost:4000",
     credentials: "same-origin",
     fetch,
+    fetchOptions: {
+      credentials: "same-origin",
+      timeout: 20000,
+    },
     headers: {
       "apollo-require-preflight": "true",
     },
   }
+
+  const createBatchHttpLink = (() => {
+    let _batchHttpLink: BatchHttpLink
+    return (options: BatchHttpLink.Options) => {
+      if (!_batchHttpLink) {
+        _batchHttpLink = new BatchHttpLink(options)
+      }
+      return _batchHttpLink
+    }
+  })()
 
   // use BatchHttpLink if there are no uploaded files, otherwise use
   // uploadLink that uses simple HttpLink
   const uploadAndBatchHTTPLink = split(
     (operation) => extractFiles(operation, isExtractableFile).files.size > 0,
     createUploadLink(httpLinkOptions),
-    new BatchHttpLink(httpLinkOptions),
+    createBatchHttpLink(httpLinkOptions),
   )
 
   const wsLink = isBrowser
