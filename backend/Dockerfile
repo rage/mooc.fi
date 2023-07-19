@@ -1,4 +1,4 @@
-FROM node:18.17.0-alpine3.18
+FROM node:18.16.1-alpine
 
 RUN apk update && \
     apk add \
