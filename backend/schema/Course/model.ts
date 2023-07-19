@@ -26,7 +26,11 @@ export const Course = objectType({
     t.model.inherit_settings_from_id()
     t.model.inherit_settings_from()
     t.model.name()
-    t.model.order()
+    t.model.order({
+      resolve: async (root, args, ctx, info, originalResolve) => {
+        return (await originalResolve(root, args, ctx, info)) ?? 0
+      },
+    })
     t.model.owner_organization_id()
     t.model.owner_organization()
     t.model.photo_id()
@@ -37,7 +41,11 @@ export const Course = objectType({
     t.model.start_date()
     t.model.start_point()
     t.model.status()
-    t.model.study_module_order()
+    t.model.study_module_order({
+      resolve: async (root, args, ctx, info, originalResolve) => {
+        return (await originalResolve(root, args, ctx, info)) ?? 0
+      },
+    })
     t.model.study_module_start_point()
     t.model.support_email()
     t.model.teacher_in_charge_email()

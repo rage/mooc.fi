@@ -182,7 +182,7 @@ describe("Course", () => {
       it("returns courses ordered", async () => {
         for (const order of ["asc", "desc"]) {
           const res = await ctx.client.request<any>(coursesQuery, {
-            orderBy: { name: order },
+            orderBy: [{ name: order }],
           })
 
           expect(
@@ -429,7 +429,7 @@ const fullCourseQuery = gql`
 const coursesQuery = gql`
   query AllCourses(
     $language: String
-    $orderBy: CourseOrderByWithRelationAndSearchRelevanceInput
+    $orderBy: [CourseOrderByWithRelationAndSearchRelevanceInput!]
     $search: String
     $hidden: Boolean
     $handledBy: String

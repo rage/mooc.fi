@@ -1,9 +1,11 @@
 import { createUploadLink } from "apollo-upload-client/public/index.mjs"
+import deepmerge from "deepmerge"
 import extractFiles from "extract-files/extractFiles.mjs"
 import isExtractableFile from "extract-files/isExtractableFile.mjs"
 import { createClient } from "graphql-ws"
 import fetch from "isomorphic-unfetch"
 import nookies from "nookies"
+import { equals } from "remeda"
 
 import {
   ApolloClient,
@@ -68,8 +70,6 @@ const createCache = () =>
   new InMemoryCache({
     typePolicies,
   })
-
-let cache = createCache()
 
 function create(
   initialState: any,
@@ -192,6 +192,8 @@ function create(
     })
   })
 
+  const cache = createCache()
+
   return new ApolloClient<NormalizedCacheObject>({
     link: isBrowser
       ? ApolloLink.from(
@@ -207,7 +209,7 @@ function create(
             uploadAndBatchHTTPLink,
           ].filter(isDefinedAndNotEmpty),
         ),
-    cache: isBrowser ? cache.restore(initialState ?? {}) : createCache(),
+    cache: isBrowser ? cache.restore(initialState ?? {}) : cache,
     ssrMode: !isBrowser,
     ssrForceFetchDelay: 100,
     defaultOptions: {
@@ -234,24 +236,40 @@ export default function getApollo(
   const userChanged = accessToken !== previousAccessToken
   const localeChanged = locale !== previousLocale
 
-  // Make sure to create a new client for every server-side request so that data
-  // isn't shared between connections (which would be bad)
-  if (!isBrowser) {
-    return create(initialState, accessToken, locale)
-  }
-
   // Reuse client on the client-side
   // Also force new client if access token has changed because we don't want to risk accidentally
   // serving cached data from the previous user.
-  if (!apolloClient || userChanged || localeChanged) {
-    cache = createCache()
-    apolloClient = create(initialState, accessToken, locale)
-  }
+  const _apolloClient =
+    !userChanged && !localeChanged && isBrowser
+      ? apolloClient ?? create(initialState, accessToken, locale)
+      : create(undefined, accessToken, locale)
 
   previousAccessToken = accessToken
   previousLocale = locale
 
-  return apolloClient
+  if (initialState) {
+    const existingCache = _apolloClient.extract()
+    const data = deepmerge(existingCache, initialState, {
+      arrayMerge: (destination: any, source: any) => [
+        ...source,
+        ...destination.filter((d: any) =>
+          source.every((s: any) => !equals(d, s)),
+        ),
+      ],
+    })
+
+    _apolloClient.cache.restore(data)
+  }
+
+  if (!isBrowser) {
+    return _apolloClient
+  }
+
+  if (!apolloClient) {
+    apolloClient = _apolloClient
+  }
+
+  return _apolloClient
 }
 
 export function initNewApollo(accessToken?: string, locale?: string) {

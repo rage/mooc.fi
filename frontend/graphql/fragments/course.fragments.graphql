@@ -60,6 +60,20 @@ fragment FrontpageCourseFields on Course {
   }
 }
 
+fragment FrontpageModuleCourseFields on Course {
+  ...CourseCoreFields
+  description
+  link
+  order
+  study_module_order
+  status
+  start_point
+  study_module_start_point
+  hidden
+  start_date
+  end_date
+}
+
 fragment NewFrontpageCourseFields on Course {
   ...CourseCoreFields
   description

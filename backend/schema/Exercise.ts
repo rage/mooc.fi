@@ -4,6 +4,7 @@ import {
   extendType,
   idArg,
   intArg,
+  list,
   nonNull,
   objectType,
   stringArg,
@@ -13,7 +14,7 @@ import { Prisma } from "@prisma/client"
 
 import { isAdmin, Role } from "../accessControl"
 import { GraphQLAuthenticationError } from "../lib/errors"
-import { filterNullFields, isDefined } from "../util"
+import { filterNullRecursive, isDefined } from "../util"
 import { Context } from "/context"
 
 export const Exercise = objectType({
@@ -37,9 +38,13 @@ export const Exercise = objectType({
     t.list.nonNull.field("exercise_completions", {
       type: "ExerciseCompletion",
       args: {
-        orderBy: arg({
-          type: "ExerciseCompletionOrderByWithRelationAndSearchRelevanceInput",
-        }),
+        orderBy: list(
+          nonNull(
+            arg({
+              type: "ExerciseCompletionOrderByWithRelationAndSearchRelevanceInput",
+            }),
+          ),
+        ),
         user_id: idArg(),
         completed: booleanArg(),
         attempted: booleanArg(),
@@ -65,7 +70,7 @@ export const Exercise = objectType({
             orderBy: [
               { timestamp: "desc" },
               { updated_at: "desc" },
-              filterNullFields(orderBy),
+              ...(filterNullRecursive(orderBy) ?? []),
             ].filter(
               isDefined,
             ) as Prisma.Enumerable<Prisma.ExerciseCompletionOrderByWithRelationAndSearchRelevanceInput>,

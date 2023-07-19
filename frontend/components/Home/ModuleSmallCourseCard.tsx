@@ -9,7 +9,10 @@ import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
 import { useTranslator } from "/hooks/useTranslator"
 import HomeTranslations from "/translations/home"
 
-import { CourseStatus, FrontpageCourseFieldsFragment } from "/graphql/generated"
+import {
+  CourseStatus,
+  FrontpageModuleCourseFieldsFragment,
+} from "/graphql/generated"
 
 const SkeletonTitle = styled(Skeleton)`
   margin-bottom: 0.5rem;
@@ -93,7 +96,7 @@ const Header = styled("div", {
 `
 
 interface ModuleSmallCourseCardProps {
-  course?: FrontpageCourseFieldsFragment
+  course?: FrontpageModuleCourseFieldsFragment
   showHeader?: boolean
 }
 

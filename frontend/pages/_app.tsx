@@ -5,6 +5,7 @@ import type { AppContext, AppProps, NextWebVitalsMetric } from "next/app"
 import Head from "next/head"
 import Script from "next/script"
 
+import { NormalizedCacheObject } from "@apollo/client"
 import { CssBaseline } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
 
@@ -16,7 +17,7 @@ import useIsNew from "/hooks/useIsNew"
 import { useScrollToHash } from "/hooks/useScrollToHash"
 import useSeoConfig from "/hooks/useSeoConfig"
 import useThemeWithLocale from "/hooks/useThemeWithLocale"
-import { isAdmin, isSignedIn } from "/lib/authentication"
+import { getAccessToken, isAdmin, isSignedIn } from "/lib/authentication"
 import withApolloClient from "/lib/with-apollo-client"
 import { createEmotionSsr } from "/src/createEmotionSsr"
 
@@ -33,14 +34,17 @@ interface MyPageProps {
   signedIn?: boolean
   admin?: boolean
   currentUser?: UserDetailedFieldsFragment
+  accessToken?: string
 }
 
 interface MyAppProps extends AppProps<MyPageProps> {
   deviceType?: string
+  apolloState?: NormalizedCacheObject
 }
 
 export function MyApp({ Component, pageProps, deviceType }: MyAppProps) {
   const { signedIn, admin, currentUser } = pageProps ?? {}
+
   useInsertionEffect(() => {
     const jssStyles = document?.querySelector("#jss-server-side")
     if (jssStyles?.parentElement) {
@@ -120,8 +124,9 @@ MyApp.getInitialProps = async (props: AppContext) => {
 
   const signedIn = isSignedIn(ctx)
   const admin = signedIn && isAdmin(ctx)
+  const accessToken = getAccessToken(ctx)
 
-  Object.assign(originalProps.pageProps, { signedIn, admin })
+  Object.assign(originalProps.pageProps, { signedIn, admin, accessToken })
   return originalProps
   /*return {
     ...originalProps,

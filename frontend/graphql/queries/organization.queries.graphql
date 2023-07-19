@@ -2,7 +2,7 @@ query Organizations(
   $take: Int,
   $skip: Int,
   $cursor: OrganizationWhereUniqueInput,
-  $orderBy: OrganizationOrderByWithRelationAndSearchRelevanceInput
+  $orderBy: [OrganizationOrderByWithRelationAndSearchRelevanceInput!]
   $hidden: Boolean
   $disabled: Boolean
 ) {

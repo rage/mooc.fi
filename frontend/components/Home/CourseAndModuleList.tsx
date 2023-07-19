@@ -5,18 +5,14 @@ import { useRouter } from "next/router"
 import { useQuery } from "@apollo/client"
 
 import CourseHighlights from "./CourseHighlights"
-import ModuleList from "./ModuleList"
-import ModuleNavi from "./ModuleNavi"
+import ModuleSection from "./ModuleSection"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { useTranslator } from "/hooks/useTranslator"
 import backgroundPattern from "/public/images/background/backgroundPattern.svg"
 import HomeTranslations from "/translations/home"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
-import {
-  CourseStatus,
-  FrontpageCoursesModulesDocument,
-} from "/graphql/generated"
+import { CourseStatus, FrontpageCoursesDocument } from "/graphql/generated"
 
 const CourseAndModuleList = () => {
   const { locale = "fi" } = useRouter()
@@ -24,40 +20,16 @@ const CourseAndModuleList = () => {
   const language = mapNextLanguageToLocaleCode(locale)
 
   // TODO: do this in one query; get module courses already in backend
-  const { loading, error, data } = useQuery(FrontpageCoursesModulesDocument, {
+  const { loading, error, data } = useQuery(FrontpageCoursesDocument, {
     variables: { language },
-    ssr: false,
   })
 
   const courses = data?.courses ?? []
-  const study_modules = data?.study_modules ?? []
-
-  const { studyModules, modulesWithCourses } = useMemo(() => {
-    let studyModules = study_modules ?? []
-    const modulesWithCourses = studyModules
-      .map((studyModule) => {
-        const moduleCourses = (courses ?? []).filter(
-          (course) =>
-            course.study_modules?.some(
-              (courseModule) => courseModule.id === studyModule.id,
-            ) && course?.status !== CourseStatus.Ended,
-        )
-
-        return { ...studyModule, courses: moduleCourses }
-      })
-      .filter((m) => m.courses.length > 0)
-
-    studyModules = studyModules.filter((s) =>
-      modulesWithCourses.find((m) => m.id === s.id),
-    )
-
-    return { studyModules, modulesWithCourses }
-  }, [study_modules, courses])
 
   const [activeCourses, upcomingCourses, endedCourses] = useMemo(
     () =>
-      ["Active", "Upcoming", "Ended"].map((status) =>
-        courses.filter((c) => !c.hidden && c.status === status),
+      [CourseStatus.Active, CourseStatus.Upcoming, CourseStatus.Ended].map(
+        (status) => courses.filter((c) => !c.hidden && c.status === status),
       ),
     [courses],
   )
@@ -113,12 +85,7 @@ const CourseAndModuleList = () => {
           titleBackground="#ffffff"
         />
       </section>
-      {language === "fi_FI" && (
-        <section id="modules">
-          <ModuleNavi studyModules={studyModules} loading={loading} />
-          <ModuleList studyModules={modulesWithCourses} loading={loading} />
-        </section>
-      )}
+      {language === "fi_FI" && <ModuleSection />}
       <CourseHighlights
         courses={endedCourses}
         loading={loading}

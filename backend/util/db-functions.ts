@@ -197,21 +197,27 @@ export const convertPagination = (
 type NullFiltered<T> = T extends null
   ? Exclude<T, null>
   : T extends Array<infer R>
-  ? Array<NullFiltered<R>>
-  : T extends Record<string | symbol | number, unknown>
+  ? Array<Exclude<NullFiltered<R>, null | undefined>>
+  : T extends Record<PropertyKey, unknown>
   ? {
       [K in keyof T]: NullFiltered<T[K]>
     }
   : T
 
-export const filterNull = <T extends Record<string | symbol | number, unknown>>(
+export const filterNull = <T extends object>(
   o?: T | null,
-): NullFiltered<T> | undefined =>
-  o
-    ? (Object.fromEntries(
-        Object.entries(o).map(([k, v]) => [k, v === null ? undefined : v]),
-      ) as NullFiltered<T>)
-    : undefined
+): NullFiltered<T> | undefined => {
+  if (!o) {
+    return undefined
+  }
+  if (Array.isArray(o)) {
+    return o.map(filterNull).filter(isDefined) as NullFiltered<T>
+  }
+
+  return Object.fromEntries(
+    Object.entries(o).map(([k, v]) => [k, v === null ? undefined : v]),
+  ) as NullFiltered<T>
+}
 
 export const ensureDefinedArray = <T>(
   value: Optional<T | Array<Optional<T>>>,
@@ -222,15 +228,33 @@ export const ensureDefinedArray = <T>(
   return [value]
 }
 
-export const filterNullRecursive = <
-  T extends Record<string | symbol | number, unknown>,
->(
+type OmitIndexSignature<ObjectType> = {
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  [KeyType in keyof ObjectType as {} extends Record<KeyType, unknown>
+    ? never
+    : KeyType]: ObjectType[KeyType]
+}
+
+type FilterNullRecursiveReturnType<T> = T extends object
+  ? T extends Array<infer R>
+    ? Array<NullFiltered<Exclude<R, undefined>>>
+    : { [K in keyof OmitIndexSignature<T>]: NullFiltered<T[K]> }
+  : T extends null
+  ? undefined
+  : T
+
+export function filterNullRecursive<T extends object>(
   o?: T | null,
-): NullFiltered<T> | undefined => {
+): FilterNullRecursiveReturnType<typeof o> {
   if (!o) {
     return undefined
   }
 
+  if (Array.isArray(o)) {
+    return o
+      .map(filterNullRecursive)
+      .filter(isDefined) as FilterNullRecursiveReturnType<typeof o>
+  }
   const filtered = filterNull(o)
 
   if (!filtered) {
@@ -243,14 +267,11 @@ export const filterNullRecursive = <
         return [k, v.map(filterNullRecursive)]
       }
       if (typeof v === "object" && v !== null) {
-        return [
-          k,
-          filterNullRecursive(v as Record<string | symbol | number, unknown>),
-        ]
+        return [k, filterNullRecursive(v as Record<PropertyKey, unknown>)]
       }
       return [k, v === null ? undefined : v]
     }),
-  ) as NullFiltered<T>
+  ) as FilterNullRecursiveReturnType<typeof o>
 }
 
 type NonNullable<T> = T extends null ? Exclude<T, null> : T

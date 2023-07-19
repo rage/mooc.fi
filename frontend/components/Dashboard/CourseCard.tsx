@@ -179,24 +179,24 @@ const CourseInfo = ({
 )
 interface CourseCardProps {
   course?: EditorCourseFieldsFragment
+  isNew?: boolean
   loading?: boolean
 }
 
-const CourseCard = ({ course, loading }: CourseCardProps) => {
+const CourseCard = ({ course, loading, isNew }: CourseCardProps) => {
   const t = useTranslator(CoursesTranslations)
   const { onStatusClick } = useFilterContext()
   const courseFound = !loading && !!course
-  const courseNotFound = !course && !loading
 
   return (
-    <CourseCardItem key={course?.id ?? "new-course"}>
+    <CourseCardItem key={isNew ? "new-course" : course?.id}>
       <CourseCardBase isHidden={course?.hidden}>
         <CourseCardImageContainer>
           {loading && <Skeleton variant="rectangular" height="100%" />}
           {courseFound && (
             <CourseImage photo={course.photo} alt={course.name} />
           )}
-          {courseNotFound && (
+          {isNew && (
             <StyledLink href={`/courses/new`} aria-label={t("courseNewCourse")}>
               <CreateCourseIconContainer>
                 <AddCircleIcon fontSize="large" />
@@ -217,7 +217,7 @@ const CourseCard = ({ course, loading }: CourseCardProps) => {
                 />
               </CourseTitleBadgeContainer>
             )}
-            {courseNotFound && t("courseNewCourse")}
+            {isNew && t("courseNewCourse")}
           </CardTitle>
           {course && (
             <CourseInfoList>
@@ -273,7 +273,7 @@ const CourseCard = ({ course, loading }: CourseCardProps) => {
                 </StyledButton>
               </>
             )}
-            {courseNotFound && (
+            {isNew && (
               <StyledButton
                 href={`/courses/new`}
                 aria-label={t("courseNewCourse")}

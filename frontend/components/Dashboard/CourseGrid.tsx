@@ -28,7 +28,7 @@ const CourseGrid = () => {
           range(0, 6).map((i) => <CourseCard key={`skeleton-${i}`} loading />)
         ) : (
           <>
-            <CourseCard key="newcourse" />
+            <CourseCard key="newcourse" isNew />
             {courses?.map((course) => (
               <CourseCard key={course.id} course={course} />
             ))}

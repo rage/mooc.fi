@@ -1,5 +1,13 @@
 import { omit } from "lodash"
-import { arg, booleanArg, extendType, idArg, nonNull, stringArg } from "nexus"
+import {
+  arg,
+  booleanArg,
+  extendType,
+  idArg,
+  list,
+  nonNull,
+  stringArg,
+} from "nexus"
 
 import { StudyModule, StudyModuleTranslation } from "@prisma/client"
 
@@ -90,9 +98,13 @@ export const StudyModuleQueries = extendType({
     t.list.nonNull.field("study_modules", {
       type: "StudyModule",
       args: {
-        orderBy: arg({
-          type: "StudyModuleOrderByWithRelationAndSearchRelevanceInput",
-        }),
+        orderBy: list(
+          nonNull(
+            arg({
+              type: "StudyModuleOrderByWithRelationAndSearchRelevanceInput",
+            }),
+          ),
+        ),
         language: stringArg(),
       },
       resolve: async (_, { orderBy, language }, ctx) => {
@@ -102,6 +114,13 @@ export const StudyModuleQueries = extendType({
           orderBy: filterNullRecursive(orderBy) ?? undefined,
           ...(language
             ? {
+                where: {
+                  study_module_translations: {
+                    some: {
+                      language,
+                    },
+                  },
+                },
                 include: {
                   study_module_translations: {
                     where: {
