@@ -101,14 +101,7 @@ export class OrganizationActivationCode extends OrganizationTemplate {
 
 export class OrganizationName extends OrganizationTemplate {
   async resolve() {
-    const organizationTranslation =
-      await this.context.prisma.organizationTranslation.findFirst({
-        where: {
-          organization_id: this.organization.id,
-        },
-      })
-
-    return organizationTranslation?.name ?? ""
+    return this.organization.name ?? ""
   }
 }
 

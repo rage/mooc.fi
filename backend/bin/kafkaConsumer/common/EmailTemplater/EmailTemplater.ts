@@ -1,33 +1,38 @@
-import { render } from "micromustache"
+import { render, tokenize } from "micromustache"
 
 import { EmailTemplate, Organization, User } from "@prisma/client"
 
+import { EmailTemplaterError } from "../../../../lib/errors"
 import * as Templates from "./templates"
-import ITemplateConstructor from "./types/ITemplateConstructor"
-import { KeyWordToTemplateType } from "./types/KeywordToTemplateType"
-import Template from "./types/Template"
+import {
+  KeywordToTemplate,
+  KeywordToTemplateConstructor,
+  KeywordToTemplateType,
+} from "./types/KeywordToTemplate"
 import { TemplateContext } from "./types/TemplateContext"
 import { TemplateParams } from "./types/TemplateParams"
 
+const templates: KeywordToTemplateConstructor = {
+  completion_link: Templates.CompletionLink,
+  grade: Templates.Grade,
+  started_course_count: Templates.StartedCourseCount,
+  completed_course_count: Templates.CompletedCourseCount,
+  at_least_one_exercise_count: Templates.AtLeastOneExerciseCount,
+  at_least_one_exercise_but_not_completed_emails:
+    Templates.AtLeastOneExerciseButNotCompletedEmails,
+  current_date: Templates.CurrentDate,
+  organization_activation_link: Templates.OrganizationActivationLink,
+  organization_activation_code: Templates.OrganizationActivationCode,
+  organization_activation_code_expiry_date:
+    Templates.OrganizationActivationCodeExpiryDate,
+  organization_name: Templates.OrganizationName,
+  user_full_name: Templates.UserFullName,
+  user_first_name: Templates.UserFirstName,
+  user_last_name: Templates.UserLastName,
+}
+
 export class EmailTemplater {
-  keyWordToTemplate: KeyWordToTemplateType = {
-    completion_link: Templates.CompletionLink,
-    grade: Templates.Grade,
-    started_course_count: Templates.StartedCourseCount,
-    completed_course_count: Templates.CompletedCourseCount,
-    at_least_one_exercise_count: Templates.AtLeastOneExerciseCount,
-    at_least_one_exercise_but_not_completed_emails:
-      Templates.AtLeastOneExerciseButNotCompletedEmails,
-    current_date: Templates.CurrentDate,
-    organization_activation_link: Templates.OrganizationActivationLink,
-    organization_activation_code: Templates.OrganizationActivationCode,
-    organization_activation_code_expiry_date:
-      Templates.OrganizationActivationCodeExpiryDate,
-    organization_name: Templates.OrganizationName,
-    user_full_name: Templates.UserFullName,
-    user_first_name: Templates.UserFirstName,
-    user_last_name: Templates.UserLastName,
-  }
+  keywordToTemplateType: KeywordToTemplateType
   emailTemplate: EmailTemplate
   user: User
   email?: string
@@ -49,47 +54,43 @@ export class EmailTemplater {
     this.organization = organization
     this.context = context
     this.field = field
+    this.keywordToTemplateType = {}
 
     this.prepare()
   }
 
   async resolve(): Promise<string> {
     const template = this.emailTemplate[this.field] ?? ""
-    await this.resolveAllTemplates()
-    return render(template, this.keyWordToTemplate)
+    const resolvedTemplates = await this.resolveTemplates()
+    return render(template, resolvedTemplates)
   }
 
   private prepare() {
-    Object.getOwnPropertyNames(this.keyWordToTemplate).forEach((p) => {
-      this.keyWordToTemplate[p] = new (this.keyWordToTemplate[
-        p
-      ] as ITemplateConstructor)({
+    const usedTemplates = tokenize(
+      this.emailTemplate[this.field] ?? "",
+    ).varNames
+    const unknownTemplateNames = usedTemplates.filter((p) => !templates[p])
+    if (unknownTemplateNames.length > 0) {
+      throw new EmailTemplaterError(
+        `Unknown template name(s): ${unknownTemplateNames.join(", ")}`,
+      )
+    }
+    usedTemplates.forEach((p) => {
+      this.keywordToTemplateType[p] = new templates[p]({
         emailTemplate: this.emailTemplate,
         user: this.user,
         organization: this.organization,
         email: this.email,
         context: this.context,
-      }) as Template
+      })
     })
   }
 
-  private async resolveAllTemplates(): Promise<void> {
-    await this.asyncForEach(
-      Object.getOwnPropertyNames(this.keyWordToTemplate),
-      async (p: string) => {
-        this.keyWordToTemplate[p] = (await (
-          this.keyWordToTemplate[p] as Template
-        ).resolve()) as string
-      },
-    )
-  }
-
-  async asyncForEach(
-    array: (keyof KeyWordToTemplateType)[],
-    callback: (...args: any[]) => any,
-  ) {
-    for (let index = 0; index < array.length; index++) {
-      await callback(array[index], index, array)
+  private async resolveTemplates(): Promise<KeywordToTemplate> {
+    const resolvedTemplates: KeywordToTemplate = {}
+    for (const p of Object.getOwnPropertyNames(this.keywordToTemplateType)) {
+      resolvedTemplates[p] = await this.keywordToTemplateType[p].resolve()
     }
+    return resolvedTemplates
   }
 }
