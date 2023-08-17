@@ -2,6 +2,7 @@ import { render, tokenize } from "micromustache"
 
 import { EmailTemplate, Organization, User } from "@prisma/client"
 
+import { EmailTemplaterError } from "../../../../lib/errors"
 import * as Templates from "./templates"
 import {
   KeywordToTemplate,
@@ -10,7 +11,6 @@ import {
 } from "./types/KeywordToTemplate"
 import { TemplateContext } from "./types/TemplateContext"
 import { TemplateParams } from "./types/TemplateParams"
-import { EmailTemplaterError } from "/lib/errors"
 
 const templates: KeywordToTemplateConstructor = {
   completion_link: Templates.CompletionLink,
