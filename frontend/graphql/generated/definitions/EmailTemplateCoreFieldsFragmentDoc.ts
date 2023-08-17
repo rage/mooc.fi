@@ -1,0 +1,5 @@
+/* eslint-disable */
+import * as Types from "../types"
+
+import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
+export const EmailTemplateCoreFieldsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"EmailTemplateCoreFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"EmailTemplate"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"txt_body"}},{"kind":"Field","name":{"kind":"Name","value":"html_body"}},{"kind":"Field","name":{"kind":"Name","value":"template_type"}},{"kind":"Field","name":{"kind":"Name","value":"course_instance_language"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]} as unknown as DocumentNode<Types.EmailTemplateCoreFieldsFragment, unknown>;

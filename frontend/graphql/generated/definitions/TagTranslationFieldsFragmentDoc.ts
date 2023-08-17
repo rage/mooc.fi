@@ -1,0 +1,5 @@
+/* eslint-disable */
+import * as Types from "../types"
+
+import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
+export const TagTranslationFieldsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TagTranslationFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TagTranslation"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tag_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"abbreviation"}}]}}]} as unknown as DocumentNode<Types.TagTranslationFieldsFragment, unknown>;

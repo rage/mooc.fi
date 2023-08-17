@@ -19,7 +19,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@apollo/client": "^3.7.16",
+    "@apollo/client": "^3.7.17",
     "@date-io/core": "^2.16.0",
     "@date-io/luxon": "^2.16.1",
     "@emotion/cache": "^11.11.0",
@@ -37,8 +37,8 @@
     "@mui/lab": "^5.0.0-alpha.134",
     "@mui/material": "^5.14.1",
     "@mui/x-date-pickers": "^6.10.0",
-    "@next/env": "^13.4.10",
-    "@next/mdx": "^13.4.10",
+    "@next/env": "^13.4.17",
+    "@next/mdx": "^13.4.17",
     "apollo-upload-client": "^17.0.0",
     "compression": "^1.7.4",
     "css-mediaquery": "^0.1.2",
@@ -59,7 +59,7 @@
     "module-resolver": "^1.0.0",
     "monaco-editor": "^0.40.0",
     "morgan": "^1.10.0",
-    "next": "^13.4.10",
+    "next": "^13.4.17",
     "next-seo": "^6.1.0",
     "nookies": "^2.5.2",
     "papaparse": "^5.4.1",
@@ -80,8 +80,8 @@
     "@graphql-codegen/add": "^5.0.0",
     "@graphql-codegen/cli": "^4.0.1",
     "@graphql-codegen/client-preset": "^4.0.1",
-    "@graphql-codegen/client-preset-swc-plugin": "^0.2.0",
     "@graphql-codegen/fragment-matcher": "^5.0.0",
+    "@graphql-codegen/import-types-preset": "^2.2.6",
     "@graphql-codegen/time": "^5.0.0",
     "@graphql-codegen/typed-document-node": "^5.0.1",
     "@graphql-codegen/typescript": "^4.0.1",
@@ -114,7 +114,7 @@
     "source-map-support": "^0.5.21",
     "typescript": "^5.1.6",
     "user-agent-data-types": "^0.3.1",
-    "webpack": "^5.88.2"
+    "webpack": "^5.86.0"
   },
   "overrides": {
     "graphql": "16.6.0"

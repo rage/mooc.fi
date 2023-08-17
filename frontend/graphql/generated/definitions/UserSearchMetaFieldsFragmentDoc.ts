@@ -1,0 +1,5 @@
+/* eslint-disable */
+import * as Types from "../types"
+
+import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
+export const UserSearchMetaFieldsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"UserSearchMetaFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"UserSearch"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"fieldValue"}},{"kind":"Field","name":{"kind":"Name","value":"search"}},{"kind":"Field","name":{"kind":"Name","value":"allMatchIds"}},{"kind":"Field","name":{"kind":"Name","value":"count"}},{"kind":"Field","name":{"kind":"Name","value":"fieldIndex"}},{"kind":"Field","name":{"kind":"Name","value":"fieldCount"}},{"kind":"Field","name":{"kind":"Name","value":"fieldResultCount"}},{"kind":"Field","name":{"kind":"Name","value":"fieldUniqueResultCount"}},{"kind":"Field","name":{"kind":"Name","value":"finished"}}]}}]} as unknown as DocumentNode<Types.UserSearchMetaFieldsFragment, unknown>;

@@ -1,0 +1,5 @@
+/* eslint-disable */
+import * as Types from "../types"
+
+import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
+export const EmailDeliveryFieldsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"EmailDeliveryFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"EmailDelivery"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"sent"}},{"kind":"Field","name":{"kind":"Name","value":"error"}},{"kind":"Field","name":{"kind":"Name","value":"error_message"}},{"kind":"Field","name":{"kind":"Name","value":"email_template_id"}},{"kind":"Field","name":{"kind":"Name","value":"user_id"}},{"kind":"Field","name":{"kind":"Name","value":"organization_id"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]} as unknown as DocumentNode<Types.EmailDeliveryFieldsFragment, unknown>;

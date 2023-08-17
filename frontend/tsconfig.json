@@ -65,12 +65,14 @@
   "exclude": [
     "node_modules",
     "schema.graphql",
+    "../backend/generated/schema.graphql",
     "public/images/originals",
     ".next"
   ],
   "include": [
     "next-env.d.ts",
     "./types/mui.d.ts",
+    "middleware.ts",
     "**/*.ts",
     "**/*.tsx",
     "**/*.js"

@@ -1,8 +1,10 @@
 import { CodegenConfig } from "@graphql-codegen/cli"
 
+import { preset as treeShakePreset } from "./lib/graphql-tree-shaking-preset"
+
 const config: CodegenConfig = {
   schema: "schema.graphql",
-  documents: ["graphql/**/*.{ts,tsx,graphql}"],
+  documents: ["graphql/**/*.graphql"],
   config: {
     preResolveTypes: true,
     namingConvention: "keep",
@@ -10,13 +12,16 @@ const config: CodegenConfig = {
       field: true,
     },
     nonOptionalTypeName: true,
-    dedupeFragments: true,
+    documentMode: "documentNode",
+    optimizeDocumentNode: true,
+    //dedupeFragments: true,
+    pureMagicComment: true,
   },
   /*hooks: {
     afterAllFileWrite: ["prettier --write"],
   },*/
   generates: {
-    "./graphql/generated/index.ts": {
+    "./graphql/generated/types.ts": {
       config: {
         pluckConfig: {
           modules: [
@@ -27,16 +32,12 @@ const config: CodegenConfig = {
           ],
         },
       },
-      /*preset: "client",
-      presetConfig: {
-        gqlTagName: "gql",
-        fragmentMasking: false,
-      },*/
       plugins: [
         {
           add: {
             placement: "prepend",
             content: [
+              "/* eslint-disable */",
               "/**",
               " * This is an automatically generated file.",
               " * Run `npm run graphql-codegen` to regenerate.",
@@ -47,12 +48,26 @@ const config: CodegenConfig = {
         "time",
         "typescript",
         "typescript-operations",
-        "fragment-matcher",
-        "typed-document-node",
+        "typescript-apollo-client-helpers",
       ],
     },
-    "./graphql/generated/apollo-helpers.ts": {
-      plugins: ["typescript-apollo-client-helpers"],
+    "./graphql/generated/": {
+      config: {
+        pluckConfig: {
+          modules: [
+            {
+              name: "@apollo/client",
+              identifier: "gql",
+            },
+          ],
+        },
+        typesPrefix: "Types.",
+      },
+      preset: treeShakePreset,
+      presetConfig: {
+        typesPath: "./types",
+        importTypesNamespace: "Types",
+      },
     },
   },
 }
