@@ -95,6 +95,7 @@ const courseEditSchema = ({ client, initialSlug, t }: CourseEditSchemaArgs) => {
       .required(t("courseTeacherEmailRequired")),
     support_email: Yup.string().email(t("courseEmailInvalid")),
     start_date: Yup.mixed<DateTime>()
+      .nullable()
       .typeError(t("courseStartDateRequired"))
       .required(t("courseStartDateRequired"))
       .transform((datetime?: string | DateTime) => {
@@ -124,6 +125,7 @@ const courseEditSchema = ({ client, initialSlug, t }: CourseEditSchemaArgs) => {
         },
       ),
     end_date: Yup.mixed<DateTime>()
+      .nullable()
       .test(
         "end_invalid",
         t("invalidDate"),
@@ -234,9 +236,10 @@ const courseEditSchema = ({ client, initialSlug, t }: CourseEditSchemaArgs) => {
   })
 }
 
-export type CourseEditSchemaType = Yup.InferType<
-  ReturnType<typeof courseEditSchema>
->
+export type CourseEditSchemaType = Omit<
+  Yup.InferType<ReturnType<typeof courseEditSchema>>,
+  "start_date"
+> & { start_date: DateTime | null } // help typescript a bit, even if we don't really allow null
 
 interface ValidateSlugArgs {
   client: ApolloClient<object>

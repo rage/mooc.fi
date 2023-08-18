@@ -96,12 +96,12 @@ function SignIn() {
           // TODO: typing
           e.preventDefault()
           try {
-            await signIn(
-              { email, password, shallow: false },
-              apollo,
-              logInOrOut,
-            )
-
+            await signIn({ email, password, shallow: false }, apollo)
+            try {
+              await logInOrOut()
+            } catch (e) {
+              console.error("Login in or out failed")
+            }
             if (errorTimeout) {
               clearTimeout(errorTimeout)
             }

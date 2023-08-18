@@ -82,11 +82,8 @@ export function CourseEntry({ children }: PropsWithChildren) {
                   key={`${selectedData.course.id}-progress`}
                   data={selectedData}
                 />
-                <TotalProgressEntry /*data={selectedData.user_course_progress.extra}*/
-                />
-                <TierExerciseList
-                /*data={selectedData.user_course_progress?.extra.exercises}*/
-                />
+                <TotalProgressEntry />
+                <TierExerciseList />
               </>
             )}
           </>

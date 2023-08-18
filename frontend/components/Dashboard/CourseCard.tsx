@@ -239,6 +239,7 @@ const CourseCard = ({ course, loading, isNew }: CourseCardProps) => {
               <>
                 <StyledButton
                   href={`/courses/${course.slug}`}
+                  prefetch={false}
                   aria-label={t("courseToCoursePage", { name: course.name })}
                   variant="text"
                   startIcon={<DashboardIcon />}
@@ -247,6 +248,7 @@ const CourseCard = ({ course, loading, isNew }: CourseCardProps) => {
                 </StyledButton>
                 <StyledButton
                   href={`/courses/new?clone=${course.slug}`}
+                  prefetch={false}
                   aria-label={t("courseCloneCourse", { name: course.name })}
                   variant="text"
                   color="secondary"
@@ -267,6 +269,7 @@ const CourseCard = ({ course, loading, isNew }: CourseCardProps) => {
             )}
             {isNew && (
               <StyledButton
+                prefetch={false}
                 href={`/courses/new`}
                 aria-label={t("courseNewCourse")}
                 variant="text"

@@ -126,16 +126,17 @@ MyApp.getInitialProps = async (props: AppContext) => {
   const admin = signedIn && isAdmin(ctx)
   const accessToken = getAccessToken(ctx)
 
-  Object.assign(originalProps.pageProps, { signedIn, admin, accessToken })
-  return originalProps
-  /*return {
+  /*Object.assign(originalProps.pageProps, { signedIn, admin, accessToken })
+  return originalProps*/
+  return {
     ...originalProps,
     pageProps: {
       ...originalProps.pageProps,
       signedIn,
       admin,
+      accessToken,
     },
-  }*/
+  }
 }
 
 // @ts-ignore: silence for now
