@@ -45,9 +45,8 @@ export const toCourseForm = ({
     ]),
     language: course.language ?? "",
     support_email: course.support_email ?? "",
-    // @ts-expect-error: expected to be invalid initially
-    start_date: course.start_date ? DateTime.fromISO(course.start_date) : "",
-    end_date: course.end_date ? DateTime.fromISO(course.end_date) : undefined,
+    start_date: course.start_date ? DateTime.fromISO(course.start_date) : null,
+    end_date: course.end_date ? DateTime.fromISO(course.end_date) : null,
     start_point: course.start_point ?? false,
     promote: course.promote ?? false,
     hidden: course.hidden ?? false,

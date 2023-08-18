@@ -26,18 +26,7 @@ function UserPointsSummary() {
   return (
     <UserPointsSummaryContainer>
       {!isNarrow && <CourseSelectList />}
-      {loading || state.loading ? (
-        <CourseEntrySkeleton />
-      ) : (
-        /*data?.length === 0 ? (
-        <Typography variant="h3" margin="0.5rem" p="0.5rem">
-          {t("noResults")}
-        </Typography>
-      ) : */ <CourseEntry />
-      )}
-      {/*filteredData.map((entry, index) => (
-            <CourseEntry key={entry.course?.id ?? index} data={entry} />
-          ))*/}
+      {loading || state.loading ? <CourseEntrySkeleton /> : <CourseEntry />}
     </UserPointsSummaryContainer>
   )
 }

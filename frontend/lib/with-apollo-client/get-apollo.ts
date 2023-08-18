@@ -261,7 +261,7 @@ export default function getApollo(
   previousAccessToken = accessToken
   previousLocale = locale
 
-  if (initialState) {
+  if (initialState && isBrowser) {
     const existingCache = _apolloClient.extract()
     const data = deepmerge(existingCache, initialState, {
       arrayMerge: (destination: any, source: any) => [

@@ -6,6 +6,8 @@ import {
   useState,
 } from "react"
 
+import dynamic from "next/dynamic"
+
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp"
 import {
@@ -20,16 +22,30 @@ import { styled } from "@mui/material/styles"
 import { useEventCallback } from "@mui/material/utils"
 
 import { Column, Row } from "./Common"
-import MobileGrid from "./MobileGrid"
 import { SearchFieldOptions } from "./SearchFieldOptions"
-import { MetaResult, NarrowMetaResult } from "./SearchMetaResult"
-import WideGrid from "./WideGrid"
 import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import { H1NoBackground } from "/components/Text/headers"
 import UserSearchContext from "/contexts/UserSearchContext"
 import { useTranslator } from "/hooks/useTranslator"
 import UsersTranslations from "/translations/users"
 import { isDefinedAndNotEmpty } from "/util/guards"
+
+const MobileGrid = dynamic(() => import("./MobileGrid"), {
+  ssr: false,
+  loading: () => null,
+})
+const WideGrid = dynamic(() => import("./WideGrid"), {
+  ssr: false,
+  loading: () => null,
+})
+const MetaResult = dynamic(
+  () => import("./SearchMetaResult").then((c) => c.MetaResult),
+  { ssr: false, loading: () => null },
+)
+const NarrowMetaResult = dynamic(
+  () => import("./SearchMetaResult").then((c) => c.NarrowMetaResult),
+  { ssr: false, loading: () => null },
+)
 
 const StyledForm = styled("form")`
   display: flex;
