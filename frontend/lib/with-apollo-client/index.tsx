@@ -32,7 +32,7 @@ const withApolloClient = (App: any) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const router = useRouter()
     const locale = router.locale ?? pageProps?.router?.locale
-    const apolloClient = apollo ?? getApollo(apolloState, accessToken, locale)
+    const apolloClient = getApollo(apolloState, accessToken, locale)
 
     return (
       <ApolloProvider client={apolloClient}>
@@ -76,6 +76,7 @@ const withApolloClient = (App: any) => {
     }
 
     pageProps.pageProps.currentUser = currentUser
+
     if (typeof window === "undefined") {
       if (ctx?.res?.headersSent || ctx?.res?.finished) {
         return pageProps ?? {}
@@ -93,9 +94,6 @@ const withApolloClient = (App: any) => {
           renderFunction: renderToString,
           tree: <AppTree {...appTreeProps} Component={Component} />,
         })
-        /*const rendered = await renderToStringWithData(
-          <AppTree {...appTreeProps} Component={Component} />
-        )*/
         // Run all GraphQL queries
       } catch (error) {
         // Prevent Apollo Client GraphQL errors from crashing SSR.

@@ -38,11 +38,11 @@ export const signIn = async (
   const res = await tmcClient.authenticate({ username: email, password })
   const details = await userDetails(res.accessToken)
 
-  await apollo?.resetStore()
-
   document.cookie = `access_token=${res.accessToken};path=/`
 
   document.cookie = `admin=${details.administrator};path=/`
+
+  await apollo?.resetStore()
 
   cb?.()
 
@@ -85,7 +85,6 @@ export const signOut = async (
   setTimeout(() => {
     cb()
     setTimeout(() => {
-      apollo.stop()
       apollo.resetStore()
     }, 100)
   }, 100)

@@ -10,8 +10,14 @@ import originalTheme, {
   fontVariableClass as originalFontVariableClass,
 } from "/src/theme"
 
-function CustomDocument(props: DocumentProps) {
+interface CustomDocumentProps extends DocumentProps {
+  apolloState: any
+}
+
+function CustomDocument(props: CustomDocumentProps) {
+  props.__NEXT_DATA__.props.apolloState = props.apolloState
   const isNew = props.__NEXT_DATA__.page.includes("_new")
+
   const theme = isNew ? newTheme : originalTheme
   const fontVariableClass = isNew
     ? newFontVariableClass

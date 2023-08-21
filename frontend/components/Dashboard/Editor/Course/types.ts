@@ -18,8 +18,8 @@ export interface CourseFormValues extends FormValues {
   teacher_in_charge_name: string
   teacher_in_charge_email: string
   support_email?: string
-  start_date: DateTime
-  end_date?: DateTime
+  start_date: DateTime | null
+  end_date: DateTime | null
   ects?: string
   photo?: string | ImageCoreFieldsFragment | null
   language?: string
