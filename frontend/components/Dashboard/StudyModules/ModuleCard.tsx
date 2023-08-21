@@ -173,7 +173,7 @@ function ModuleCard({ studyModule, image, loading }: ModuleCardProps) {
           )}
           {moduleNotFound && (
             <ModuleButton
-              href={`/study-modules/new`}
+              href="/study-modules/new"
               aria-label={t("newStudyModule")}
               variant="text"
               color="secondary"

@@ -34,8 +34,9 @@ export default function redirect({
     context.res.end()
   } else {
     // In the browser, we just pretend like this never even happened ;)
-    Router.push(target, target, {
+    Router.push(target, undefined, {
       shallow,
+      locale: Router.locale,
     })
   }
 }

@@ -27,7 +27,7 @@ const ProfileButton = () => {
 
   return (
     <StyledButton
-      href={`/profile`}
+      href="/profile"
       color="inherit"
       variant="text"
       active={active === "profile"}

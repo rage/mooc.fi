@@ -189,7 +189,7 @@ const CourseCard = ({ course, loading, isNew }: CourseCardProps) => {
             <CourseImage photo={course.photo} alt={course.name} />
           )}
           {isNew && (
-            <StyledLink href={`/courses/new`} aria-label={t("courseNewCourse")}>
+            <StyledLink href="/courses/new" aria-label={t("courseNewCourse")}>
               <CreateCourseIconContainer>
                 <AddCircleIcon fontSize="large" />
               </CreateCourseIconContainer>
@@ -270,7 +270,7 @@ const CourseCard = ({ course, loading, isNew }: CourseCardProps) => {
             {isNew && (
               <StyledButton
                 prefetch={false}
-                href={`/courses/new`}
+                href="/courses/new"
                 aria-label={t("courseNewCourse")}
                 variant="text"
                 color="secondary"

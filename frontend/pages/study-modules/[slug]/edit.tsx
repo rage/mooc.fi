@@ -71,10 +71,9 @@ const EditStudyModule = () => {
     }
 
     if (!loading && !data?.study_module) {
-      redirectTimeout = setTimeout(
-        () => router.push("/study-modules", undefined, { shallow: true }),
-        5000,
-      )
+      redirectTimeout = setTimeout(() => {
+        router.push("/study-modules", undefined, { shallow: true })
+      }, 5000)
     }
 
     return () => {

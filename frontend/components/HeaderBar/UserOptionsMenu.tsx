@@ -43,14 +43,14 @@ const UserOptionsMenu = () => {
   return (
     <>
       <HeaderMenuButton
-        href={`/sign-in`}
+        href="/sign-in"
         color="inherit"
         variant="text"
         onClick={onLoginClick}
       >
         {t("loginShort")}
       </HeaderMenuButton>
-      <HeaderMenuButton href={`/sign-up`} color="inherit" variant="text">
+      <HeaderMenuButton href="/sign-up" color="inherit" variant="text">
         {t("signUp")}
       </HeaderMenuButton>
     </>
