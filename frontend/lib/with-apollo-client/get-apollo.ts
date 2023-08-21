@@ -23,7 +23,7 @@ import { getMainDefinition } from "@apollo/client/utilities"
 
 import { isDefinedAndNotEmpty } from "/util/guards"
 
-import { StrictTypedTypePolicies } from "/graphql/generated/apollo-helpers"
+import { StrictTypedTypePolicies } from "/graphql/generated"
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 
