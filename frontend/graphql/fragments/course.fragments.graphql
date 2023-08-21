@@ -55,9 +55,6 @@ fragment FrontpageCourseFields on Course {
   start_date
   end_date
   has_certificate
-  study_modules {
-    ...StudyModuleCoreFields
-  }
 }
 
 fragment FrontpageModuleCourseFields on Course {
@@ -141,6 +138,9 @@ fragment EditorCourseFields on Course {
     id
     language
   }
+  study_modules {
+    ...StudyModuleCoreFields
+  }
 }
 
 fragment EditorCourseDetailedFields on Course {
@@ -160,6 +160,9 @@ fragment EditorCourseDetailedFields on Course {
   points_needed
   sponsors {
     ...CourseSponsorFields
+  }
+  study_modules {
+    ...StudyModuleCoreFields
   }
 }
 

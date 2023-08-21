@@ -61,8 +61,6 @@ const getIp = (req: NextRequest) => {
 }
 
 const loggerMiddleware = async (req: NextRequest, res: NextResponse) => {
-  // @ts-ignore: not used now
-  const { nextUrl } = req
   const remoteAddress = req.ip || getIp(req) || "-"
   const remoteUser = "-"
   const date = new Date().toISOString()
@@ -81,7 +79,6 @@ const loggerMiddleware = async (req: NextRequest, res: NextResponse) => {
   const logFunction = status >= 400 ? console.error : console.log
   logFunction(message)
 
-  // console.log(request.nextUrl)
   return res
 }
 
@@ -114,5 +111,5 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   // TODO: make this per middleware
-  matcher: ["/((?!api|_next|favicon.ico).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)", { source: "/" }],
 }

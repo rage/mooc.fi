@@ -1,0 +1,5 @@
+/* eslint-disable */
+import * as Types from "../types"
+
+import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
+export const TierInfoFieldsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TierInfoFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TierInfo"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"tier"}},{"kind":"Field","name":{"kind":"Name","value":"hasTier"}},{"kind":"Field","name":{"kind":"Name","value":"missingFromTier"}},{"kind":"Field","name":{"kind":"Name","value":"requiredByTier"}},{"kind":"Field","name":{"kind":"Name","value":"exercisePercentage"}},{"kind":"Field","name":{"kind":"Name","value":"exercisesNeededPercentage"}},{"kind":"Field","name":{"kind":"Name","value":"exerciseCompletions"}},{"kind":"Field","name":{"kind":"Name","value":"exerciseCount"}}]}}]} as unknown as DocumentNode<Types.TierInfoFieldsFragment, unknown>;

@@ -330,7 +330,9 @@ const EmailTemplateView = () => {
                         })
 
                         const url = "/email-templates/"
-                        setTimeout(() => Router.push(url), 5000)
+                        setTimeout(() => {
+                          Router.push(url)
+                        }, 5000)
                       } catch {
                         setSnackbarData({
                           type: "error",

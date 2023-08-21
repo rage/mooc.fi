@@ -1,0 +1,5 @@
+{
+  "name": "@graphql-codegen/graphql-tree-shaking-preset",
+  "version": "0.0.1",
+  "license": "MIT"
+}

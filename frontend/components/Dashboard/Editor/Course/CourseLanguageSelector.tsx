@@ -110,7 +110,7 @@ function CourseLanguageSelector(props: LanguageSelectorProps) {
       <ButtonGroupContainer
         color="secondary"
         aria-label="course language select button group"
-        id={`course_translations`}
+        id="course_translations"
         disabled={selectedLanguage == "both"}
       >
         <StyledLanguageButton

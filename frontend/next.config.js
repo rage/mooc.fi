@@ -56,7 +56,7 @@ const nextConfiguration = (_phase) => ({
     emotion: {
       // would label things with [local] or something; will break styling if not set to never
       // autoLabel: "never",
-      autoLabel: "dev-only",
+      autoLabel: "never",
       // labelFormat: "[dirname]--[filename]--[local]",
       importMap: {
         "@mui/system": {
@@ -82,26 +82,24 @@ const nextConfiguration = (_phase) => ({
   },
   transpilePackages: ["@mui/system", "@mui/material", "@mui/icons-material"],
   modularizeImports: {
-    /*"@mui/material/?(((\\w*)?/?)*)": {
-      transform: "@mui/material/{{ matches.[1] }}/{{member}}",
-    },*/
-    /*"@mui/material": {
-      transform: "@mui/material/{{member}}",
+    "@mui/material/?(((\\w*)?/?)*)": {
+      transform: {
+        css: "/lib/reexports/css",
+        "*": "@mui/material/{{ matches.[1] }}/{{member}}",
+      },
     },
-    "@mui/material/styles": {
-      transform: "@mui/material/styles/{{member}}",
-    },*/
     "@mui/lab": {
       transform: "@mui/lab/{{member}}",
     },
     "@mui/icons-material/?(((\\w*)?/?)*)": {
       transform: "@mui/icons-material/{{ matches.[1] }}/{{member}}",
     },
-    "@fortawesome/free-brands-svg-icons": {
-      transform: "@fortawesome/free-brands-svg-icons/{{member}}",
-    },
-    "@fortawesome/free-solid-svg-icons": {
-      transform: "@fortawesome/free-solid-svg-icons/{{member}}",
+    "/graphql/generated": {
+      transform: {
+        "(.*)Document": "/graphql/generated/definitions/{{member}}",
+        "*": "/graphql/generated/types",
+      },
+      skipDefaultConversion: true,
     },
   },
   /**
@@ -171,6 +169,11 @@ const nextConfiguration = (_phase) => ({
         resourceQuery: { not: [/icon/] },
       })
     }
+    config.module.rules?.push({
+      test: /\.(graphql|gql)/,
+      exclude: /node_modules/,
+      loader: "graphql-tag/loader",
+    })
 
     const alias = config.resolve?.alias
     if (!config.resolve) {
@@ -194,7 +197,10 @@ const nextConfiguration = (_phase) => ({
     }
 
     if (options.isServer && isProduction) {
-      config.devtool = "source-map"
+      config.devtool = "source-map" // false
+    }
+    if (!isProduction) {
+      config.devtool = "eval-source-map"
     }
 
     /*config.optimization = {

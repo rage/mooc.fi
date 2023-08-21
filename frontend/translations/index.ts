@@ -204,7 +204,7 @@ const substitute = <
   }
 
   if (keyGroups) {
-    if (!router && process.browser) {
+    if (!router && typeof window !== "undefined") {
       console.warn(
         `WARNING: no router given to translator - needed to access query parameters in ${translation}`,
       )

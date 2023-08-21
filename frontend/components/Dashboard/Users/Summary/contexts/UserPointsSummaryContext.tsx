@@ -268,21 +268,21 @@ export const UserPointsSummaryContextProvider = ({
   )
 
   useEffect(() => {
-    const queryParams = new URLSearchParams()
+    const params = new URLSearchParams()
     if (state.sort && state.sort !== defaultSort) {
-      queryParams.append("sort", state.sort)
+      params.append("sort", state.sort)
     }
     if (state.order && state.order !== defaultOrder) {
-      queryParams.append("order", state.order)
+      params.append("order", state.order)
     }
-    let path = router.asPath.split("summary")[0] + "summary"
+    let href = router.asPath.split("summary")[0] + "summary"
     if (slug && slug === state.selected) {
-      path += `/${slug}`
+      href += `/${slug}`
     }
-    const href =
-      path + (queryParams.toString().length > 0 ? "?" + queryParams : "")
     if (router.asPath && href !== router.asPath) {
-      router.replace(href, undefined, { shallow: true })
+      router.replace({ href, query: params.toString() }, undefined, {
+        shallow: true,
+      })
     }
   }, [slug, state.selected, state.sort, state.order])
 

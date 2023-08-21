@@ -35,6 +35,7 @@ export const signIn = async (
   apollo?: ApolloClient<object>,
   cb?: (...args: any[]) => any,
 ) => {
+  const { locale = "fi" } = Router
   const res = await tmcClient.authenticate({ username: email, password })
   const details = await userDetails(res.accessToken)
 
@@ -49,26 +50,26 @@ export const signIn = async (
   const rawRedirectLocation = nookies.get()["redirect-back"]
 
   if (redirect && (!rawRedirectLocation || rawRedirectLocation === "")) {
-    window.history.back()
+    Router.back()
     return details
   }
 
   try {
-    const { as, href } = JSON.parse(rawRedirectLocation)
+    const { href } = JSON.parse(rawRedirectLocation)
 
     if (redirect) {
       setTimeout(() => {
-        if (as && href) {
-          Router.push(href, as, { shallow, locale: Router.locale })
+        if (href) {
+          Router.push(href, undefined, { shallow, locale })
         } else {
-          window.history.back()
+          Router.back()
         }
       }, 200)
     }
   } catch (e) {
     // Mostly to catch invalid JSON in the cookie
     console.error("Redirecting back failed because of", e)
-    Router.push("/", undefined, { shallow, locale: Router.locale })
+    Router.push("/", undefined, { shallow, locale })
   }
 
   return details

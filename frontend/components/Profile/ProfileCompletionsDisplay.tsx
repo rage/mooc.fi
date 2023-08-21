@@ -27,7 +27,7 @@ const ProfileCompletionsDisplay = (props: CompletionsProps) => {
       {completions.length === 0 && (
         <Typography>{t("nocompletionsText")}</Typography>
       )}
-      <FormSubmitButton href={`/profile/completions`} variant="text" fullWidth>
+      <FormSubmitButton href="/profile/completions" variant="text" fullWidth>
         {t("seeCompletions")}
       </FormSubmitButton>
     </>

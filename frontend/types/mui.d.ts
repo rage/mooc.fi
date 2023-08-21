@@ -47,7 +47,12 @@ declare module "@mui/material/ButtonBase" {
   export type EnhancedButtonBase<
     D extends React.ElementType = ButtonBaseTypeMap["defaultComponent"],
     P = {},
-  > = ExtendButtonBase<ButtonBaseTypeMap<P & Partial<DefaultNextLinkProps>, D>>
+  > = ExtendButtonBase<
+    ButtonBaseTypeMap<
+      P & Partial<DefaultNextLinkProps>,
+      D & typeof LinkBehavior
+    >
+  >
   const ButtonBase: ExtendButtonBase<
     ButtonBaseTypeMap<Partial<DefaultNextLinkProps>>
   >

@@ -1,6 +1,6 @@
 backend/generated
 backend/dist
-__generated__
+frontend/graphql/generated
 node_modules
 .next
 sourcemap

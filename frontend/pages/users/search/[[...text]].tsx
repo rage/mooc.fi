@@ -166,22 +166,22 @@ const UserSearch = () => {
   ])
 
   useEffect(() => {
-    const searchParams = new URLSearchParams()
+    const params = new URLSearchParams()
     if (rowsPerPage !== 10) {
-      searchParams.append("rowsPerPage", rowsPerPage.toString())
+      params.append("rowsPerPage", rowsPerPage.toString())
     }
     if (page > 0) {
-      searchParams.append("page", page.toString())
+      params.append("page", page.toString())
     }
-    const query =
-      searchParams.toString().length > 0 ? `?${searchParams.toString()}` : ""
     const href =
       searchVariables.search !== ""
-        ? `/users/search/${encodeURIComponent(searchVariables.search)}${query}`
-        : `/users/search${query}`
+        ? `/users/search/${encodeURIComponent(searchVariables.search)}`
+        : `/users/search`
     if (router?.asPath !== href) {
       // the history is still a bit wonky - how should it work?
-      router.push(href, undefined, { shallow: true })
+      router.push({ href, query: params.toString() }, undefined, {
+        shallow: true,
+      })
     }
   }, [rowsPerPage, page, searchVariables])
 

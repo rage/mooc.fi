@@ -343,7 +343,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
         </Form>
 
         <Row>
-          <Link href={`/sign-in`}>{t("signIn")}</Link>
+          <Link href="/sign-in">{t("signIn")}</Link>
         </Row>
 
         {this.state.error && (

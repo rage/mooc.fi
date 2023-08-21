@@ -63,19 +63,16 @@ function useCourseSearch() {
   } = useQuery(HandlerCoursesDocument)
 
   useEffect(() => {
-    const searchParams = new URLSearchParams()
+    const params = new URLSearchParams()
 
     if (isDefinedAndNotEmpty(searchVariables.search)) {
-      searchParams.set("search", encodeURIComponent(searchVariables.search))
+      params.set("search", encodeURIComponent(searchVariables.search))
     }
     if (isDefinedAndNotEmpty(searchVariables.handledBy)) {
-      searchParams.set(
-        "handledBy",
-        encodeURIComponent(searchVariables.handledBy),
-      )
+      params.set("handledBy", encodeURIComponent(searchVariables.handledBy))
     }
     if (!searchVariables.hidden) {
-      searchParams.set("hidden", "false")
+      params.set("hidden", "false")
     }
 
     // Active and Upcoming is the default status so if it's set, don't add it
@@ -89,16 +86,15 @@ function useCourseSearch() {
     ) {
       searchVariables.status
         .filter(isDefinedAndNotEmpty)
-        .forEach((s) => searchParams.append("status", s))
+        .forEach((s) => params.append("status", s))
     }
 
-    const query = searchParams.toString().length
-      ? `?${searchParams.toString()}`
-      : ""
-    const href = `/courses/${query}`
+    const href = `/courses`
 
     if (router?.asPath !== href) {
-      router.push(href, undefined, { shallow: true })
+      router.push({ href, query: params.toString() }, undefined, {
+        shallow: true,
+      })
     }
   }, [
     searchVariables.search,
@@ -106,7 +102,7 @@ function useCourseSearch() {
     searchVariables.status,
   ])
 
-  const onStatusClick = (value: CourseStatus | null) => (_: any) => {
+  const onStatusClick = (value: CourseStatus | null) => () => {
     setSearchVariables({
       ...searchVariables,
       status: value ? [value] : [],

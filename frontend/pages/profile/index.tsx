@@ -63,8 +63,14 @@ function Profile() {
     (_: SyntheticEvent<Element, Event>, newValue: number) => {
       startTransition(() => {
         setTab(newValue)
-        const query = newValue > 0 ? `?tab=${tabsByNumber[newValue]}` : ""
-        Router.replace(pathname, `/profile${query}`, { shallow: true })
+        Router.replace(
+          {
+            href: pathname,
+            query: newValue > 0 ? { tab: tabsByNumber[newValue] } : undefined,
+          },
+          undefined,
+          { shallow: true },
+        )
       })
     },
     [pathname],
