@@ -1,19 +1,19 @@
-import { Lato, Raleway } from "next/font/google"
+import { Open_Sans } from "next/font/google"
 
-export const headerFont = Raleway({
+export const headerFont = Open_Sans({
   weight: ["400", "600", "700"],
   style: ["normal", "italic"],
-  fallback: ["system-ui", "Cantarell", "Ubuntu", "roboto", "sans-serif"],
+  fallback: ["Helvetica", "Arial", "sans-serif"],
   display: "swap",
   subsets: ["latin"],
   variable: "--header-font",
   preload: false,
 })
 
-export const bodyFont = Lato({
+export const bodyFont = Open_Sans({
   weight: ["400", "700"],
   style: ["normal", "italic"],
-  fallback: ["system-ui", "Cantarell", "Ubuntu", "roboto", "sans-serif"],
+  fallback: ["Helvetica", "Arial", "sans-serif"],
   display: "swap",
   subsets: ["latin"],
   variable: "--body-font",
