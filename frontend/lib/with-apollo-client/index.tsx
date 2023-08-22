@@ -75,6 +75,10 @@ const withApolloClient = (App: any) => {
       pageProps = await App.getInitialProps(pageCtx)
     }
 
+    if (!pageProps.pageProps) {
+      pageProps.pageProps = {}
+    }
+
     pageProps.pageProps.currentUser = currentUser
 
     if (typeof window === "undefined") {
