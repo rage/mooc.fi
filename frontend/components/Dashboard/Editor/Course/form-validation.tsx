@@ -49,8 +49,8 @@ export const initialValues: CourseFormValues = {
   language: "",
   teacher_in_charge_name: "",
   teacher_in_charge_email: "",
-  // @ts-expect-error: empty date is expected
-  start_date: "",
+  start_date: null,
+  end_date: null,
   base64: false,
   start_point: false,
   promote: false,
