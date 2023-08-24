@@ -77,8 +77,8 @@ export default {
     "https://www.helsinki.fi/fi/yhteistyo/lahjoittajille/ukraina-kerays",
   ukraineHyLinkText:
     "Lahjoita Ukraina‑keräykseen opiskelijoiden ja tutkijoiden tueksi",
-  fi: "Suomeksi",
-  en: "In English",
+  fi: "Suomi",
+  en: "English",
   selectAll: "Valitse kaikki",
   unscheduled: "Aikatauluton",
   showCourse: "Näytä kurssi",
@@ -108,4 +108,5 @@ export default {
   difficulty: "Vaikeustaso",
   module: "Kokonaisuus",
   courseOtherLanguages: "Saatavilla myös kielillä",
+  hy: "Helsingin yliopisto",
 } as const

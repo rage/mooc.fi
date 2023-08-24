@@ -1,4 +1,3 @@
-import { amber } from "@mui/material/colors"
 import { createTheme, Theme } from "@mui/material/styles"
 
 export const withPalette = (theme: Theme) =>
@@ -6,10 +5,60 @@ export const withPalette = (theme: Theme) =>
     ...theme,
     palette: {
       primary: {
-        main: "#378170",
+        main: "#0e688b",
       },
       secondary: {
-        main: amber[500],
+        main: "#fff",
+      },
+      common: {
+        brand: {
+          main: "#0e688b",
+          soft: "#b1e7ff",
+          bright: "#48c5f8",
+          light: "#107eab",
+          active: "#005379",
+          dark: "#003146",
+          nearlyBlack: "#000222",
+        },
+        grayscale: {
+          white: "#fff",
+          slightlyGray: "#fefefe",
+          light: "#f8f8f8",
+          medium: "#d2d2d2",
+          backgroundBox: "#f5f5f5",
+          tabsBorder: "#e6e6e6",
+          backgroundArrow: "#dfdfdf",
+          mediumDark: "#979797",
+          dark: "#555555",
+          darkText: "#222222",
+          black: "#000",
+        },
+        additional: {
+          red: {
+            light: "#e5053a",
+            dark: "#a31621",
+          },
+          purple: {
+            light: "#420039",
+          },
+          yellow: {
+            light: "#f9a21a",
+            main: "#c47f1b",
+          },
+          skyblue: "#48c5f8",
+          orange: "#d14600",
+          green: {
+            light: "#96ba3c",
+            dark: "#006400",
+          },
+        },
+        link: {
+          blue: "#0479a4",
+          disabled: "#767676",
+        },
+        hover: {
+          gray: "#eaeaea",
+        },
       },
       blue: {
         light3: "#DAE3EB",

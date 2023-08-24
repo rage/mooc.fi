@@ -11,7 +11,7 @@ export const headerFont = Open_Sans({
 })
 
 export const bodyFont = Open_Sans({
-  weight: ["400", "700"],
+  weight: ["400", "600", "700"],
   style: ["normal", "italic"],
   fallback: ["Helvetica", "Arial", "sans-serif"],
   display: "swap",

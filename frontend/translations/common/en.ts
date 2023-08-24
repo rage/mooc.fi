@@ -77,8 +77,8 @@ export default {
   ukraineHyText:
     "Support students and researchers affected by the invasion of Ukraine",
   ukraineHyLinkText: "University of Helsinki Ukraine appeal",
-  fi: "Suomeksi",
-  en: "In English",
+  fi: "Suomi",
+  en: "English",
   selectAll: "Select all",
   unscheduled: "Indefinitely open",
   showCourse: "Show course",
@@ -108,4 +108,5 @@ export default {
   difficulty: "Difficulty",
   module: "Module",
   courseOtherLanguages: "Also available in",
+  hy: "University of Helsinki",
 } as const

@@ -16,7 +16,7 @@ let theme = createTheme({
       xxs: 360,
       xs: 480,
       sm: 640,
-      md: 900,
+      md: 960,
       desktop: 1024,
       lg: 1200,
       xl: 1536,

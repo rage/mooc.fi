@@ -15,21 +15,13 @@ import {
 import { styled, Theme } from "@mui/material/styles"
 
 import { NavigationLinks } from "./NavigationLinks"
-import LanguageSwitch from "/components/NewLayout/Header/LanguageSwitch"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useTranslator } from "/hooks/useTranslator"
 import { signOut } from "/lib/authentication"
 import CommonTranslations from "/translations/common"
 
-const NavigationMenuContainer = styled("nav")(
+const NavigationLinksContainer = styled("div")(
   ({ theme }) => `
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.5rem;
-
   ${theme.breakpoints.down("sm")} {
     display: none;
   }
@@ -37,23 +29,11 @@ const NavigationMenuContainer = styled("nav")(
 )
 
 const NavigationRightContainer = styled("div")`
-  display: flex;
+  display: inline-grid;
+  gap: 4px;
+  grid-template-columns: repeat(3, auto);
   justify-content: flex-end;
-  gap: 0.5rem;
-  flex-grow: 1;
-  width: 100%;
 `
-
-const NavigationLinksWrapper = styled("div")(
-  ({ theme }) => `
-  display: flex;
-  flex-shrink: 1;
-  
-  ${theme.breakpoints.down("md")} {
-    display: none;
-  }
-`,
-)
 
 interface MenuButtonProps {
   Icon?: React.FunctionComponent<SvgIconProps>
@@ -154,15 +134,14 @@ const UserOptionsMenu = () => {
 
 const DesktopNavigationMenu = () => {
   return (
-    <NavigationMenuContainer role="navigation" aria-label="main navigation">
-      <NavigationLinksWrapper>
+    <>
+      <NavigationLinksContainer>
         <NavigationLinks />
-      </NavigationLinksWrapper>
+      </NavigationLinksContainer>
       <NavigationRightContainer>
-        <LanguageSwitch />
         <UserOptionsMenu />
       </NavigationRightContainer>
-    </NavigationMenuContainer>
+    </>
   )
 }
 

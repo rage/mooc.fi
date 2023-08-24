@@ -56,7 +56,7 @@ const nextConfiguration = (_phase) => ({
     emotion: {
       // would label things with [local] or something; will break styling if not set to never
       // autoLabel: "never",
-      autoLabel: "never",
+      // autoLabel: "never",
       // labelFormat: "[dirname]--[filename]--[local]",
       importMap: {
         "@mui/system": {
