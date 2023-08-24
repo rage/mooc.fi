@@ -43,14 +43,6 @@ const GroupToolbar = styled(Toolbar)`
   overflow: hidden;
 `
 
-const MenuContainer = styled("div")`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  justify-content: center;
-`
-
 const HyLogo = styled(HyLogoIcon)(
   ({ theme }) => `
   fill: ${theme.palette.common.grayscale.white};

@@ -1,26 +1,18 @@
-import React, {
-  forwardRef,
-  MouseEventHandler,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react"
+import React, { useState } from "react"
 
 import { useRouter } from "next/router"
 
-import { useApolloClient } from "@apollo/client"
+/*import { useApolloClient } from "@apollo/client"
 import ChalkboardTeacher from "@fortawesome/fontawesome-free/svgs/solid/chalkboard-user.svg?icon"
 import Dashboard from "@fortawesome/fontawesome-free/svgs/solid/gauge-high.svg?icon"
 import ListIcon from "@fortawesome/fontawesome-free/svgs/solid/list.svg?icon"
 import SignOut from "@fortawesome/fontawesome-free/svgs/solid/right-from-bracket.svg?icon"
 import SignIn from "@fortawesome/fontawesome-free/svgs/solid/right-to-bracket.svg?icon"
 import Register from "@fortawesome/fontawesome-free/svgs/solid/user-plus.svg?icon"
-import User from "@fortawesome/fontawesome-free/svgs/solid/user.svg?icon"
+import User from "@fortawesome/fontawesome-free/svgs/solid/user.svg?icon"*/
 import {
   Button,
   Collapse,
-  Divider,
   Drawer,
   EnhancedListItemButton,
   IconButton,
@@ -40,7 +32,7 @@ import HamburgerIcon from "../Icons/Hamburger"
 import RemoveIcon from "../Icons/Remove"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useTranslator } from "/hooks/useTranslator"
-import { signOut } from "/lib/authentication"
+// import { signOut } from "/lib/authentication"
 import CommonTranslations from "/translations/common"
 
 const MobileMenuContainer = styled("div")(
@@ -164,12 +156,13 @@ const MobileMenuItem = ({
   )
 }
 
-const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
+// const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
+const MobileNavigationMenu = () => {
   const [open, setOpen] = useState(false)
 
   const t = useTranslator(CommonTranslations)
-  const { admin, loggedIn, logInOrOut, currentUser } = useLoginStateContext()
-  const apollo = useApolloClient()
+  const { admin /*loggedIn, logInOrOut, currentUser*/ } = useLoginStateContext()
+  //const apollo = useApolloClient()
 
   const onClick = useEventCallback(() => {
     setOpen((prevOpen) => !prevOpen)
@@ -179,7 +172,7 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
     setOpen(false)
   })
 
-  const onSignOut = useCallback(() => {
+  /*const onSignOut = useCallback(() => {
     setOpen(false)
     signOut(apollo, logInOrOut)
   }, [apollo, signOut, logInOrOut])
@@ -192,7 +185,7 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
     }
 
     return name
-  }, [currentUser, t])
+  }, [currentUser, t])*/
 
   /*const menuItems = useMemo(() => {
     const items = [
@@ -294,6 +287,7 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
       </MobileMenu>
     </MobileMenuContainer>
   )
-})
+}
+//})
 
 export default MobileNavigationMenu
