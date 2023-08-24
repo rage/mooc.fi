@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { LinkProps as NextLinkProps } from "next/link"
 
+import { ListItemButtonTypeMap } from "@mui/material"
 import { ButtonTypeMap } from "@mui/material/Button"
 import { ButtonBaseTypeMap, ExtendButtonBase } from "@mui/material/ButtonBase"
 import { LinkTypeMap } from "@mui/material/Link"
@@ -84,6 +85,27 @@ declare module "@mui/material/MenuItem" {
   >
 }
 
+declare module "@mui/material/ListItemButton" {
+  export type EnhancedListItemButtonProps<
+    RootComponent extends
+      React.ElementType = ListItemButtonTypeMap["defaultComponent"],
+    AdditionalProps = {},
+  > = OverrideProps<
+    ListItemButtonTypeMap<
+      AdditionalProps & Partial<DefaultNextLinkProps>,
+      RootComponent
+    >,
+    RootComponent
+  > & { component?: React.ElementType }
+  export type EnhancedListItemButton<
+    D extends React.ElementType = ButtonTypeMap["defaultComponent"],
+    P = {},
+  > = ExtendButtonBase<ButtonTypeMap<P & Partial<DefaultNextLinkProps>, D>>
+  const ListItemButton: ExtendButtonBase<
+    ListItemButtonTypeMap<Partial<DefaultNextLinkProps>>
+  >
+}
+
 declare module "@mui/material/Typography" {
   // add typography variants - also needs to be declared in "styles"
   interface TypographyPropsVariantOverrides {
@@ -164,7 +186,6 @@ declare module "@mui/material/styles" {
     dark2?: string
     dark3?: string
   }
-
   //
 
   interface ComponentNameToClassKey {
@@ -216,6 +237,59 @@ declare module "@mui/material/styles" {
     }
     MUIDataTableToolbar?: {
       styleOverrides?: ComponentsOverrides<Theme>["MUIDataTableToolbar"]
+    }
+  }
+}
+
+declare module "@mui/material/styles/createPalette" {
+  interface CommonColors {
+    brand: {
+      main: string
+      soft: string
+      bright: string
+      light: string
+      active: string
+      dark: string
+      nearlyBlack: string
+    }
+    link: {
+      blue: string
+      disabled: string
+    }
+    grayscale: {
+      white: string
+      slightlyGray: string
+      light: string
+      medium: string
+      backgroundBox: string
+      tabsBorder: string
+      backgroundArrow: string
+      mediumDark: string
+      dark: string
+      darkText: string
+      black: string
+    }
+    additional: {
+      red: {
+        light: string
+        dark: string
+      }
+      purple: {
+        light: string
+      }
+      yellow: {
+        light: string
+        main: string
+      }
+      skyblue: string
+      orange: string
+      green: {
+        light: string
+        dark: string
+      }
+    }
+    hover: {
+      gray: string
     }
   }
 }

@@ -1,5 +1,5 @@
 import { EnhancedLink, Link } from "@mui/material"
-import { css, styled } from "@mui/material/styles"
+import { styled } from "@mui/material/styles"
 
 import { useActiveTab } from "/components/NewLayout/Navigation"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
@@ -12,31 +12,53 @@ interface NavigationLinkProps {
 
 const NavigationLink = styled(Link, {
   shouldForwardProp: (prop) => prop !== "active",
-})<NavigationLinkProps>`
-  text-decoration: none;
-  color: inherit;
-  font-size: 1rem;
-  padding: 0.2rem;
-  ${({ active }) =>
-    active
-      ? css`
-          border-bottom: 2px solid rgba(200, 100, 0, 0.25);
-          font-weight: 600;
-        `
-      : css`
-          &:hover {
-            text-shadow: 0px 0px 1px black;
-          }
-        `}
-
-  transition: 0.1s;
-` as EnhancedLink<"a", NavigationLinkProps>
-
-const NavigationLinkContainer = styled("div")`
+})<NavigationLinkProps>(
+  ({ theme, active }) => `
+  font-size: 0.875rem;
+  line-height: 16px;
+  font-weight: 700;
+  background-color: transparent;
+  border: none;
+  color: ${theme.palette.common.brand.nearlyBlack};
+  cursor: pointer;
   display: flex;
-  justify-content: space-between;
-  gap: 2rem;
+  flex-direction: row;
+  height: 100%;
+  letter-spacing: -0.7px;
+  padding: 12px 10px 13px;
+  text-transform: uppercase;
+  text-decoration: none;
+  text-align: left;
+  align-items: flex-start;
+  transition: 0.1s;
+  ${active && `border-bottom: 2px solid ${theme.palette.common.brand.active};`}
+  &:hover {
+    color: ${theme.palette.common.brand.main};
+  }
+`,
+) as EnhancedLink<"a", NavigationLinkProps>
+
+const NavigationContainer = styled("nav")`
+  display: flex;
+  margin: 0 32px;
+  align-items: center;
+  flex-flow: row;
+  justify-content: center;
+  padding: 0;
+`
+
+const NavigationLinkList = styled("ul")`
+  display: flex;
+  height: 100%;
+  list-style: none;
+  margin: 0;
+  padding: 0;
   width: 100%;
+`
+
+const NavigationLinkItem = styled("li")`
+  list-style: none;
+  height: 100%;
 `
 
 export const NavigationLinks = () => {
@@ -45,27 +67,35 @@ export const NavigationLinks = () => {
   const active = useActiveTab()
 
   return (
-    <NavigationLinkContainer>
-      <NavigationLink href="/_new/courses" active={active === "courses"}>
-        {t("courses")}
-      </NavigationLink>
+    <NavigationContainer role="navigation">
+      <NavigationLinkList>
+        <NavigationLinkItem>
+          <NavigationLink href="/_new/courses" active={active === "courses"}>
+            {t("courses")}
+          </NavigationLink>
+        </NavigationLinkItem>
 
-      <NavigationLink
-        href="/_new/study-modules"
-        active={active === "study-modules"}
-      >
-        {t("modules")}
-      </NavigationLink>
+        <NavigationLinkItem>
+          <NavigationLink
+            href="/_new/study-modules"
+            active={active === "study-modules"}
+          >
+            {t("modules")}
+          </NavigationLink>
+        </NavigationLinkItem>
 
-      {admin && (
-        <NavigationLink
-          href="/_new/admin"
-          prefetch={false}
-          active={active === "admin"}
-        >
-          Admin
-        </NavigationLink>
-      )}
-    </NavigationLinkContainer>
+        {admin && (
+          <NavigationLinkItem>
+            <NavigationLink
+              href="/_new/admin"
+              prefetch={false}
+              active={active === "admin"}
+            >
+              Admin
+            </NavigationLink>
+          </NavigationLinkItem>
+        )}
+      </NavigationLinkList>
+    </NavigationContainer>
   )
 }

@@ -109,4 +109,5 @@ export default {
   difficulty: "Difficulty",
   module: "Module",
   courseOtherLanguages: "Also available in",
+  hy: "Helsingfors universitet",
 } as const

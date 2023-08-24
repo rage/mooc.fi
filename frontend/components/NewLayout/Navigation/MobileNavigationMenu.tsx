@@ -1,39 +1,38 @@
-import React, {
-  forwardRef,
-  MouseEventHandler,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react"
+import React, { useState } from "react"
 
-import { useApolloClient } from "@apollo/client"
+import { useRouter } from "next/router"
+
+/*import { useApolloClient } from "@apollo/client"
 import ChalkboardTeacher from "@fortawesome/fontawesome-free/svgs/solid/chalkboard-user.svg?icon"
 import Dashboard from "@fortawesome/fontawesome-free/svgs/solid/gauge-high.svg?icon"
-import List from "@fortawesome/fontawesome-free/svgs/solid/list.svg?icon"
+import ListIcon from "@fortawesome/fontawesome-free/svgs/solid/list.svg?icon"
 import SignOut from "@fortawesome/fontawesome-free/svgs/solid/right-from-bracket.svg?icon"
 import SignIn from "@fortawesome/fontawesome-free/svgs/solid/right-to-bracket.svg?icon"
 import Register from "@fortawesome/fontawesome-free/svgs/solid/user-plus.svg?icon"
-import User from "@fortawesome/fontawesome-free/svgs/solid/user.svg?icon"
-import MenuIcon from "@mui/icons-material/Menu"
+import User from "@fortawesome/fontawesome-free/svgs/solid/user.svg?icon"*/
 import {
-  Divider,
-  EnhancedMenuItem,
-  EnhancedMenuItemProps,
+  Button,
+  Collapse,
+  Drawer,
+  EnhancedListItemButton,
   IconButton,
+  List,
+  ListItem,
+  ListItemButton,
   ListItemIcon,
   ListItemText,
-  Menu,
-  MenuItem as MUIMenuItem,
   SvgIcon,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import { useEventCallback } from "@mui/material/utils"
 
-import LanguageSwitch from "/components/NewLayout/Header/LanguageSwitch"
+import CaretDownIcon from "../Icons/CaretDown"
+import CaretUpIcon from "../Icons/CaretUp"
+import HamburgerIcon from "../Icons/Hamburger"
+import RemoveIcon from "../Icons/Remove"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useTranslator } from "/hooks/useTranslator"
-import { signOut } from "/lib/authentication"
+// import { signOut } from "/lib/authentication"
 import CommonTranslations from "/translations/common"
 
 const MobileMenuContainer = styled("div")(
@@ -46,59 +45,135 @@ const MobileMenuContainer = styled("div")(
 `,
 )
 
+const MobileMenu = styled(Drawer)(
+  ({ theme }) => `
+  .MuiDrawer-paper {
+    display: block;
+    width: 90%;
+
+    ${theme.breakpoints.up("xs")} {
+      width: 400px;
+    }
+  }
+`,
+) as typeof Drawer
+
+const MobileMenuHeader = styled("section")`
+  display: grid;
+  grid-template-columns: 1fr auto;
+  padding: 12px 80px 12px 16px;
+  gap: 16px;
+  min-height: 68px;
+  align-items: center;
+`
+
+const MobileMenuList = styled(List)`
+  position: relative;
+` as typeof List
+
+const MobileMenuListItem = styled(ListItem)(
+  ({ theme }) => `
+  margin: 0 0 4px;
+  display: flex;
+  padding: 0;
+
+  .MuiListItemText-primary {
+    font-size: 1.3125rem;
+    line-height: 28px;
+    font-weight: 700;
+    color: ${theme.palette.common.brand.light};
+    letter-spacing: -0.42px;
+    padding: 16px 0 16px 16px;
+  }
+
+  &.Mui-selected {
+    background-color: transparent;
+    .MuiListItemText-primary {
+      color: ${theme.palette.common.grayscale.dark};
+    }
+  }
+`,
+)
+
+const MobileMenuListItemText = styled(ListItemText)(
+  ({ theme }) => `
+  /*.MuiListItemText-primary {
+    font-size: 1.3125rem;
+    font-weight: 700;
+    color: ${theme.palette.common.brand.light};
+    letter-spacing: -0.42px;
+    padding: 16px 0 16px 16px;
+  }*/
+`,
+) as typeof ListItemText
+
+const MobileMenuListItemButton = styled(ListItemButton)`
+  &:hover {
+    background: transparent;
+  }
+` as EnhancedListItemButton
+
+const MobileMenuListItemIcon = styled(ListItemIcon)`
+  /* */
+`
+
 interface MobileMenuItemProps {
-  Icon: typeof SvgIcon
+  Icon?: typeof SvgIcon
+  href?: string
   text: string
-  onClick?: React.MouseEventHandler<HTMLAnchorElement>
+  collapsable?: boolean
 }
 
-const MenuItem = MUIMenuItem as EnhancedMenuItem<"a">
+const MobileMenuItem = ({
+  Icon,
+  href,
+  text,
+  collapsable,
+  children,
+}: React.PropsWithChildren<MobileMenuItemProps>) => {
+  const { pathname } = useRouter()
+  const [open, setOpen] = useState(false)
 
-const MobileMenuItem = forwardRef<
-  HTMLAnchorElement,
-  EnhancedMenuItemProps<"a"> & MobileMenuItemProps
->(({ Icon, text, ...props }, ref) => {
-  return (
-    <MenuItem component="a" {...props} ref={ref}>
-      <ListItemIcon>
-        <Icon />
-      </ListItemIcon>
-      <ListItemText>{text}</ListItemText>
-    </MenuItem>
-  )
-})
-
-const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
-  const [anchor, setAnchor] = useState<
-    (EventTarget & HTMLAnchorElement) | null
-  >(null)
-  const open = Boolean(anchor)
-
-  const t = useTranslator(CommonTranslations)
-  const { admin, loggedIn, logInOrOut, currentUser } = useLoginStateContext()
-  const apollo = useApolloClient()
-
-  const onClick: MouseEventHandler<HTMLAnchorElement> = useEventCallback(
-    (event) => {
-      setAnchor(event.currentTarget)
-    },
-  )
-
-  const onClose: MouseEventHandler<HTMLAnchorElement> = useEventCallback(() => {
-    setAnchor(null)
+  const onClick = useEventCallback(() => {
+    if (collapsable) {
+      setOpen((prevOpen) => !prevOpen)
+    }
   })
 
-  useEffect(() => {
-    const resizeListener = () => {
-      setAnchor(null)
-    }
-    window?.addEventListener("resize", resizeListener)
+  return (
+    <MobileMenuListItem selected={pathname === href}>
+      <MobileMenuListItemButton variant="text" href={href} onClick={onClick}>
+        {Icon && (
+          <MobileMenuListItemIcon>
+            <Icon />
+          </MobileMenuListItemIcon>
+        )}
+        <MobileMenuListItemText primary={text} />
+        {collapsable && (open ? <CaretUpIcon /> : <CaretDownIcon />)}
+      </MobileMenuListItemButton>
+      {collapsable && <Collapse in={open}>{children}</Collapse>}
+    </MobileMenuListItem>
+  )
+}
 
-    return () => window?.removeEventListener("resize", resizeListener)
-  }, [])
+// const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
+const MobileNavigationMenu = () => {
+  const [open, setOpen] = useState(false)
 
-  const onSignOut = useCallback(() => {
-    setAnchor(null)
+  const t = useTranslator(CommonTranslations)
+  const { admin /*loggedIn, logInOrOut, currentUser*/ } = useLoginStateContext()
+  //const apollo = useApolloClient()
+
+  const onClick = useEventCallback(() => {
+    setOpen((prevOpen) => !prevOpen)
+  })
+
+  const onClose = useEventCallback(() => {
+    setOpen(false)
+  })
+
+  /*const onSignOut = useCallback(() => {
+    setOpen(false)
     signOut(apollo, logInOrOut)
   }, [apollo, signOut, logInOrOut])
 
@@ -110,14 +185,11 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
     }
 
     return name
-  }, [currentUser, t])
+  }, [currentUser, t])*/
 
-  const menuItems = useMemo(() => {
+  /*const menuItems = useMemo(() => {
     const items = [
-      <MenuItem key="mobile-menu-language-switch">
-        <LanguageSwitch />
-      </MenuItem>,
-      <MobileMenuItem
+      <MobileMenuItemOld
         key="mobile-menu-courses"
         href="/_new/courses"
         Icon={ChalkboardTeacher}
@@ -125,10 +197,10 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
         title={t("courses")}
         onClick={onClose}
       />,
-      <MobileMenuItem
+      <MobileMenuItemOld
         key="mobile-menu-modules"
         href="/_new/study-modules"
-        Icon={List}
+        Icon={ListIcon}
         text={t("modules")}
         title={t("modules")}
         onClick={onClose}
@@ -138,7 +210,7 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
 
     if (admin) {
       items.push(
-        <MobileMenuItem
+        <MobileMenuItemOld
           key="mobile-menu-admin"
           href="/_new/admin"
           Icon={Dashboard}
@@ -151,7 +223,7 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
     }
     if (loggedIn) {
       items.push(
-        <MobileMenuItem
+        <MobileMenuItemOld
           key="mobile-menu-profile"
           href="/_new/profile"
           Icon={User}
@@ -159,7 +231,7 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
           title={t("myProfile")}
           onClick={onClose}
         />,
-        <MobileMenuItem
+        <MobileMenuItemOld
           key="mobile-menu-logout"
           Icon={SignOut}
           text={t("logout")}
@@ -169,7 +241,7 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
       )
     } else {
       items.push(
-        <MobileMenuItem
+        <MobileMenuItemOld
           href="/_new/sign-in"
           key="menu-login"
           Icon={SignIn}
@@ -178,8 +250,8 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
           title={t("loginShort")}
         >
           {t("loginShort")}
-        </MobileMenuItem>,
-        <MobileMenuItem
+        </MobileMenuItemOld>,
+        <MobileMenuItemOld
           href="/_new/sign-up"
           key="menu-signup"
           Icon={Register}
@@ -188,26 +260,34 @@ const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
           title={t("signUp")}
         >
           {t("signUp")}
-        </MobileMenuItem>,
+        </MobileMenuItemOld>,
       )
     }
 
     return items
-  }, [loggedIn, onClose, t, admin, MobileMenuItem])
+  }, [loggedIn, onClose, t, admin, MobileMenuItemOld])*/
 
   return (
     <MobileMenuContainer>
-      <IconButton
-        onClick={onClick as any as MouseEventHandler<HTMLButtonElement>}
-        aria-hidden
-      >
-        <MenuIcon />
+      <IconButton onClick={onClick} aria-hidden>
+        <HamburgerIcon sx={{ fontSize: 24 }} />
       </IconButton>
-      <Menu open={open} onClose={onClose} anchorEl={anchor} ref={ref}>
-        {menuItems}
-      </Menu>
+      <MobileMenu anchor="right" open={open} onClose={onClose}>
+        <MobileMenuHeader>
+          <Button variant="text" color="primary" onClick={onClose}>
+            {t("close")}
+            <RemoveIcon sx={{ fontSize: 16 }} />
+          </Button>
+        </MobileMenuHeader>
+        <MobileMenuList>
+          <MobileMenuItem href="/_new/courses" text={t("courses")} />
+          <MobileMenuItem href="/_new/study-modules" text={t("modules")} />
+          {admin && <MobileMenuItem href="/_new/admin" text="Admin" />}
+        </MobileMenuList>
+      </MobileMenu>
     </MobileMenuContainer>
   )
-})
+}
+//})
 
 export default MobileNavigationMenu

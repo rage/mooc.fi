@@ -7,32 +7,23 @@ import moocLogo from "/public/images/new/logos/moocfi.svg"
 
 const MoocLogoText = styled(Typography)(
   ({ theme }) => `
+  font-weight: 600;
   font-size: 1.75rem !important;
+  letter-spacing: -0.75px;
   ${theme.breakpoints.down("xs")} {
     font-size: 1.5rem !important;
   }
   ${theme.breakpoints.down("xxs")} {
     display: none !important;
   }
-
-  margin-top: 1rem;
 `,
 )
 
-const MoocLogoAvatar = styled(Avatar)(
-  ({ theme }) => `
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  margin-left: 0px;
-  margin-right: 0.5rem;
-  height: 3em;
-  width: 3em;
-  ${theme.breakpoints.down("xs")} {
-    height: 2.5em;
-    width: 2.5em;
-  }
-`,
-)
+const MoocLogoAvatar = styled(Avatar)`
+  height: 3rem;
+  width: 3rem;
+  margin-right: 0.5em;
+`
 
 const MoocLogoLink = styled(Link)`
   color: black;
