@@ -40,7 +40,7 @@ const GroupToolbar = styled(Toolbar)`
   display: flex;
   flex-direction: row;
   flex-shrink: 0;
-  overflow: hidden;
+  padding: 0 8px;
 `
 
 const HyLogo = styled(HyLogoIcon)(
@@ -107,12 +107,27 @@ const HyLogoContainer = styled("div")(
 `,
 )
 
+const BrandingContainer = styled("div")(
+  ({ theme }) => `
+    display: flex;
+    align-items: center;
+    padding: 0px 0;
+    ${theme.breakpoints.up("xl")} {
+      padding: 12px 0;
+    }
+  `,
+)
+
+const HeaderAppBar = styled(AppBar)`
+  /**/
+` as typeof AppBar
+
 function Header() {
   const t = useTranslator(CommonTranslations)
 
   return (
     <HideOnScroll>
-      <AppBar position="sticky" aria-label="toolbar" elevation={0}>
+      <HeaderAppBar position="sticky" aria-label="toolbar" elevation={0}>
         <HyToolbar>
           <HyLogoContainer>
             <HyLogo />
@@ -121,11 +136,13 @@ function Header() {
           <LanguageSwitch />
         </HyToolbar>
         <GroupToolbar>
-          <MoocLogo />
+          <BrandingContainer>
+            <MoocLogo />
+          </BrandingContainer>
           <DesktopNavigationMenu />
           <MobileNavigationMenu />
         </GroupToolbar>
-      </AppBar>
+      </HeaderAppBar>
     </HideOnScroll>
   )
 }

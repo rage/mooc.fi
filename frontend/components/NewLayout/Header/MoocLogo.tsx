@@ -1,9 +1,7 @@
-import Image from "next/image"
-
-import { Avatar, Link, Typography } from "@mui/material"
+import { Link, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import moocLogo from "/public/images/new/logos/moocfi.svg"
+import MoocLogoFilled from "../Icons/MoocLogoFilled"
 
 const MoocLogoText = styled(Typography)(
   ({ theme }) => `
@@ -19,27 +17,19 @@ const MoocLogoText = styled(Typography)(
 `,
 )
 
-const MoocLogoAvatar = styled(Avatar)`
-  height: 3rem;
-  width: 3rem;
-  margin-right: 0.5em;
-`
-
 const MoocLogoLink = styled(Link)`
   color: black;
   text-decoration: none;
   display: flex;
   flex-direction: row;
-  margin-right: 1.5em;
+  align-items: center;
   &:hover {
     cursor: pointer;
   }
 `
 const MoocLogo = () => (
   <MoocLogoLink href="/_new" aria-label="MOOC.fi homepage">
-    <MoocLogoAvatar>
-      <Image src={moocLogo} alt="MOOC.fi logo" priority fill />
-    </MoocLogoAvatar>
+    <MoocLogoFilled sx={{ fontSize: "3rem", marginRight: "0.5rem" }} />
     <MoocLogoText>MOOC.fi</MoocLogoText>
   </MoocLogoLink>
 )
