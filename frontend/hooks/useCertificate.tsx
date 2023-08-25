@@ -175,6 +175,9 @@ export const useCertificate = ({
     try {
       dispatch({ type: "GENERATE_CERTIFICATE" })
       const res = await createCertificate(course.slug)
+      if (!res) {
+        throw new Error("No generated certificate received")
+      }
       dispatch({ type: "RECEIVE_GENERATED_CERTIFICATE", payload: res })
       onReceiveGeneratedCertificateSuccess?.()
       initialState.current = {
