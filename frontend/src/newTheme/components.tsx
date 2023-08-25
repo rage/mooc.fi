@@ -173,7 +173,7 @@ export const withComponents = (theme: Theme) =>
             marginRight: "-16px",
             alignItems: "center",
             display: "inline-flex",
-
+            borderRadius: "0",
             svg: {
               marginLeft: "8px",
             },

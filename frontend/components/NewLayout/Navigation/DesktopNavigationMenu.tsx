@@ -20,14 +20,6 @@ import { useTranslator } from "/hooks/useTranslator"
 import { signOut } from "/lib/authentication"
 import CommonTranslations from "/translations/common"
 
-const NavigationLinksContainer = styled("div")(
-  ({ theme }) => `
-  ${theme.breakpoints.down("sm")} {
-    display: none;
-  }
-`,
-)
-
 const NavigationRightContainer = styled("div")`
   display: inline-grid;
   gap: 4px;
@@ -135,9 +127,7 @@ const UserOptionsMenu = () => {
 const DesktopNavigationMenu = () => {
   return (
     <>
-      <NavigationLinksContainer>
-        <NavigationLinks />
-      </NavigationLinksContainer>
+      <NavigationLinks />
       <NavigationRightContainer>
         <UserOptionsMenu />
       </NavigationRightContainer>
