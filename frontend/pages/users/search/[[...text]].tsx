@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { NextSeo } from "next-seo"
 import { useRouter } from "next/router"
 
-import { useSubscription } from "@apollo/client"
+import { useApolloClient } from "@apollo/client"
 
 import Container from "/components/Container"
 import SearchForm from "/components/Dashboard/Users/Search/SearchForm"
@@ -32,6 +32,7 @@ const emptyResults: UserSearchResults = {
 
 const UserSearch = () => {
   const router = useRouter()
+  const client = useApolloClient()
   const textParam = useQueryParameter("text", { enforce: false })
   const pageParam =
     parseInt(useQueryParameter("page", { enforce: false }), 10) || 0
@@ -67,76 +68,9 @@ const UserSearch = () => {
       fields: fieldsParamValue,
     })
 
-  useSubscription(UserSearchDocument, {
-    variables: {
-      search: searchVariables.search,
-      fields: searchVariables.fields,
-    },
-    shouldResubscribe: true,
-    fetchPolicy: "cache-first",
-    skip: (searchVariables.search ?? "").length < 3,
-    onData({ data }) {
-      if (!data.data) {
-        return
-      }
-
-      if (
-        data.data &&
-        isDefinedAndNotEmpty(data.data.userSearch) &&
-        data.data.userSearch.search === searchVariables.search
-      ) {
-        setResults((prev) => {
-          const {
-            matches,
-            field,
-            fieldValue,
-            count,
-            allMatchIds,
-            fieldIndex,
-            fieldCount,
-            fieldResultCount,
-            fieldUniqueResultCount,
-            finished,
-          } = data.data!.userSearch
-          const meta = {
-            field,
-            fieldValue: fieldValue ?? "",
-            search: searchVariables.search,
-            count: count ?? 0,
-            allMatchIds: allMatchIds ?? [],
-            fieldIndex: fieldIndex ?? 0,
-            fieldCount: fieldCount ?? 0,
-            fieldResultCount: fieldResultCount ?? 0,
-            fieldUniqueResultCount: fieldUniqueResultCount ?? 0,
-            finished: finished ?? false,
-          }
-
-          return {
-            meta,
-            totalMeta: [...prev.totalMeta, meta],
-            data: [...prev.data.concat(matches ?? [])],
-          }
-        })
-        if (data.data?.userSearch?.finished) {
-          isSearching.current = false
-          // subscription.unsubscribe()
-        }
-      }
-    },
-    onError(_error) {
-      setResults((prev) => ({
-        ...prev,
-        meta: {
-          ...prev.meta,
-          finished: true,
-        },
-      }))
-      isSearching.current = false
-    },
-    onComplete() {
-      isSearching.current = false
-    },
-  })
+  const subscription = useRef<ReturnType<
+    ReturnType<typeof client.subscribe>["subscribe"]
+  > | null>(null)
 
   const resetResults = useCallback(() => {
     setResults({ ...emptyResults })
@@ -157,6 +91,90 @@ const UserSearch = () => {
     prevSearch.current = searchVariables.search
     prevFields.current =
       (searchVariables.fields as Array<UserSearchField>) ?? undefined
+    if (subscription.current) {
+      subscription.current.unsubscribe()
+    }
+    const observer = client.subscribe({
+      query: UserSearchDocument,
+      variables: {
+        search: searchVariables.search,
+        fields: searchVariables.fields,
+      },
+      fetchPolicy: "cache-first",
+    })
+    const newSubscription = observer.subscribe({
+      next: ({ data }) => {
+        if (!data) {
+          return
+        }
+        if (
+          data &&
+          isDefinedAndNotEmpty(data.userSearch) &&
+          data.userSearch.search === searchVariables.search
+        ) {
+          setResults((prev) => {
+            const {
+              matches,
+              field,
+              fieldValue,
+              count,
+              allMatchIds,
+              fieldIndex,
+              fieldCount,
+              fieldResultCount,
+              fieldUniqueResultCount,
+              finished,
+            } = data.userSearch
+            const meta = {
+              field,
+              fieldValue: fieldValue ?? "",
+              search: searchVariables.search,
+              count: count ?? 0,
+              allMatchIds: allMatchIds ?? [],
+              fieldIndex: fieldIndex ?? 0,
+              fieldCount: fieldCount ?? 0,
+              fieldResultCount: fieldResultCount ?? 0,
+              fieldUniqueResultCount: fieldUniqueResultCount ?? 0,
+              finished: finished ?? false,
+            }
+
+            return {
+              meta,
+              totalMeta: [...prev.totalMeta, meta],
+              data: [...prev.data.concat(matches ?? [])],
+            }
+          })
+          if (data.userSearch?.finished) {
+            isSearching.current = false
+            subscription.current?.unsubscribe()
+          }
+        }
+      },
+      complete: () => {
+        setResults((prev) => ({
+          ...prev,
+          meta: {
+            ...prev.meta,
+            finished: true,
+          },
+        }))
+        isSearching.current = false
+        subscription.current?.unsubscribe()
+      },
+      error: (e) => {
+        setResults((prev) => ({
+          ...prev,
+          meta: {
+            ...prev.meta,
+            finished: true,
+          },
+        }))
+        console.error(e)
+        isSearching.current = false
+        subscription.current?.unsubscribe()
+      },
+    })
+    subscription.current = newSubscription
     isSearching.current = true
   }, [
     searchVariables.search,
@@ -164,6 +182,12 @@ const UserSearch = () => {
     prevSearch.current,
     prevFields.current,
   ])
+
+  useEffect(() => {
+    return () => {
+      subscription.current?.unsubscribe()
+    }
+  }, [])
 
   useEffect(() => {
     const params = new URLSearchParams()
