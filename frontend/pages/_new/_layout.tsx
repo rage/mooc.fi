@@ -8,7 +8,6 @@ import { Breadcrumbs } from "/components/Breadcrumbs"
 import Footer from "/components/Footer"
 import Alerts from "/components/HeaderBar/Alerts"
 import Header from "/components/NewLayout/Header"
-import { BottomNavigation } from "/components/NewLayout/Navigation/BottomNavigation"
 import PageLoadingIndicators from "/components/PageLoadingIndicators"
 import SkipLink from "/components/SkipLink"
 
@@ -44,7 +43,6 @@ const Layout: React.FunctionComponent<React.PropsWithChildren> = ({
           {children}
         </MainContent>
         <Footer />
-        <BottomNavigation />
       </FooterDownPusherWrapper>
     </>
   )

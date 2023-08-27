@@ -1,38 +1,27 @@
-import React, { useState } from "react"
+import React, { createContext, useMemo, useState } from "react"
 
 import { useRouter } from "next/router"
 
-/*import { useApolloClient } from "@apollo/client"
-import ChalkboardTeacher from "@fortawesome/fontawesome-free/svgs/solid/chalkboard-user.svg?icon"
-import Dashboard from "@fortawesome/fontawesome-free/svgs/solid/gauge-high.svg?icon"
-import ListIcon from "@fortawesome/fontawesome-free/svgs/solid/list.svg?icon"
-import SignOut from "@fortawesome/fontawesome-free/svgs/solid/right-from-bracket.svg?icon"
-import SignIn from "@fortawesome/fontawesome-free/svgs/solid/right-to-bracket.svg?icon"
-import Register from "@fortawesome/fontawesome-free/svgs/solid/user-plus.svg?icon"
-import User from "@fortawesome/fontawesome-free/svgs/solid/user.svg?icon"*/
 import {
   Button,
-  Collapse,
   Drawer,
   EnhancedListItemButton,
+  ExtendList,
   IconButton,
   List,
-  ListItem,
   ListItemButton,
-  ListItemIcon,
   ListItemText,
-  SvgIcon,
+  ListTypeMap,
 } from "@mui/material"
-import { styled } from "@mui/material/styles"
+import { css, styled } from "@mui/material/styles"
 import { useEventCallback } from "@mui/material/utils"
 
-import CaretDownIcon from "../Icons/CaretDown"
-import CaretUpIcon from "../Icons/CaretUp"
+import { isSubmenuItem, NavigationMenuItem } from "."
+import CaretLeftIcon from "../Icons/CaretLeft"
+import CaretRightIcon from "../Icons/CaretRight"
 import HamburgerIcon from "../Icons/Hamburger"
 import RemoveIcon from "../Icons/Remove"
-import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useTranslator } from "/hooks/useTranslator"
-// import { signOut } from "/lib/authentication"
 import CommonTranslations from "/translations/common"
 
 const MobileMenuContainer = styled("div")(
@@ -58,32 +47,175 @@ const MobileMenu = styled(Drawer)(
 `,
 ) as typeof Drawer
 
+const MobileMenuButton = styled(Button)(
+  ({ theme }) => `
+  align-items: center;
+  display: inline-flex;
+  height: 100%;
+  justify-content: center;
+  width: 44px;
+  background-color: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  text-transform: none;
+
+  &[aria-expanded=true] {
+    font-size: 1rem;
+    line-height: 18px;
+    font-weight: 700;
+    align-items: center;
+    background-color: transparent;
+    border: none;
+    color: ${theme.palette.common.brand.main};
+    display: inline-flex;
+    height: auto;
+    letter-spacing: -0.3px;
+    margin-left: auto;
+    margin-right: -16px;
+    padding: 16px;
+    position: fixed;
+    right: 16px;
+    top: 12px;
+    z-index: 1350;
+    width: auto;
+
+    svg {
+      margin-left: 8px;
+      fill: ${theme.palette.common.brand.main};
+    }
+    &:hover {
+      background-color: transparent;
+      cursor: pointer;
+    }
+  }
+`,
+) as typeof Button
+
 const MobileMenuHeader = styled("section")`
   display: grid;
   grid-template-columns: 1fr auto;
   padding: 12px 80px 12px 16px;
   gap: 16px;
-  min-height: 68px;
   align-items: center;
 `
+interface MobileMenuLevelListProps {
+  isOpen?: boolean
+  level?: number
+}
 
-const MobileMenuList = styled(List)`
-  position: relative;
-` as typeof List
+const MobileMenuLevelList = styled(List, {
+  shouldForwardProp: (prop) => prop !== "isOpen" && prop !== "level",
+})<MobileMenuLevelListProps>(
+  ({ theme, isOpen, level = 0 }) => `
+  background-color: ${theme.palette.common.grayscale.white};
+  display: block;
+  height: 80vh;
+  left: 0;
+  position: ${level > 0 ? "absolute" : "relative"};
+  top: 0;
+  width: 100%;
+  z-index: ${1300 + level};
+  ${
+    level > 0
+      ? css`
+          transform: translateX(100%);
+          transition:
+            transform 0.3s ease-in-out,
+            visibility 0.3s ease-in-out,
+            opacity 0.3s ease-in-out,
+            max-height 0.3s ease-in-out;
+        `.styles
+      : "transform: none;"
+  }
+  visibility: hidden !important;
+  max-height: 100vh;
 
-const MobileMenuListItem = styled(ListItem)(
-  ({ theme }) => `
+  ${
+    isOpen &&
+    css`
+      height: 80vh;
+      transform: none;
+      visibility: visible !important;
+      padding-bottom: 96px;
+      max-height: 100vh;
+    `.styles
+  }
+`,
+) as ExtendList<ListTypeMap<MobileMenuLevelListProps>>
+
+interface MobileMenuListItemProps {
+  isHidden?: boolean
+  isActive?: boolean
+  isSubmenu?: boolean
+}
+
+const MobileMenuListItem = styled("li", {
+  shouldForwardProp: (prop) => prop !== "isHidden" && prop !== "isActive",
+})<MobileMenuListItemProps>(
+  ({ theme, isHidden, isActive, isSubmenu }) => `
   margin: 0 0 4px;
   display: flex;
   padding: 0;
 
+  background-color: ${theme.palette.common.grayscale.white};
+  transition: transform 0.3s ease-in-out, visibility 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  ${isHidden ? `visibility: hidden !important;` : "visibility: visible;"};
+
   .MuiListItemText-primary {
+    svg {
+      color: ${
+        isActive
+          ? theme.palette.common.grayscale.black
+          : theme.palette.common.brand.main
+      };
+    }
     font-size: 1.3125rem;
     line-height: 28px;
     font-weight: 700;
-    color: ${theme.palette.common.brand.light};
+    color: ${
+      isActive
+        ? theme.palette.common.grayscale.black
+        : theme.palette.common.brand.light
+    };
     letter-spacing: -0.42px;
     padding: 16px 0 16px 16px;
+
+    ${
+      isSubmenu
+        ? css`
+            font-size: 1rem;
+            line-height: 20px;
+            font-weight: 600;
+            align-items: center;
+            display: flex;
+            letter-spacing: -0.5px;
+            text-decoration: none;
+            width: 100%;
+            padding: 12px 16px;
+            color: ${isActive
+              ? theme.palette.common.grayscale.black
+              : theme.palette.common.brand.main};
+          `.styles
+        : ""
+    }
+  }
+
+  ${
+    isActive
+      ? css`
+          position: relative;
+          &:before {
+            border-left: 3px solid ${theme.palette.common.grayscale.black};
+            content: "";
+            height: 75%;
+            left: 10px;
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+          }
+        `.styles
+      : ""
   }
 
   &.Mui-selected {
@@ -95,76 +227,158 @@ const MobileMenuListItem = styled(ListItem)(
 `,
 )
 
-const MobileMenuListItemText = styled(ListItemText)(
-  ({ theme }) => `
-  /*.MuiListItemText-primary {
-    font-size: 1.3125rem;
-    font-weight: 700;
-    color: ${theme.palette.common.brand.light};
-    letter-spacing: -0.42px;
-    padding: 16px 0 16px 16px;
-  }*/
-`,
-) as typeof ListItemText
-
 const MobileMenuListItemButton = styled(ListItemButton)`
+  padding-top: 0;
+  padding-bottom: 0;
   &:hover {
     background: transparent;
   }
 ` as EnhancedListItemButton
 
-const MobileMenuListItemIcon = styled(ListItemIcon)`
-  /* */
+const MobileMenuListItemSubmenuButton = styled(IconButton)(
+  ({ theme }) => `
+  &:before {
+    background-color: ${theme.palette.common.grayscale.medium};
+    width: 1px;
+    height: 32px;
+    content: '';
+    display: inline-block;
+    transform: translateY(-50%);
+    top: 50%;
+    left: 0;
+    position: absolute;
+  }
+`,
+)
+
+const MobileMenuBreadcrumbs = styled("div")`
+  min-height: 44px;
+`
+
+const MobileMenuBreadcrumbButton = styled(Button)(
+  ({ theme }) => `
+  text-transform: none;
+  font-size: .9375rem;
+  line-height: 22px;
+  color: ${theme.palette.common.brand.light};
+  align-items: center;
+  background-color: transparent;
+  border: 0 none;
+  cursor: pointer;
+  display: inline-flex;
+  text-decoration: none;
+  padding: 11px 0;
+  text-align: left;
+
+  &:hover {
+    background-color: transparent;
+  }
+
+  svg {
+    margin-right: 8px;
+    fill: ${theme.palette.common.grayscale.black};
+  }
+`,
+) as typeof Button
+
+const MobileMenuContentContainer = styled("section")`
+  overflow: hidden;
+  position: relative;
+  min-height: calc(100vh - 126px);
 `
 
 interface MobileMenuItemProps {
-  Icon?: typeof SvgIcon
-  href?: string
-  text: string
-  collapsable?: boolean
+  item: NavigationMenuItem
+  level?: number
 }
 
-const MobileMenuItem = ({
-  Icon,
-  href,
-  text,
-  collapsable,
-  children,
-}: React.PropsWithChildren<MobileMenuItemProps>) => {
+const MobileMenuItem = ({ item, level = 0 }: MobileMenuItemProps) => {
+  const { currentLevel, setCurrentLevel, setBreadcrumbs } =
+    useMobileMenuContext()
   const { pathname } = useRouter()
-  const [open, setOpen] = useState(false)
 
+  const hasSubmenu = isSubmenuItem(item)
+  const { href, label } = item
   const onClick = useEventCallback(() => {
-    if (collapsable) {
-      setOpen((prevOpen) => !prevOpen)
-    }
+    setBreadcrumbs((prev) => [...prev, item])
+    setCurrentLevel(level + 1)
   })
 
   return (
-    <MobileMenuListItem selected={pathname === href}>
-      <MobileMenuListItemButton variant="text" href={href} onClick={onClick}>
-        {Icon && (
-          <MobileMenuListItemIcon>
-            <Icon />
-          </MobileMenuListItemIcon>
-        )}
-        <MobileMenuListItemText primary={text} />
-        {collapsable && (open ? <CaretUpIcon /> : <CaretDownIcon />)}
+    <MobileMenuListItem
+      isHidden={level !== currentLevel}
+      isActive={pathname === href}
+      isSubmenu={level > 0}
+    >
+      <MobileMenuListItemButton variant="text" href={href}>
+        {level > 0 && <CaretRightIcon sx={{ fontSize: 10 }} />}
+        <ListItemText primary={label} />
       </MobileMenuListItemButton>
-      {collapsable && <Collapse in={open}>{children}</Collapse>}
+      {hasSubmenu && (
+        <>
+          <MobileMenuListItemSubmenuButton onClick={onClick}>
+            <CaretRightIcon />
+          </MobileMenuListItemSubmenuButton>
+          <MobileMenuLevelList
+            level={level + 1}
+            isOpen={currentLevel >= level + 1}
+          >
+            <MobileMenuListItemButton variant="text" href={href}>
+              <ListItemText primary={label} />
+            </MobileMenuListItemButton>
+            {item.items.map((subItem) => (
+              <MobileMenuItem
+                key={subItem.label}
+                item={subItem}
+                level={level + 1}
+              />
+            ))}
+          </MobileMenuLevelList>
+        </>
+      )}
     </MobileMenuListItem>
   )
 }
 
-// const MobileNavigationMenu = forwardRef<HTMLDivElement>(({}, ref) => {
-const MobileNavigationMenu = () => {
+interface MobileMenuLevelProps {
+  level?: number
+}
+
+const MobileMenuLevel = ({
+  level = 0,
+  children,
+}: React.PropsWithChildren<MobileMenuLevelProps>) => {
+  const { currentLevel } = useMobileMenuContext()
+
+  return (
+    <MobileMenuLevelList level={level} isOpen={currentLevel === level}>
+      {children}
+    </MobileMenuLevelList>
+  )
+}
+
+interface MobileNavigationMenuProps {
+  items: Array<NavigationMenuItem>
+}
+
+const MobileNavigationMenu = ({ items }: MobileNavigationMenuProps) => {
   const [open, setOpen] = useState(false)
 
   const t = useTranslator(CommonTranslations)
-  const { admin /*loggedIn, logInOrOut, currentUser*/ } = useLoginStateContext()
-  //const apollo = useApolloClient()
+  const [currentLevel, setCurrentLevel] = useState(0)
+  const [breadcrumbs, setBreadcrumbs] = useState<
+    Array<NavigationMenuItem | undefined>
+  >([undefined])
 
-  const onClick = useEventCallback(() => {
+  const onSubmenuClick = useEventCallback(() => {
+    setCurrentLevel((level) => level + 1)
+  })
+  const onBackClick = useEventCallback(() => {
+    setCurrentLevel((level) => level - 1)
+    setBreadcrumbs((prev) => prev.slice(0, -1))
+  })
+
+  const onMenuToggle = useEventCallback(() => {
     setOpen((prevOpen) => !prevOpen)
   })
 
@@ -172,122 +386,75 @@ const MobileNavigationMenu = () => {
     setOpen(false)
   })
 
-  /*const onSignOut = useCallback(() => {
-    setOpen(false)
-    signOut(apollo, logInOrOut)
-  }, [apollo, signOut, logInOrOut])
-
-  const userDisplayName = useMemo(() => {
-    const name = currentUser?.full_name
-
-    if (!name) {
-      return t("myProfile")
-    }
-
-    return name
-  }, [currentUser, t])*/
-
-  /*const menuItems = useMemo(() => {
-    const items = [
-      <MobileMenuItemOld
-        key="mobile-menu-courses"
-        href="/_new/courses"
-        Icon={ChalkboardTeacher}
-        text={t("courses")}
-        title={t("courses")}
-        onClick={onClose}
-      />,
-      <MobileMenuItemOld
-        key="mobile-menu-modules"
-        href="/_new/study-modules"
-        Icon={ListIcon}
-        text={t("modules")}
-        title={t("modules")}
-        onClick={onClose}
-      />,
-      <Divider key="menu-divider-1" />,
-    ]
-
-    if (admin) {
-      items.push(
-        <MobileMenuItemOld
-          key="mobile-menu-admin"
-          href="/_new/admin"
-          Icon={Dashboard}
-          text="Admin"
-          title="Admin"
-          onClick={onClose}
-        />,
-        <Divider key="menu-divider-admin" />,
-      )
-    }
-    if (loggedIn) {
-      items.push(
-        <MobileMenuItemOld
-          key="mobile-menu-profile"
-          href="/_new/profile"
-          Icon={User}
-          text={userDisplayName}
-          title={t("myProfile")}
-          onClick={onClose}
-        />,
-        <MobileMenuItemOld
-          key="mobile-menu-logout"
-          Icon={SignOut}
-          text={t("logout")}
-          title={t("logout")}
-          onClick={onSignOut}
-        />,
-      )
-    } else {
-      items.push(
-        <MobileMenuItemOld
-          href="/_new/sign-in"
-          key="menu-login"
-          Icon={SignIn}
-          onClick={onClose}
-          text={t("loginShort")}
-          title={t("loginShort")}
-        >
-          {t("loginShort")}
-        </MobileMenuItemOld>,
-        <MobileMenuItemOld
-          href="/_new/sign-up"
-          key="menu-signup"
-          Icon={Register}
-          onClick={onClose}
-          text={t("signUp")}
-          title={t("signUp")}
-        >
-          {t("signUp")}
-        </MobileMenuItemOld>,
-      )
-    }
-
-    return items
-  }, [loggedIn, onClose, t, admin, MobileMenuItemOld])*/
+  const menuContextValue = useMemo(
+    () => ({
+      currentLevel,
+      setCurrentLevel,
+      onSubmenuClick,
+      onBackClick,
+      breadcrumbs,
+      setBreadcrumbs,
+    }),
+    [currentLevel, breadcrumbs, setBreadcrumbs, onSubmenuClick, onBackClick],
+  )
 
   return (
     <MobileMenuContainer>
-      <IconButton onClick={onClick} aria-hidden>
-        <HamburgerIcon sx={{ fontSize: 24 }} />
-      </IconButton>
-      <MobileMenu anchor="right" open={open} onClose={onClose}>
-        <MobileMenuHeader>
-          <Button variant="text" color="primary" onClick={onClose}>
-            {t("close")}
-            <RemoveIcon sx={{ fontSize: 16 }} />
-          </Button>
-        </MobileMenuHeader>
-        <MobileMenuList>
-          <MobileMenuItem href="/_new/courses" text={t("courses")} />
-          <MobileMenuItem href="/_new/study-modules" text={t("modules")} />
-          {admin && <MobileMenuItem href="/_new/admin" text="Admin" />}
-        </MobileMenuList>
+      <MobileMenuButton onClick={onMenuToggle}>
+        <HamburgerIcon sx={{ fontSize: 24 }} aria-hidden />
+      </MobileMenuButton>
+      <MobileMenu
+        anchor="right"
+        open={open}
+        PaperProps={{ component: "nav", role: "navigation", elevation: 0 }}
+        onClose={onClose}
+      >
+        <MobileMenuContext.Provider value={menuContextValue}>
+          <MobileMenuHeader>
+            <MobileMenuBreadcrumbs>
+              {currentLevel > 0 && (
+                <MobileMenuBreadcrumbButton
+                  variant="text"
+                  color="primary"
+                  onClick={onBackClick}
+                >
+                  <CaretLeftIcon sx={{ fontSize: 10 }} />
+                  {breadcrumbs.slice(-2)[0]?.label ?? "Main menu"}
+                </MobileMenuBreadcrumbButton>
+              )}
+            </MobileMenuBreadcrumbs>
+            <MobileMenuButton onClick={onMenuToggle} aria-expanded={true}>
+              {t("close")}
+              <RemoveIcon sx={{ fontSize: 16 }} aria-hidden />
+            </MobileMenuButton>
+          </MobileMenuHeader>
+          <MobileMenuContentContainer>
+            <MobileMenuLevel>
+              {items.map((item) => (
+                <MobileMenuItem key={item.label} item={item} />
+              ))}
+            </MobileMenuLevel>
+          </MobileMenuContentContainer>
+        </MobileMenuContext.Provider>
       </MobileMenu>
     </MobileMenuContainer>
   )
 }
-//})
+
+interface MobileMenuContextType {
+  currentLevel: number
+  setCurrentLevel: React.Dispatch<React.SetStateAction<number>>
+  onSubmenuClick: () => void
+  onBackClick: () => void
+  breadcrumbs: Array<NavigationMenuItem | undefined>
+  setBreadcrumbs: React.Dispatch<
+    React.SetStateAction<Array<NavigationMenuItem | undefined>>
+  >
+}
+
+const MobileMenuContext = createContext<MobileMenuContextType>(
+  {} as MobileMenuContextType,
+)
+const useMobileMenuContext = () => React.useContext(MobileMenuContext)
 
 export default MobileNavigationMenu

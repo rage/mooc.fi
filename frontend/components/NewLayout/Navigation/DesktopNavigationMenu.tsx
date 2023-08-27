@@ -14,6 +14,7 @@ import {
 } from "@mui/material"
 import { styled, Theme } from "@mui/material/styles"
 
+import { NavigationMenuItem } from "."
 import { NavigationLinks } from "./NavigationLinks"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useTranslator } from "/hooks/useTranslator"
@@ -124,10 +125,14 @@ const UserOptionsMenu = () => {
   )
 }
 
-const DesktopNavigationMenu = () => {
+interface DesktopNavigationMenuProps {
+  items: Array<NavigationMenuItem>
+}
+
+const DesktopNavigationMenu = ({ items }: DesktopNavigationMenuProps) => {
   return (
     <>
-      <NavigationLinks />
+      <NavigationLinks items={items} />
       <NavigationRightContainer>
         <UserOptionsMenu />
       </NavigationRightContainer>
