@@ -1,8 +1,8 @@
 import { useState } from "react"
 
 import {
-  Button,
-  EnhancedButton,
+  ButtonBase,
+  EnhancedButtonBase,
   EnhancedLink,
   EnhancedLinkProps,
   Link,
@@ -23,7 +23,7 @@ interface NavigationDropdownButtonProps {
   expanded?: boolean
 }
 
-const NavigationDropdownButton = styled(Button, {
+const NavigationDropdownButton = styled(ButtonBase, {
   shouldForwardProp: (prop) => prop !== "expanded",
 })<NavigationDropdownButtonProps>(
   ({ theme, expanded }) => `
@@ -48,6 +48,7 @@ const NavigationDropdownButton = styled(Button, {
     svg {
       fill: ${theme.palette.common.brand.main};
     }
+    background-color: transparent;
   }
   ${
     expanded
@@ -76,7 +77,7 @@ const NavigationDropdownButton = styled(Button, {
       : ""
   }
 `,
-) as EnhancedButton<"button", NavigationDropdownButtonProps>
+) as EnhancedButtonBase<"button", NavigationDropdownButtonProps>
 
 const NavigationDropdownMenu = styled(Popover)(
   ({ theme }) => `
@@ -239,7 +240,6 @@ export const NavigationDropdownLink = ({
         aria-controls={open ? menuName : undefined}
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
-        variant="text"
         onClick={onClick}
         expanded={open}
       >

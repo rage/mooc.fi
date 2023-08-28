@@ -40,7 +40,13 @@ export const withComponents = (theme: Theme) =>
       MuiButtonBase: {
         defaultProps: {
           LinkComponent: LinkBehavior,
+          disableRipple: true,
         } as ButtonBaseProps,
+        styleOverrides: {
+          root: {
+            ...bodyFontDeclaration,
+          },
+        },
       },
       MuiMenuItem: {
         defaultProps: {
@@ -56,7 +62,7 @@ export const withComponents = (theme: Theme) =>
       },
       MuiButton: {
         defaultProps: {
-          variant: "outlined",
+          variant: "text",
           color: "primary",
           disableRipple: true,
           LinkComponent: LinkBehavior,
@@ -64,13 +70,16 @@ export const withComponents = (theme: Theme) =>
         styleOverrides: {
           root: {
             ...bodyFontDeclaration,
+          },
+          /* borderRadius: 0,
+            textTransform: "none",
             display: "flex",
             alignItems: "center",
             border: "none",
             cursor: "pointer",
             fontSize: "0.9375rem",
-            justifyContent: "center",
             lineHeight: "0.9375rem",
+            justifyContent: "center",
             margin: 0,
             padding: 0,
             transitionDuration: "0.1s",
@@ -78,8 +87,89 @@ export const withComponents = (theme: Theme) =>
             minHeight: "44px",
             position: "relative",
             textDecoration: "none",
-          },
+            ".MuiButton-startIcon": {
+              alignContent: "center",
+              display: "flex",
+              margin: "0",
+              svg: {
+                fontSize: "13px"
+              }
+            },
+            ".MuiButton-endIcon": {
+              alignContent: "center",
+              display: "flex",
+              margin: "0",
+              paddingRight: "12px",
+              svg: {
+                fontSize: "13px"
+              }
+            },
+          },*/
           contained: {
+            ...bodyFontDeclaration,
+            cursor: "pointer",
+            fontWeight: "700",
+            position: "relative",
+            textDecoration: "none",
+            alignItems: "center",
+            boxSizing: "border-box",
+            display: "flex",
+            height: "100%",
+            justifyContent: "center",
+            maxWidth: "328px",
+            padding: "13px 16px",
+            fontSize: "16px",
+            lineHeight: "18px",
+            letterSpacing: "-0.3px",
+            svg: {
+              marginLeft: "8px",
+              height: "16px",
+              width: "16px",
+            },
+          },
+          containedSecondary: {
+            backgroundColor: theme.palette.common.grayscale.white,
+            border: `4px solid ${theme.palette.common.grayscale.black}`,
+            color: theme.palette.common.grayscale.black,
+            svg: {
+              backgroundColor: theme.palette.common.grayscale.white,
+              fill: theme.palette.common.grayscale.black,
+            },
+          },
+          text: {
+            borderRadius: 0,
+            textTransform: "none",
+            display: "flex",
+            alignItems: "center",
+            border: "none",
+            cursor: "pointer",
+            fontSize: "0.9375rem",
+            lineHeight: "0.9375rem",
+            justifyContent: "center",
+            margin: 0,
+            padding: 0,
+            transitionDuration: "0.1s",
+            transitionProperty: "all",
+            minHeight: "44px",
+            position: "relative",
+            textDecoration: "none",
+            ".MuiButton-startIcon": {
+              alignContent: "center",
+              display: "flex",
+              margin: "0",
+              svg: {
+                fontSize: "13px",
+              },
+            },
+            ".MuiButton-endIcon": {
+              alignContent: "center",
+              display: "flex",
+              margin: "0",
+              paddingRight: "12px",
+              svg: {
+                fontSize: "13px",
+              },
+            },
             backgroundColor: theme.palette.common.brand.main,
             color: theme.palette.common.grayscale.white,
             "&::after": {
@@ -100,9 +190,17 @@ export const withComponents = (theme: Theme) =>
               },
             },
           },
-          containedPrimary: {
+          textPrimary: {
             backgroundColor: theme.palette.common.brand.main,
             color: theme.palette.common.grayscale.white,
+            ".MuiButton-startIcon": {
+              padding: "8px 13px",
+              fill: theme.palette.common.grayscale.white,
+            },
+            ".MuiButton-endIcon": {
+              padding: "8px 12px 8px 13px",
+              fill: theme.palette.common.grayscale.white,
+            },
             svg: {
               fill: theme.palette.common.grayscale.white,
             },
@@ -130,10 +228,17 @@ export const withComponents = (theme: Theme) =>
               bottom: "-2px",
             },
           },
-          containedSecondary: {
+          textSecondary: {
             backgroundColor: "transparent",
             border: `solid 2px ${theme.palette.common.brand.main}`,
             color: theme.palette.common.brand.main,
+            boxShadow: "none",
+            ".MuiButton-startIcon": {
+              fill: theme.palette.common.brand.main,
+            },
+            ".MuiButton-endIcon": {
+              fill: theme.palette.common.brand.main,
+            },
             ".svg": {
               fill: theme.palette.common.brand.main,
             },
@@ -143,6 +248,9 @@ export const withComponents = (theme: Theme) =>
               svg: {
                 fill: theme.palette.common.brand.active,
               },
+              textDecoration: "underline",
+              backgroundColor: "inherit",
+              boxShadow: "none",
             },
             "&:active": {
               border: `solid 2px ${theme.palette.common.brand.dark}`,
@@ -158,6 +266,9 @@ export const withComponents = (theme: Theme) =>
                 fill: theme.palette.common.grayscale.mediumDark,
               },
             },
+          },
+          containedSizeLarge: {
+            minHeight: "48px",
           },
         },
       },

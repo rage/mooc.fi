@@ -1,18 +1,7 @@
-import React, { useCallback, useMemo } from "react"
-
-import { useRouter } from "next/router"
+import React, { useCallback } from "react"
 
 import { useApolloClient } from "@apollo/client"
-import SignOut from "@fortawesome/fontawesome-free/svgs/solid/right-from-bracket.svg?icon"
-import User from "@fortawesome/fontawesome-free/svgs/solid/user.svg?icon"
-import {
-  Button,
-  EnhancedButton,
-  EnhancedButtonProps,
-  SvgIconProps,
-  useMediaQuery,
-} from "@mui/material"
-import { styled, Theme } from "@mui/material/styles"
+import { styled } from "@mui/material/styles"
 
 import { NavigationMenuItem } from "."
 import { NavigationLinks } from "./NavigationLinks"
@@ -28,49 +17,12 @@ const NavigationRightContainer = styled("div")`
   justify-content: flex-end;
 `
 
-interface MenuButtonProps {
-  Icon?: React.FunctionComponent<SvgIconProps>
-  narrow?: boolean
-}
-
-const MenuButtonBase = styled(Button)`
-  display: flex;
-  max-height: 8vh;
-  white-space: nowrap;
-  font-size: 1rem;
-  gap: 0.5rem;
-  max-width: 240px;
-  overflow: hidden;
-  word-wrap: break-word;
-  overflow-wrap: normal;
-` as EnhancedButton
-
-const MenuButton = React.memo(
-  ({
-    Icon,
-    narrow,
-    children,
-    ...props
-  }: React.PropsWithChildren<MenuButtonProps & EnhancedButtonProps>) => {
-    return (
-      <MenuButtonBase {...props}>
-        {Icon && <Icon fontSize="small" />}
-        {children}
-      </MenuButtonBase>
-    )
-  },
-)
-
 const UserOptionsMenu = () => {
   const apollo = useApolloClient()
-  const { pathname } = useRouter()
-  const { loggedIn, logInOrOut, currentUser } = useLoginStateContext()
+  const { loggedIn, logInOrOut } = useLoginStateContext()
   const t = useTranslator(CommonTranslations)
-  const isNarrow = useMediaQuery((theme: Theme) =>
-    theme.breakpoints.down("desktop"),
-  )
 
-  const userDisplayName = useMemo(() => {
+  /*const userDisplayName = useMemo(() => {
     if (isNarrow) {
       return null
     }
@@ -88,7 +40,7 @@ const UserOptionsMenu = () => {
 
     return name
   }, [currentUser, t, isNarrow])
-
+*/
   const onLogOut = useCallback(
     () => signOut(apollo, logInOrOut),
     [apollo, logInOrOut],
@@ -96,32 +48,35 @@ const UserOptionsMenu = () => {
 
   if (loggedIn) {
     return (
-      <>
-        <MenuButton
-          href="/_new/profile"
-          Icon={User}
-          narrow={isNarrow}
-          title={t("myProfile")}
-        >
-          {userDisplayName}
-        </MenuButton>
-        <MenuButton
-          href={pathname}
-          Icon={SignOut}
-          onClick={onLogOut}
-          title={t("logout")}
-        />
-      </>
+      <NavigationLinks
+        items={[
+          {
+            href: "/_new/profile",
+            label: t("myProfile"),
+          },
+          {
+            href: "#",
+            label: t("logout"),
+            onClick: onLogOut,
+          },
+        ]}
+      />
     )
   }
 
   return (
-    <>
-      <MenuButton href="/_new/sign-in">{t("loginShort")}</MenuButton>
-      <MenuButton href="/_new/sign-up" prefetch={false}>
-        {t("signUp")}
-      </MenuButton>
-    </>
+    <NavigationLinks
+      items={[
+        {
+          href: "/_new/sign-in",
+          label: t("loginShort"),
+        },
+        {
+          href: "/_new/sign-up",
+          label: t("signUp"),
+        },
+      ]}
+    />
   )
 }
 

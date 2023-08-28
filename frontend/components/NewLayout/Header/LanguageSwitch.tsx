@@ -1,12 +1,13 @@
 import React, { useState } from "react"
 
-import Link from "next/link"
 import { useRouter } from "next/router"
 
 import {
   Button,
   EnhancedButton,
+  EnhancedLink,
   EnhancedMenuItem,
+  Link,
   Menu,
   MenuItem,
 } from "@mui/material"
@@ -95,7 +96,7 @@ const LanguageOptionLink = styled(Link)`
   display: block;
   color: inherit;
   text-decoration: none;
-`
+` as EnhancedLink
 
 const LanguageSwitchContainer = styled("div")`
   align-items: center;

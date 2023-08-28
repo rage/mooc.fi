@@ -44,7 +44,7 @@ export type NavigationMenuLinkItem = {
   name?: string
   description?: string
   level?: number
-  parent?: NavigationMenuItem
+  onClick?: (...params: any[]) => any
 }
 
 export type NavigationMenuSubmenuItem = NavigationMenuLinkItem & {

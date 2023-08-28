@@ -4,6 +4,7 @@ import { useQuery } from "@apollo/client"
 import { Button, Typography, TypographyProps } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import CTAButton from "../Common/CTAButton"
 import { SectionContainer, SectionTitle } from "/components/NewLayout/Common"
 import {
   CardBody,
@@ -114,7 +115,7 @@ function SelectedCourses() {
               <CommonCourseCard key={course.id} course={course} />
             ))}
       </CoursesGrid>
-      <Button href="/_new/courses">{t("showAllCourses")}</Button>
+      <CTAButton href="/_new/courses">{t("showAllCourses")}</CTAButton>
     </SectionContainer>
   )
 }

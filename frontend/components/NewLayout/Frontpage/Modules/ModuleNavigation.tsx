@@ -1,9 +1,9 @@
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
-import { Button } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import CTAButton from "../../Common/CTAButton"
 import ModuleNaviList from "./ModuleNaviList"
 import { SectionContainer, SectionTitle } from "/components/NewLayout/Common"
 import { useTranslator } from "/hooks/useTranslator"
@@ -105,7 +105,7 @@ export function ModuleNavigation() {
     <SectionContainer id="modules" style={{ marginBottom: "2rem" }}>
       <SectionTitle>{t("studyModulesTitle")}</SectionTitle>
       <ModuleNaviList modules={data?.study_modules} loading={loading} />
-      <Button href="/_new/study-modules">{t("showAllModules")}</Button>
+      <CTAButton href="/_new/study-modules">{t("showAllModules")}</CTAButton>
     </SectionContainer>
   )
 }

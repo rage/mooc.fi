@@ -1,6 +1,7 @@
-import { Button, Typography } from "@mui/material"
+import { Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import CTAButton from "../Common/CTAButton"
 import { BackgroundImage } from "/components/Images/CardBackgroundFullCover"
 import { useTranslator } from "/hooks/useTranslator"
 import HomeTranslations from "/translations/home"
@@ -33,15 +34,8 @@ const Paragraph = styled(Typography)`
   text-align: center;
 `
 
-const CourseButton = styled(Button)`
-  border-radius: 20px;
-  background-color: #fff;
+const CourseButton = styled(CTAButton)`
   margin-top: 2rem;
-
-  &:hover {
-    background-color: #378170;
-    color: #fff;
-  }
 `
 
 function HeroContent() {
@@ -51,7 +45,7 @@ function HeroContent() {
     <HeroContentContainer>
       <Title variant="h1">{t("tagLine")}</Title>
       <Paragraph variant="subtitle1">{t("intro")}</Paragraph>
-      <CourseButton variant="outlined" href="#courses">
+      <CourseButton variant="hero-white" href="#courses">
         {t("courseButton")}
       </CourseButton>
     </HeroContentContainer>

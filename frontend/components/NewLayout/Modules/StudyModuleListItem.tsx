@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef } from "react"
 
-import { Button, Skeleton, Typography } from "@mui/material"
+import { Skeleton, Typography } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
 import { CorrectedAnchor } from "../Common"
 import { CardWrapper } from "../Common/Card"
+import CTALink from "../Common/CTALink"
 import CourseCard, { CourseCardSkeleton } from "../Courses/CourseCard"
 import useIsomorphicLayoutEffect from "/hooks/useIsomorphicLayoutEffect"
 import { useTranslator } from "/hooks/useTranslator"
@@ -133,14 +134,6 @@ const EndedCoursesLinkContainer = styled("div")`
   justify-content: flex-end;
 `
 
-const EndedCoursesButton = styled(Button)`
-  background-color: #fff;
-
-  :hover {
-    background-color: #eee;
-  }
-`
-
 const getCoursesByStatus = (
   courses: NewStudyModuleFieldsWithCoursesFragment["courses"],
 ) => {
@@ -243,11 +236,11 @@ export function ListItem({
       </ModuleCardBody>
       {ended.length > 0 && (
         <EndedCoursesLinkContainer>
-          <EndedCoursesButton
+          <CTALink
             href={`/_new/courses/?tag=${studyModule.slug}&status=${CourseStatus.Ended}`}
           >
             {t("showEndedCourses")}
-          </EndedCoursesButton>
+          </CTALink>
         </EndedCoursesLinkContainer>
       )}
     </ModuleCardWrapper>
