@@ -17,7 +17,7 @@ function StudyModules() {
   useBreadcrumbs([
     {
       translation: "studyModules",
-      href: "/study-modules",
+      href: "/_new/study-modules",
     },
   ])
 

@@ -3,6 +3,7 @@ import Background from "components/NewLayout/Background"
 import { styled } from "@mui/material/styles"
 
 import { StudyModuleHero, StudyModuleList } from "/components/NewLayout/Modules"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const Container = styled("div")`
   display: flex;
@@ -11,6 +12,13 @@ const Container = styled("div")`
 `
 
 function StudyModules() {
+  useBreadcrumbs([
+    {
+      translation: "studyModules",
+      href: "/study-modules",
+    },
+  ])
+
   return (
     <Container>
       <Background />

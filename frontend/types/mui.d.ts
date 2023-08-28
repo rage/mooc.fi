@@ -4,6 +4,7 @@ import { LinkProps as NextLinkProps } from "next/link"
 import { ListItemButtonTypeMap } from "@mui/material"
 import { ButtonTypeMap } from "@mui/material/Button"
 import { ButtonBaseTypeMap, ExtendButtonBase } from "@mui/material/ButtonBase"
+import { IconButtonTypeMap } from "@mui/material/IconButton"
 import { LinkTypeMap } from "@mui/material/Link"
 import { MenuItemTypeMap } from "@mui/material/MenuItem"
 import {
@@ -48,12 +49,7 @@ declare module "@mui/material/ButtonBase" {
   export type EnhancedButtonBase<
     D extends React.ElementType = ButtonBaseTypeMap["defaultComponent"],
     P = {},
-  > = ExtendButtonBase<
-    ButtonBaseTypeMap<
-      P & Partial<DefaultNextLinkProps>,
-      D & typeof LinkBehavior
-    >
-  >
+  > = ExtendButtonBase<ButtonBaseTypeMap<P & Partial<DefaultNextLinkProps>, D>>
   const ButtonBase: ExtendButtonBase<
     ButtonBaseTypeMap<Partial<DefaultNextLinkProps>>
   >
@@ -103,6 +99,20 @@ declare module "@mui/material/ListItemButton" {
   > = ExtendButtonBase<ButtonTypeMap<P & Partial<DefaultNextLinkProps>, D>>
   const ListItemButton: ExtendButtonBase<
     ListItemButtonTypeMap<Partial<DefaultNextLinkProps>>
+  >
+}
+
+declare module "@mui/material/IconButton" {
+  export type EnhancedIconButtonProps<
+    D extends React.ElementType = IconButtonTypeMap["defaultComponent"],
+    P = {},
+  > = OverrideProps<IconButtonTypeMap<P & Partial<DefaultNextLinkProps>, D>, D>
+  export type EnhancedIconButton<
+    D extends React.ElementType = ButtonTypeMap["defaultComponent"],
+    P = {},
+  > = ExtendButtonBase<IconButtonTypeMap<P & Partial<DefaultNextLinkProps>, D>>
+  const IconButton: ExtendButtonBase<
+    IconButonTypeMap<Partial<DefaultNextLinkProps>>
   >
 }
 

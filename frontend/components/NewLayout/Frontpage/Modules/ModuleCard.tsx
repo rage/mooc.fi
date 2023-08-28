@@ -1,6 +1,7 @@
 import { Button, Skeleton } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import CTALink from "../../Common/CTALink"
 import {
   CardBody,
   CardDescription,
@@ -57,9 +58,9 @@ export const ModuleCard = ({
       <CardBody>
         <CardDescription>{description}</CardDescription>
         <CardActions>
-          <ModuleButton href={`/_new/study-modules/#${slug}`}>
+          <CTALink href={`/_new/study-modules/#${slug}`}>
             {t("moduleInformation")}
-          </ModuleButton>
+          </CTALink>
         </CardActions>
       </CardBody>
     </CardWrapper>

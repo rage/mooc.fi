@@ -8,6 +8,7 @@ import { Skeleton, Typography } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
 import { CardTitle } from "../Common/Card"
+import CTALink from "../Common/CTALink"
 import { courseColorSchemes } from "./common"
 import Sponsors from "./Sponsors"
 import {
@@ -18,7 +19,6 @@ import {
   ModuleTags,
   ModuleTagsContainer,
 } from "./Tags"
-import OutboundLink from "/components/OutboundLink"
 import { CardSubtitle } from "/components/Text/headers"
 import Tooltip from "/components/Tooltip"
 import { useTranslator } from "/hooks/useTranslator"
@@ -254,11 +254,6 @@ const StyledHelpIcon = styled(HelpIcon)`
   }
 `
 
-const Link = styled(OutboundLink)`
-  justify-self: right;
-  margin-bottom: 0;
-` as typeof OutboundLink
-
 const LinkArea = styled("div")`
   display: flex;
   justify-content: flex-end;
@@ -443,7 +438,11 @@ const CourseCard = React.forwardRef<
         organizer="Helsingin yliopisto"
         languageTags={<LanguageTags course={course} />}
         difficultyTags={<DifficultyTags course={course} />}
-        link={<Link href="https://www.mooc.fi">{t("showCourse")}</Link>}
+        link={
+          <CTALink href="https://www.mooc.fi" target="_blank">
+            {t("showCourse")}
+          </CTALink>
+        }
         sponsors={<Sponsors data={course.sponsors} />}
         /* <SponsorContainer>
           <Sponsor src={sponsorLogo.src} alt="Sponsor logo" fill />

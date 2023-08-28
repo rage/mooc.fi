@@ -1,9 +1,11 @@
-import React, { createContext, useMemo, useState } from "react"
+import React, { createContext, useCallback, useMemo, useState } from "react"
 
 import { useRouter } from "next/router"
 
+import { useApolloClient } from "@apollo/client"
 import {
   Button,
+  ButtonBase,
   Drawer,
   EnhancedListItemButton,
   ExtendList,
@@ -21,7 +23,9 @@ import CaretLeftIcon from "../Icons/CaretLeft"
 import CaretRightIcon from "../Icons/CaretRight"
 import HamburgerIcon from "../Icons/Hamburger"
 import RemoveIcon from "../Icons/Remove"
+import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useTranslator } from "/hooks/useTranslator"
+import { signOut } from "/lib/authentication"
 import CommonTranslations from "/translations/common"
 
 const MobileMenuContainer = styled("div")(
@@ -47,7 +51,7 @@ const MobileMenu = styled(Drawer)(
 `,
 ) as typeof Drawer
 
-const MobileMenuButton = styled(Button)(
+const MobileMenuButton = styled(ButtonBase)(
   ({ theme }) => `
   align-items: center;
   display: inline-flex;
@@ -90,7 +94,7 @@ const MobileMenuButton = styled(Button)(
     }
   }
 `,
-) as typeof Button
+) as typeof ButtonBase
 
 const MobileMenuHeader = styled("section")`
   display: grid;
@@ -361,10 +365,47 @@ interface MobileNavigationMenuProps {
   items: Array<NavigationMenuItem>
 }
 
-const MobileNavigationMenu = ({ items }: MobileNavigationMenuProps) => {
+const MobileNavigationMenu = ({
+  items: originalItems,
+}: MobileNavigationMenuProps) => {
+  const apollo = useApolloClient()
   const [open, setOpen] = useState(false)
-
+  const { loggedIn, logInOrOut } = useLoginStateContext()
+  const onLogOut = useCallback(
+    () => signOut(apollo, logInOrOut),
+    [apollo, logInOrOut],
+  )
   const t = useTranslator(CommonTranslations)
+  // TODO: move somewhere else, just POC
+  const items = useMemo(
+    () => [
+      ...originalItems,
+      ...(loggedIn
+        ? [
+            {
+              href: "/_new/profile",
+              label: t("myProfile"),
+            },
+            {
+              href: "#",
+              label: t("logout"),
+              onClick: onLogOut,
+            },
+          ]
+        : [
+            {
+              href: "/_new/sign-in",
+              label: t("loginShort"),
+            },
+            {
+              href: "/_new/sign-up",
+              label: t("signUp"),
+            },
+          ]),
+    ],
+    [loggedIn, t],
+  )
+
   const [currentLevel, setCurrentLevel] = useState(0)
   const [breadcrumbs, setBreadcrumbs] = useState<
     Array<NavigationMenuItem | undefined>

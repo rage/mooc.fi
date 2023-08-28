@@ -88,7 +88,7 @@ interface NavigationItemProps {
 }
 
 const NavigationItem = ({ item }: NavigationItemProps) => {
-  const { name, label, href } = item
+  const { name, label, href, onClick } = item
   return (
     <NavigationLinkItem key={name ?? label}>
       {isSubmenuItem(item) ? (
@@ -100,7 +100,9 @@ const NavigationItem = ({ item }: NavigationItemProps) => {
           ))}
         </NavigationDropdownLink>
       ) : (
-        <NavigationLink href={href}>{label}</NavigationLink>
+        <NavigationLink href={href} onClick={onClick}>
+          {label}
+        </NavigationLink>
       )}
     </NavigationLinkItem>
   )
