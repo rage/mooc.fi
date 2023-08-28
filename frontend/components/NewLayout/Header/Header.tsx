@@ -2,7 +2,7 @@ import { AppBar, Slide, Toolbar, useScrollTrigger } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import HyLogoIcon from "../Icons/HyLogo"
-import { DesktopNavigationMenu, MobileNavigationMenu } from "../Navigation"
+import { NavigationMenu } from "../Navigation"
 import LanguageSwitch from "./LanguageSwitch"
 import MoocLogo from "./MoocLogo"
 import { useTranslator } from "/hooks/useTranslator"
@@ -139,8 +139,7 @@ function Header() {
           <BrandingContainer>
             <MoocLogo />
           </BrandingContainer>
-          <DesktopNavigationMenu />
-          <MobileNavigationMenu />
+          <NavigationMenu />
         </GroupToolbar>
       </HeaderAppBar>
     </HideOnScroll>

@@ -5,11 +5,11 @@ import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
 
 const SkipLinkContainer = styled("a")`
-  left: -999;
+  left: -999px;
   position: absolute;
   top: auto;
-  height: 1;
-  width: 1;
+  height: 1px;
+  width: 1px;
   overflow: hidden;
   z-index: -999;
 

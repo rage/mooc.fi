@@ -159,37 +159,6 @@ export const withComponents = (theme: Theme) =>
               },
             },
           },
-          text: {
-            textTransform: "none",
-            backgroundColor: "transparent",
-            fontSize: "1rem",
-            fontWeight: "700",
-            letterSpacing: "-0.3px",
-            padding: "16px",
-            position: "fixed",
-            right: "16px",
-            top: "12px",
-            marginLeft: "auto",
-            marginRight: "-16px",
-            alignItems: "center",
-            display: "inline-flex",
-            borderRadius: "0",
-            svg: {
-              marginLeft: "8px",
-            },
-            "&::after": {
-              border: "none",
-            },
-            "&:hover": {
-              backgroundColor: "transparent",
-            },
-          },
-          textPrimary: {
-            color: theme.palette.common.brand.main,
-            svg: {
-              fill: theme.palette.common.brand.main,
-            },
-          },
         },
       },
       MuiAppBar: {

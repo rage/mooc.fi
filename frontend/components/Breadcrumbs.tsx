@@ -13,6 +13,11 @@ import BreadcrumbsTranslations, {
   Breadcrumbs as BreadcrumbsTranslationType,
 } from "/translations/breadcrumbs"
 
+const BreadcrumbContainer = styled("nav")`
+  margin: 0 auto;
+  width: 100vw;
+  max-width: 1920px;
+`
 const BreadcrumbList = styled("ul")`
   list-style: none;
   overflow: hidden;
@@ -131,7 +136,7 @@ export function Breadcrumbs() {
   }
 
   return (
-    <nav id="breadcrumbs" aria-label="breadcrumbs">
+    <BreadcrumbContainer id="breadcrumbs" aria-label="breadcrumbs">
       <BreadcrumbList>
         <BreadcrumbComponent translation="home" href="/" key="home" />
         {breadcrumbs.map((breadcrumb, index) => (
@@ -141,6 +146,6 @@ export function Breadcrumbs() {
           />
         ))}
       </BreadcrumbList>
-    </nav>
+    </BreadcrumbContainer>
   )
 }

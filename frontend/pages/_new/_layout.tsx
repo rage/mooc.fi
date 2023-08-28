@@ -8,7 +8,6 @@ import { Breadcrumbs } from "/components/Breadcrumbs"
 import Footer from "/components/Footer"
 import Alerts from "/components/HeaderBar/Alerts"
 import Header from "/components/NewLayout/Header"
-import { BottomNavigation } from "/components/NewLayout/Navigation/BottomNavigation"
 import PageLoadingIndicators from "/components/PageLoadingIndicators"
 import SkipLink from "/components/SkipLink"
 
@@ -21,6 +20,11 @@ const FooterDownPusherWrapper = styled("div")`
 
 const MainContent = styled("main")`
   position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
 `
 
 const Layout: React.FunctionComponent<React.PropsWithChildren> = ({
@@ -44,7 +48,6 @@ const Layout: React.FunctionComponent<React.PropsWithChildren> = ({
           {children}
         </MainContent>
         <Footer />
-        <BottomNavigation />
       </FooterDownPusherWrapper>
     </>
   )
