@@ -20,6 +20,11 @@ const FooterDownPusherWrapper = styled("div")`
 
 const MainContent = styled("main")`
   position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
 `
 
 const Layout: React.FunctionComponent<React.PropsWithChildren> = ({
