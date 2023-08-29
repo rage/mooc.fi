@@ -28,4 +28,5 @@ export default {
   signUp: "Rekisteröidy",
   installation: "Asennus",
   home: "Etusivu",
+  admin: "Ylläpito",
 } as const
