@@ -4,21 +4,20 @@ import { useRouter } from "next/router"
 
 import { useApolloClient } from "@apollo/client"
 import {
-  Button,
   ButtonBase,
   Drawer,
   EnhancedListItemButton,
-  ExtendList,
-  IconButton,
-  List,
   ListItemButton,
-  ListItemText,
-  ListTypeMap,
 } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 import { useEventCallback } from "@mui/material/utils"
 
-import { isSubmenuItem, NavigationMenuItem } from "."
+import {
+  isSubmenuItem,
+  NavigationMenuItem,
+  NavigationMenuShortcutItem,
+} from "."
+import ArrowRightIcon from "../Icons/ArrowRight"
 import CaretLeftIcon from "../Icons/CaretLeft"
 import CaretRightIcon from "../Icons/CaretRight"
 import HamburgerIcon from "../Icons/Hamburger"
@@ -103,14 +102,15 @@ const MobileMenuHeader = styled("section")`
   gap: 16px;
   align-items: center;
 `
-interface MobileMenuLevelListProps {
+
+interface MobileMenuLevelProps {
   isOpen?: boolean
   level?: number
 }
 
-const MobileMenuLevelList = styled(List, {
+const MobileMenuLevelContainer = styled("div", {
   shouldForwardProp: (prop) => prop !== "isOpen" && prop !== "level",
-})<MobileMenuLevelListProps>(
+})<MobileMenuLevelProps>(
   ({ theme, isOpen, level = 0 }) => `
   background-color: ${theme.palette.common.grayscale.white};
   display: block;
@@ -134,7 +134,6 @@ const MobileMenuLevelList = styled(List, {
   }
   visibility: hidden !important;
   max-height: 100vh;
-
   ${
     isOpen &&
     css`
@@ -146,18 +145,23 @@ const MobileMenuLevelList = styled(List, {
     `.styles
   }
 `,
-) as ExtendList<ListTypeMap<MobileMenuLevelListProps>>
+)
+
+const MobileMenuList = styled("ul")`
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+`
 
 interface MobileMenuListItemProps {
   isHidden?: boolean
   isActive?: boolean
-  isSubmenu?: boolean
 }
 
 const MobileMenuListItem = styled("li", {
   shouldForwardProp: (prop) => prop !== "isHidden" && prop !== "isActive",
 })<MobileMenuListItemProps>(
-  ({ theme, isHidden, isActive, isSubmenu }) => `
+  ({ theme, isHidden, isActive }) => `
   margin: 0 0 4px;
   display: flex;
   padding: 0;
@@ -166,7 +170,7 @@ const MobileMenuListItem = styled("li", {
   transition: transform 0.3s ease-in-out, visibility 0.3s ease-in-out, opacity 0.3s ease-in-out;
   ${isHidden ? `visibility: hidden !important;` : "visibility: visible;"};
 
-  .MuiListItemText-primary {
+  span {
     svg {
       color: ${
         isActive
@@ -185,42 +189,40 @@ const MobileMenuListItem = styled("li", {
     letter-spacing: -0.42px;
     padding: 16px 0 16px 16px;
 
-    ${
-      isSubmenu
-        ? css`
-            font-size: 1rem;
-            line-height: 20px;
-            font-weight: 600;
-            align-items: center;
-            display: flex;
-            letter-spacing: -0.5px;
-            text-decoration: none;
-            width: 100%;
-            padding: 12px 16px;
-            color: ${isActive
-              ? theme.palette.common.grayscale.black
-              : theme.palette.common.brand.main};
-          `.styles
-        : ""
-    }
   }
 
-  ${
-    isActive
-      ? css`
-          position: relative;
-          &:before {
-            border-left: 3px solid ${theme.palette.common.grayscale.black};
-            content: "";
-            height: 75%;
-            left: 10px;
-            position: absolute;
-            top: 50%;
-            transform: translate(-50%, -50%);
-          }
-        `.styles
-      : ""
+  .submenu span {
+    font-size: 1rem;
+    line-height: 20px;
+    font-weight: 600;
+    align-items: center;
+    display: flex;
+    letter-spacing: -0.5px;
+    text-decoration: none;
+    width: 100%;
+    padding: 12px 16px;
+    color: ${
+      isActive
+        ? theme.palette.common.grayscale.black
+        : theme.palette.common.brand.main
+    };
   }
+${
+  isActive
+    ? css`
+        position: relative;
+        &:before {
+          border-left: 3px solid ${theme.palette.common.grayscale.black};
+          content: "";
+          height: 75%;
+          left: 10px;
+          position: absolute;
+          top: 50%;
+          transform: translate(-50%, -50%);
+        }
+      `.styles
+    : ""
+}
 
   &.Mui-selected {
     background-color: transparent;
@@ -239,7 +241,7 @@ const MobileMenuListItemButton = styled(ListItemButton)`
   }
 ` as EnhancedListItemButton
 
-const MobileMenuListItemSubmenuButton = styled(IconButton)(
+const MobileMenuListItemSubmenuButton = styled(ButtonBase)(
   ({ theme }) => `
   &:before {
     background-color: ${theme.palette.common.grayscale.medium};
@@ -259,7 +261,7 @@ const MobileMenuBreadcrumbs = styled("div")`
   min-height: 44px;
 `
 
-const MobileMenuBreadcrumbButton = styled(Button)(
+const MobileMenuBreadcrumbButton = styled(ButtonBase)(
   ({ theme }) => `
   text-transform: none;
   font-size: .9375rem;
@@ -283,13 +285,71 @@ const MobileMenuBreadcrumbButton = styled(Button)(
     fill: ${theme.palette.common.grayscale.black};
   }
 `,
-) as typeof Button
+) as typeof ButtonBase
 
 const MobileMenuContentContainer = styled("section")`
   overflow: hidden;
   position: relative;
   min-height: calc(100vh - 126px);
 `
+
+const MobileMenuShortcutsContainer = styled("div")(
+  ({ theme }) => `
+  margin-top: 24px;
+
+  h2 {
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 700;
+    color: ${theme.palette.common.grayscale.black};
+    letter-spacing: -0.32px;
+    margin: 0 15px 8px;
+    padding: 16px;
+  }
+`,
+)
+
+const MobileMenuShortcutsList = styled("ul")`
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+`
+
+const MobileMenuShortcutsListItemButton = styled(ListItemButton)(
+  ({ theme }) => `
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 600;
+  align-items: center;
+  color: ${theme.palette.common.brand.main};
+  display: flex;
+  letter-spacing: -0.5px;
+  text-decoration: none;
+  width: 100%;
+  padding: 12px 16px;
+
+  &:focus {
+    outline: solid 2px ${theme.palette.common.additional.yellow.main};
+    outline-offset: -2px;
+  }
+
+  &:hover {
+    text-decoration: underline;
+    background-color: transparent;
+  }
+
+  span {
+    svg {
+      fill: ${theme.palette.common.brand.main};
+      display: inline-flex !imporant;
+      margin-left: 6px;
+      margin-right: 0;
+    }
+  }
+`,
+) as EnhancedListItemButton
 
 interface MobileMenuItemProps {
   item: NavigationMenuItem
@@ -312,61 +372,121 @@ const MobileMenuItem = ({ item, level = 0 }: MobileMenuItemProps) => {
     <MobileMenuListItem
       isHidden={level !== currentLevel}
       isActive={pathname === href}
-      isSubmenu={level > 0}
+      className={level > 0 ? "submenu" : undefined}
     >
       <MobileMenuListItemButton variant="text" href={href}>
         {level > 0 && <CaretRightIcon sx={{ fontSize: 10 }} />}
-        <ListItemText primary={label} />
+        <span>{label}</span>
       </MobileMenuListItemButton>
       {hasSubmenu && (
         <>
           <MobileMenuListItemSubmenuButton onClick={onClick}>
             <CaretRightIcon />
           </MobileMenuListItemSubmenuButton>
-          <MobileMenuLevelList
+          <MobileMenuLevelContainer
             level={level + 1}
             isOpen={currentLevel >= level + 1}
           >
-            <MobileMenuListItemButton variant="text" href={href}>
-              <ListItemText primary={label} />
-            </MobileMenuListItemButton>
-            {item.items.map((subItem) => (
-              <MobileMenuItem
-                key={subItem.label}
-                item={subItem}
-                level={level + 1}
-              />
-            ))}
-          </MobileMenuLevelList>
+            <MobileMenuItems
+              items={item.items}
+              parent={item}
+              level={level + 1}
+            />
+            {item.shortcuts && item.shortcuts.length > 0 && (
+              <MobileMenuShortcuts items={item.shortcuts} level={level + 1} />
+            )}
+          </MobileMenuLevelContainer>
         </>
       )}
     </MobileMenuListItem>
   )
 }
 
-interface MobileMenuLevelProps {
+interface MobileMenuItemsProps {
+  items: Array<NavigationMenuItem>
+  level?: number
+  parent?: NavigationMenuItem
+}
+
+const MobileMenuItems = ({
+  items,
+  parent,
+  level = 0,
+}: MobileMenuItemsProps) => (
+  <MobileMenuList>
+    {parent && (
+      <MobileMenuListItemButton variant="text" href={parent.href}>
+        <span>{parent.label}</span>
+      </MobileMenuListItemButton>
+    )}
+    {items.map((item) => (
+      <MobileMenuItem key={item.label} item={item} level={level} />
+    ))}
+  </MobileMenuList>
+)
+
+interface MobileMenuShortcutItemProps {
+  item: NavigationMenuShortcutItem
   level?: number
 }
 
-const MobileMenuLevel = ({
+const MobileMenuShortcutItem = ({
+  item,
   level = 0,
-  children,
-}: React.PropsWithChildren<MobileMenuLevelProps>) => {
+}: MobileMenuShortcutItemProps) => {
   const { currentLevel } = useMobileMenuContext()
+  const { href, label, external } = item
 
   return (
-    <MobileMenuLevelList level={level} isOpen={currentLevel === level}>
-      {children}
-    </MobileMenuLevelList>
+    <MobileMenuListItem
+      isHidden={level !== currentLevel}
+      className={level > 0 ? "submenu" : undefined}
+    >
+      <MobileMenuShortcutsListItemButton
+        href={href}
+        target={external ? "_blank" : undefined}
+      >
+        <CaretRightIcon sx={{ fontSize: 10 }} />
+        <span>
+          {label}
+          {external && <ArrowRightIcon sx={{ fontSize: 12 }} />}
+        </span>
+      </MobileMenuShortcutsListItemButton>
+    </MobileMenuListItem>
+  )
+}
+
+interface MobileMenuShortcutsProps {
+  items: Array<NavigationMenuShortcutItem>
+  level?: number
+}
+
+const MobileMenuShortcuts = ({
+  items,
+  level = 0,
+}: MobileMenuShortcutsProps) => {
+  const t = useTranslator(CommonTranslations)
+
+  return (
+    <MobileMenuShortcutsContainer>
+      <h2>{t("shortcuts")}</h2>
+      <MobileMenuShortcutsList>
+        {items.map((item) => (
+          <MobileMenuShortcutItem key={item.label} item={item} level={level} />
+        ))}
+      </MobileMenuShortcutsList>
+    </MobileMenuShortcutsContainer>
   )
 }
 
 interface MobileNavigationMenuProps {
   items: Array<NavigationMenuItem>
+  shortcuts?: Array<NavigationMenuShortcutItem>
 }
 
 const MobileNavigationMenu = ({
   items: originalItems,
+  shortcuts,
 }: MobileNavigationMenuProps) => {
   const apollo = useApolloClient()
   const [open, setOpen] = useState(false)
@@ -454,13 +574,9 @@ const MobileNavigationMenu = ({
           <MobileMenuHeader>
             <MobileMenuBreadcrumbs>
               {currentLevel > 0 && (
-                <MobileMenuBreadcrumbButton
-                  variant="text"
-                  color="primary"
-                  onClick={onBackClick}
-                >
+                <MobileMenuBreadcrumbButton onClick={onBackClick}>
                   <CaretLeftIcon sx={{ fontSize: 10 }} />
-                  {breadcrumbs.slice(-2)[0]?.label ?? "Main menu"}
+                  {breadcrumbs.slice(-2)[0]?.label ?? t("toMainMenu")}
                 </MobileMenuBreadcrumbButton>
               )}
             </MobileMenuBreadcrumbs>
@@ -470,11 +586,12 @@ const MobileNavigationMenu = ({
             </MobileMenuButton>
           </MobileMenuHeader>
           <MobileMenuContentContainer>
-            <MobileMenuLevel>
-              {items.map((item) => (
-                <MobileMenuItem key={item.label} item={item} />
-              ))}
-            </MobileMenuLevel>
+            <MobileMenuLevelContainer isOpen={currentLevel === 0}>
+              <MobileMenuItems items={items} />
+              {shortcuts && shortcuts.length > 0 && (
+                <MobileMenuShortcuts items={shortcuts} />
+              )}
+            </MobileMenuLevelContainer>
           </MobileMenuContentContainer>
         </MobileMenuContext.Provider>
       </MobileMenu>

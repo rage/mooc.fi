@@ -1,4 +1,15 @@
-import { AppBar, Slide, Toolbar, useScrollTrigger } from "@mui/material"
+import { useMemo } from "react"
+
+import { useRouter } from "next/router"
+
+import {
+  AppBar,
+  EnhancedLink,
+  Link,
+  Slide,
+  Toolbar,
+  useScrollTrigger,
+} from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import HyLogoIcon from "../Icons/HyLogo"
@@ -27,29 +38,37 @@ const HyToolbar = styled(Toolbar)(
   ({ theme }) => `
   background-color: ${theme.palette.common.grayscale.black};
   border-bottom: 2px solid rgb(0, 0, 0, 0.7);
+  position: relative;
   padding: 0;
   margin: 0;
-  position: relative;
   flex-wrap: wrap;
   display: flex;
-  justify-content: space-between;
 `,
 )
 
-const GroupToolbar = styled(Toolbar)`
+const GroupToolbar = styled(Toolbar)(
+  ({ theme }) => `
   display: flex;
   flex-direction: row;
   flex-shrink: 0;
   padding: 0 8px;
-`
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  margin: auto 0;
+  flex-flow: row;
+  ${theme.breakpoints.up("lg")} {
+    min-height: 82px;
+    height: 82px;
+  }
+`,
+)
 
 const HyLogo = styled(HyLogoIcon)(
   ({ theme }) => `
   fill: ${theme.palette.common.grayscale.white};
-  font-size: 32;
-  ${theme.breakpoints.up("lg")} {
-    font-size: 64;
-  }
+  height: 32px !important;
+  width: 33.41px;
+  transition: none !important;
 `,
 )
 
@@ -61,7 +80,7 @@ const HyLabel = styled("span")(
   color: ${theme.palette.common.grayscale.white};
   letter-spacing: -0.7px;
   margin-left: 8px;
-  max-width: 90px;
+  max-width: 160px;
   text-transform: uppercase;
   ${theme.breakpoints.down("xs")} {
     font-size: 0.75rem;
@@ -83,29 +102,14 @@ const HyLabel = styled("span")(
 `,
 )
 
-const HyLogoContainer = styled("div")(
-  ({ theme }) => `
+const HyLogoLink = styled(Link)`
   padding: 8px 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  ${theme.breakpoints.down("xs")} {
-    min-width: min-content;
-    max-width: max-content;
-    white-space: nowrap;
-  }
-  ${theme.breakpoints.up("lg")} {
-    min-width: min-content;
-    max-width: 90px;
-    white-space: initial;
-  }
-  ${theme.breakpoints.up("xl")} {
-    min-width: min-content;
-    max-width: max-content;
-    white-space: nowrap;
-  }
-`,
-)
+  text-decoration: none;
+  transition: none !important;
+` as EnhancedLink
 
 const BrandingContainer = styled("div")(
   ({ theme }) => `
@@ -118,21 +122,35 @@ const BrandingContainer = styled("div")(
   `,
 )
 
-const HeaderAppBar = styled(AppBar)`
-  /**/
-` as typeof AppBar
+const HeaderAppBar = styled(AppBar)`` as typeof AppBar
 
 function Header() {
   const t = useTranslator(CommonTranslations)
+  const { locale } = useRouter()
+
+  const hyUrl = useMemo(() => {
+    let url = "https://helsinki.fi/"
+    if (locale !== "sv") {
+      url += locale
+    } else {
+      url += "sv"
+    }
+    return url
+  }, [locale])
 
   return (
     <HideOnScroll>
-      <HeaderAppBar position="sticky" aria-label="toolbar" elevation={0}>
+      <HeaderAppBar
+        position="sticky"
+        role="banner"
+        aria-label="toolbar"
+        elevation={0}
+      >
         <HyToolbar>
-          <HyLogoContainer>
+          <HyLogoLink href={hyUrl}>
             <HyLogo />
             <HyLabel>{t("hy")}</HyLabel>
-          </HyLogoContainer>
+          </HyLogoLink>
           <LanguageSwitch />
         </HyToolbar>
         <GroupToolbar>

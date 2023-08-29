@@ -6,35 +6,32 @@ import {
   EnhancedLink,
   EnhancedLinkProps,
   Link,
-  MenuItem,
-  MenuList,
   Popover,
 } from "@mui/material"
-import { css, styled } from "@mui/material/styles"
+import { styled } from "@mui/material/styles"
 import { useEventCallback } from "@mui/material/utils"
 
-import { NavigationLinkStyle } from "."
+import {
+  NavigationLinkStyle,
+  NavigationMenuShortcutItem,
+  NavigationMenuSubmenuItem,
+} from "."
 import ArrowRight from "../Icons/ArrowRight"
 import CaretDownIcon from "../Icons/CaretDown"
 import CaretRight from "../Icons/CaretRight"
 import CaretUpIcon from "../Icons/CaretUp"
+import { useTranslator } from "/hooks/useTranslator"
+import CommonTranslations from "/translations/common"
 
-interface NavigationDropdownButtonProps {
-  expanded?: boolean
-}
-
-const NavigationDropdownButton = styled(ButtonBase, {
-  shouldForwardProp: (prop) => prop !== "expanded",
-})<NavigationDropdownButtonProps>(
-  ({ theme, expanded }) => `
+const NavigationDropdownButton = styled(ButtonBase)(
+  ({ theme }) => `
   ${NavigationLinkStyle.styles}
   position: relative;
   margin: 0;
-  right: unset;
-  top: unset;
-  min-height: unset;
   border-radius: 0;
+  height: 100%;
   color: ${theme.palette.common.brand.nearlyBlack};
+  transition: none !important;
   svg {
     fill: ${theme.palette.common.brand.nearlyBlack};
   }
@@ -50,34 +47,32 @@ const NavigationDropdownButton = styled(ButtonBase, {
     }
     background-color: transparent;
   }
-  ${
-    expanded
-      ? css`
-          &::after,
-          &::before {
-            background-color: ${theme.palette.common.grayscale.white};
-            content: "";
-            height: 5px;
-            width: 16px;
-            position: absolute;
-            bottom: -3px;
-            z-index: 3000 !important;
-          }
 
-          &::before {
-            left: -16px;
-          }
+  &[aria-expanded="true"] {
+    position: relative;
+    &::after,
+    &::before {
+      background-color: ${theme.palette.common.grayscale.white};
+      content: "";
+      height: 5px;
+      width: 16px;
+      position: absolute;
+      bottom: -3px;
+      z-index: 3000 !important;
+    }
 
-          &::after {
-            right: -16px;
-          }
+    &::before {
+      left: -16px;
+    }
 
-          box-shadow: inset 0 -4px 0 0 ${theme.palette.common.grayscale.black};
-        `.styles
-      : ""
+    &::after {
+      right: -16px;
+    }
+
+    box-shadow: inset 0 -4px 0 0 ${theme.palette.common.grayscale.black};
   }
 `,
-) as EnhancedButtonBase<"button", NavigationDropdownButtonProps>
+) as EnhancedButtonBase
 
 const NavigationDropdownMenu = styled(Popover)(
   ({ theme }) => `
@@ -95,11 +90,12 @@ const NavigationDropdownMenu = styled(Popover)(
     border: 1px solid ${theme.palette.common.grayscale.black};
     border-top: none;
     border-radius: 0;
-    transition: none;
+    transition: none !important;
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     justify-items: center;
     align-items: flex-start;
+    margin: 0 auto;
   }
 `,
 ) as typeof Popover
@@ -110,37 +106,46 @@ const NavigationDropdownMenuPanelContainer = styled("div")`
   flex-direction: column;
   grid-column-start: 2;
 `
-const NavigationDropdownMenuList = styled(MenuList)`
-  /**/
+
+const NavigationDropdownMenuList = styled("ul")`
+  padding: 0;
+  margin: 0;
+  display: inline-grid;
+  gap: 20px;
+  list-style: none;
 `
 
 const NavigationDropdownMenuHeader = styled("div")(
   ({ theme }) => `
-    display: inline-grid;
-    gap: 8px 16px;
-    grid-template-areas: 'icon link' 'icon description';
-    grid-template-columns: auto;
-    grid-template-rows: auto;
-    margin-bottom: 16px;
-    align-items: flex-start;
+  display: inline-grid;
+  gap: 8px 16px;
+  grid-template-areas: 'icon link' 'icon description';
+  grid-template-columns: auto;
+  grid-template-rows: auto;
+  margin-bottom: 16px;
+  align-items: flex-start;
 
-    svg {
-      fill: ${theme.palette.common.grayscale.white};
-    }
+  svg {
+    fill: ${theme.palette.common.grayscale.white};
+  }
 `,
 )
 
-const NavigationDropdownContent = styled("div")`
+interface NavigationDropdownContentProps {
+  hasShortcuts?: boolean
+}
+
+const NavigationDropdownContent = styled("div")<NavigationDropdownContentProps>(
+  ({ hasShortcuts }) => `
   padding-left: 56px;
   display: inline-grid;
-  grid-template-columns: 310px;
-`
+  grid-template-columns: ${hasShortcuts ? "400px 496px" : "310px"};
+`,
+)
 
-const NavigationDropdownMenuItem = styled(MenuItem)`
+const NavigationDropdownMenuItem = styled("li")`
+  list-style: none;
   padding: 0;
-  :hover {
-    background: transparent;
-  }
 `
 
 const NavigationDropdownMenuItemLink = styled(Link)(
@@ -206,18 +211,59 @@ export const NavigationDropdownMenuLink = ({
   </NavigationDropdownMenuItem>
 )
 
+const NavigationDropdownShortcutContainer = styled("div")(
+  ({ theme }) => `
+  margin-left: 48px;
+  padding-left: 48px;
+  border-left: 1px solid ${theme.palette.common.grayscale.medium};
+
+  h2 {
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 700;
+    color: ${theme.palette.common.grayscale.black};
+    letter-spacing: -0.36px;
+    margin: 0 0 24px;
+  }
+`,
+)
+
+interface NavigationDropdownShortcutsProps {
+  items: Array<NavigationMenuShortcutItem>
+}
+
+const NavigationDropdownShortcuts = ({
+  items,
+}: NavigationDropdownShortcutsProps) => {
+  const t = useTranslator(CommonTranslations)
+  return (
+    <NavigationDropdownShortcutContainer>
+      <h2>{t("shortcuts")}</h2>
+      <NavigationDropdownMenuList>
+        {items.map(({ href, label, name, external }) => (
+          <NavigationDropdownMenuLink
+            key={name ?? label}
+            href={href}
+            target={external ? "_blank" : undefined}
+          >
+            <span>
+              {label}
+              {external && <ArrowRight sx={{ fontSize: "12px" }} />}
+            </span>
+          </NavigationDropdownMenuLink>
+        ))}
+      </NavigationDropdownMenuList>
+    </NavigationDropdownShortcutContainer>
+  )
+}
 interface NavigationDropdownProps {
-  href?: string
-  label?: string
-  name?: string
+  item: NavigationMenuSubmenuItem
 }
 
 export const NavigationDropdownLink = ({
-  name,
-  href,
-  label,
-  children,
+  item,
 }: React.PropsWithChildren<NavigationDropdownProps>) => {
+  const { name, label, href, items, shortcuts } = item
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
   const open = Boolean(anchorEl)
 
@@ -241,7 +287,6 @@ export const NavigationDropdownLink = ({
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
         onClick={onClick}
-        expanded={open}
       >
         {label}
         {open ? <CaretUpIcon /> : <CaretDownIcon />}
@@ -267,10 +312,19 @@ export const NavigationDropdownLink = ({
               {label}
             </NavigationDropdownHeaderLink>
           </NavigationDropdownMenuHeader>
-          <NavigationDropdownContent>
+          <NavigationDropdownContent
+            hasShortcuts={(shortcuts ?? []).length > 0}
+          >
             <NavigationDropdownMenuList aria-labelledby={buttonName}>
-              {children}
+              {items.map(({ name, label, href }) => (
+                <NavigationDropdownMenuLink key={name ?? label} href={href}>
+                  {label}
+                </NavigationDropdownMenuLink>
+              ))}
             </NavigationDropdownMenuList>
+            {shortcuts && shortcuts.length > 0 && (
+              <NavigationDropdownShortcuts items={shortcuts} />
+            )}
           </NavigationDropdownContent>
         </NavigationDropdownMenuPanelContainer>
       </NavigationDropdownMenu>

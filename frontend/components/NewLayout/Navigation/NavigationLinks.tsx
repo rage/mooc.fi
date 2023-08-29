@@ -1,11 +1,9 @@
+import { PropsOf } from "@emotion/react"
 import { EnhancedLink, Link } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
 import { isSubmenuItem, NavigationMenuItem } from "."
-import {
-  NavigationDropdownLink,
-  NavigationDropdownMenuLink,
-} from "./NavigationDropdown"
+import { NavigationDropdownLink } from "./NavigationDropdown"
 
 const NavigationLinkStyle = css`
   font-size: 0.875rem;
@@ -26,6 +24,7 @@ const NavigationLinkStyle = css`
   align-items: center;
   justify-content: center;
   transition: 0.1s;
+  position: relative;
 
   svg {
     pointer-events: none;
@@ -60,7 +59,6 @@ const NavigationLink = styled(Link)(
 const NavigationLinksContainer = styled("nav")(
   ({ theme }) => `
   height: 100%;
-  margin: 0 32px;
   display: block;
   ${theme.breakpoints.down("sm")} {
     display: none;
@@ -92,13 +90,7 @@ const NavigationItem = ({ item }: NavigationItemProps) => {
   return (
     <NavigationLinkItem key={name ?? label}>
       {isSubmenuItem(item) ? (
-        <NavigationDropdownLink label={label} href={href} name={name}>
-          {item.items.map(({ name, label, href }) => (
-            <NavigationDropdownMenuLink key={name ?? label} href={href}>
-              {label}
-            </NavigationDropdownMenuLink>
-          ))}
-        </NavigationDropdownLink>
+        <NavigationDropdownLink item={item} />
       ) : (
         <NavigationLink href={href} onClick={onClick}>
           {label}
@@ -112,9 +104,12 @@ interface NavigationLinksProps {
   items: Array<NavigationMenuItem>
 }
 
-export const NavigationLinks = ({ items }: NavigationLinksProps) => {
+export const NavigationLinks = ({
+  items,
+  ...props
+}: NavigationLinksProps & PropsOf<typeof NavigationLinksContainer>) => {
   return (
-    <NavigationLinksContainer role="navigation">
+    <NavigationLinksContainer role="navigation" {...props}>
       <NavigationLinkList>
         {items.map((item) => (
           <NavigationItem key={item.name ?? item.label} item={item} />

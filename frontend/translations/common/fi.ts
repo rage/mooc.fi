@@ -109,4 +109,8 @@ export default {
   module: "Kokonaisuus",
   courseOtherLanguages: "Saatavilla myös kielillä",
   hy: "Helsingin yliopisto",
+  openLanguageMenu: "Avaa kielivalikko",
+  shortcuts: "Oikopolut",
+  createNewCourse: "Luo uusi kurssi",
+  toMainMenu: "Päävalikkoon",
 } as const

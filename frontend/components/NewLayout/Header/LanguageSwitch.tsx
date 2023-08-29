@@ -3,13 +3,13 @@ import React, { useState } from "react"
 import { useRouter } from "next/router"
 
 import {
-  Button,
-  EnhancedButton,
+  ButtonBase,
+  EnhancedButtonBase,
   EnhancedLink,
   EnhancedMenuItem,
   Link,
-  Menu,
-  MenuItem,
+  ListItem,
+  Popover,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import { useEventCallback } from "@mui/material/utils"
@@ -21,31 +21,35 @@ import { useTranslator } from "/hooks/useTranslator"
 import { KeyOfTranslationDictionary } from "/translations"
 import CommonTranslations from "/translations/common"
 
-const LanguageSwitchMenu = styled(Menu)(
+const LanguageSwitchMenu = styled(Popover)(
   ({ theme }) => `
   justify-items: center;
   text-transform: uppercase;
-  top: 11px;
+  top: 34px;
+  right: -15px;
+  ${theme.breakpoints.up("xl")} {
+    left: -15px;
+    right: 0;
+  }
 
-  .MuiPaper-root {
+  .MuiPopover-paper {
+    position: absolute;
     width: max-content;
     padding: 10px;
     border-radius: 0 0 5px 5px;
     box-shadow: rgba(0, 0, 0, 0.2) 0px 10px 10px;
     min-width: 160px;
-    right: -15px;
-
-    ${theme.breakpoints.up("xl")} {
-      left: -15px;
-    }
   }
 
-  .MuiList-root {
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 4px;
-  }
+`,
+)
+
+const LanguageSwitchMenuList = styled("ul")(
+  ({ theme }) => `
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
 
   .Mui-selected {
     color: ${theme.palette.common.grayscale.black};
@@ -57,12 +61,10 @@ const LanguageSwitchMenu = styled(Menu)(
       background-color: ${theme.palette.common.grayscale.backgroundBox};
     }
   }
+
 `,
 )
-
-/*
- */
-const LanguageOption = styled(MenuItem)(
+const LanguageOption = styled(ListItem)(
   ({ theme }) => `
   margin: 0;
   padding: 0;
@@ -79,7 +81,6 @@ const LanguageOption = styled(MenuItem)(
     border: 2px solid ${theme.palette.common.grayscale.black};
 
     &:hover {
-      color: ${theme.palette.common.grayscale.medium};
       background-color: ${theme.palette.common.grayscale.backgroundBox};
     }
   }
@@ -102,9 +103,10 @@ const LanguageSwitchContainer = styled("div")`
   align-items: center;
   display: flex;
   height: 100%;
+  position: relative;
 `
 
-const LanguageButton = styled(Button)(
+const LanguageSwitchToggle = styled(ButtonBase)(
   ({ theme }) => `
   color: ${theme.palette.common.grayscale.white};
   align-items: center;
@@ -119,15 +121,24 @@ const LanguageButton = styled(Button)(
   text-transform: uppercase;
   height: 100%;
   position: relative;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 1rem;
+  line-height: 16px;
 
+  svg {
+    fill: ${theme.palette.common.grayscale.white};
+  }
   svg:first-of-type {
     display: none !important;
   }
 
+  &:focus {
+    outline: solid 2px ${theme.palette.common.additional.yellow.main};
+    outline-offset: 2px;
+  }
   ${theme.breakpoints.up("lg")} {
     font-size: 0.75rem;
+    line-height: 24px;
     font-weight: 400;
     letter-spacing: -0.5px;
     grid-template-columns: repeat(3, auto);
@@ -149,27 +160,22 @@ const LanguageButton = styled(Button)(
     cursor: pointer;
     border: 0;
   }
-`,
-) as EnhancedButton
 
-const CaretUp = styled(CaretUpIcon)(
-  ({ theme }) => `
-  fill: ${theme.palette.common.grayscale.white};
-  font-size: 8px;
+  &[aria-expanded="true"] {
+    position: relative;
+
+    &:after {
+      content: '';
+      position: absolute;
+      height: 4px;
+      right: 0;
+      bottom: -1px;
+      left: 0;
+      background-color: ${theme.palette.common.grayscale.black};
+    }
+  }
 `,
-)
-const CaretDown = styled(CaretDownIcon)(
-  ({ theme }) => `
-  fill: ${theme.palette.common.grayscale.white};
-  font-size: 8px;
-`,
-)
-const LanguageIcon = styled(GlobeIcon)(
-  ({ theme }) => `
-  fill: ${theme.palette.common.grayscale.white};
-  font-size: 14px;
-`,
-)
+) as EnhancedButtonBase
 
 type LanguageSwitchProps = {
   mobile?: boolean
@@ -197,42 +203,47 @@ const LanguageSwitch = ({ mobile }: LanguageSwitchProps) => {
 
   return (
     <LanguageSwitchContainer>
-      <LanguageButton
-        color="secondary"
+      <LanguageSwitchToggle
         id={name}
+        aria-label={t("openLanguageMenu")}
         aria-controls={open ? menuName : undefined}
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
         onClick={handleLanguageSwitchClick}
       >
-        <LanguageIcon />
+        <GlobeIcon sx={{ fontSize: "14px" }} />
         {currentLocale}
-        {open ? <CaretUp /> : <CaretDown />}
-      </LanguageButton>
+        {open ? (
+          <CaretUpIcon sx={{ fontSize: "8px" }} />
+        ) : (
+          <CaretDownIcon sx={{ fontSize: "8px" }} />
+        )}
+      </LanguageSwitchToggle>
       <LanguageSwitchMenu
         id={menuName}
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
         elevation={0}
-        MenuListProps={{
-          "aria-labelledby": name,
-        }}
       >
-        {locales?.map((locale) => (
-          <LanguageOption
-            key={`${name}${locale}`}
-            selected={locale === currentLocale}
-            onClick={handleClose}
-          >
-            <LanguageOptionLink href={asPath} locale={locale} shallow>
-              {t(
-                locale as KeyOfTranslationDictionary<typeof CommonTranslations>,
-              )}{" "}
-              ({locale})
-            </LanguageOptionLink>
-          </LanguageOption>
-        ))}
+        <LanguageSwitchMenuList aria-labelledby={name}>
+          {locales?.map((locale) => (
+            <LanguageOption
+              key={`${name}${locale}`}
+              selected={locale === currentLocale}
+              onClick={handleClose}
+            >
+              <LanguageOptionLink href={asPath} locale={locale} shallow>
+                {t(
+                  locale as KeyOfTranslationDictionary<
+                    typeof CommonTranslations
+                  >,
+                )}{" "}
+                ({locale})
+              </LanguageOptionLink>
+            </LanguageOption>
+          ))}
+        </LanguageSwitchMenuList>
       </LanguageSwitchMenu>
     </LanguageSwitchContainer>
   )
