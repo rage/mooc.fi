@@ -1,13 +1,8 @@
-import { styled } from "@mui/material/styles"
+import { useMemo } from "react"
 
-import { SectionContainer } from "/components/NewLayout/Common"
-import {
-  CardBody,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  CardWrapper,
-} from "/components/NewLayout/Common/Card"
+import { LinkBoxProps } from "../Common/LinkBox"
+import LinkBoxList from "../Common/LinkBoxList"
+import PartnerDivider from "/components/PartnerDivider"
 import { useTranslator } from "/hooks/useTranslator"
 import NaviTranslations from "/translations/navi"
 
@@ -19,73 +14,93 @@ type NaviItem = {
   link: string
 }
 
-// either 4, 2 or 1 columns, depending on the number of items
-const HypeGrid = styled("div", {
-  shouldForwardProp: (prop) => prop !== "count",
-})<{ count?: number }>(
-  ({ theme, count = 4 }) => `
-  display: grid;
-  grid-gap: 1rem;
-  grid-template-columns: ${
-    count % 2 === 0
-      ? "repeat(auto-fit, minmax(200px, 1fr))"
-      : `repeat(auto-fit, minmax(166px, 1fr))`
-  };
-  padding: 2rem;
-  justify-content: center;
-  width: 80%;
-
-  ${theme.breakpoints.down("lg")} {
-    grid-template-columns: ${
-      count % 2 === 0
-        ? "repeat(auto-fit, minmax(300px, 1fr))"
-        : `repeat(auto-fit, minmax(450px, 1fr))`
-    };
-  }
-
-  ${theme.breakpoints.down("xs")} {
-    padding: 0;
-    width: 100%;
-    grid-template-columns: 1fr;
-  }
-`,
-)
-
-const HypeCardHeader = styled(CardHeader)`
-  background-color: #f5f5f5;
-`
-interface HypeCardProps {
-  item: NaviItem
+type CustomNaviItem = {
+  title: string
+  text: string
+  linkText: string
+  img?: string
+  imgDimensions?: { width: number; height: number }
+  link: string
+  titleImg?: string
+  titleImgDimensions?: { width: number; height: number }
 }
 
-const HypeCard = ({ item: { title, text } }: HypeCardProps) => {
-  return (
-    <CardWrapper>
-      <HypeCardHeader>
-        <CardTitle variant="h5" component="h3">
-          {title}
-        </CardTitle>
-      </HypeCardHeader>
-      <CardBody>
-        <CardDescription>{text}</CardDescription>
-      </CardBody>
-    </CardWrapper>
-  )
-}
 function Hype() {
   const t = useTranslator(NaviTranslations)
 
   const items = t("naviItems") as readonly NaviItem[]
+  const customItems = t("customNaviItems") as readonly CustomNaviItem[]
 
-  // remember to test with divisible by 2 and 3
+  const listItems: Array<LinkBoxProps> = useMemo(
+    () =>
+      items.map(({ title, text, link, linkText }) => ({
+        title,
+        description: text,
+        /*imageProps: {
+        src: '/images/navi/' + item.img,
+        alt: item.title,
+        fill: true
+      },*/
+        linkProps: {
+          href: link,
+          children: linkText,
+        },
+      })),
+    [items],
+  )
+
+  const customListItems: Array<LinkBoxProps> = useMemo(
+    () =>
+      customItems.map(
+        ({ title, text, titleImg, titleImgDimensions, link, linkText }) => ({
+          title,
+          titleImage: titleImg,
+          description: text,
+          ...(titleImg
+            ? {
+                titleImageProps: {
+                  src: "/images/navi/" + titleImg,
+                  alt: title,
+                  ...(titleImgDimensions ?? { fill: true }),
+                },
+              }
+            : {}),
+          linkProps: {
+            href: link,
+            children: linkText,
+          },
+        }),
+      ),
+    [customItems],
+  )
+
   return (
-    <SectionContainer>
-      <HypeGrid count={items.length}>
-        {items.map((item) => (
-          <HypeCard key={item.title ?? item.text} item={item} />
-        ))}
-      </HypeGrid>
-    </SectionContainer>
+    <>
+      <LinkBoxList items={listItems} />
+      {customListItems.length > 0 && (
+        <>
+          <PartnerDivider
+            sx={{
+              h4: {
+                fontSize: "0.875rem",
+                color: "#888",
+              },
+              marginBottom: "0.5rem",
+              paddingLeft: "0",
+            }}
+          />
+          <LinkBoxList
+            items={customListItems}
+            variant="wide"
+            LinkBoxProps={{
+              sx: {
+                backgroundColor: "#ccc",
+              },
+            }}
+          />
+        </>
+      )}
+    </>
   )
 }
 

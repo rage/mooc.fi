@@ -5,7 +5,7 @@ import { styled } from "@mui/material/styles"
 import Hero from "/components/NewLayout/Frontpage/Hero"
 import Hype from "/components/NewLayout/Frontpage/Hype"
 import { ModuleNavigation } from "/components/NewLayout/Frontpage/Modules"
-import News from "/components/NewLayout/Frontpage/News"
+// import News from "/components/NewLayout/Frontpage/News"
 import SelectedCourses from "/components/NewLayout/Frontpage/SelectedCourses"
 
 const HomeContainer = styled("div")`
@@ -19,7 +19,7 @@ const Home = () => {
     <HomeContainer>
       <Background />
       <Hero />
-      <News />
+      {/*<News />*/}
       <Hype />
       <SelectedCourses />
       <ModuleNavigation />
