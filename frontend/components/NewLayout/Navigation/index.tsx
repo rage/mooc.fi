@@ -2,9 +2,10 @@ import { useRouter } from "next/router"
 
 import { css } from "@mui/material/styles"
 
+import { fontSize } from "/src/theme/util"
+
 export const NavigationLinkStyle = css`
-  font-size: 0.875rem;
-  line-height: 16px;
+  ${fontSize(14, 16)}
   font-weight: 700;
   background-color: transparent;
   border: none;

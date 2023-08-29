@@ -299,9 +299,9 @@ export const withComponents = (theme: Theme) =>
             padding: "0 8px",
             display: "flex",
             justifyContent: "space-between",
-            minHeight: "48px",
-            [theme.breakpoints.down("xs")]: {
-              minHeight: "0",
+            minHeight: "0",
+            [theme.breakpoints.up("xs")]: {
+              minHeight: "48px",
             },
             [theme.breakpoints.up("lg")]: {
               padding: "0 32px",

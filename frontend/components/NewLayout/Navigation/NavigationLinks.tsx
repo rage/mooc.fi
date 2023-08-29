@@ -1,39 +1,10 @@
 import { PropsOf } from "@emotion/react"
 import { EnhancedLink, Link } from "@mui/material"
-import { css, styled } from "@mui/material/styles"
+import { styled } from "@mui/material/styles"
 
-import { isSubmenuItem, NavigationMenuItem } from "."
+import { isSubmenuItem, NavigationLinkStyle, NavigationMenuItem } from "."
 import { NavigationDropdownLink } from "./NavigationDropdown"
-
-const NavigationLinkStyle = css`
-  font-size: 0.875rem;
-  line-height: 16px;
-  font-weight: 700;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  flex-direction: row;
-  height: 100%;
-  letter-spacing: -0.7px;
-  padding: 26px 10px;
-  width: auto;
-  text-transform: uppercase;
-  text-decoration: none;
-  text-align: left;
-  align-items: center;
-  justify-content: center;
-  transition: 0.1s;
-  position: relative;
-
-  svg {
-    pointer-events: none;
-    margin-left: 4px;
-    height: 10px;
-    width: 10px;
-    font-size: 10px;
-  }
-`
+import { fontSize } from "/src/theme/util"
 
 const NavigationLink = styled(Link)(
   ({ theme }) => `
@@ -43,8 +14,7 @@ const NavigationLink = styled(Link)(
     fill: ${theme.palette.common.brand.nearlyBlack};
   }
   ${theme.breakpoints.up("xl")} {
-    font-size: 1rem;
-    line-height: 16px;
+    ${fontSize(16, 16)}
   }
   &:hover {
     cursor: pointer;
@@ -58,10 +28,10 @@ const NavigationLink = styled(Link)(
 
 const NavigationLinksContainer = styled("nav")(
   ({ theme }) => `
-  height: 100%;
-  display: block;
-  ${theme.breakpoints.down("sm")} {
-    display: none;
+  display: none;
+  ${theme.breakpoints.up("sm")} {
+    height: 100%;
+    display: block;
   }
 `,
 )

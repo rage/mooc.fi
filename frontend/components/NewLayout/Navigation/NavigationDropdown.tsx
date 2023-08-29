@@ -21,6 +21,7 @@ import CaretDownIcon from "../Icons/CaretDown"
 import CaretRight from "../Icons/CaretRight"
 import CaretUpIcon from "../Icons/CaretUp"
 import { useTranslator } from "/hooks/useTranslator"
+import { fontSize } from "/src/theme/util"
 import CommonTranslations from "/translations/common"
 
 const NavigationDropdownButton = styled(ButtonBase)(
@@ -36,8 +37,7 @@ const NavigationDropdownButton = styled(ButtonBase)(
     fill: ${theme.palette.common.brand.nearlyBlack};
   }
   ${theme.breakpoints.up("xl")} {
-    font-size: 1rem;
-    line-height: 16px;
+    ${fontSize(16, 16)}
   }
   &:hover {
     cursor: pointer;
@@ -150,8 +150,7 @@ const NavigationDropdownMenuItem = styled("li")`
 
 const NavigationDropdownMenuItemLink = styled(Link)(
   ({ theme }) => `
-  font-size: 1rem;
-  line-height: 24px;
+  ${fontSize(16, 24)}
   font-weight: 600;
   align-items: flex-start;
   color: ${theme.palette.common.brand.main};
@@ -173,8 +172,7 @@ const NavigationDropdownMenuItemLink = styled(Link)(
 ) as EnhancedLink
 
 const NavigationDropdownHeaderLink = styled(Link)`
-  font-size: 25px;
-  line-height: 32px;
+  ${fontSize(25, 32)}
   font-weight: 700;
   grid-area: link;
   letter-spacing: -0.5px;
@@ -211,6 +209,7 @@ export const NavigationDropdownMenuLink = ({
   </NavigationDropdownMenuItem>
 )
 
+console.log(fontSize(18, 24))
 const NavigationDropdownShortcutContainer = styled("div")(
   ({ theme }) => `
   margin-left: 48px;
@@ -218,8 +217,7 @@ const NavigationDropdownShortcutContainer = styled("div")(
   border-left: 1px solid ${theme.palette.common.grayscale.medium};
 
   h2 {
-    font-size: 18px;
-    line-height: 24px;
+    ${fontSize(18, 24)}
     font-weight: 700;
     color: ${theme.palette.common.grayscale.black};
     letter-spacing: -0.36px;

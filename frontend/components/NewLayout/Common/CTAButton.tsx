@@ -6,6 +6,7 @@ import {
 import { styled } from "@mui/material/styles"
 
 import ArrowRight from "../Icons/ArrowRight"
+import { fontSize } from "/src/theme/util"
 
 const ctaButtonVariants = [
   "transparent-background",
@@ -44,8 +45,7 @@ const EnhancedMUIButton = styled(ButtonBase)(
       padding: 13px 16px;
   
       .text {
-        font-size: 16px;
-        line-height: 18px;
+        ${fontSize(16, 18)}
         letter-spacing: -0.3px;
       }
   

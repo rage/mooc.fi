@@ -17,6 +17,7 @@ import { NavigationMenu } from "../Navigation"
 import LanguageSwitch from "./LanguageSwitch"
 import MoocLogo from "./MoocLogo"
 import { useTranslator } from "/hooks/useTranslator"
+import { fontSize } from "/src/theme/util"
 import CommonTranslations from "/translations/common"
 
 interface HideOnScrollProps {
@@ -74,29 +75,27 @@ const HyLogo = styled(HyLogoIcon)(
 
 const HyLabel = styled("span")(
   ({ theme }) => `
-  font-size: 0.75rem;
-  line-height: 14px;
+  ${fontSize(12, 14)}
   font-weight: 700;
   color: ${theme.palette.common.grayscale.white};
   letter-spacing: -0.7px;
   margin-left: 8px;
   max-width: 160px;
   text-transform: uppercase;
-  ${theme.breakpoints.down("xs")} {
-    font-size: 0.75rem;
-    line-height: 14px;
+  ${theme.breakpoints.up("xs")} {
+    ${fontSize(12, 14)}
     letter-spacing: -0.6px;
     margin-left: 3px;
   }
   ${theme.breakpoints.up("md")} {
-    font-size: 0.875rem;
+    ${fontSize(14, 14)}
   }
   ${theme.breakpoints.up("lg")} {
     letter-spacing: -0.6px;
     margin-left: 4px;
   }
   ${theme.breakpoints.up("xl")} {
-    font-size: 0.875rem;
+    ${fontSize(14, 14)}
     margin-left: 8px;
   }
 `,
@@ -113,13 +112,13 @@ const HyLogoLink = styled(Link)`
 
 const BrandingContainer = styled("div")(
   ({ theme }) => `
-    display: flex;
-    align-items: center;
-    padding: 0px 0;
-    ${theme.breakpoints.up("xl")} {
-      padding: 12px 0;
-    }
-  `,
+  display: flex;
+  align-items: center;
+  padding: 0px 0;
+  ${theme.breakpoints.up("xl")} {
+    padding: 12px 0;
+  }
+`,
 )
 
 const HeaderAppBar = styled(AppBar)`` as typeof AppBar
