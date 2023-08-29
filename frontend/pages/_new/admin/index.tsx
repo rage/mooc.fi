@@ -1,7 +1,5 @@
 import Background from "components/NewLayout/Background"
 
-import { styled } from "@mui/material/styles"
-
 import Container from "/components/Container"
 import { Links } from "/components/NewLayout/Admin"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
