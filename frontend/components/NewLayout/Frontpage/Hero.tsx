@@ -230,7 +230,7 @@ function Hero() {
       <HeroContainer>
         <HeroImageContainer>
           <HeroImage
-            src="/images/courseimages/doggos.png"
+            src="/images/new/doggos.png"
             width={620}
             height={465}
             priority

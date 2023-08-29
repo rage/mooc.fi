@@ -25,14 +25,14 @@ const Link = styled(MUILink)(
   &:hover, &:focus {
     text-decoration: underline;
 
-    ${LinkIcon} {
+    ${CTALinkIcon} {
       background-color: ${theme.palette.common.brand.main};
     }
   }
 `,
 ) as EnhancedLink
 
-const LinkIcon = styled("span")(
+export const CTALinkIcon = styled("span")(
   ({ theme }) => `
   align-items: center;
   background-color: ${theme.palette.common.brand.light};
@@ -59,13 +59,13 @@ const CTALink = (props: CTALinkProps) => {
   return (
     <Link target={target} {...rest}>
       {children}
-      <LinkIcon>
+      <CTALinkIcon>
         {isExternal ? (
           <ArrowLeft sx={{ fontSize: "24px" }} />
         ) : (
           <ArrowRight sx={{ fontSize: "24px" }} />
         )}
-      </LinkIcon>
+      </CTALinkIcon>
     </Link>
   )
 }
