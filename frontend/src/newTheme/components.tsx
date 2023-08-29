@@ -275,6 +275,8 @@ export const withComponents = (theme: Theme) =>
       MuiAppBar: {
         styleOverrides: {
           root: {
+            height: "auto",
+            minHeight: "131px",
             backgroundColor: theme.palette.common.grayscale.white,
             zIndex: 100,
             borderBottom: `2px solid ${theme.palette.common.grayscale.dark}`,
@@ -288,11 +290,19 @@ export const withComponents = (theme: Theme) =>
         },
       },
       MuiToolbar: {
+        defaultProps: {
+          disableGutters: true,
+          variant: "dense",
+        },
         styleOverrides: {
           root: {
             padding: "0 8px",
             display: "flex",
             justifyContent: "space-between",
+            minHeight: "48px",
+            [theme.breakpoints.down("xs")]: {
+              minHeight: "0",
+            },
             [theme.breakpoints.up("lg")]: {
               padding: "0 32px",
             },

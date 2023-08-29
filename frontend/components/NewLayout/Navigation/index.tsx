@@ -43,12 +43,21 @@ export type NavigationMenuLinkItem = {
   label: string
   name?: string
   description?: string
-  level?: number
+  onClick?: (...params: any[]) => any
+}
+
+export type NavigationMenuShortcutItem = {
+  href: string
+  label: string
+  name?: string
+  description?: string
+  external?: boolean
   onClick?: (...params: any[]) => any
 }
 
 export type NavigationMenuSubmenuItem = NavigationMenuLinkItem & {
   items: Array<NavigationMenuItem>
+  shortcuts?: Array<NavigationMenuShortcutItem>
 }
 
 export type NavigationMenuItem =

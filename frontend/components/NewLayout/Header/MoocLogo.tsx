@@ -5,14 +5,19 @@ import MoocLogoFilled from "../Icons/MoocLogoFilled"
 
 const MoocLogoText = styled(Typography)(
   ({ theme }) => `
-  font-weight: 600;
-  font-size: 1.75rem !important;
-  letter-spacing: -0.75px;
-  ${theme.breakpoints.down("xs")} {
-    font-size: 1.5rem !important;
+  font-size: 1.575rem;
+  line-height: 24px;
+  font-weight: 700;
+  color: ${theme.palette.common.brand.nearlyBlack};
+  letter-spacing: -0.6px;
+  ${theme.breakpoints.down("md")} {
+    font-size: 1.5rem;
+    line-height: 20px;
   }
-  ${theme.breakpoints.down("xxs")} {
-    display: none !important;
+  ${theme.breakpoints.up("xl")} {
+    font-size: 1.625rem;
+    line-height: 30px;
+    letter-spacing: -0.8px;
   }
 `,
 )

@@ -109,4 +109,8 @@ export default {
   module: "Module",
   courseOtherLanguages: "Also available in",
   hy: "University of Helsinki",
+  openLanguageMenu: "Open language menu",
+  shortcuts: "Shortcuts",
+  createNewCourse: "Create a new course",
+  toMainMenu: "To main menu",
 } as const

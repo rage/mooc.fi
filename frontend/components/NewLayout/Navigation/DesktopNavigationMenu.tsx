@@ -10,11 +10,23 @@ import { useTranslator } from "/hooks/useTranslator"
 import { signOut } from "/lib/authentication"
 import CommonTranslations from "/translations/common"
 
-const NavigationRightContainer = styled("div")`
-  display: inline-grid;
-  gap: 4px;
-  grid-template-columns: repeat(3, auto);
+const NavigationRightContainer = styled("div")(
+  ({ theme }) => `
+  display: flex;
   justify-content: flex-end;
+  height: 100%;
+  ${theme.breakpoints.down("sm")} {
+    display: none;
+  }
+`,
+)
+
+const NavigationContainer = styled("div")`
+  display: flex;
+  margin: 0 32px;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
 `
 
 const UserOptionsMenu = () => {
@@ -53,11 +65,13 @@ const UserOptionsMenu = () => {
           {
             href: "/_new/profile",
             label: t("myProfile"),
-          },
-          {
-            href: "#",
-            label: t("logout"),
-            onClick: onLogOut,
+            items: [
+              {
+                href: "#",
+                label: t("logout"),
+                onClick: onLogOut,
+              },
+            ],
           },
         ]}
       />
@@ -86,12 +100,12 @@ interface DesktopNavigationMenuProps {
 
 const DesktopNavigationMenu = ({ items }: DesktopNavigationMenuProps) => {
   return (
-    <>
+    <NavigationContainer>
       <NavigationLinks items={items} />
       <NavigationRightContainer>
         <UserOptionsMenu />
       </NavigationRightContainer>
-    </>
+    </NavigationContainer>
   )
 }
 
