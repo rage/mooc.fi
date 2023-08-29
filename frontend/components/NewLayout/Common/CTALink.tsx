@@ -3,6 +3,7 @@ import { styled } from "@mui/material/styles"
 
 import ArrowLeft from "../Icons/ArrowLeft"
 import ArrowRight from "../Icons/ArrowRight"
+import { fontSize } from "/src/theme/util"
 
 const ctaLinkVariants = ["link-list", "default"] as const
 
@@ -10,8 +11,7 @@ export type CTALinkVariant = (typeof ctaLinkVariants)[number]
 
 const Link = styled(MUILink)(
   ({ theme }) => `
-  font-size: 16px;
-  line-height: 24px;
+  ${fontSize(16, 24)}
   font-weight: 600;
   align-items: center;
   color: ${theme.palette.common.brand.main};

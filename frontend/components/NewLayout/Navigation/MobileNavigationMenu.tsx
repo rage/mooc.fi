@@ -25,6 +25,7 @@ import RemoveIcon from "../Icons/Remove"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useTranslator } from "/hooks/useTranslator"
 import { signOut } from "/lib/authentication"
+import { fontSize } from "/src/theme/util"
 import CommonTranslations from "/translations/common"
 
 const MobileMenuContainer = styled("div")(
@@ -64,8 +65,7 @@ const MobileMenuButton = styled(ButtonBase)(
   text-transform: none;
 
   &[aria-expanded=true] {
-    font-size: 1rem;
-    line-height: 18px;
+    ${fontSize(16, 18)}
     font-weight: 700;
     align-items: center;
     background-color: transparent;
@@ -178,8 +178,7 @@ const MobileMenuListItem = styled("li", {
           : theme.palette.common.brand.main
       };
     }
-    font-size: 1.3125rem;
-    line-height: 28px;
+    ${fontSize(21, 28)}
     font-weight: 700;
     color: ${
       isActive
@@ -192,8 +191,7 @@ const MobileMenuListItem = styled("li", {
   }
 
   .submenu span {
-    font-size: 1rem;
-    line-height: 20px;
+    ${fontSize(16, 20)}
     font-weight: 600;
     align-items: center;
     display: flex;
@@ -264,8 +262,7 @@ const MobileMenuBreadcrumbs = styled("div")`
 const MobileMenuBreadcrumbButton = styled(ButtonBase)(
   ({ theme }) => `
   text-transform: none;
-  font-size: .9375rem;
-  line-height: 22px;
+  ${fontSize(15, 22)}
   color: ${theme.palette.common.brand.light};
   align-items: center;
   background-color: transparent;
@@ -298,8 +295,7 @@ const MobileMenuShortcutsContainer = styled("div")(
   margin-top: 24px;
 
   h2 {
-    font-size: 18px;
-    line-height: 24px;
+    ${fontSize(18, 24)}
     font-weight: 700;
     color: ${theme.palette.common.grayscale.black};
     letter-spacing: -0.32px;
@@ -319,8 +315,7 @@ const MobileMenuShortcutsList = styled("ul")`
 
 const MobileMenuShortcutsListItemButton = styled(ListItemButton)(
   ({ theme }) => `
-  font-size: 16px;
-  line-height: 20px;
+  ${fontSize(16, 20)}
   font-weight: 600;
   align-items: center;
   color: ${theme.palette.common.brand.main};

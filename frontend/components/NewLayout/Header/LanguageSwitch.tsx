@@ -18,6 +18,7 @@ import CaretDownIcon from "../Icons/CaretDown"
 import CaretUpIcon from "../Icons/CaretUp"
 import GlobeIcon from "../Icons/Globe"
 import { useTranslator } from "/hooks/useTranslator"
+import { fontSize } from "/src/theme/util"
 import { KeyOfTranslationDictionary } from "/translations"
 import CommonTranslations from "/translations/common"
 
@@ -88,8 +89,7 @@ const LanguageOption = styled(ListItem)(
 ) as EnhancedMenuItem
 
 const LanguageOptionLink = styled(Link)`
-  font-size: 1rem;
-  line-height: 24px;
+  ${fontSize(16, 24)}
   font-weight: 600;
   letter-spacing: -0.5px;
   margin: 0;
@@ -122,8 +122,7 @@ const LanguageSwitchToggle = styled(ButtonBase)(
   height: 100%;
   position: relative;
   font-weight: 700;
-  font-size: 1rem;
-  line-height: 16px;
+  ${fontSize(16, 16)}
 
   svg {
     fill: ${theme.palette.common.grayscale.white};
@@ -137,8 +136,7 @@ const LanguageSwitchToggle = styled(ButtonBase)(
     outline-offset: 2px;
   }
   ${theme.breakpoints.up("lg")} {
-    font-size: 0.75rem;
-    line-height: 24px;
+    ${fontSize(12, 24)}
     font-weight: 400;
     letter-spacing: -0.5px;
     grid-template-columns: repeat(3, auto);

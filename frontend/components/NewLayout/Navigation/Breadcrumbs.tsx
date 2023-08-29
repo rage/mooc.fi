@@ -6,6 +6,7 @@ import { styled } from "@mui/material/styles"
 import CaretRightIcon from "../Icons/CaretRight"
 import { Breadcrumb, useBreadcrumbContext } from "/contexts/BreadcrumbContext"
 import { useTranslator } from "/hooks/useTranslator"
+import { fontSize } from "/src/theme/util"
 import { isTranslationKey } from "/translations"
 import BreadcrumbsTranslations, {
   Breadcrumbs as BreadcrumbsTranslationType,
@@ -26,7 +27,7 @@ const BreadcrumbList = styled("ol")(
   list-style-type: none;
   padding: 20px 0 16px;
 
-  ${theme.breakpoints.down("sm")} {
+  ${theme.breakpoints.up("sm")} {
     padding: 24px 0 16px;
   }
 
@@ -41,15 +42,14 @@ interface BreadcrumbItemComponentProps {
 }
 const BreadcrumbItemComponent = styled("li")<BreadcrumbItemComponentProps>(
   ({ theme, isCurrent }) => `
-  font-size: 15px;
-  line-height: 20px;
+  ${fontSize(15, 20)}
   font-weight: 600;
   display: "flex";
   align-items: center;
   margin-bottom: 0.75rem;
   letter-spacing: -0.5px;
 
-  ${theme.breakpoints.down("sm")} {
+  ${theme.breakpoints.up("sm")} {
     margin-bottom: 1rem;
   }
 
