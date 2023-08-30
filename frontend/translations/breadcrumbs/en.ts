@@ -28,4 +28,5 @@ export default {
   signUp: "Sign up",
   home: "Home",
   installation: "Installation",
+  admin: "Admin",
 } as const
