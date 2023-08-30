@@ -1,19 +1,12 @@
-import { Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import Introduction from "../Common/Introduction"
 import CourseGrid from "./CourseGrid"
 import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/_new/courses"
 
 const Container = styled("section")`
-  display: grid;
-  justify-items: center;
-  margin: 0 auto;
-`
-
-const Header = styled(Typography)`
-  background: #f5f6f7;
-  padding: 1rem;
+  /**/
 `
 
 function Catalogue() {
@@ -21,7 +14,7 @@ function Catalogue() {
 
   return (
     <Container>
-      <Header variant="h2">{t("coursesHeader")}</Header>
+      <Introduction title={t("coursesHeader")} />
       <CourseGrid />
     </Container>
   )

@@ -18,21 +18,34 @@ const FooterDownPusherWrapper = styled("div")`
   justify-content: space-between;
 `
 
-const MainContent = styled("main")(
-  ({ theme }) => `
-  position: relative;
+const MainContainer = styled("main")`
   display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 1920px;
   margin: 0 auto;
-  padding: 0 1rem;
+  max-width: 1920px;
+  padding: 0;
+  width: 100%;
+  position: relative;
+`
+
+const LayoutContent = styled("div")(
+  ({ theme }) => `
+  padding: 0;
+  width: 100%;
+
   ${theme.breakpoints.up("sm")} {
+    margin: 0 auto;
+    width: 100%;
+  }
+  ${theme.breakpoints.up("lg")} {
+    flex-grow: 1;
+    order: 2;
+    width: 80%;
+  }
+  ${theme.breakpoints.up("xl")} {
     padding: 0 2rem;
   }
 `,
 )
-
 const Layout: React.FunctionComponent<React.PropsWithChildren> = ({
   children,
 }) => {
@@ -48,11 +61,13 @@ const Layout: React.FunctionComponent<React.PropsWithChildren> = ({
       <SkipLink />
       <FooterDownPusherWrapper>
         <Header />
-        <MainContent id="main">
-          {!isHomePage && <Breadcrumbs />}
-          <Alerts />
-          {children}
-        </MainContent>
+        <MainContainer id="main">
+          <LayoutContent>
+            {!isHomePage && <Breadcrumbs />}
+            <Alerts />
+            {children}
+          </LayoutContent>
+        </MainContainer>
         <Footer />
       </FooterDownPusherWrapper>
     </>

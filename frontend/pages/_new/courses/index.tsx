@@ -5,10 +5,6 @@ import { styled } from "@mui/material/styles"
 import Catalogue from "/components/NewLayout/Courses/Catalogue"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
-const Container = styled("div")`
-  position: relative;
-`
-
 /*
   secret project gray palette
   F5F6F7
@@ -20,16 +16,18 @@ const Container = styled("div")`
   BEC3C7
 */
 
-const Background = styled("div")`
+const Background = styled("div")(
+  ({ theme }) => `
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   z-index: -1;
-  background: #f5f6f7;
+  background-color: ${theme.palette.common.grayscale.slightlyGray};
   background-image: url(${backgroundPattern.src});
-`
+`,
+)
 
 function Courses() {
   useBreadcrumbs([
@@ -40,10 +38,10 @@ function Courses() {
   ])
 
   return (
-    <Container>
+    <>
       <Background />
       <Catalogue />
-    </Container>
+    </>
   )
 }
 

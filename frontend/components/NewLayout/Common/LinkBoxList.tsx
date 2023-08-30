@@ -7,10 +7,6 @@ const linkBoxListVariants = ["default", "wide"] as const
 
 export type LinkBoxListVariant = (typeof linkBoxListVariants)[number]
 
-const LinkBoxListContainer = styled("div")`
-  display: block;
-`
-
 const LinkBoxListComponent = styled("ul")(
   ({ theme }) => `
   padding: 0;
@@ -63,7 +59,7 @@ const LinkBoxList = ({
   variant = "default",
   LinkBoxProps,
 }: LinkBoxListProps) => (
-  <LinkBoxListContainer>
+  <>
     <LinkBoxListComponent className={variant === "wide" ? "wide" : undefined}>
       {items.map((item) => (
         <li key={item.linkProps.href as string}>
@@ -72,7 +68,7 @@ const LinkBoxList = ({
       ))}
     </LinkBoxListComponent>
     <Spacer />
-  </LinkBoxListContainer>
+  </>
 )
 
 export default LinkBoxList

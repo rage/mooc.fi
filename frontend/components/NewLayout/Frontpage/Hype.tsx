@@ -1,5 +1,6 @@
 import { useMemo } from "react"
 
+import ContentWrapper from "../Common/ContentWrapper"
 import { LinkBoxProps } from "../Common/LinkBox"
 import LinkBoxList from "../Common/LinkBoxList"
 // import PartnerDivider from "/components/NewLayout/Common/PartnerDivider"
@@ -75,7 +76,7 @@ function Hype() {
   )*/
 
   return (
-    <>
+    <ContentWrapper>
       <LinkBoxList items={listItems} />
       {/*customListItems.length > 0 && (
         <>
@@ -91,7 +92,7 @@ function Hype() {
           />
         </>
           )*/}
-    </>
+    </ContentWrapper>
   )
 }
 

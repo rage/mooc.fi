@@ -3,6 +3,7 @@ import { useRouter } from "next/router"
 import { Link, Skeleton } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import ContentWrapper from "../Common/ContentWrapper"
 import CaretRightIcon from "../Icons/CaretRight"
 import { Breadcrumb, useBreadcrumbContext } from "/contexts/BreadcrumbContext"
 import { useTranslator } from "/hooks/useTranslator"
@@ -106,24 +107,25 @@ const Breadcrumbs = () => {
     return null
   }
 
-  console.log("breadcrumbs", breadcrumbs)
   return (
-    <BreadcrumbContainer
-      role="navigation"
-      aria-labelledby="system-breadcrumb"
-      aria-label="breadcrumb"
-    >
-      <BreadcrumbList>
-        <BreadcrumbItem translation="home" href="/_new" key="home" />
-        {breadcrumbs.map((breadcrumb, index) => (
-          <BreadcrumbItem
-            key={breadcrumb.href ?? breadcrumb.label ?? `breadcrumb-${index}`}
-            isCurrent={index === breadcrumbs.length - 1}
-            {...breadcrumb}
-          />
-        ))}
-      </BreadcrumbList>
-    </BreadcrumbContainer>
+    <ContentWrapper>
+      <BreadcrumbContainer
+        role="navigation"
+        aria-labelledby="system-breadcrumb"
+        aria-label="breadcrumb"
+      >
+        <BreadcrumbList>
+          <BreadcrumbItem translation="home" href="/_new" key="home" />
+          {breadcrumbs.map((breadcrumb, index) => (
+            <BreadcrumbItem
+              key={breadcrumb.href ?? breadcrumb.label ?? `breadcrumb-${index}`}
+              isCurrent={index === breadcrumbs.length - 1}
+              {...breadcrumb}
+            />
+          ))}
+        </BreadcrumbList>
+      </BreadcrumbContainer>
+    </ContentWrapper>
   )
 }
 
