@@ -135,10 +135,10 @@ const CourseTitleBadgeContainer = styled("div")`
   align-items: center;
 `
 
-const CourseInfoValue = styled("div")`
+const CourseInfoValue = styled(Typography)`
   display: flex;
   justify-content: flex-end;
-`
+` as typeof Typography
 
 const CreateCourseIconContainer = styled("div")`
   display: flex;
@@ -160,12 +160,8 @@ const CourseInfo = ({
 }: React.HTMLAttributes<HTMLLIElement> &
   PropsWithChildren<CourseInfoProps>) => (
   <CourseInfoLine {...props}>
-    {field && (
-      <CourseInfoField variant="h4" component="h3">
-        {field}
-      </CourseInfoField>
-    )}
-    {value && <CourseInfoValue>{value}</CourseInfoValue>}
+    {field && <CourseInfoField variant="subtitle2">{field}</CourseInfoField>}
+    {value && <CourseInfoValue variant="body2">{value}</CourseInfoValue>}
     {children}
   </CourseInfoLine>
 )

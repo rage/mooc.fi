@@ -192,7 +192,7 @@ export const withComponents = (theme: Theme) =>
           },
           textPrimary: {
             backgroundColor: theme.palette.common.brand.main,
-            color: theme.palette.common.grayscale.white,
+            color: `${theme.palette.common.grayscale.white} !important`,
             ".MuiButton-startIcon": {
               padding: "8px 13px",
               fill: theme.palette.common.grayscale.white,
@@ -231,7 +231,7 @@ export const withComponents = (theme: Theme) =>
           textSecondary: {
             backgroundColor: "transparent",
             border: `solid 2px ${theme.palette.common.brand.main}`,
-            color: theme.palette.common.brand.main,
+            color: `${theme.palette.common.brand.main} !important`,
             boxShadow: "none",
             ".MuiButton-startIcon": {
               fill: theme.palette.common.brand.main,
@@ -244,7 +244,7 @@ export const withComponents = (theme: Theme) =>
             },
             "&:hover": {
               border: `solid 2px ${theme.palette.common.brand.active}`,
-              color: theme.palette.common.brand.active,
+              color: `${theme.palette.common.brand.active} !important`,
               svg: {
                 fill: theme.palette.common.brand.active,
               },

@@ -41,7 +41,7 @@ const CourseImage = React.memo((props: CourseImageProps) => {
         />
       ) : (
         <PlaceholderComponent>
-          <Typography variant="h3">no image</Typography>
+          <Typography variant="caption">no image</Typography>
         </PlaceholderComponent>
       )}
     </>
