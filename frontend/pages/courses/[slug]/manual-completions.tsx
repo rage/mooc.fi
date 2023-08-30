@@ -206,7 +206,7 @@ const ManualCompletions = () => {
     }
   }
 
-  if (courseError) {
+  if (courseError || (!courseLoading && !courseData?.course)) {
     return <div>Could not find course</div>
   }
   if (courseLoading) {
