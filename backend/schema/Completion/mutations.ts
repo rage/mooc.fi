@@ -55,18 +55,30 @@ export const CompletionMutations = extendType({
       type: "Completion",
       args: {
         completions: list(nonNull(arg({ type: "ManualCompletionArg" }))),
-        course_id: nonNull(stringArg()),
+        course_id: idArg(),
+        course_slug: stringArg(),
+      },
+      validate: (_, { course_id, course_slug }) => {
+        if (!course_id && !course_slug) {
+          throw new GraphQLUserInputError(
+            "must provide course_id or course_slug",
+            ["course_id", "course_slug"],
+          )
+        }
       },
       authorize: isAdmin,
       resolve: async (_, args, ctx) => {
-        const { course_id } = args
+        const { course_id, course_slug } = args
 
         const course = await ctx.prisma.course.findUnique({
-          where: { id: course_id },
+          where: { id: course_id ?? undefined, slug: course_slug ?? undefined },
         })
 
         if (!course) {
-          throw new GraphQLUserInputError("course not found", "course_id")
+          throw new GraphQLUserInputError("course not found", [
+            "course_id",
+            "course_slug",
+          ])
         }
         const completions = (args.completions ?? []).filter(isDefined)
 
@@ -113,7 +125,7 @@ export const CompletionMutations = extendType({
             student_number:
               databaseUser.real_student_number || databaseUser.student_number,
             completion_language: null,
-            course_id: course.completions_handled_by_id ?? course_id,
+            course_id: course.completions_handled_by_id ?? course.id,
             user_id: databaseUser.id ?? null,
             grade: o.grade ?? null,
             completion_date: o.completion_date ?? null,

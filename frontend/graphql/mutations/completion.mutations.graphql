@@ -16,10 +16,11 @@ mutation RecheckCompletions($slug: String) {
 }
 
 mutation AddManualCompletion(
-  $course_id: String!
+  $course_id: ID
+  $course_slug: String
   $completions: [ManualCompletionArg!]
 ) {
-  addManualCompletion(course_id: $course_id, completions: $completions) {
+  addManualCompletion(course_id: $course_id, course_slug: $course_slug, completions: $completions) {
     ...CompletionCoreFields
     user {
       ...UserCoreFields

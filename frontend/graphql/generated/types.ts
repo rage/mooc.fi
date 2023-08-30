@@ -11,7 +11,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
-// Generated on 2023-07-31T17:43:32+03:00
+// Generated on 2023-08-30T10:42:08+03:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -1995,7 +1995,8 @@ export type MutationaddImageArgs = {
 
 export type MutationaddManualCompletionArgs = {
   completions?: InputMaybe<Array<ManualCompletionArg>>;
-  course_id: Scalars['String']['input'];
+  course_id?: InputMaybe<Scalars['ID']['input']>;
+  course_slug?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -5059,7 +5060,8 @@ export type RecheckCompletionsMutationVariables = Exact<{
 export type RecheckCompletionsMutation = { __typename?: 'Mutation', recheckCompletions: string | null };
 
 export type AddManualCompletionMutationVariables = Exact<{
-  course_id: Scalars['String']['input'];
+  course_id?: InputMaybe<Scalars['ID']['input']>;
+  course_slug?: InputMaybe<Scalars['String']['input']>;
   completions?: InputMaybe<Array<ManualCompletionArg> | ManualCompletionArg>;
 }>;
 
