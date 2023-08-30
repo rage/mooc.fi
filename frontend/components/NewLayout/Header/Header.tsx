@@ -146,7 +146,7 @@ function Header() {
         elevation={0}
       >
         <HyToolbar>
-          <HyLogoLink href={hyUrl}>
+          <HyLogoLink href={hyUrl} target="_blank">
             <HyLogo />
             <HyLabel>{t("hy")}</HyLabel>
           </HyLogoLink>

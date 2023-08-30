@@ -4,8 +4,8 @@ import { useRouter } from "next/router"
 
 import { styled } from "@mui/material/styles"
 
-import Footer from "/components/Footer"
 import Alerts from "/components/HeaderBar/Alerts"
+import Footer from "/components/NewLayout/Footer"
 import Header from "/components/NewLayout/Header"
 import Breadcrumbs from "/components/NewLayout/Navigation/Breadcrumbs"
 import PageLoadingIndicators from "/components/PageLoadingIndicators"
