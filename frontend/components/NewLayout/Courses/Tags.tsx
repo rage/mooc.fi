@@ -1,8 +1,8 @@
 import React from "react"
 
 import { PropsOf } from "@emotion/react"
-import CircleIcon from "@mui/icons-material/Circle"
-import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined"
+// import CircleIcon from "@mui/icons-material/Circle"
+// import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined"
 import { Chip } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
@@ -14,6 +14,7 @@ import {
 } from "./common"
 import { InfoTooltip } from "/components/Tooltip"
 import { useTranslator } from "/hooks/useTranslator"
+import { fontSize } from "/src/theme/util"
 import CommonTranslations from "/translations/common"
 import { isDefinedAndNotEmpty } from "/util/guards"
 
@@ -22,65 +23,36 @@ import {
   TagCoreFieldsFragment,
 } from "/graphql/generated"
 
-const Tag = styled(Chip)`
-  border-radius: 2rem;
+const Tag = styled(Chip)(
+  ({ theme }) => `
+  display: inline-block;
+  color: ${theme.palette.common.grayscale.white} !important;
+  ${fontSize(12, 14)}
+  padding: 4px 6px;
+  font-weight: 700;
+  letter-spacing: -0.1px;
   background-color: ${tagColorSchemes["other"]} !important;
   border-color: ${tagColorSchemes["other"]} !important;
-  color: #fff !important;
-  font-weight: bold;
   text-transform: uppercase;
-`
-
-const TagsContainer = styled("div")`
-  display: flex;
-  flex-shrink: 1;
-  margin-bottom: auto;
-  padding: 0;
-  gap: 0.2rem;
-  justify-content: flex-end;
-`
-
-export const LanguageTagsContainer = styled(TagsContainer)`
-  display: flex;
-  margin: 0 0 auto;
-  flex-shrink: 1;
-`
-
-export const DifficultyTagsContainer = styled(TagsContainer)`
-  display: flex;
-  margin: 0 0 auto;
-  flex-shrink: 1;
-  justify-content: flex-start;
-`
-
-export const ModuleTagsContainer = styled(TagsContainer)`
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  flex-flow: wrap;
-  margin: 0 auto;
-  flex-grow: 2;
-  flex-shrink: 0;
-  flex-basis: 50%;
-`
+  border-radius: 0;
+`,
+)
 
 const LanguageTagBase = styled(Tag)`
   background-color: ${tagColorSchemes["language"]} !important;
   border-color: ${tagColorSchemes["language"]} !important;
-  border-radius: 3rem;
   min-width: 40px;
   max-height: 40px;
 
   .MuiChip-label {
     text-transform: uppercase;
-  }
-`
+    display: flex;
 
-const TagWithTooltip = styled("div")`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.5rem;
+    svg {
+      margin-left: 0.5rem;
+      font-size: 1rem;
+    }
+  }
 `
 
 export const LanguageTag = ({
@@ -97,7 +69,7 @@ export const LanguageTag = ({
     <LanguageTagBase
       {...props}
       label={
-        <TagWithTooltip>
+        <>
           {props.label}
           <InfoTooltip
             label={t("courseOtherLanguages")}
@@ -114,7 +86,7 @@ export const LanguageTag = ({
               fontSize: "small",
             }}
           />
-        </TagWithTooltip>
+        </>
       }
     />
   )
@@ -173,7 +145,7 @@ export const DifficultyTag = ({
 }: PropsOf<typeof Tag> & { difficulty: string }) => (
   <DifficultyTagContainer>
     <DifficultyTagBase {...props}></DifficultyTagBase>
-    <CircleContainer>
+    {/*<CircleContainer>
       <StyledCircleIcon />
       {difficulty !== "beginner" ? (
         <StyledCircleIcon />
@@ -185,7 +157,7 @@ export const DifficultyTag = ({
       ) : (
         <StyledCircleOutlinedIcon />
       )}
-    </CircleContainer>
+      </CircleContainer>*/}
   </DifficultyTagContainer>
 )
 
@@ -240,7 +212,7 @@ export const ModuleTags = React.memo(({ course, abbreviated }: TagsProps) => (
   </>
 ))
 
-const CircleContainer = styled("div")(
+/*const CircleContainer = styled("div")(
   ({ theme }) => `
   ${theme.breakpoints.down("sm")} {
     display: none;
@@ -255,3 +227,4 @@ const StyledCircleIcon = styled(CircleIcon)`
 const StyledCircleOutlinedIcon = styled(CircleOutlinedIcon)`
   max-width: 15px;
 `
+*/

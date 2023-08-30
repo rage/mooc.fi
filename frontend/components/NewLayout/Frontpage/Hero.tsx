@@ -183,20 +183,22 @@ const Title = styled(Typography)(
   max-width: 100%;
   width: auto;
 
-  ${fontSize(32, 38)}
-  font-weight: 700;
-  color: ${theme.palette.common.grayscale.black};
-  letter-spacing: -0.8px;
-  margin-bottom: 0;
-  text-transform: uppercase;
+  &.MuiTypography-h2 {
+    ${fontSize(32, 38)}
+    font-weight: 700;
+    color: ${theme.palette.common.grayscale.black};
+    letter-spacing: -0.8px;
+    margin-bottom: 0;
+    text-transform: uppercase;
 
-  ${theme.breakpoints.up("desktop")} {
-    ${fontSize(46, 54)}
-    letter-spacing: -1.15px;
-  }
-  ${theme.breakpoints.up("xl")} {
-    ${fontSize(52, 60)}
-    letter-spacing: -1.5px;
+    ${theme.breakpoints.up("desktop")} {
+      ${fontSize(46, 54)}
+      letter-spacing: -1.15px;
+    }
+    ${theme.breakpoints.up("xl")} {
+      ${fontSize(52, 60)}
+      letter-spacing: -1.5px;
+    }
   }
 `,
 )

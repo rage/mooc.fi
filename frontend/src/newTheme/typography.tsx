@@ -1,11 +1,30 @@
+import { CSSProperties } from "react"
+
 import { createTheme, responsiveFontSizes, Theme } from "@mui/material/styles"
 
+import { themeFontSize } from "../theme/util"
 import { bodyFont, headerFont } from "./fonts"
 
 export const fontVariableClass = `${headerFont.variable} ${bodyFont.variable}`
 export const bodyFontDeclaration = bodyFont.style
 
 export const withTypography = (theme: Theme) => {
+  const commonHeadingStyles: CSSProperties = {
+    color: theme.palette.common.brand.nearlyBlack,
+    margin: 0,
+    width: "100%",
+    fontWeight: 700,
+    fontFamily: headerFont.style.fontFamily,
+    padding: "1.5rem 0 1rem",
+    display: "flex",
+    flexGrow: "1",
+    flexShrink: "0",
+    maxWidth: "100%",
+
+    [theme.breakpoints.up("xs")]: {
+      padding: "2rem 0 1rem",
+    },
+  }
   const typography: Theme["typography"] = {
     ...theme.typography,
     fontFamily: bodyFont.style.fontFamily,
@@ -15,52 +34,56 @@ export const withTypography = (theme: Theme) => {
       },
     },
     h1: {
-      paddingBottom: "1rem",
-      fontSize: "4.5rem",
-      fontFamily: headerFont.style.fontFamily,
-      fontWeight: 700,
-      letterSpacing: "-1.75px",
-      lineHeight: 1.167,
+      ...themeFontSize(46, 54),
+      ...commonHeadingStyles,
+      letterSpacing: "-1.15px",
       textTransform: "uppercase",
+      [theme.breakpoints.down("xs")]: {
+        letterSpacing: "-0.8px",
+      },
+      [theme.breakpoints.up("xl")]: {
+        letterSpacing: "-1.3px",
+      },
     },
     h2: {
-      paddingBottom: "1rem",
-      fontFamily: headerFont.style.fontFamily,
-      fontSize: "3.25rem",
-      fontWeight: 700,
-      letterSpacing: "-1.5px",
-      lineHeight: 1.154,
-      textTransform: "uppercase",
+      ...themeFontSize(30, 36),
+      ...commonHeadingStyles,
+      letterSpacing: "-0.6px",
+      [theme.breakpoints.down("xs")]: {
+        letterSpacing: "-0.52px",
+      },
     },
     h3: {
-      paddingBottom: "0.5rem",
-      paddingTop: "0.7rem",
-      fontFamily: headerFont.style.fontFamily,
-      fontSize: "2.875rem",
-      fontWeight: 700,
-      letterSpacing: "-1.15px",
-      lineHeight: 1.174,
-      textTransform: "uppercase",
+      ...themeFontSize(26, 32),
+      ...commonHeadingStyles,
+      letterSpacing: "-0.8px",
+      [theme.breakpoints.down("xs")]: {
+        letterSpacing: "-0.7px",
+      },
     },
     h4: {
-      fontFamily: headerFont.style.fontFamily,
-      fontSize: "2rem",
-      fontWeight: 700,
-      letterSpacing: "-0.8px",
-      textTransform: "uppercase",
+      ...themeFontSize(22, 28),
+      ...commonHeadingStyles,
+      letterSpacing: "-0.69px",
+      [theme.breakpoints.down("xs")]: {
+        letterSpacing: "-0.56px",
+      },
     },
     h5: {
-      fontFamily: headerFont.style.fontFamily,
-      fontSize: "1.25rem",
-      fontWeight: 700,
-      textTransform: "uppercase",
+      ...themeFontSize(18, 24),
+      ...commonHeadingStyles,
+      letterSpacing: "-0.56px",
+      [theme.breakpoints.down("xs")]: {
+        letterSpacing: "-0.5px",
+      },
     },
     h6: {
-      fontFamily: headerFont.style.fontFamily,
-      fontSize: "1rem",
-      fontWeight: 700,
-      lineHeight: 1.5,
-      textTransform: "uppercase",
+      ...themeFontSize(16, 20),
+      ...commonHeadingStyles,
+      letterSpacing: "-0.5px",
+      [theme.breakpoints.down("xs")]: {
+        letterSpacing: "-0.44px",
+      },
     },
     subtitle1: {
       fontFamily: headerFont.style.fontFamily,

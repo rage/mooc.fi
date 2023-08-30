@@ -2,7 +2,7 @@ import { useMemo } from "react"
 
 import { LinkBoxProps } from "../Common/LinkBox"
 import LinkBoxList from "../Common/LinkBoxList"
-import PartnerDivider from "/components/NewLayout/Common/PartnerDivider"
+// import PartnerDivider from "/components/NewLayout/Common/PartnerDivider"
 import { useTranslator } from "/hooks/useTranslator"
 import NaviTranslations from "/translations/navi"
 
@@ -14,7 +14,7 @@ type NaviItem = {
   link: string
 }
 
-type CustomNaviItem = {
+/*type CustomNaviItem = {
   title: string
   text: string
   linkText: string
@@ -23,13 +23,13 @@ type CustomNaviItem = {
   link: string
   titleImg?: string
   titleImgDimensions?: { width: number; height: number }
-}
+}*/
 
 function Hype() {
   const t = useTranslator(NaviTranslations)
 
   const items = t("naviItems") as readonly NaviItem[]
-  const customItems = t("customNaviItems") as readonly CustomNaviItem[]
+  //const customItems = t("customNaviItems") as readonly CustomNaviItem[]
 
   const listItems: Array<LinkBoxProps> = useMemo(
     () =>
@@ -49,7 +49,7 @@ function Hype() {
     [items],
   )
 
-  const customListItems: Array<LinkBoxProps> = useMemo(
+  /*const customListItems: Array<LinkBoxProps> = useMemo(
     () =>
       customItems.map(
         ({ title, text, titleImg, titleImgDimensions, link, linkText }) => ({
@@ -72,12 +72,12 @@ function Hype() {
         }),
       ),
     [customItems],
-  )
+  )*/
 
   return (
     <>
       <LinkBoxList items={listItems} />
-      {customListItems.length > 0 && (
+      {/*customListItems.length > 0 && (
         <>
           <PartnerDivider />
           <LinkBoxList
@@ -90,7 +90,7 @@ function Hype() {
             }}
           />
         </>
-      )}
+          )*/}
     </>
   )
 }

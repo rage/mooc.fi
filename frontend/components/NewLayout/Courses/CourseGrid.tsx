@@ -87,6 +87,7 @@ const Container = styled("div")(
 const CardsContainer = styled("ul")(
   ({ theme }) => `
   list-style: none;
+  margin: 40px 0;
   padding: 0;
   display: grid;
   grid-gap: 1.5rem;
@@ -97,6 +98,10 @@ const CardsContainer = styled("ul")(
   ${theme.breakpoints.down("lg")} {
     grid-template-columns: 1fr;
     grid-gap: 2rem;
+  }
+
+  ${theme.breakpoints.down("sm")} {
+    margin: 20px 0;
   }
 `,
 )

@@ -7,3 +7,10 @@ export const fontSize = (fontSize: number, lineHeight?: number) => {
     ${lineHeight ? `line-height: ${lineHeight / fontSize};` : ""}
   `
 }
+
+export const themeFontSize = (fontSize: number, lineHeight?: number) => {
+  return {
+    fontSize: rem(fontSize),
+    ...(lineHeight ? { lineHeight: lineHeight / fontSize } : {}),
+  }
+}

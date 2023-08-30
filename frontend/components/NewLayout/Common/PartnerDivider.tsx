@@ -16,7 +16,7 @@ const PartnerDividerText = styled("span")(
   margin: 0 auto;
   background-color: ${theme.palette.common.grayscale.white};
   padding: 0 0.5rem;
-  z-index: 100;
+  z-index: 10;
   left: 50%;
   right: 50%;
 `,
