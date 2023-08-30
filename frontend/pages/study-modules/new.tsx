@@ -8,6 +8,7 @@ import { WideContainer } from "/components/Container"
 import FormSkeleton from "/components/Dashboard/EditorLegacy/FormSkeleton"
 import { H1NoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import useIsNew from "/hooks/useIsNew"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
@@ -28,16 +29,19 @@ const LegacyStudyModuleEdit = dynamic(
 
 const NewStudyModule = () => {
   const t = useTranslator(StudyModulesTranslations)
+  const isNew = useIsNew()
+  const baseUrl = isNew ? "/_new/admin" : ""
+
   const legacy = useQueryParameter("legacy", { enforce: false })
 
   useBreadcrumbs([
     {
       translation: "studyModules",
-      href: "/study-modules",
+      href: `${baseUrl}/study-modules`,
     },
     {
       translation: "studyModuleNew",
-      href: `/study-modules/new`,
+      href: `${baseUrl}/study-modules/new`,
     },
   ])
 

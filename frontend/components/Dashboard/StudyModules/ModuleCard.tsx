@@ -15,6 +15,7 @@ import { css, styled } from "@mui/material/styles"
 import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import LoaderImage from "/components/LoaderImage"
 import { ClickableDiv } from "/components/Surfaces/ClickableCard"
+import useIsNew from "/hooks/useIsNew"
 import { useTranslator } from "/hooks/useTranslator"
 import StudyModulesTranslations from "/translations/study-modules"
 
@@ -117,6 +118,8 @@ interface ModuleCardProps {
 
 function ModuleCard({ studyModule, image, loading }: ModuleCardProps) {
   const t = useTranslator(StudyModulesTranslations)
+  const isNew = useIsNew()
+  const baseUrl = isNew ? "/_new/admin" : ""
   const moduleFound = !loading && studyModule
   const moduleNotFound = !loading && !studyModule
 
@@ -162,7 +165,7 @@ function ModuleCard({ studyModule, image, loading }: ModuleCardProps) {
           )}
           {moduleFound && (
             <ModuleButton
-              href={`/study-modules/${studyModule.slug}/edit`}
+              href={`${baseUrl}/study-modules/${studyModule.slug}/edit`}
               aria-label={t("editStudyModule")}
               variant="text"
               color="secondary"
@@ -173,7 +176,7 @@ function ModuleCard({ studyModule, image, loading }: ModuleCardProps) {
           )}
           {moduleNotFound && (
             <ModuleButton
-              href="/study-modules/new"
+              href={`${baseUrl}/study-modules/new`}
               aria-label={t("newStudyModule")}
               variant="text"
               color="secondary"

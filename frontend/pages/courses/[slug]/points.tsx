@@ -10,6 +10,7 @@ import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import Spinner from "/components/Spinner"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import useIsNew from "/hooks/useIsNew"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
@@ -19,6 +20,8 @@ import { CourseFromSlugDocument } from "/graphql/generated"
 
 const Points = () => {
   const t = useTranslator(CoursesTranslations)
+  const isNew = useIsNew()
+  const baseUrl = isNew ? "/_new/admin" : ""
 
   const slug = useQueryParameter("slug")
 
@@ -29,15 +32,15 @@ const Points = () => {
   useBreadcrumbs([
     {
       translation: "courses",
-      href: `/courses`,
+      href: `${baseUrl}/courses`,
     },
     {
       label: data?.course?.name,
-      href: `/courses/${slug}`,
+      href: `${baseUrl}/courses/${slug}`,
     },
     {
       translation: "coursePoints",
-      href: `/courses/${slug}/points`,
+      href: `${baseUrl}/courses/${slug}/points`,
     },
   ])
   const title = data?.course?.name ?? "..."

@@ -15,6 +15,7 @@ import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1Background } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useEditorCourses } from "/hooks/useEditorCourses"
+import useIsNew from "/hooks/useIsNew"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
@@ -38,6 +39,8 @@ const LegacyCourseEdit = dynamic(
 
 const EditCourse = () => {
   const t = useTranslator(CoursesTranslations)
+  const isNew = useIsNew()
+  const baseUrl = isNew ? "/_new/admin" : ""
   const slug = useQueryParameter("slug") ?? ""
   const legacy = useQueryParameter("legacy", { enforce: false })
   const router = useRouter()
@@ -55,7 +58,7 @@ const EditCourse = () => {
 
     if (!loading && !course) {
       redirectTimeout = setTimeout(
-        () => router.push("/courses", undefined, { shallow: true }),
+        () => router.push(`${baseUrl}/courses`, undefined, { shallow: true }),
         5000,
       )
     }
@@ -70,15 +73,15 @@ const EditCourse = () => {
   useBreadcrumbs([
     {
       translation: "courses",
-      href: `/courses`,
+      href: `${baseUrl}/courses`,
     },
     {
       label: error || (!loading && !course) ? slug : course?.name,
-      href: `/courses/${slug}`,
+      href: `${baseUrl}/courses/${slug}`,
     },
     {
       translation: "courseEdit",
-      href: `/courses/${slug}/edit`,
+      href: `${baseUrl}/courses/${slug}/edit`,
     },
   ])
 

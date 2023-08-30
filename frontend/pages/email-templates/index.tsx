@@ -9,6 +9,7 @@ import Spinner from "/components/Spinner"
 import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
 import { H1Background } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import useIsNew from "/hooks/useIsNew"
 import withAdmin from "/lib/with-admin"
 
 import { EmailTemplatesDocument } from "/graphql/generated"
@@ -36,12 +37,14 @@ const TemplateListItem = styled("li")`
 `
 
 const EmailTemplates = (admin: boolean) => {
+  const isNew = useIsNew()
+  const baseUrl = isNew ? "/_new/admin" : ""
   const { loading, error, data } = useQuery(EmailTemplatesDocument)
 
   useBreadcrumbs([
     {
       translation: "emailTemplates",
-      href: `/email-templates`,
+      href: `${baseUrl}/email-templates`,
     },
   ])
 
@@ -75,7 +78,7 @@ const EmailTemplates = (admin: boolean) => {
             return (
               <TemplateListItem key={p.id}>
                 <CardBackground
-                  href={`/email-templates/${p.id}`}
+                  href={`${baseUrl}/email-templates/${p.id}`}
                   prefetch={false}
                   passHref
                 >

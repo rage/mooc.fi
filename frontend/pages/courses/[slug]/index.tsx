@@ -21,6 +21,7 @@ import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import Spinner from "/components/Spinner"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import useIsNew from "/hooks/useIsNew"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
@@ -50,6 +51,8 @@ const Row = styled(Paper)`
 `
 
 const Course = () => {
+  const isNew = useIsNew()
+  const baseUrl = isNew ? "/_new/admin" : ""
   const slug = useQueryParameter("slug")
   const t = useTranslator(CoursesTranslations)
   const confirm = useConfirm()
@@ -71,11 +74,11 @@ const Course = () => {
   useBreadcrumbs([
     {
       translation: "courses",
-      href: `/courses`,
+      href: `${baseUrl}/courses`,
     },
     {
       label: data?.course?.name,
-      href: `/courses/${slug}`,
+      href: `${baseUrl}/courses/${slug}`,
     },
   ])
   const title = data?.course?.name ?? "..."
@@ -176,7 +179,7 @@ const Course = () => {
           <Row>
             {data.course?.completion_email != null ? (
               <Link
-                href={`/email-templates/${data.course.completion_email?.id}`}
+                href={`${baseUrl}/email-templates/${data.course.completion_email?.id}`}
                 prefetch={false}
                 passHref
               >
@@ -194,7 +197,7 @@ const Course = () => {
             {data.course?.course_stats_email !== null ? (
               <>
                 <Link
-                  href={`/email-templates/${data.course.course_stats_email?.id}`}
+                  href={`${baseUrl}/email-templates/${data.course.course_stats_email?.id}`}
                   prefetch={false}
                   passHref
                 >

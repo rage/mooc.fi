@@ -23,6 +23,7 @@ import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import useIsNew from "/hooks/useIsNew"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import withAdmin from "/lib/with-admin"
 
@@ -47,6 +48,8 @@ interface CompletionData {
 }
 
 const ManualCompletions = () => {
+  const isNew = useIsNew()
+  const baseUrl = isNew ? "/_new/admin" : ""
   const { locale } = useRouter()
   const confirm = useConfirm()
   const [submitting, setSubmitting] = useState(false)
@@ -78,15 +81,15 @@ const ManualCompletions = () => {
   useBreadcrumbs([
     {
       translation: "courses",
-      href: `/courses`,
+      href: `${baseUrl}/courses`,
     },
     {
       label: courseData?.course?.name,
-      href: `/courses/${slug}`,
+      href: `${baseUrl}/courses/${slug}`,
     },
     {
       translation: "courseManualCompletions",
-      href: `/courses/${slug}/manual-completions`,
+      href: `${baseUrl}/courses/${slug}/manual-completions`,
     },
   ])
   const title = courseData?.course?.name ?? "..."
