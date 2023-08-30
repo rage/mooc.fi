@@ -209,7 +209,6 @@ export const NavigationDropdownMenuLink = ({
   </NavigationDropdownMenuItem>
 )
 
-console.log(fontSize(18, 24))
 const NavigationDropdownShortcutContainer = styled("div")(
   ({ theme }) => `
   margin-left: 48px;
