@@ -15,7 +15,7 @@ export default {
       link: "https://www.helsinki.fi/fi/projektit/digital-education-for-all",
     },
     {
-      title: "Opeta kursseja omassa luokassasi.",
+      title: "Opeta kursseja omassa luokassasi",
       text: "Opettaja! Haluatko kurssimme luokkaasi omilla pistelistoillasi ja omalla aikataulullasi. Kaikkia kurssejamme saa käyttää osana omaa opetustaan. Katso lisää Opettajalle-sivulta!",
       linkText: "Opettajien sivut",
       img: "Opettajien.webp",

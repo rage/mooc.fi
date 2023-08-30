@@ -79,7 +79,6 @@ const LinkBoxTitleImageContainer = styled("div")`
 
 const LinkBoxTitleImage = styled(Image)`
   object-fit: contain;
-  position: absolute;
 `
 
 const LinkBoxTextContainer = styled("div")`
@@ -93,7 +92,6 @@ const LinkBoxTitle = styled(Typography)(
   color: ${theme.palette.common.brand.nearlyBlack};
   letter-spacing: -0.42px;
   hyphens: auto;
-  word-break: break-word;
   margin: 0 0 16px;
 
   ${theme.breakpoints.up("desktop")} {

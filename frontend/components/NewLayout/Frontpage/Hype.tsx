@@ -2,7 +2,7 @@ import { useMemo } from "react"
 
 import { LinkBoxProps } from "../Common/LinkBox"
 import LinkBoxList from "../Common/LinkBoxList"
-import PartnerDivider from "/components/PartnerDivider"
+import PartnerDivider from "/components/NewLayout/Common/PartnerDivider"
 import { useTranslator } from "/hooks/useTranslator"
 import NaviTranslations from "/translations/navi"
 
@@ -79,16 +79,7 @@ function Hype() {
       <LinkBoxList items={listItems} />
       {customListItems.length > 0 && (
         <>
-          <PartnerDivider
-            sx={{
-              h4: {
-                fontSize: "0.875rem",
-                color: "#888",
-              },
-              marginBottom: "0.5rem",
-              paddingLeft: "0",
-            }}
-          />
+          <PartnerDivider />
           <LinkBoxList
             items={customListItems}
             variant="wide"
