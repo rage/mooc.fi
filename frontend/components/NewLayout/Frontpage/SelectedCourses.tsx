@@ -80,11 +80,10 @@ const CourseCard = ({
 export const CoursesGrid = styled("div")(
   ({ theme }) => `
   display: grid;
-  grid-gap: 1rem;
+  grid-gap: 2rem;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  padding: 2rem;
-  justify-content: center;
-  width: 80%;
+  width: 100%;
+  margin-bottom: 2rem;
 
   ${theme.breakpoints.down("sm")} {
     padding: 0;
@@ -105,12 +104,14 @@ function SelectedCourses() {
 
   return (
     <SectionContainer id="courses">
-      <SectionTitle>{t("popularCoursesTitle")}</SectionTitle>
+      <SectionTitle sx={{ marginBottom: "2rem" }}>
+        {t("popularCoursesTitle")}
+      </SectionTitle>
       {loading && <p>Loading...</p>}
       <CoursesGrid>
         {data?.courses &&
           data.courses
-            .slice(0, 3)
+            .slice(0, 4)
             .map((course) => (
               <CommonCourseCard key={course.id} course={course} />
             ))}

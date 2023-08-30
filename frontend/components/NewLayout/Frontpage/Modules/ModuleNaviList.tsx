@@ -8,8 +8,6 @@ const Container = styled("nav")`
   display: flex;
   flex: 1;
   flex-direction: row;
-  align-items: center;
-  justify-content: center;
   width: 100%;
 `
 
@@ -20,9 +18,8 @@ const ModulesGrid = styled("ul")(
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(15vw, 1fr));
-  padding: 2rem;
   justify-content: center;
-  width: 80%;
+  padding: 0;
 
   ${theme.breakpoints.down("lg")} {
     grid-template-columns: repeat(auto-fit, minmax(30vw, 1fr));

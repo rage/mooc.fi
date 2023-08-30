@@ -9,9 +9,7 @@ import { ModuleNavigation } from "/components/NewLayout/Frontpage/Modules"
 import SelectedCourses from "/components/NewLayout/Frontpage/SelectedCourses"
 
 const HomeContainer = styled("div")`
-  * + * {
-    margin: 0;
-  }
+  /**/
 `
 
 const Home = () => {

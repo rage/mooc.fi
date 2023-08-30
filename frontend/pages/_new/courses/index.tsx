@@ -6,7 +6,6 @@ import Catalogue from "/components/NewLayout/Courses/Catalogue"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const Container = styled("div")`
-  margin: 0 auto;
   position: relative;
 `
 

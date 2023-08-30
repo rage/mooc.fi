@@ -66,7 +66,7 @@ const ModuleCardBody = styled("ul")`
   --_max: var(--max, 100%); /* cards cannot be wider than this size */
 
   list-style: none;
-  padding: 2rem 1rem;
+  padding: 2rem 1.5rem 2rem 1rem;
   display: grid;
   grid-template-columns: repeat(
     auto-fill,
@@ -122,9 +122,12 @@ const SkeletonBackground = styled("span")`
   background-color: #eee;
 `
 
-const CenteredHeader = styled(Typography)`
+const CenteredHeader = styled(Typography)(
+  ({ theme }) => `
   margin-bottom: 2rem;
-` as typeof Typography
+  color: ${theme.palette.common.grayscale.white}
+`,
+) as typeof Typography
 
 const EndedCoursesLinkContainer = styled("div")`
   padding: 0rem 1rem 1rem;
@@ -209,7 +212,7 @@ export function ListItem({
       <ModuleCardBody>
         <HeroContainer ref={(ref) => (descriptionRef.current = ref)}>
           <ModuleCardDescription>
-            <CenteredHeader variant="h3" component="h2">
+            <CenteredHeader variant="h1" component="h2">
               {studyModule.name}
             </CenteredHeader>
             <ModuleCardDescriptionText variant="ingress">

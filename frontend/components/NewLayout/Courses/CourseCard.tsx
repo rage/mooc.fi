@@ -1,59 +1,40 @@
 import React from "react"
 
-import Image from "next/image"
-
 import { PropsOf } from "@emotion/react"
+import BookIcon from "@fortawesome/fontawesome-free/svgs/solid/book-open.svg?icon"
+import GraduationCapIcon from "@fortawesome/fontawesome-free/svgs/solid/graduation-cap.svg?icon"
+import HandshakeIcon from "@fortawesome/fontawesome-free/svgs/solid/handshake.svg?icon"
 import HelpIcon from "@mui/icons-material/Help"
-import { Skeleton, Typography } from "@mui/material"
+import { Link, Skeleton, Typography } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
-import { CardTitle } from "../Common/Card"
 import CTALink from "../Common/CTALink"
+import FlipchartIcon from "../Icons/FlipChart"
 import { courseColorSchemes } from "./common"
 import Sponsors from "./Sponsors"
-import {
-  DifficultyTags,
-  DifficultyTagsContainer,
-  LanguageTags,
-  LanguageTagsContainer,
-  ModuleTags,
-  ModuleTagsContainer,
-} from "./Tags"
-import { CardSubtitle } from "/components/Text/headers"
+import { DifficultyTags, LanguageTags, ModuleTags } from "./Tags"
 import Tooltip from "/components/Tooltip"
 import { useTranslator } from "/hooks/useTranslator"
-import moocLogo from "/public/images/new/logos/moocfi_white.svg"
-//import sponsorLogo from "/public/images/new/components/courses/f-secure_logo.png"
+import MoocLogoIcon from "/public/images/new/logos/moocfi_white.svg?icon"
+import { fontSize } from "/src/theme/util"
 import CommonTranslations from "/translations/common"
 import { useFormatDateTime } from "/util/dataFormatFunctions"
 
 import { CourseStatus, NewCourseFieldsFragment } from "/graphql/generated"
 
 const ContainerBase = css`
-  display: grid;
-  grid-template-rows: 80px auto;
-  grid-template-columns: 1fr;
-  box-sizing: border-box;
-  box-shadow: 3px 3px 4px rgba(88, 89, 91, 0.25);
-  border-radius: 0.5rem;
+  list-style-type: none;
   max-width: 800px;
-  margin: 1rem auto;
+  margin: 0 auto 1rem;
   width: 100%;
 `
 
-const Container = styled("li", {
-  shouldForwardProp: (prop) => prop !== "studyModule" && prop !== "ended",
-})<{ studyModule?: string; ended?: boolean }>(
-  ({ studyModule, ended }) => `
+const Container = styled("li")`
   ${ContainerBase.styles}
-  background-color: ${
-    studyModule ? courseColorSchemes[studyModule] : courseColorSchemes["other"]
-  };
   height: 100%;
+  display: block;
   container-type: inline-size;
-  ${ended ? "filter: grayscale(60%) opacity(0.8);" : ""}
-`,
-)
+`
 
 const SkeletonContainer = styled("li")`
   ${ContainerBase.styles};
@@ -61,178 +42,169 @@ const SkeletonContainer = styled("li")`
   background-color: #eee;
 `
 
-const TitleContainer = styled("div")`
-  position: relative;
-  max-height: 80px;
-  height: 80px;
-  justify-content: center;
+const CardContainer = styled("article")(
+  ({ theme }) => `
   display: flex;
   flex-direction: column;
-`
-
-const ContentContainer = styled("div")`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 1);
-  overflow: hidden;
-  z-index: 1;
-  border-radius: 0 0 0.5rem 0.5rem;
-  gap: 0.5rem;
+  background-color: ${theme.palette.common.grayscale.backgroundBox};
   height: 100%;
-  justify-content: space-between;
-`
 
-const Title = styled(CardTitle)(
-  ({ theme }) => `
-  font-weight: bold;
-  color: white;
-  text-align: left;
-  border-radius: 0.2rem;
-  width: 70%;
-  padding-left: 1.5rem;
-
-  ${theme.breakpoints.down("sm")} {
-    width: 80%;
-    font-size: 90%;
+  ${theme.breakpoints.up(768)} {
+    flex-direction: row;
   }
 `,
-) as typeof CardTitle
+)
 
-// @ts-ignore: not used
-const TitleSchedule = styled(CardSubtitle)`
-  color: white;
-  margin: 0;
-  padding-left: 1.5rem;
-` as typeof CardSubtitle
-
-/* const SponsorContainer = styled("div")`
-  display: flex;
-  justify-content: flex-end;
+const ModuleColor = styled("div", {
+  shouldForwardProp: (prop) => prop !== "studyModule" && prop !== "ended",
+})<{ studyModule?: string; ended?: boolean }>(
+  ({ theme, studyModule }) => `
+  overflow: hidden;
+  line-height: 0;
   position: relative;
-  height: 100%;
-  width: 100%;
-` */
-
-/* const Sponsor = styled(Image)`
-  object-fit: contain;
-  max-width: 9rem;
-  border-radius: 0.5rem;
-  background: rgba(255, 255, 255, 1);
-  padding: 1rem;
-  justify-self: right;
-` */
-
-const Description = styled("div")`
-  padding: 0 0.5rem 1.5rem 0;
-  margin: 0 0 auto;
-  flex-grow: 1;
   display: flex;
-  min-width: 200px;
-  min-height: 100px;
+  width: 100%;
+  max-height: 80px; 
+  height: 80px;
+
+  background-color: ${
+    studyModule ? courseColorSchemes[studyModule] : courseColorSchemes["other"]
+  };
+
+  ${theme.breakpoints.up(768)} {
+    width: 80px;
+    max-height: 100%;
+    height: auto;
+  }
+`,
+)
+
+const TextContainer = styled("div")`
+  margin-right: 2rem;
 `
 
-const MainContent = styled("div")`
+const ContentContainer = styled("div")(
+  ({ theme }) => `
   display: flex;
   flex-direction: column;
-  margin: auto;
-  height: 50%;
-  flex-grow: 2;
-  flex-shrink: 1;
-  width: 400px;
-`
-
-const ScheduleContainer = styled(Typography)`
-  grid-area: schedule;
-  display: flex;
-  align-items: flex-start;
-  flex-grow: 1;
-  flex-shrink: 1;
-  flex-basis: 30%;
-  margin: 0;
-
-  @container (max-width: calc(560px + 4rem)) {
-    justify-content: flex-end;
-    flex-grow: 0;
+  width: 100%;
+  height: 100%;
+  padding: 1rem 0 1rem 2rem;
+  ${theme.breakpoints.up(768)} {
+    width: calc(100% - 100px);
   }
-` as typeof Typography
+  ${theme.breakpoints.down("sm")} {
+    padding: 1rem;
+  }
+`,
+)
 
-const CourseDetails = styled("div")`
-  grid-area: details;
-  display: flex;
-  flex-shrink: 1;
-  flex-grow: 0;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: flex-end;
-  align-content: flex-start;
+const Title = styled(Typography)(
+  ({ theme }) => `
+  &.MuiTypography-h3 {
+    ${fontSize(22, 32)}
+    font-weight: 700;
+    letter-spacing: -0.44px;
+    color: ${theme.palette.common.brand.main};
+    margin-bottom: 0.5rem !important;
+    margin-top: 0 !important;
+    padding: 0;
+      ${theme.breakpoints.down("sm")} {
+      ${fontSize(18, 24)}
+      letter-spacing: -0.36px;
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+    }
+  }
+
+  a {
+    text-decoration: none;
+    color: ${theme.palette.common.brand.main};
+
+    &:hover {
+      text-decoration: underline;
+      color: ${theme.palette.common.brand.active};
+    }
+  }
+`,
+) as typeof Typography
+
+const Description = styled(Typography)(
+  ({ theme }) => `
+  ${fontSize(16, 24)}
+  letter-spacing: 0;
+  text-align: left;
   overflow: hidden;
-  flex-basis: 160px;
+  text-overflow: ellipsis;
 
-  @container (min-width: calc(560px + 4rem)) {
-    & > div {
-      padding: 0 1rem;
-      margin-right: -1rem;
-      position: relative;
-      z-index: 0;
-      overflow: hidden;
-      :before {
-        content: "|";
-        position: absolute;
-        right: calc(0.25rem + 2px);
-        bottom: 0;
-      }
-    }
+  ${theme.breakpoints.down(768)} {
+    max-height: 196px;
   }
-
-  @container (max-width: calc(560px + 4rem)) {
-    justify-content: flex-start;
-    flex-basis: max-content;
-
-    & > div {
-      padding: 0 1rem 0 1rem;
-      margin-left: -1rem;
-      margin-right: 0rem;
-      position: relative;
-      z-index: 0;
-      overflow: hidden;
-      :before {
-        content: "|";
-        position: absolute;
-        left: calc(0.5rem - 2px);
-        bottom: 0;
-      }
-    }
+  ${theme.breakpoints.down("sm")} {
+    ${fontSize(15, 22)};
+    max-height: 330px;
   }
-`
+`,
+)
 
-const ResponsiveTags = styled("div")`
+const CourseDetails = styled("div")(
+  ({ theme }) => `
+  ${fontSize(15, 18)}
+  font-weight: 700;
+  letter-spacing: -0.3px;
   display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
   flex-wrap: wrap;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  padding-right: 0.5rem;
+  color: ${theme.palette.common.brand.nearlyBlack};
+
+  ${theme.breakpoints.between(768, "lg")} {
+    margin-bottom: 0.5rem;
+  }
+  ${theme.breakpoints.down("sm")} {
+    ${fontSize(14, 18)}
+    margin-top: 1.5rem;
+    gap: 0.5rem;
+  }
+`,
+)
+
+const CourseDetailItem = styled("div")(
+  ({ theme }) => `
+  display: flex;
+  align-items: center;
+  color: ${theme.palette.common.brand.nearlyBlack};
+  margin-bottom: 0.25rem;
+  margin-right: 2rem;
+`,
+)
+
+const Actions = styled("div")(
+  ({ theme }) => `
+  margin-top: auto;
+  width: calc(100% + 2rem);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  position: relative;
   gap: 0.5rem;
-  flex-grow: 1;
-  flex-shrink: 1;
-  flex-basis: 50%;
-`
+  ${theme.breakpoints.between("sm", 768)} {
+    width: calc(100% + 1rem);
+  }
+  ${theme.breakpoints.down("sm")} {
+    width: calc(100% + 2rem);
+  }
+`,
+)
 
-const CourseLength = styled("div")`
+const Tags = styled("div")`
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  margin-right: 1rem;
+  gap: 4px;
 `
-
-const Organizer = styled(Typography)`
-  display: flex;
-  align-items: center;
-  margin: 0;
-  text-align: right;
-` as typeof Typography
 
 const StyledTooltip = styled(Tooltip)`
   max-height: 1rem;
@@ -254,30 +226,52 @@ const StyledHelpIcon = styled(HelpIcon)`
   }
 `
 
-const LinkArea = styled("div")`
+const MoocLogo = styled(MoocLogoIcon)`
+  fill: #fff;
+  opacity: 0.5;
+  width: 160%;
+  height: 160%;
+`
+
+const iconStyle = css`
   display: flex;
-  justify-content: flex-end;
-  align-items: flex-end;
-  grid-area: link;
+  width: 19px;
+  height: 19px;
+  margin-right: 0.5rem;
+`
+
+const Flipchart = styled(FlipchartIcon)`
+  ${iconStyle.styles}
+`
+
+const GraduationCap = styled(GraduationCapIcon)`
+  ${iconStyle.styles}
+`
+
+const Book = styled(BookIcon)`
+  ${iconStyle.styles}
+`
+
+const Handshake = styled(HandshakeIcon)`
+  ${iconStyle.styles}
+`
+
+const CourseLink = styled(CTALink)(
+  ({ theme }) => `
+  ${fontSize(18, 24)}
+  text-align: right;
+  letter-spacing: -0.36px;
+  position: relative;
+  display: flex;
+  align-items: center;
   margin-left: auto;
-  height: fit-content;
-`
 
-const CardHeaderImage = styled(Image)`
-  object-fit: cover;
-  opacity: 0.4;
-  position: absolute;
-  right: 1rem;
-  top: 1rem;
-  width: 35%;
-  height: auto;
-  z-index: 0;
-  overflow: hidden;
-`
-
-const MoocfiLogo = styled(CardHeaderImage)`
-  z-index: 0;
-`
+  ${theme.breakpoints.down("sm")} {
+    ${fontSize(15, 18)}
+    letter-spacing: -0.3px;
+  }
+`,
+) as typeof CTALink
 
 interface ScheduleProps {
   course?: NewCourseFieldsFragment
@@ -294,33 +288,31 @@ const Schedule = React.memo(
       const { status, start_date, end_date } = course
       if (status === CourseStatus.Upcoming) {
         schedule = `${t("Upcoming")}${
-          start_date ? "&nbsp;" + formatLocaleDateTime(start_date) : ""
+          start_date ? " " + formatLocaleDateTime(start_date) : ""
         }`
       } else if (status === CourseStatus.Ended) {
         schedule = `${t("Ended")}${
           end_date && Date.parse(end_date) < Date.now()
-            ? "&nbsp;" + formatLocaleDateTime(end_date)
+            ? " " + formatLocaleDateTime(end_date)
             : ""
         }`
       } else {
-        schedule = `${t("Active")}&nbsp;${
+        schedule = `${t("Active")} ${
           end_date
             ? formatLocaleDateTime(start_date) +
-              "&nbsp;-&nbsp;" +
+              " - " +
               formatLocaleDateTime(end_date)
-            : "—&nbsp;" + t("unscheduled")
+            : "— " + t("unscheduled")
         }`
       }
     }
 
     return (
-      <ScheduleContainer
-        variant="body2"
-        component="div"
-        {...(schedule && { dangerouslySetInnerHTML: { __html: schedule } })}
-      >
+      <CourseDetailItem>
+        <Flipchart />
+        {schedule}
         {children}
-      </ScheduleContainer>
+      </CourseDetailItem>
     )
   },
   (prevProps, nextProps) => prevProps.course === nextProps.course,
@@ -337,10 +329,14 @@ interface CourseCardLayoutProps {
   difficultyTags?: React.ReactNode
   sponsors?: React.ReactNode
   link: React.ReactNode
+  href?: string | null
+  studyModule?: string
+  ended?: boolean
 }
 
 function CourseCardLayout({
   title,
+  href,
   description,
   schedule,
   details,
@@ -350,44 +346,37 @@ function CourseCardLayout({
   difficultyTags,
   sponsors,
   link,
+  ended,
+  studyModule,
 }: CourseCardLayoutProps) {
   return (
-    <>
-      <TitleContainer>
-        <Title variant="h6" component="h3">
-          {title}
-        </Title>
-        {/*typeof schedule === "string" && <TitleSchedule variant="caption" component="h4" dangerouslySetInnerHTML={{ __html: schedule }} />*/}
-        <MoocfiLogo
-          alt="MOOC logo"
-          src={moocLogo}
-          width={105}
-          height={95}
-          priority
-        />
-      </TitleContainer>
-      <ContentContainer id="content-container">
-        <MainContent>
-          <Description>
-            <Typography variant="body1">{description}</Typography>
-          </Description>
-        </MainContent>
+    <CardContainer>
+      <ModuleColor studyModule={studyModule} ended={ended}>
+        <MoocLogo viewBox="0 0 257.37 235.365" />
+      </ModuleColor>
+      <ContentContainer>
+        <TextContainer>
+          <Title variant="h3">
+            <Link href={href ?? "#"}>{title}</Link>
+          </Title>
+          {description && <Description>{description}</Description>}
+        </TextContainer>
         <CourseDetails>
           {details}
-          <Organizer variant="body2" component="div">
-            {organizer}
-          </Organizer>
+          {schedule}
+          {organizer}
           {sponsors}
-        </CourseDetails>{" "}
-        {schedule}
-        <ResponsiveTags>
-          <LanguageTagsContainer>{languageTags}</LanguageTagsContainer>
-          <DifficultyTagsContainer>{difficultyTags}</DifficultyTagsContainer>
-        </ResponsiveTags>
-        <ModuleTagsContainer>{moduleTags}</ModuleTagsContainer>
-        <LinkArea>{link}</LinkArea>
+        </CourseDetails>
+        <Actions>
+          <Tags>
+            {languageTags}
+            {difficultyTags}
+            {moduleTags}
+          </Tags>
+          {link}
+        </Actions>
       </ContentContainer>
-    </>
+    </CardContainer>
   )
 }
 
@@ -406,24 +395,19 @@ const CourseCard = React.forwardRef<
     studyModule ?? course.study_modules[0]?.slug ?? "other"
 
   return (
-    <Container
-      ref={ref}
-      studyModule={courseStudyModule}
-      ended={course?.status === CourseStatus.Ended}
-      {...props}
-    >
+    <Container ref={ref} {...props}>
       <CourseCardLayout
+        studyModule={courseStudyModule}
+        ended={course?.status === CourseStatus.Ended}
         title={course?.name}
         description={course?.description}
         schedule={<Schedule course={course} />}
-        moduleTags={<ModuleTags course={course} />}
         details={
           course.ects && (
-            <CourseLength>
-              <Typography variant="body2">
-                {course.ects}&nbsp;op&nbsp;|&nbsp;~
-                {Math.round((parseInt(course.ects) * 27) / 5) * 5}h
-              </Typography>
+            <CourseDetailItem>
+              <Book />
+              {course.ects}&nbsp;op&nbsp;(~
+              {Math.round((parseInt(course.ects) * 27) / 5) * 5}h)
               <StyledTooltip
                 title={`${t("ectsHoursExplanation1")} ${course.ects} ${t(
                   "ectsHoursExplanation2",
@@ -431,22 +415,35 @@ const CourseCard = React.forwardRef<
               >
                 <StyledHelpIcon />
               </StyledTooltip>
-            </CourseLength>
+            </CourseDetailItem>
           )
         }
         /* TODO: add information regarding university/organization to course */
-        organizer="Helsingin yliopisto"
+        organizer={
+          <CourseDetailItem>
+            <GraduationCap />
+            Helsingin yliopisto
+          </CourseDetailItem>
+        }
         languageTags={<LanguageTags course={course} />}
         difficultyTags={<DifficultyTags course={course} />}
+        moduleTags={<ModuleTags course={course} />}
         link={
-          <CTALink href="https://www.mooc.fi" target="_blank">
-            {t("showCourse")}
-          </CTALink>
+          course?.link && (
+            <CourseLink href={course?.link} target="_blank">
+              {t("showCourse")}
+            </CourseLink>
+          )
         }
-        sponsors={<Sponsors data={course.sponsors} />}
-        /* <SponsorContainer>
-          <Sponsor src={sponsorLogo.src} alt="Sponsor logo" fill />
-        </SponsorContainer> */
+        href={course?.link}
+        sponsors={
+          (course.sponsors ?? []).length > 0 && (
+            <CourseDetailItem>
+              <Handshake />
+              <Sponsors data={course.sponsors} />
+            </CourseDetailItem>
+          )
+        }
       />
     </Container>
   )
@@ -468,12 +465,18 @@ export const CourseCardSkeleton = () => (
           <Skeleton width={200} height={20} />
         </Schedule>
       }
-      details={<Skeleton width={180} height={20} />}
-      organizer={<Skeleton width={100} height={20} />}
-      moduleTags={<Skeleton width={140} height={30} />}
-      languageTags={
-        <Skeleton width={120} height={30} sx={{ marginTop: "0.5rem" }} />
+      details={
+        <CourseDetailItem>
+          <Skeleton width={180} height={20} />
+        </CourseDetailItem>
       }
+      organizer={
+        <CourseDetailItem>
+          <Skeleton width={100} height={20} />
+        </CourseDetailItem>
+      }
+      moduleTags={<Skeleton width={140} height={30} />}
+      languageTags={<Skeleton width={120} height={30} />}
       difficultyTags={<Skeleton width={100} height={60} />}
       link={<Skeleton width={150} />}
     />
