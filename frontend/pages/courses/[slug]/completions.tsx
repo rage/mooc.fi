@@ -17,6 +17,7 @@ import Spinner from "/components/Spinner"
 import { H1NoBackground, SubtitleNoBackground } from "/components/Text/headers"
 import CourseLanguageContext from "/contexts/CourseLanguageContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import useIsNew from "/hooks/useIsNew"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
@@ -32,6 +33,8 @@ const ContentArea = styled("div")`
 `
 
 const Completions = () => {
+  const isNew = useIsNew()
+  const baseUrl = isNew ? "/_new/admin" : ""
   const t = useTranslator(CoursesTranslations)
   const slug = useQueryParameter("slug")
   const router = useRouter()
@@ -44,7 +47,7 @@ const Completions = () => {
     (e: ChangeEvent<HTMLInputElement>) => {
       // prevents reloading page, URL changes
 
-      const href = `/courses/${slug}/completions?language=${e.target.value}`
+      const href = `${baseUrl}/courses/${slug}/completions?language=${e.target.value}`
       changeLng(e.target.value)
       router.replace(router.pathname, href, { shallow: true })
     },
@@ -71,15 +74,15 @@ const Completions = () => {
   useBreadcrumbs([
     {
       translation: "courses",
-      href: `/courses`,
+      href: `${baseUrl}/courses`,
     },
     {
       label: data?.course?.name,
-      href: `/courses/${slug}`,
+      href: `${baseUrl}/courses/${slug}`,
     },
     {
       translation: "courseCompletions",
-      href: `/courses/${slug}/completions`,
+      href: `${baseUrl}/courses/${slug}/completions`,
     },
   ])
   const title = data?.course?.name ?? "..."

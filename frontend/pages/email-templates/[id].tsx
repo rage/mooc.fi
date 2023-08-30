@@ -23,6 +23,7 @@ import ErrorMessage from "/components/ErrorMessage"
 import Spinner from "/components/Spinner"
 import { CardTitle } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import useIsNew from "/hooks/useIsNew"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import withAdmin from "/lib/with-admin"
 import {
@@ -118,6 +119,8 @@ const defaultState: EmailTemplateState = {
 }
 
 const EmailTemplateView = () => {
+  const isNew = useIsNew()
+  const baseUrl = isNew ? "/_new/admin" : ""
   const { locale } = useRouter()
   const [isHelpOpen, setIsHelpOpen] = useState(false)
   const id = useQueryParameter("id")
@@ -149,11 +152,11 @@ const EmailTemplateView = () => {
   useBreadcrumbs([
     {
       translation: "emailTemplates",
-      href: `/email-templates`,
+      href: `${baseUrl}/email-templates`,
     },
     {
       label: data?.email_template?.name ?? undefined,
-      href: `/email-templates/${id}`,
+      href: `${baseUrl}/email-templates/${id}`,
     },
   ])
   const pageTitle = data?.email_template?.name ?? ""

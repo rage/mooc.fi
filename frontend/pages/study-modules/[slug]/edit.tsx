@@ -13,6 +13,7 @@ import { WideContainer } from "/components/Container"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1NoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import useIsNew from "/hooks/useIsNew"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
@@ -39,6 +40,8 @@ const LegacyStudyModuleEdit = dynamic(
 
 const EditStudyModule = () => {
   const router = useRouter()
+  const isNew = useIsNew()
+  const baseUrl = isNew ? "/_new/admin" : ""
   const t = useTranslator(StudyModulesTranslations)
 
   const slug = useQueryParameter("slug")
@@ -51,14 +54,14 @@ const EditStudyModule = () => {
   useBreadcrumbs([
     {
       translation: "studyModules",
-      href: "/study-modules",
+      href: `${baseUrl}/study-modules`,
     },
     {
       label: data?.study_module?.name,
     },
     {
       translation: "studyModuleEdit",
-      href: `/study-modules/${slug}/edit`,
+      href: `${baseUrl}/study-modules/${slug}/edit`,
     },
   ])
   const title = data?.study_module?.name ?? "..."
@@ -72,7 +75,7 @@ const EditStudyModule = () => {
 
     if (!loading && !data?.study_module) {
       redirectTimeout = setTimeout(() => {
-        router.push("/study-modules", undefined, { shallow: true })
+        router.push(`${baseUrl}/study-modules`, undefined, { shallow: true })
       }, 5000)
     }
 

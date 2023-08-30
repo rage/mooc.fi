@@ -5,6 +5,7 @@ import ModuleGrid from "/components/Dashboard/StudyModules/ModuleGrid"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1NoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import useIsNew from "/hooks/useIsNew"
 import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
 import StudyModulesTranslations from "/translations/study-modules"
@@ -13,11 +14,12 @@ import { EditorStudyModulesDocument } from "/graphql/generated"
 
 function StudyModules() {
   const t = useTranslator(StudyModulesTranslations)
-
+  const isNew = useIsNew()
+  const baseUrl = isNew ? "/_new/admin" : ""
   useBreadcrumbs([
     {
       translation: "studyModules",
-      href: "/_new/study-modules",
+      href: `${baseUrl}/study-modules`,
     },
   ])
 

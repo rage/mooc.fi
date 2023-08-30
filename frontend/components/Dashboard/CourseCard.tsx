@@ -11,6 +11,7 @@ import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/
 import CourseImage from "/components/CourseImage"
 import { CardTitle } from "/components/Text/headers"
 import { useFilterContext } from "/contexts/FilterContext"
+import useIsNew from "/hooks/useIsNew"
 import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/courses"
 import { formatDateTime } from "/util/dataFormatFunctions"
@@ -173,6 +174,9 @@ interface CourseCardProps {
 
 const CourseCard = ({ course, loading, isNew }: CourseCardProps) => {
   const t = useTranslator(CoursesTranslations)
+  const isNewLayout = useIsNew()
+  const baseUrl = isNewLayout ? "/_new/admin" : ""
+
   const { onStatusClick } = useFilterContext()
   const courseFound = !loading && !!course
 
@@ -185,7 +189,10 @@ const CourseCard = ({ course, loading, isNew }: CourseCardProps) => {
             <CourseImage photo={course.photo} alt={course.name} />
           )}
           {isNew && (
-            <StyledLink href="/courses/new" aria-label={t("courseNewCourse")}>
+            <StyledLink
+              href={`${baseUrl}/courses/new`}
+              aria-label={t("courseNewCourse")}
+            >
               <CreateCourseIconContainer>
                 <AddCircleIcon fontSize="large" />
               </CreateCourseIconContainer>
@@ -234,7 +241,7 @@ const CourseCard = ({ course, loading, isNew }: CourseCardProps) => {
             {courseFound && (
               <>
                 <StyledButton
-                  href={`/courses/${course.slug}`}
+                  href={`${baseUrl}/courses/${course.slug}`}
                   prefetch={false}
                   aria-label={t("courseToCoursePage", { name: course.name })}
                   variant="text"
@@ -243,7 +250,7 @@ const CourseCard = ({ course, loading, isNew }: CourseCardProps) => {
                   Dashboard
                 </StyledButton>
                 <StyledButton
-                  href={`/courses/new?clone=${course.slug}`}
+                  href={`${baseUrl}/courses/new?clone=${course.slug}`}
                   prefetch={false}
                   aria-label={t("courseCloneCourse", { name: course.name })}
                   variant="text"
@@ -253,7 +260,7 @@ const CourseCard = ({ course, loading, isNew }: CourseCardProps) => {
                   Clone...
                 </StyledButton>
                 <StyledButton
-                  href={`/courses/${course.slug}/edit`}
+                  href={`${baseUrl}/courses/${course.slug}/edit`}
                   prefetch={false}
                   aria-label={t("courseEditCourse", { name: course.name })}
                   variant="text"
@@ -266,7 +273,7 @@ const CourseCard = ({ course, loading, isNew }: CourseCardProps) => {
             {isNew && (
               <StyledButton
                 prefetch={false}
-                href="/courses/new"
+                href={`${baseUrl}/courses/new`}
                 aria-label={t("courseNewCourse")}
                 variant="text"
                 color="secondary"

@@ -11,6 +11,7 @@ import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { H1NoBackground } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useEditorCourses } from "/hooks/useEditorCourses"
+import useIsNew from "/hooks/useIsNew"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
@@ -31,6 +32,8 @@ const LegacyCourseEdit = dynamic(
 
 const NewCourse = () => {
   const t = useTranslator(CoursesTranslations)
+  const isNew = useIsNew()
+  const baseUrl = isNew ? "/_new/admin" : ""
 
   const clone = useQueryParameter("clone", { enforce: false })
   const legacy = useQueryParameter("legacy", { enforce: false })
@@ -44,11 +47,11 @@ const NewCourse = () => {
   useBreadcrumbs([
     {
       translation: "courses",
-      href: `/courses`,
+      href: `${baseUrl}/courses`,
     },
     {
       translation: "courseNew",
-      href: `/courses/new`,
+      href: `${baseUrl}/courses/new`,
     },
   ])
 
