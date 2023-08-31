@@ -7,9 +7,8 @@ import { difference, sort } from "remeda"
 import { useQuery } from "@apollo/client"
 import ClearIcon from "@mui/icons-material/Clear"
 import {
-  Button,
-  ButtonProps,
   Checkbox,
+  EnhancedButtonProps,
   FormControlLabel,
   Skeleton,
   TextField,
@@ -19,6 +18,8 @@ import {
 import { styled, Theme } from "@mui/material/styles"
 import { useEventCallback } from "@mui/material/utils"
 
+import Button from "../Common/Button"
+import ContentWrapper from "../Common/ContentWrapper"
 import {
   allowedLanguages,
   courseStatuses,
@@ -70,29 +71,20 @@ const CardContainer = styled.div`
   }
 ` */
 
-const Container = styled("div")(
-  ({ theme }) => `
+const Container = styled("div")`
   display: grid;
-  width: 90%;
-  margin: 0 auto;
-  max-width: 1536px;
-  padding: 1rem;
-
-  ${theme.breakpoints.down("sm")} {
-    width: 98%;
-  }
-`,
-)
+  width: 100%;
+  margin: 0;
+`
 
 const CardsContainer = styled("ul")(
   ({ theme }) => `
   list-style: none;
-  margin: 40px 0;
+  margin: 1rem 0;
   padding: 0;
   display: grid;
   grid-gap: 1.5rem;
   grid-template-columns: 1fr 1fr;
-  margin-top: 1rem;
   width: 100%;
 
   ${theme.breakpoints.down("lg")} {
@@ -101,15 +93,17 @@ const CardsContainer = styled("ul")(
   }
 
   ${theme.breakpoints.down("sm")} {
-    margin: 20px 0;
+    margin: 1.5rem 0;
   }
 `,
 )
 
-const FiltersContainer = styled("div")`
-  background: #f5f6f7;
+const FiltersContainer = styled("div")(
+  ({ theme }) => `
+  background-color: ${theme.palette.common.grayscale.slightlyGray};
   padding-bottom: 0.5rem;
-`
+`,
+)
 
 const SearchBar = styled(TextField)`
   margin-bottom: 0.5rem 0;
@@ -135,22 +129,20 @@ const Statuses = styled("div")`
   justify-self: end;
 `
 
-const ResetFiltersButton = styled(Button, {
-  shouldForwardProp: (prop) => prop !== "variant",
-})<ButtonProps & { variant: string }>`
-  border-radius: 1rem;
+const ResetFiltersButton = styled(Button)<EnhancedButtonProps>`
   font-weight: bold;
   border-width: 0.15rem;
   max-height: 2.5rem;
-  color: ${({ variant }) => (variant === "contained" ? "#F5F6F7" : "#378170")};
+  /*color: ${({ variant }) =>
+    variant === "contained" ? "#F5F6F7" : "#378170"};
   background-color: ${({ variant }) =>
     variant === "contained" ? "#378170" : "#F5F6F7"};
 
   &:hover {
     border-width: 0.15rem;
     background-color: ${({ variant }) =>
-      variant === "contained" ? "#378170" : "#F5F6F7"};
-  }
+    variant === "contained" ? "#378170" : "#F5F6F7"};
+  }*/
 `
 
 const DynamicTagSelectButtons = dynamic(() => import("./TagSelectButtons"), {
@@ -469,78 +461,80 @@ function CourseGrid() {
   }, [isNarrow])
 
   return (
-    <Container>
-      <FiltersContainer>
-        <SearchBar
-          id="searchCourses"
-          label={t("search")}
-          value={searchString}
-          autoComplete="off"
-          variant="outlined"
-          onChange={handleSearchChange}
-        />
-        <StyledBorderedSection title={t("filter")}>
-          <Filters>
-            <TagSelectComponent
-              tags={tags}
-              activeTags={activeTags}
-              setActiveTags={setActiveTags}
-              selectAllTags={handleSelectAllTags}
-              loading={tagsLoading}
-            />
-            <Statuses>
-              {courseStatuses.map((status) => (
-                <FormControlLabel
-                  label={t(status)}
-                  key={status}
-                  control={
-                    <Checkbox
-                      id={status}
-                      checked={filteredStatuses.includes(status)}
-                      onChange={handleStatusChange(status)}
-                    />
-                  }
-                />
-              ))}
-            </Statuses>
-            <ResetFiltersButton
-              id="resetFiltersButton"
-              variant="outlined"
-              onClick={handleResetButtonClick}
-              startIcon={<ClearIcon />}
-            >
-              {t("reset")}
-            </ResetFiltersButton>
-          </Filters>
-        </StyledBorderedSection>
-      </FiltersContainer>
-      {coursesLoading ? (
-        <>
-          <CardsContainer>
-            <CourseCardSkeleton />
-            <CourseCardSkeleton />
-            <CourseCardSkeleton />
-            <CourseCardSkeleton />
-          </CardsContainer>
-        </>
-      ) : (
-        <>
-          <SearchResultStatus
-            tags={activeTags}
-            statuses={filteredStatuses}
-            count={filteredCourses.length}
+    <ContentWrapper>
+      <Container>
+        <FiltersContainer>
+          <SearchBar
+            id="searchCourses"
+            label={t("search")}
+            value={searchString}
+            autoComplete="off"
+            variant="outlined"
+            onChange={handleSearchChange}
           />
-          <CardsContainer>
-            {sort(filteredCourses, compareCourses).map((course) => (
-              <CourseCard key={course.id} course={course} />
-            ))}
-            {filteredCourses.length === 0 && (
-              <li style={{ width: "100%" }}>no courses</li>
-            )}
-          </CardsContainer>
-        </>
-      )}
-    </Container>
+          <StyledBorderedSection title={t("filter")}>
+            <Filters>
+              <TagSelectComponent
+                tags={tags}
+                activeTags={activeTags}
+                setActiveTags={setActiveTags}
+                selectAllTags={handleSelectAllTags}
+                loading={tagsLoading}
+              />
+              <Statuses>
+                {courseStatuses.map((status) => (
+                  <FormControlLabel
+                    label={t(status)}
+                    key={status}
+                    control={
+                      <Checkbox
+                        id={status}
+                        checked={filteredStatuses.includes(status)}
+                        onChange={handleStatusChange(status)}
+                      />
+                    }
+                  />
+                ))}
+              </Statuses>
+              <ResetFiltersButton
+                id="resetFiltersButton"
+                variant="text"
+                onClick={handleResetButtonClick}
+                startIcon={<ClearIcon />}
+              >
+                {t("reset")}
+              </ResetFiltersButton>
+            </Filters>
+          </StyledBorderedSection>
+        </FiltersContainer>
+        {coursesLoading ? (
+          <>
+            <CardsContainer>
+              <CourseCardSkeleton />
+              <CourseCardSkeleton />
+              <CourseCardSkeleton />
+              <CourseCardSkeleton />
+            </CardsContainer>
+          </>
+        ) : (
+          <>
+            <SearchResultStatus
+              tags={activeTags}
+              statuses={filteredStatuses}
+              count={filteredCourses.length}
+            />
+            <CardsContainer>
+              {sort(filteredCourses, compareCourses).map((course) => (
+                <CourseCard key={course.id} course={course} />
+              ))}
+              {filteredCourses.length === 0 && (
+                <li style={{ width: "100%" }}>no courses</li>
+              )}
+            </CardsContainer>
+          </>
+        )}
+      </Container>
+    </ContentWrapper>
   )
 }
 

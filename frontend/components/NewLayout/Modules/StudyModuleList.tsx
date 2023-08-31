@@ -3,15 +3,19 @@ import { useRouter } from "next/router"
 import { useQuery } from "@apollo/client"
 import { styled } from "@mui/material/styles"
 
+import Introduction from "../Common/Introduction"
 import { moduleColorSchemes } from "../Courses/common"
 import ModuleNaviList from "../Frontpage/Modules/ModuleNaviList"
 import { ListItem, ListItemSkeleton } from "./StudyModuleListItem"
 import ErrorMessage from "/components/ErrorMessage"
+import { useTranslator } from "/hooks/useTranslator"
+import StudyModulesTranslations from "/translations/study-modules"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
 import { NewStudyModulesWithCoursesDocument } from "/graphql/generated"
 
-const ModuleList = styled("ul")`
+const ModuleList = styled("ul")(
+  ({ theme }) => `
   list-style: none;
   list-style-position: inside;
   padding: 0;
@@ -21,9 +25,17 @@ const ModuleList = styled("ul")`
   flex: 1;
   width: 100%;
   z-index: 0;
-`
+
+  ${theme.breakpoints.up("lg")} {
+    width: calc(100% + 4rem);
+    margin-left: -2rem;
+    margin-right: -2rem;
+  }
+`,
+)
 
 export function StudyModuleList() {
+  const t = useTranslator(StudyModulesTranslations)
   const { locale = "fi" } = useRouter()
   const language = mapNextLanguageToLocaleCode(locale)
 
@@ -42,11 +54,7 @@ export function StudyModuleList() {
   if (loading) {
     return (
       <>
-        <ModuleNaviList
-          modules={data?.study_modules}
-          loading={loading}
-          variant="small"
-        />
+        <ModuleNaviList modules={data?.study_modules} loading={loading} />
         <ModuleList>
           <ListItemSkeleton
             backgroundColor={moduleColorSchemes["cyber-security"]!}
@@ -65,12 +73,9 @@ export function StudyModuleList() {
   }
 
   return (
-    <>
-      <ModuleNaviList
-        modules={data?.study_modules}
-        loading={loading}
-        variant="small"
-      />
+    <section>
+      <Introduction title={t("modulesTitle")} />
+      <ModuleNaviList modules={data?.study_modules} loading={loading} />
       <ModuleList>
         {data?.study_modules?.map((studyModule) => (
           <ListItem
@@ -84,6 +89,6 @@ export function StudyModuleList() {
           />
         ))}
       </ModuleList>
-    </>
+    </section>
   )
 }

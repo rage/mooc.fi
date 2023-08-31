@@ -1,18 +1,22 @@
 import { useRouter } from "next/router"
+import { range, sample } from "remeda"
 
 import { useQuery } from "@apollo/client"
 import { Button, Typography, TypographyProps } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import ContentWrapper from "../Common/ContentWrapper"
 import CTAButton from "../Common/CTAButton"
-import { SectionContainer, SectionTitle } from "/components/NewLayout/Common"
+import Introduction from "../Common/Introduction"
 import {
   CardBody,
   CardDescription,
   CardHeaderImage,
   CardWrapper,
 } from "/components/NewLayout/Common/Card"
-import CommonCourseCard from "/components/NewLayout/Courses/CourseCard"
+import CommonCourseCard, {
+  CourseCardSkeleton,
+} from "/components/NewLayout/Courses/CourseCard"
 import { CardTitle } from "/components/Text/headers"
 import { useTranslator } from "/hooks/useTranslator"
 import moocLogo from "/public/images/new/logos/moocfi-transparent.svg"
@@ -20,7 +24,11 @@ import HomeTranslations from "/translations/home"
 import { formatDateTime } from "/util/dataFormatFunctions"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
-import { NewCourseFieldsFragment, NewCoursesDocument } from "/graphql/generated"
+import {
+  CourseStatus,
+  NewCourseFieldsFragment,
+  NewCoursesDocument,
+} from "/graphql/generated"
 
 const CardHeader = styled("div")`
   position: relative;
@@ -102,22 +110,25 @@ function SelectedCourses() {
     ssr: false,
   })
 
+  const notEndedCourses =
+    data?.courses?.filter((course) => course.status !== CourseStatus.Ended) ??
+    []
   return (
-    <SectionContainer id="courses">
-      <SectionTitle sx={{ marginBottom: "2rem" }}>
-        {t("popularCoursesTitle")}
-      </SectionTitle>
-      {loading && <p>Loading...</p>}
-      <CoursesGrid>
-        {data?.courses &&
-          data.courses
-            .slice(0, 4)
-            .map((course) => (
-              <CommonCourseCard key={course.id} course={course} />
-            ))}
-      </CoursesGrid>
-      <CTAButton href="/_new/courses">{t("showAllCourses")}</CTAButton>
-    </SectionContainer>
+    <section id="courses">
+      <Introduction title={t("popularCoursesTitle")} />
+      <ContentWrapper>
+        <CoursesGrid>
+          {loading
+            ? range(0, 4).map((index) => (
+                <CourseCardSkeleton key={`skeleton-${index}`} />
+              ))
+            : sample(notEndedCourses, 4).map((course) => (
+                <CommonCourseCard key={course.id} course={course} />
+              ))}
+        </CoursesGrid>
+        <CTAButton href="/_new/courses">{t("showAllCourses")}</CTAButton>
+      </ContentWrapper>
+    </section>
   )
 }
 

@@ -20,6 +20,7 @@ let theme = createTheme({
       desktop: 1024,
       lg: 1200,
       xl: 1536,
+      xxl: 1920,
     },
   },
 })

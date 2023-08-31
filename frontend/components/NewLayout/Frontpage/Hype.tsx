@@ -1,7 +1,10 @@
 import { useMemo } from "react"
 
-import { LinkBoxProps } from "../Common/LinkBox"
-import LinkBoxList from "../Common/LinkBoxList"
+import ContentWrapper from "../Common/ContentWrapper"
+import GeneralList from "../Common/GeneralList"
+import { GeneralListItemProps } from "../Common/GeneralListItem"
+// import { LinkBoxProps } from "../Common/LinkBox"
+// import LinkBoxList from "../Common/LinkBoxList"
 // import PartnerDivider from "/components/NewLayout/Common/PartnerDivider"
 import { useTranslator } from "/hooks/useTranslator"
 import NaviTranslations from "/translations/navi"
@@ -31,24 +34,41 @@ function Hype() {
   const items = t("naviItems") as readonly NaviItem[]
   //const customItems = t("customNaviItems") as readonly CustomNaviItem[]
 
-  const listItems: Array<LinkBoxProps> = useMemo(
+  /*const listItems: Array<LinkBoxProps> = useMemo(
     () =>
       items.map(({ title, text, link, linkText }) => ({
         title,
         description: text,
-        /*imageProps: {
-        src: '/images/navi/' + item.img,
-        alt: item.title,
-        fill: true
-      },*/
+//         imageProps: {
+//           src: '/images/navi/' + item.img,
+//           alt: item.title,
+//           fill: true
+//         },
         linkProps: {
           href: link,
           children: linkText,
         },
       })),
     [items],
-  )
+  )*/
 
+  const listItems: Array<GeneralListItemProps> = useMemo(
+    () =>
+      items.map(({ title, text, link, linkText, img }) => ({
+        title,
+        description: text,
+        linkProps: {
+          href: link,
+          children: linkText,
+        },
+        imageProps: {
+          src: "/images/navi/" + img,
+          alt: title,
+          fill: true,
+        },
+      })),
+    [items],
+  )
   /*const customListItems: Array<LinkBoxProps> = useMemo(
     () =>
       customItems.map(
@@ -75,8 +95,9 @@ function Hype() {
   )*/
 
   return (
-    <>
-      <LinkBoxList items={listItems} />
+    <ContentWrapper>
+      {/*<LinkBoxList items={listItems} />*/}
+      <GeneralList type="grid" items={listItems} />
       {/*customListItems.length > 0 && (
         <>
           <PartnerDivider />
@@ -91,7 +112,7 @@ function Hype() {
           />
         </>
           )*/}
-    </>
+    </ContentWrapper>
   )
 }
 

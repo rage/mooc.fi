@@ -1,8 +1,9 @@
 import React, { useCallback } from "react"
 
-import { Button, Chip, Skeleton } from "@mui/material"
+import { Chip, Skeleton } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import Button from "../Common/Button"
 import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
 
@@ -21,12 +22,6 @@ const TagListContainer = styled("div", {
   shouldForwardProp: (prop) => prop !== "category",
 })<{ category?: string }>(({ category }) =>
   category ? `grid-area: ${category}Tags;` : "",
-)
-
-const SelectAllContainer = styled("div", {
-  shouldForwardProp: (prop) => prop !== "category",
-})<{ category?: string }>(({ category }) =>
-  category ? `grid-area: ${category}SelectAll;` : "",
 )
 
 const TagChip = styled(Chip, {
@@ -92,43 +87,34 @@ const TagsSkeleton = ({
         />
       ))}
     </TagListContainer>
-    <SelectAllContainer category={category}>
-      <Skeleton width={100} height={31} />
-    </SelectAllContainer>
+    <Skeleton
+      sx={{ gridArea: `${category}SelectAll` }}
+      width={100}
+      height={31}
+    />
   </>
 )
 
 const SelectAllButton = styled(Button)(
-  ({ theme, variant }) => `
-  margin: 0 1rem auto auto;
-
-  border-radius: 1rem;
-  font-weight: bold;
-  border-width: 0.1rem;
-  border-style: solid;
-  text-transform: uppercase;
-  border-color: ${theme.palette.primary.main};
-  color: ${
-    variant === "contained"
-      ? theme.palette.primary.contrastText
-      : theme.palette.primary.main
-  };
-  background-color: ${
-    variant === "contained"
-      ? theme.palette.primary.main
-      : theme.palette.background.default
-  };
-
+  ({ theme }) => `
+  max-height: 2.5rem;
+  font-weight: 700 !important;
+  background-color: transparent !important;
+  color: ${theme.palette.common.brand.main} !important;
+  border: 2px solid ${theme.palette.common.brand.main} !important;
   &:hover {
-    border-radius: 1rem;
-    border-width: 0.1rem;
-    border-style: solid;
-    background-color: ${theme.palette.primary.light};
-    color: ${
-      variant === "contained"
-        ? theme.palette.primary.main
-        : theme.palette.primary.contrastText
-    };
+    color: ${theme.palette.common.brand.active} !important;
+    border: 2px solid ${theme.palette.common.brand.active} !important};
+  }
+  &[aria-selected="true"] {
+    background-color: ${theme.palette.common.brand.main} !important;
+    color: ${theme.palette.common.grayscale.white} !important;
+    border: 2px solid transparent;
+    &:hover {
+      background-color: ${theme.palette.common.brand.active} !important;
+      color: ${theme.palette.common.grayscale.white} !important;
+      border: 2px solid transparent;
+    }
   }
 `,
 )
@@ -209,20 +195,19 @@ const TagSelectButtons = ({
               />
             ))}
           </TagListContainer>
-          <SelectAllContainer category={category}>
-            <SelectAllButton
-              id={`select-all-${category}-tags`}
-              variant={
-                tags[category].every((tag) => activeTags.includes(tag))
-                  ? "contained"
-                  : "outlined"
-              }
-              onClick={handleSelectAllClick(category)}
-              size="small"
-            >
-              {t("selectAll")}
-            </SelectAllButton>
-          </SelectAllContainer>
+          <SelectAllButton
+            id={`select-all-${category}-tags`}
+            aria-selected={
+              tags[category].every((tag) => activeTags.includes(tag))
+                ? "true"
+                : undefined
+            }
+            variant="text"
+            sx={{ gridArea: `${category}SelectAll` }}
+            onClick={handleSelectAllClick(category)}
+          >
+            {t("selectAll")}
+          </SelectAllButton>
         </React.Fragment>
       ))}
     </TagsContainer>

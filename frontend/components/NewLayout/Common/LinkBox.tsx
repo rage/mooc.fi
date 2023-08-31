@@ -3,7 +3,7 @@ import React from "react"
 import Image, { ImageProps } from "next/image"
 
 import { PropsOf } from "@emotion/react"
-import { Typography } from "@mui/material"
+import { Skeleton, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import CTALink, { CTALinkIcon, CTALinkProps } from "./CTALink"
@@ -169,4 +169,35 @@ const LinkBox = ({
   )
 }
 
+interface LinkBoxSkeletonProps extends PropsOf<typeof LinkBoxContainer> {
+  hasImage?: boolean
+  hasDescription?: boolean
+}
+
+export const LinkBoxSkeleton = ({
+  hasImage,
+  hasDescription,
+  ...props
+}: LinkBoxSkeletonProps) => (
+  <LinkBoxContainer {...props}>
+    <LinkBoxContent>
+      {hasImage && (
+        <LinkBoxImageContainer>
+          <Skeleton variant="rectangular" width="100%" height="100%" />
+        </LinkBoxImageContainer>
+      )}
+      <LinkBoxTextContainer>
+        <LinkBoxTitle variant="h3">
+          <Skeleton variant="text" width={200} />
+        </LinkBoxTitle>
+        {hasDescription && (
+          <LinkBoxDescription>
+            <Skeleton variant="text" width="100%" />
+            <Skeleton variant="text" width="40%" />
+          </LinkBoxDescription>
+        )}
+      </LinkBoxTextContainer>
+    </LinkBoxContent>
+  </LinkBoxContainer>
+)
 export default LinkBox

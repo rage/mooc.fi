@@ -12,23 +12,11 @@ const ButtonText = styled("span")`
 `
 
 const EnhancedMUIButton = styled(MUIButton)(
-  ({ theme, startIcon, href }) => `
+  ({ theme, startIcon, href, color }) => `
   ${
     href
-      ? css`
-          &.MuiButton-containedPrimary {
-            ${ButtonText} {
-              margin: 12px 0 12px 16px;
-              padding-right: 16px;
-              border-right: solid 1px ${theme.palette.common.additional.skyblue};
-            }
-            &.Mui-disabled {
-              ${ButtonText} {
-                border-right: solid 1px ${theme.palette.common.grayscale.dark};
-              }
-            }
-          }
-          &.MuiButton-containedSecondary {
+      ? color === "secondary"
+        ? css`
             ${ButtonText} {
               margin: 12px 16px;
             }
@@ -36,14 +24,35 @@ const EnhancedMUIButton = styled(MUIButton)(
               padding-right: 1rem;
               padding-left: 0;
             }
-          }
-        `.styles
+          `.styles
+        : css`
+            ${ButtonText} {
+              margin: 12px 0 12px 16px;
+              padding-right: 16px;
+              border-right: solid 1px ${theme.palette.common.additional.skyblue};
+            }
+            ,
+            &.Mui-disabled {
+              ${ButtonText} {
+                border-right: solid 1px ${theme.palette.common.grayscale.dark};
+              }
+            }
+          `.styles
       : ""
   }
   ${
     startIcon
-      ? css`
-          &.MuiButton-containedPrimary {
+      ? color === "secondary"
+        ? css`
+            ${ButtonText} {
+              margin: 12px 16px;
+            }
+            &.MuiButton-startIcon {
+              padding-left: 1rem;
+              padding-right: 0;
+            }
+          `.styles
+        : css`
             ${ButtonText} {
               margin: 12px 16px 12px 0;
               padding-left: 16px;
@@ -54,17 +63,7 @@ const EnhancedMUIButton = styled(MUIButton)(
                 border-left: solid 1px ${theme.palette.common.grayscale.dark};
               }
             }
-          }
-          &.MuiButton-containedSecondary {
-            ${ButtonText} {
-              margin: 12px 16px;
-            }
-            &.MuiButton-startIcon {
-              padding-left: 1rem;
-              padding-right: 0;
-            }
-          }
-        `.styles
+          `.styles
       : ""
   }
 `,
