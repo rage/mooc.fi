@@ -168,6 +168,7 @@ const IntroductionTitle = styled("h2")(
   }
 `,
 )
+
 const IntroductionDescription = styled("p")(
   ({ theme }) => `
   ${fontSize(15, 22)}

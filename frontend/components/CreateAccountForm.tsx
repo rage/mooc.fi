@@ -235,6 +235,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
     const t = getSignUpTranslator(
       (this.props.router.locale ?? "fi") as LanguageKey,
     )
+    const baseUrl = this.props.router.asPath.includes("_new") ? "/_new" : ""
 
     return (
       <StyledPaper>
@@ -343,7 +344,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
         </Form>
 
         <Row>
-          <Link href="/sign-in">{t("signIn")}</Link>
+          <Link href={`${baseUrl}/sign-in`}>{t("signIn")}</Link>
         </Row>
 
         {this.state.error && (

@@ -55,7 +55,10 @@ const UserOptionsMenu = () => {
   }, [currentUser, t, isNarrow])
 */
   const onLogOut = useCallback(
-    () => signOut(apollo, logInOrOut),
+    (e: MouseEvent) => {
+      e.preventDefault()
+      signOut(apollo, logInOrOut)
+    },
     [apollo, logInOrOut],
   )
 
@@ -68,7 +71,7 @@ const UserOptionsMenu = () => {
             label: t("myProfile"),
             items: [
               {
-                href: "#",
+                href: "",
                 label: t("logout"),
                 onClick: onLogOut,
               },

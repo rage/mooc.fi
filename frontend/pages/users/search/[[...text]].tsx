@@ -12,6 +12,7 @@ import UserSearchContext, {
   UserSearchResults,
 } from "/contexts/UserSearchContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import useIsNew from "/hooks/useIsNew"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useSearch } from "/hooks/useSearch"
 import withAdmin from "/lib/with-admin"
@@ -31,6 +32,8 @@ const emptyResults: UserSearchResults = {
 }
 
 const UserSearch = () => {
+  const isNew = useIsNew()
+  const baseUrl = isNew ? "/_new/admin" : ""
   const router = useRouter()
   const client = useApolloClient()
   const textParam = useQueryParameter("text", { enforce: false })
@@ -199,8 +202,10 @@ const UserSearch = () => {
     }
     const href =
       searchVariables.search !== ""
-        ? `/users/search/${encodeURIComponent(searchVariables.search)}`
-        : `/users/search`
+        ? `${baseUrl}/users/search/${encodeURIComponent(
+            searchVariables.search,
+          )}`
+        : `${baseUrl}/users/search`
     if (router?.asPath !== href) {
       // the history is still a bit wonky - how should it work?
       router.push({ href, query: params.toString() }, undefined, {
@@ -215,14 +220,14 @@ const UserSearch = () => {
     },
     {
       translation: "userSearch",
-      href: "/users/search",
+      href: `${baseUrl}/users/search`,
     },
   ]
 
   if (textParam) {
     crumbs.push({
       translation: "userSearchResults",
-      href: `/users/search/${encodeURIComponent(textParam)}`,
+      href: `${baseUrl}/users/search/${encodeURIComponent(textParam)}`,
     })
   }
   useBreadcrumbs(crumbs)

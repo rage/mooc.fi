@@ -1,3 +1,3 @@
-import CoursesPage from "pages/users/search/[[...text]]"
+import UserSearchPage from "pages/users/search/[[...text]]"
 
-export default CoursesPage
+export default UserSearchPage

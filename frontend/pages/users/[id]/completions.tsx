@@ -5,6 +5,7 @@ import { Completions } from "/components/Home/Completions"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import Spinner from "/components/Spinner"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import useIsNew from "/hooks/useIsNew"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import withAdmin from "/lib/with-admin"
 
@@ -12,6 +13,8 @@ import { UserOverviewDocument } from "/graphql/generated"
 
 function CompletionsPage() {
   const id = useQueryParameter("id")
+  const isNew = useIsNew()
+  const baseUrl = isNew ? "/_new/admin" : ""
 
   const { loading, error, data } = useQuery(UserOverviewDocument, {
     variables: { upstream_id: Number(id) },
@@ -26,7 +29,7 @@ function CompletionsPage() {
     },
     {
       translation: "userCompletions",
-      href: `/users/${id}/completions`,
+      href: `${baseUrl}/users/${id}/completions`,
     },
   ])
 

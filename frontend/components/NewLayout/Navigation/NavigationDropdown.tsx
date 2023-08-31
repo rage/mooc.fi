@@ -233,15 +233,17 @@ const NavigationDropdownShortcuts = ({
   items,
 }: NavigationDropdownShortcutsProps) => {
   const t = useTranslator(CommonTranslations)
+  console.log("items", items)
   return (
     <NavigationDropdownShortcutContainer>
       <h2>{t("shortcuts")}</h2>
       <NavigationDropdownMenuList>
-        {items.map(({ href, label, name, external }) => (
+        {items.map(({ href, label, name, external, onClick }) => (
           <NavigationDropdownMenuLink
             key={name ?? label}
-            href={href}
+            href={href ?? undefined}
             target={external ? "_blank" : undefined}
+            onClick={onClick}
           >
             <span>
               {label}
@@ -313,8 +315,12 @@ export const NavigationDropdownLink = ({
             hasShortcuts={(shortcuts ?? []).length > 0}
           >
             <NavigationDropdownMenuList aria-labelledby={buttonName}>
-              {items.map(({ name, label, href }) => (
-                <NavigationDropdownMenuLink key={name ?? label} href={href}>
+              {items.map(({ name, label, href, onClick }) => (
+                <NavigationDropdownMenuLink
+                  key={name ?? label}
+                  href={href}
+                  onClick={onClick}
+                >
                   {label}
                 </NavigationDropdownMenuLink>
               ))}

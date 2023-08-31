@@ -19,6 +19,7 @@ import UserInfo from "/components/Dashboard/Users/UserInfo"
 import ErrorMessage from "/components/ErrorMessage"
 import { Breadcrumb } from "/contexts/BreadcrumbContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import useIsNew from "/hooks/useIsNew"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import useSubtitle from "/hooks/useSubtitle"
 import { useTranslator } from "/hooks/useTranslator"
@@ -57,6 +58,8 @@ const RightToolbarContainer = styled("div")`
 
 function UserSummaryView() {
   const isNarrow = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"))
+  const isNew = useIsNew()
+  const baseUrl = isNew ? "/_new/admin" : ""
 
   const t = useTranslator(
     UsersTranslations,
@@ -98,7 +101,7 @@ function UserSummaryView() {
       },
       {
         translation: "userSummary",
-        href: `/users/${id}/summary`,
+        href: `${baseUrl}/users/${id}/summary`,
       },
     ]
 
@@ -110,7 +113,7 @@ function UserSummaryView() {
       if (!isInvalid) {
         crumbs.push({
           label: entry?.course?.name,
-          href: `/users/${id}/summary/${slug}`,
+          href: `${baseUrl}/users/${id}/summary/${slug}`,
         })
       }
     }
@@ -128,7 +131,7 @@ function UserSummaryView() {
     function onsub(event: React.FormEvent<HTMLFormElement>) {
       event.preventDefault()
       if (userSearch && userSearch.length >= 3) {
-        router.push(`/users/search/${encodeURIComponent(userSearch)}`)
+        router.push(`${baseUrl}/users/search/${encodeURIComponent(userSearch)}`)
       }
     },
     [userSearch],

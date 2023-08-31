@@ -18,6 +18,7 @@ import { styled } from "@mui/material/styles"
 
 import Pagination from "./Pagination"
 import UserSearchContext from "/contexts/UserSearchContext"
+import useIsNew from "/hooks/useIsNew"
 import { useTranslator } from "/hooks/useTranslator"
 import UsersTranslations from "/translations/users"
 
@@ -95,6 +96,8 @@ const WideGrid = () => {
 }
 
 const RenderResults = () => {
+  const isNew = useIsNew()
+  const baseUrl = isNew ? "/_new/admin" : ""
   const t = useTranslator(UsersTranslations)
   const { data, loading, meta } = useContext(UserSearchContext)
   const isVeryWide = useMediaQuery("(min-width: 1200px)")
@@ -148,13 +151,13 @@ const RenderResults = () => {
             <TableCell align="right">
               <ButtonContainer>
                 <Button
-                  href={`/users/${upstream_id}/summary`}
+                  href={`${baseUrl}/users/${upstream_id}/summary`}
                   variant="contained"
                 >
                   {t("summary")}
                 </Button>
                 <Button
-                  href={`/users/${upstream_id}/completions`}
+                  href={`${baseUrl}/users/${upstream_id}/completions`}
                   variant="contained"
                 >
                   {t("completions")}

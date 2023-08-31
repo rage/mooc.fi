@@ -6,6 +6,7 @@ import { Button, CircularProgress, Grid } from "@mui/material"
 import Container from "/components/Container"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import useIsNew from "/hooks/useIsNew"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
@@ -30,6 +31,8 @@ const filterEdges = (
 }
 
 const UserPage = () => {
+  const isNew = useIsNew()
+  const baseUrl = isNew ? "/_new/admin" : ""
   const id = useQueryParameter("id")
   const client = useApolloClient()
   const t = useTranslator(CommonTranslations)
@@ -51,7 +54,7 @@ const UserPage = () => {
     },
     {
       label: id,
-      href: `/users/${id}`,
+      href: `${baseUrl}/users/${id}`,
     },
   ])
 

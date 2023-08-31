@@ -6,7 +6,7 @@ import { fontSize } from "/src/theme/util"
 const ParagraphText = styled("div")(
   ({ theme }) => `
   ${fontSize(15, 22)}
-  color: ${theme.palette.common.grayscale.darkText}
+  color: ${theme.palette.common.grayscale.darkText};
   letter-spacing: 0;
   width: 100%;
 
@@ -184,11 +184,25 @@ const ParagraphText = styled("div")(
 `,
 )
 
+const paragraphVariants = ["small", "large"] as const
+
+type ParagraphVariant = (typeof paragraphVariants)[number]
+
+interface ParagraphProps {
+  variant?: ParagraphVariant
+}
+
 const Paragraph = ({
   children,
+  variant = "small",
   ...props
-}: React.PropsWithChildren<PropsOf<typeof ParagraphText>>) => (
-  <ParagraphText {...props}>{children}</ParagraphText>
+}: React.PropsWithChildren<ParagraphProps & PropsOf<typeof ParagraphText>>) => (
+  <ParagraphText
+    {...props}
+    className={`${props.className ?? ""} paragraph__${variant}`}
+  >
+    {children}
+  </ParagraphText>
 )
 
 export default Paragraph

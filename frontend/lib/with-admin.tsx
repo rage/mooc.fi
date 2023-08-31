@@ -14,6 +14,7 @@ function withAdmin(Component: any) {
     PropsWithChildren<{
       admin: boolean
       signedIn: boolean
+      baseUrl?: string
     }>
   > {
     static displayName = `withAdmin(${
@@ -24,22 +25,24 @@ function withAdmin(Component: any) {
     static async getInitialProps(context: NextPageContext) {
       const admin = isAdmin(context)
       const signedIn = isSignedIn(context)
+      const baseUrl = context.pathname.includes("_new") ? "/_new" : ""
 
       prevContext = context
 
       if (!signedIn) {
         redirect({
           context,
-          target: "/sign-in",
+          target: `${baseUrl}/sign-in`,
         })
 
-        return { signedIn: false }
+        return { signedIn: false, baseUrl }
       }
 
       return {
         ...(await Component.getInitialProps?.(context)),
         admin,
         signedIn,
+        baseUrl,
       }
     }
 
@@ -54,7 +57,7 @@ function withAdmin(Component: any) {
         if (prevContext) {
           redirect({
             context: prevContext,
-            target: "/sign-in",
+            target: `${this.props.baseUrl}/sign-in`,
           })
         }
         // We don't return here because when logging out it is better to keep the old content for a moment

@@ -1,7 +1,7 @@
 import { Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import { CardBody, CardDescription, CardWrapper } from "../Common/Card"
+import { CardBody, CardWrapper } from "../Common/Card"
 
 import { CurrentUserQuery } from "/graphql/generated"
 
@@ -66,10 +66,10 @@ interface InfoRowProps {
 function InfoRow({ title, content }: InfoRowProps) {
   return (
     <InfoRowContainer>
-      <InfoRowTitle variant="h6" component="h3">
+      <InfoRowTitle variant="subtitle1" component="h5">
         {title}
       </InfoRowTitle>
-      <InfoRowContent variant="h6" component="h3">
+      <InfoRowContent variant="subtitle1" component="h5">
         {content}
       </InfoRowContent>
     </InfoRowContainer>
@@ -85,13 +85,11 @@ function ProfilePageHeader({ user }: ProfilePageHeaderProps) {
       <UserInfoWrapper>
         <ProfileCardWrapper>
           <CardBody>
-            <CardDescription>
-              <InfoRow title="Email" content={user?.email ?? "-"} />
-              <InfoRow
-                title="Student number"
-                content={user?.student_number ?? "-"}
-              />
-            </CardDescription>
+            <InfoRow title="Email" content={user?.email ?? "-"} />
+            <InfoRow
+              title="Student number"
+              content={user?.student_number ?? "-"}
+            />
           </CardBody>
         </ProfileCardWrapper>
       </UserInfoWrapper>

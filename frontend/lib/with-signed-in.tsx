@@ -10,10 +10,14 @@ let prevContext: NextContext | null = null
 
 // TODO: might need to wrap in function to give redirect parameters (= shallow?)
 export default function withSignedIn(
-  Component: NextComponentType<any, any, { signedIn: boolean }>,
+  Component: NextComponentType<
+    any,
+    any,
+    { signedIn: boolean; baseUrl?: string }
+  >,
 ) {
   return class WithSignedIn extends ReactComponent<
-    PropsWithChildren<{ signedIn: boolean }>
+    PropsWithChildren<{ signedIn: boolean; baseUrl?: string }>
   > {
     static displayName = `withSignedIn(${
       Component.name || Component.displayName || "AnonymousComponent"
@@ -22,21 +26,22 @@ export default function withSignedIn(
 
     static async getInitialProps(context: NextContext) {
       const signedIn = isSignedIn(context)
-
+      const baseUrl = context.pathname.includes("_new") ? "/_new" : ""
       prevContext = context
 
       if (!signedIn) {
         redirect({
           context,
-          target: "/sign-in",
+          target: `${baseUrl}/sign-in`,
         })
 
-        return {}
+        return { baseUrl }
       }
 
       return {
         ...(await Component.getInitialProps?.(context)),
         signedIn,
+        baseUrl,
       }
     }
 
@@ -51,7 +56,7 @@ export default function withSignedIn(
         if (prevContext) {
           redirect({
             context: prevContext,
-            target: "/sign-in",
+            target: `${this.props.baseUrl}/sign-in`,
           })
         }
         // We don't return here because when logging out it is better to keep the old content for a moment

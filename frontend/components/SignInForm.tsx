@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 
 import { useApolloClient } from "@apollo/client"
+import { PropsOf } from "@emotion/react"
 import {
   FormControl,
   FormHelperText,
@@ -20,7 +21,7 @@ const StyledForm = styled("form")`
   padding: 1em;
 `
 
-function SignIn() {
+function SignIn(props?: PropsOf<typeof StyledForm>) {
   const { logInOrOut } = useLoginStateContext()
   const t = useTranslator(CommonTranslations)
   const apollo = useApolloClient()
@@ -53,7 +54,7 @@ function SignIn() {
   }, [])
 
   return (
-    <StyledForm>
+    <StyledForm {...props}>
       <FormControl required fullWidth error={error}>
         <InputLabel htmlFor="email">{t("username")}</InputLabel>
         <Input
