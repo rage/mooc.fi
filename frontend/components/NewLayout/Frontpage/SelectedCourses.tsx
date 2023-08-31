@@ -1,5 +1,5 @@
 import { useRouter } from "next/router"
-import { range } from "remeda"
+import { range, sample } from "remeda"
 
 import { useQuery } from "@apollo/client"
 import { Button, Typography, TypographyProps } from "@mui/material"
@@ -7,7 +7,7 @@ import { styled } from "@mui/material/styles"
 
 import ContentWrapper from "../Common/ContentWrapper"
 import CTAButton from "../Common/CTAButton"
-import { SectionTitle } from "/components/NewLayout/Common"
+import Introduction from "../Common/Introduction"
 import {
   CardBody,
   CardDescription,
@@ -24,7 +24,11 @@ import HomeTranslations from "/translations/home"
 import { formatDateTime } from "/util/dataFormatFunctions"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
-import { NewCourseFieldsFragment, NewCoursesDocument } from "/graphql/generated"
+import {
+  CourseStatus,
+  NewCourseFieldsFragment,
+  NewCoursesDocument,
+} from "/graphql/generated"
 
 const CardHeader = styled("div")`
   position: relative;
@@ -106,22 +110,21 @@ function SelectedCourses() {
     ssr: false,
   })
 
+  const notEndedCourses =
+    data?.courses?.filter((course) => course.status !== CourseStatus.Ended) ??
+    []
   return (
     <section id="courses">
+      <Introduction title={t("popularCoursesTitle")} />
       <ContentWrapper>
-        <SectionTitle sx={{ marginBottom: "2rem" }}>
-          {t("popularCoursesTitle")}
-        </SectionTitle>
         <CoursesGrid>
           {loading
             ? range(0, 4).map((index) => (
                 <CourseCardSkeleton key={`skeleton-${index}`} />
               ))
-            : data?.courses
-                ?.slice(0, 4)
-                .map((course) => (
-                  <CommonCourseCard key={course.id} course={course} />
-                ))}
+            : sample(notEndedCourses, 4).map((course) => (
+                <CommonCourseCard key={course.id} course={course} />
+              ))}
         </CoursesGrid>
         <CTAButton href="/_new/courses">{t("showAllCourses")}</CTAButton>
       </ContentWrapper>

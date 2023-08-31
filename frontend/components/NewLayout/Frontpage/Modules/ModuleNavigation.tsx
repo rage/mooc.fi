@@ -1,33 +1,16 @@
 import { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
-import { styled } from "@mui/material/styles"
 
+import ContentWrapper from "../../Common/ContentWrapper"
 import CTAButton from "../../Common/CTAButton"
+import Introduction from "../../Common/Introduction"
 import ModuleNaviList from "./ModuleNaviList"
-import { SectionContainer, SectionTitle } from "/components/NewLayout/Common"
 import { useTranslator } from "/hooks/useTranslator"
 import HomeTranslations from "/translations/home"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
 import { StudyModulesDocument } from "/graphql/generated"
-
-// @ts-ignore: not used?
-const ModulesGrid = styled("div")(
-  ({ theme }) => `
-  display: grid;
-  grid-gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  padding: 2rem;
-  justify-content: center;
-  width: 80%;
-  ${theme.breakpoints.down("sm")}} {
-    padding: 0;
-    width: 100%;
-    grid-template-columns: 1fr;
-  }
-`,
-)
 
 /*const ShowMore = styled(Button)`
   --color: #eee;
@@ -102,10 +85,12 @@ export function ModuleNavigation() {
   })
 
   return (
-    <SectionContainer id="modules" style={{ marginBottom: "2rem" }}>
-      <SectionTitle>{t("studyModulesTitle")}</SectionTitle>
-      <ModuleNaviList modules={data?.study_modules} loading={loading} />
-      <CTAButton href="/_new/study-modules">{t("showAllModules")}</CTAButton>
-    </SectionContainer>
+    <section id="modules">
+      <Introduction title={t("studyModulesTitle")} />
+      <ContentWrapper>
+        <ModuleNaviList modules={data?.study_modules} loading={loading} />
+        <CTAButton href="/_new/study-modules">{t("showAllModules")}</CTAButton>
+      </ContentWrapper>
+    </section>
   )
 }

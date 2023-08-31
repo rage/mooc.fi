@@ -129,6 +129,7 @@ declare module "@mui/material/styles" {
     xxxs: true
     xxs: true
     desktop: true
+    xxl: true
   }
 
   // add typography variants - also needs to be declared in Typography

@@ -5,6 +5,7 @@ import { css, styled } from "@mui/material/styles"
 
 import { CorrectedAnchor } from "../Common"
 import { CardWrapper } from "../Common/Card"
+import ContentWrapper from "../Common/ContentWrapper"
 import CTALink from "../Common/CTALink"
 import CourseCard, { CourseCardSkeleton } from "../Courses/CourseCard"
 import useIsomorphicLayoutEffect from "/hooks/useIsomorphicLayoutEffect"
@@ -33,17 +34,20 @@ const HeroContainer = styled("li")`
   overflow: hidden;
 `
 
-const ModuleCardWrapper = styled(CardWrapper, {
+const ModuleSectionRoot = styled(CardWrapper, {
   shouldForwardProp: (prop) => prop !== "backgroundColor" && prop !== "as",
 })<{ backgroundColor: string }>(
   ({ theme, backgroundColor }) => `
+  list-style-type: none;
   border-radius: 0;
+  box-shadow: none;
+  border: none;
   display: flex;
-  width: 100%;
   flex-direction: column;
+  width: 100%;
   margin-bottom: 3rem;
   position: relative;
-  z-index: -8;
+  z-index: 0;
   background-color: #fefefe;
   background-image: linear-gradient(to left, rgba(255,0,0,0), ${backgroundColor} 55%);
 
@@ -53,7 +57,7 @@ const ModuleCardWrapper = styled(CardWrapper, {
 `,
 )
 
-const ModuleCardBody = styled("ul")`
+const ModuleSectionBody = styled("ul")`
   --_cols: max(
     1,
     var(--cols, 3)
@@ -61,7 +65,7 @@ const ModuleCardBody = styled("ul")`
   --_gap: var(--gap, 1.5rem); /* space between each card */
   --_min: var(
     --min,
-    min(360px, calc(100vw - 3rem))
+    min(470px, calc(100vw - 3rem))
   ); /* card must be at least this wide */
   --_max: var(--max, 100%); /* cards cannot be wider than this size */
 
@@ -78,14 +82,14 @@ const ModuleCardBody = styled("ul")`
       1fr
     )
   );
-  grid-template-rows: repeat(auto-fill, 1fr);
+  grid-auto-rows: 1fr;
   background-color: transparent;
   grid-gap: var(--_gap);
   grid-auto-flow: row;
   width: 100%;
 `
 
-const ModuleCardDescription = styled("div")`
+const ModuleSectionDescription = styled("div")`
   padding: 1rem;
   display: flex;
   margin: 0;
@@ -93,9 +97,9 @@ const ModuleCardDescription = styled("div")`
   color: #fff;
 `
 
-const ModuleCardDescriptionText = styled(Typography)`
+const ModuleSectionDescriptionText = styled(Typography)`
   font-family: var(--body-font) !important;
-  font-weight: 400 !important;
+  font-weight: 200 !important;
 `
 
 const ImageBackgroundBase = css`
@@ -161,7 +165,7 @@ export function ListItem({
   const t = useTranslator(StudyModulesTranslations)
 
   const descriptionRef = useRef<HTMLElement | null>()
-  const moduleCardRef = useRef<HTMLLIElement | null>()
+  const ModuleSectionRef = useRef<HTMLLIElement | null>()
   const { active, upcoming, ended } = useMemo(
     () => getCoursesByStatus(studyModule.courses),
     [studyModule],
@@ -169,26 +173,29 @@ export function ListItem({
 
   const setDescriptionHeight = useCallback(() => {
     const description = descriptionRef.current
-    const moduleCard = moduleCardRef.current
+    const ModuleSection = ModuleSectionRef.current
 
-    if (!description || !moduleCard) {
+    if (!description || !ModuleSection) {
       return
     }
 
     let cardHeight = 0
-    moduleCard.childNodes?.forEach((child) => {
+    ModuleSection.childNodes?.forEach((child) => {
       if (child instanceof HTMLElement) {
         cardHeight += child.clientHeight
       }
     })
-    const currentSpan = Number(
-      description.style.getPropertyValue("--hero-span"),
-    )
-    if (description.clientHeight > cardHeight && currentSpan < 2) {
+    const currentSpan =
+      Number(description.style.getPropertyValue("--hero-span")) || 1
+    const descriptionUnitHeight = description.clientHeight / currentSpan
+    if (
+      (descriptionUnitHeight > cardHeight && currentSpan < 2) ||
+      (descriptionUnitHeight < cardHeight && currentSpan > 1)
+    ) {
       const span = Math.ceil(description.scrollHeight / cardHeight) // the max size of row should be in a var
       description.style.setProperty("--hero-span", `${span}`)
     }
-  }, [descriptionRef.current, moduleCardRef.current])
+  }, [descriptionRef.current, ModuleSectionRef.current])
 
   useEffect(() => {
     if (!window) {
@@ -206,75 +213,79 @@ export function ListItem({
 
   // TODO: the anchor link may have to be shifted by the amount of the header again
   return (
-    <ModuleCardWrapper as="section" backgroundColor={backgroundColor}>
+    <ModuleSectionRoot as="li" backgroundColor={backgroundColor}>
       <CorrectedAnchor id={studyModule.slug} />
       <ImageBackground src={backgroundPattern.src} />*
-      <ModuleCardBody>
-        <HeroContainer ref={(ref) => (descriptionRef.current = ref)}>
-          <ModuleCardDescription>
-            <CenteredHeader variant="h1" component="h2">
-              {studyModule.name}
-            </CenteredHeader>
-            <ModuleCardDescriptionText variant="ingress">
-              {studyModule.description}
-            </ModuleCardDescriptionText>
-          </ModuleCardDescription>
-        </HeroContainer>
-        {[active, upcoming].flatMap(
-          (courses) =>
-            courses?.map((course, index) => (
-              <CourseCard
-                ref={(ref) => {
-                  if (index === 0) {
-                    moduleCardRef.current = ref
-                  }
-                }}
-                course={course}
-                studyModule={studyModule.slug}
-                key={course.id}
-              />
-            )),
+      <ContentWrapper>
+        <ModuleSectionBody>
+          <HeroContainer>
+            <ModuleSectionDescription
+              ref={(ref) => (descriptionRef.current = ref)}
+            >
+              <CenteredHeader variant="h1" component="h2">
+                {studyModule.name}
+              </CenteredHeader>
+              <ModuleSectionDescriptionText variant="ingress">
+                {studyModule.description}
+              </ModuleSectionDescriptionText>
+            </ModuleSectionDescription>
+          </HeroContainer>
+          {[active, upcoming].flatMap(
+            (courses) =>
+              courses?.map((course, index) => (
+                <CourseCard
+                  ref={(ref) => {
+                    if (index === 0) {
+                      ModuleSectionRef.current = ref
+                    }
+                  }}
+                  course={course}
+                  studyModule={studyModule.slug}
+                  key={course.id}
+                />
+              )),
+          )}
+          {/* TODO: do something with ended courses */}
+        </ModuleSectionBody>
+        {ended.length > 0 && (
+          <EndedCoursesLinkContainer>
+            <CTALink
+              href={`/_new/courses/?tag=${studyModule.slug}&status=${CourseStatus.Ended}`}
+            >
+              {t("showEndedCourses")}
+            </CTALink>
+          </EndedCoursesLinkContainer>
         )}
-        {/* TODO: do something with ended courses */}
-      </ModuleCardBody>
-      {ended.length > 0 && (
-        <EndedCoursesLinkContainer>
-          <CTALink
-            href={`/_new/courses/?tag=${studyModule.slug}&status=${CourseStatus.Ended}`}
-          >
-            {t("showEndedCourses")}
-          </CTALink>
-        </EndedCoursesLinkContainer>
-      )}
-    </ModuleCardWrapper>
+      </ContentWrapper>
+    </ModuleSectionRoot>
   )
 }
 
-// can't use a wrapper for the course list because of the grid?
+// can't use a Root for the course list because of the grid?
 export function ListItemSkeleton({
   backgroundColor,
 }: {
   backgroundColor: string
 }) {
   return (
-    <ModuleCardWrapper as="section" backgroundColor={backgroundColor}>
+    <ModuleSectionRoot as="section" backgroundColor={backgroundColor}>
       <SkeletonBackground />
-      <ModuleCardBody>
+      <ModuleSectionBody>
         <HeroContainer>
-          <ModuleCardDescription>
+          <ModuleSectionDescription>
             <CenteredHeader variant="h1">
               <Skeleton />
             </CenteredHeader>
             <Typography variant="subtitle1">
               <Skeleton />
             </Typography>
-          </ModuleCardDescription>
+          </ModuleSectionDescription>
         </HeroContainer>
         <CourseCardSkeleton />
         <CourseCardSkeleton />
         <CourseCardSkeleton />
         <CourseCardSkeleton />
-      </ModuleCardBody>
-    </ModuleCardWrapper>
+      </ModuleSectionBody>
+    </ModuleSectionRoot>
   )
 }

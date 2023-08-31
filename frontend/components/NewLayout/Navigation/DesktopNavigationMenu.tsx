@@ -27,6 +27,7 @@ const NavigationContainer = styled("div")`
   width: 100%;
   justify-content: space-between;
   align-items: center;
+  height: 100%;
 `
 
 const UserOptionsMenu = () => {

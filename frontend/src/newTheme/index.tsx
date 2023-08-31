@@ -19,7 +19,8 @@ let theme = createTheme({
       md: 960,
       desktop: 1024,
       lg: 1200,
-      xl: 1536,
+      xl: 1600,
+      xxl: 1920,
     },
   },
 })

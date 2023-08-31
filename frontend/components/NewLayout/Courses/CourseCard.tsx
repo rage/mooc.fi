@@ -28,14 +28,20 @@ const ContainerBase = css`
   width: 100%;
 `
 
-const Container = styled("li")`
+const CourseCardRoot = styled("li")(
+  ({ theme }) => `
   ${ContainerBase.styles}
   height: 100%;
   display: block;
   container-type: inline-size;
-`
+  ${theme.breakpoints.up(768)} {
+    min-width: 470px;
+    max-height: 500px;
+  }
+`,
+)
 
-const SkeletonContainer = styled("li")`
+const SkeletonRoot = styled("li")`
   ${ContainerBase.styles};
   height: 100%;
   display: block;
@@ -48,7 +54,6 @@ const CardContainer = styled("article")(
   flex-direction: column;
   background-color: ${theme.palette.common.grayscale.backgroundBox};
   height: 100%;
-
   ${theme.breakpoints.up(768)} {
     flex-direction: row;
   }
@@ -82,6 +87,8 @@ const ModuleColor = styled("div", {
 const TextContainer = styled("div")`
   margin-right: 2rem;
   margin-bottom: auto;
+  display: flex;
+  flex-direction: column;
 `
 
 const ContentContainer = styled("div")(
@@ -204,7 +211,6 @@ const CourseDetailItem = ({
 
 const Actions = styled("div")(
   ({ theme }) => `
-  margin-top: auto;
   width: calc(100% + 2rem);
   display: flex;
   flex-wrap: wrap;
@@ -226,9 +232,9 @@ const Tags = styled("div")(
   flex-wrap: wrap;
   align-items: center;
   gap: 4px;
-
+  width: calc(100% - 2rem);
   ${theme.breakpoints.down("sm")} {
-    width: 50%;
+    width: calc(50% - 2rem);
   }
 `,
 )
@@ -414,7 +420,7 @@ interface CourseCardProps {
 
 const CourseCard = React.forwardRef<
   HTMLLIElement,
-  CourseCardProps & PropsOf<typeof Container>
+  CourseCardProps & PropsOf<typeof CourseCardRoot>
 >(({ course, studyModule, ...props }, ref) => {
   const t = useTranslator(CommonTranslations)
 
@@ -422,7 +428,7 @@ const CourseCard = React.forwardRef<
     studyModule ?? course.study_modules[0]?.slug ?? "other"
 
   return (
-    <Container ref={ref} {...props}>
+    <CourseCardRoot ref={ref} {...props}>
       <CourseCardLayout
         studyModule={courseStudyModule}
         ended={course?.status === CourseStatus.Ended}
@@ -469,12 +475,12 @@ const CourseCard = React.forwardRef<
           )
         }
       />
-    </Container>
+    </CourseCardRoot>
   )
 })
 
 export const CourseCardSkeleton = () => (
-  <SkeletonContainer>
+  <SkeletonRoot>
     <CourseCardLayout
       title={<Skeleton width={200} />}
       description={
@@ -504,7 +510,7 @@ export const CourseCardSkeleton = () => (
       difficultyTags={<Skeleton width={100} height={20} />}
       link={<Skeleton width={150} />}
     />
-  </SkeletonContainer>
+  </SkeletonRoot>
 )
 
 export default CourseCard

@@ -151,7 +151,7 @@ const IntroductionTitleContainer = styled("div")(
 const IntroductionTitle = styled("h2")(
   ({ theme }) => `
   ${fontSize(28, 32)}
-  font-weight: 700,
+  font-weight: 700;
   letter-spacing: -0.7px;
   text-transform: uppercase;
   ${theme.breakpoints.up("md")} {
@@ -215,7 +215,7 @@ const Introduction = ({
             className={imageProps?.src ? "has-image" : undefined}
           >
             <IntroductionTitleContainer>
-              <IntroductionTitle>{title}</IntroductionTitle>
+              <IntroductionTitle dangerouslySetInnerHTML={{ __html: title }} />
             </IntroductionTitleContainer>
             <IntroductionDescription>{description}</IntroductionDescription>
             {href && (

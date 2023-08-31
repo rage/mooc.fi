@@ -10,7 +10,7 @@ const FlipchartIcon = createSvgIcon(
   >
     <path
       stroke="#000000"
-      stroke-width="2"
+      strokeWidth="2"
       d="M1 2h16v11H1Z M4 18L6 13M14 18L12 13 M7 1H11"
     ></path>
   </svg>,

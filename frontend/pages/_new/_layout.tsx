@@ -40,8 +40,6 @@ const LayoutContent = styled("div")(
     flex-grow: 1;
     order: 2;
     width: 80%;
-  }
-  ${theme.breakpoints.up("xl")} {
     padding: 0 2rem;
   }
 `,
