@@ -43,16 +43,16 @@ const EnhancedMUIButton = styled(ButtonBase)(
       justify-content: center;
       max-width: 328px;
       padding: 13px 16px;
-  
+
       .text {
         ${fontSize(16, 18)}
         letter-spacing: -0.3px;
       }
-  
+
       .link-icon {
         display: flex;
         margin-left: 8px;
-  
+
         svg {
           height: 16px;
           width: 16px;
@@ -64,12 +64,12 @@ const EnhancedMUIButton = styled(ButtonBase)(
       background-color: ${theme.palette.common.brand.dark};
       border: 4px solid ${theme.palette.common.grayscale.white};
       color: ${theme.palette.common.grayscale.white};
-  
+
       .link-icon svg {
         background-color: ${theme.palette.common.brand.dark};
         fill: ${theme.palette.common.grayscale.white};
       }
-  
+
       .text {
         color: ${theme.palette.common.grayscale.white};
       }
@@ -79,12 +79,12 @@ const EnhancedMUIButton = styled(ButtonBase)(
       background-color: ${theme.palette.common.grayscale.white};
       border: 4px solid ${theme.palette.common.grayscale.black};
       color: ${theme.palette.common.grayscale.black};
-  
+
       .link-icon svg {
         background-color: ${theme.palette.common.grayscale.white};
         fill: ${theme.palette.common.grayscale.black};
       }
-  
+
       .text {
         color: ${theme.palette.common.grayscale.black};
       }
@@ -94,205 +94,205 @@ const EnhancedMUIButton = styled(ButtonBase)(
       background-color: ${theme.palette.common.grayscale.black};
       border: 4px solid ${theme.palette.common.grayscale.white};
       color: ${theme.palette.common.grayscale.white};
-  
+
       .link-icon svg {
         background-color: ${theme.palette.common.grayscale.black};
         fill: ${theme.palette.common.grayscale.white};
       }
-  
+
       .text {
         color: ${theme.palette.common.grayscale.white};
       }
-  
+
       &:hover {
         background-color: ${theme.palette.common.brand.active};
-  
+
         .link-icon svg {
           background-color: ${theme.palette.common.brand.active};
         }
       }
-  
+
       &:focus {
         background-color: ${theme.palette.common.brand.main};
-  
+
         .link-icon svg {
           background-color: ${theme.palette.common.brand.main};
         }
       }
     }
-  
+
     &.blue-background {
       background-color: ${theme.palette.common.brand.light};
       border: 4px solid ${theme.palette.common.grayscale.white};
       color: ${theme.palette.common.grayscale.white};
-  
+
       .link-icon svg {
         background-color: ${theme.palette.common.brand.light};
         fill: ${theme.palette.common.grayscale.white};
       }
-  
+
       .text {
         color: ${theme.palette.common.grayscale.white};
       }
-  
+
       &:hover {
         background-color: ${theme.palette.common.brand.main};
-  
+
         .link-icon svg {
           background-color: ${theme.palette.common.brand.main};
         }
       }
-  
+
       &:focus {
         background-color: ${theme.palette.common.brand.active};
-  
+
         .link-icon svg {
           background-color: ${theme.palette.common.brand.active};
         }
       }
     }
-  
+
     &.white-background {
       background-color: ${theme.palette.common.grayscale.white};
       border: 4px solid ${theme.palette.common.brand.light};
       color: ${theme.palette.common.brand.light};
-  
+
       .link-icon svg {
         background-color: ${theme.palette.common.grayscale.white};
         fill: ${theme.palette.common.brand.light};
       }
-  
+
       .text {
         color: ${theme.palette.common.brand.light};
       }
-  
+
       &:hover {
         border-color: ${theme.palette.common.brand.active};
-  
+
         .text {
           color: ${theme.palette.common.brand.active};
         }
-  
+
         .link-icon svg {
           fill: ${theme.palette.common.brand.active};
         }
       }
-  
+
       &:focus {
         border-color: ${theme.palette.common.brand.active};
-  
+
         .text {
           color: ${theme.palette.common.brand.active};
         }
-  
+
         .link-icon svg {
           fill: ${theme.palette.common.brand.active};
         }
       }
     }
-  
+
     &.hero-white {
       background-color: ${theme.palette.common.brand.light};
       color: ${theme.palette.common.grayscale.white};
-  
+
       .link-icon svg {
         background-color: ${theme.palette.common.brand.light};
         fill: ${theme.palette.common.grayscale.white};
       }
-  
+
       .text {
         color: ${theme.palette.common.grayscale.white};
       }
-  
+
       &:hover {
         background-color: ${theme.palette.common.brand.active};
-  
+
         .link-icon svg {
           background-color: ${theme.palette.common.brand.active};
         }
       }
-  
+
       &:focus {
         background-color: ${theme.palette.common.brand.active};
-  
+
         .link-icon svg {
           background-color: ${theme.palette.common.brand.active};
         }
       }
     }
-  
+
     &.hero-black {
       background-color: ${theme.palette.common.grayscale.black};
       border: 4px solid ${theme.palette.common.grayscale.white};
       color: ${theme.palette.common.grayscale.white};
-  
+
       .link-icon svg {
         background-color: ${theme.palette.common.grayscale.black};
         fill: ${theme.palette.common.grayscale.white};
       }
-  
+
       .text {
         color: ${theme.palette.common.grayscale.white};
       }
-  
+
       &:hover {
         border-color: ${theme.palette.common.brand.soft};
-  
+
         .text {
           color: ${theme.palette.common.brand.soft};
         }
-  
+
         .link-icon svg {
           fill: ${theme.palette.common.brand.soft};
         }
       }
-  
+
       &:focus {
         border-color: ${theme.palette.common.brand.soft};
-  
+
         .text {
           color: ${theme.palette.common.brand.soft};
         }
-  
+
         .link-icon svg {
           fill: ${theme.palette.common.brand.soft};
         }
       }
     }
-  
+
     &.hero-blue {
       background-color: ${theme.palette.common.brand.main};
       border: 4px solid ${theme.palette.common.grayscale.white};
       color: ${theme.palette.common.grayscale.white};
-  
+
       .link-icon svg {
         background-color: ${theme.palette.common.brand.main};
         fill: ${theme.palette.common.grayscale.white};
       }
-  
+
       .text {
         color: ${theme.palette.common.grayscale.white};
       }
-  
+
       &:hover {
         border-color: ${theme.palette.common.brand.soft};
-  
+
         .text {
           color: ${theme.palette.common.brand.soft};
         }
-  
+
         .link-icon svg {
           fill: ${theme.palette.common.brand.soft};
         }
       }
-  
+
       &:focus {
         border-color: ${theme.palette.common.brand.soft};
-  
+
         .text {
           color: ${theme.palette.common.brand.soft};
         }
-  
+
         .link-icon svg {
           fill: ${theme.palette.common.brand.soft};
         }

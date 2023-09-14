@@ -1,10 +1,11 @@
 import React, { useCallback } from "react"
 
-import { Chip, Skeleton } from "@mui/material"
+import { Chip, Skeleton, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import Button from "../Common/Button"
 import { useTranslator } from "/hooks/useTranslator"
+import { fontSize } from "/src/theme/util"
 import CommonTranslations from "/translations/common"
 
 import { TagCoreFieldsFragment } from "/graphql/generated"
@@ -66,6 +67,23 @@ const TagSkeletonContainer = styled("div")`
     "skeleton3Tags skeleton3SelectAll";
   gap: 0.5rem;
 `
+
+const Title = styled(Typography)(
+  ({ theme }) => `
+  ${fontSize(12, 16)}
+  color: ${theme["grayscale-dark"]};
+  font-weight: normal;
+  letter-spacing: -0.2px;
+  margin: 8px 4px 8px 0;
+  padding: 4px 0;
+
+  ${theme.breakpoints.up("sm")} {
+    ${fontSize(14, 16)};
+    letter-spacing: -0.3px;
+    padding: 6px 0;
+  }
+`,
+) as typeof Typography
 
 const TagsSkeleton = ({
   category,
@@ -184,6 +202,7 @@ const TagSelectButtons = ({
       {Object.keys(tags).map((category) => (
         <React.Fragment key={category}>
           <TagListContainer category={category}>
+            <Title>{t(category)}</Title>
             {tags[category].map((tag) => (
               <TagChip
                 id={`tag-${category}-${tag.id}`}

@@ -21,7 +21,7 @@ const FooterDownPusherWrapper = styled("div")`
 const MainContainer = styled("main")`
   display: flex;
   margin: 0 auto;
-  max-width: 1920px;
+  max-width: 7680px;
   padding: 0;
   width: 100%;
   position: relative;

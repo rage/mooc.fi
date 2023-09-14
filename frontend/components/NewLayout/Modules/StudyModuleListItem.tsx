@@ -141,6 +141,11 @@ const EndedCoursesLinkContainer = styled("div")`
   justify-content: flex-end;
 `
 
+const StyledCTALink = styled(CTALink)`
+  background: #fff;
+  padding-left: 1rem;
+`
+
 const getCoursesByStatus = (
   courses: NewStudyModuleFieldsWithCoursesFragment["courses"],
 ) => {
@@ -215,7 +220,7 @@ export function ListItem({
   return (
     <ModuleSectionRoot as="li" backgroundColor={backgroundColor}>
       <CorrectedAnchor id={studyModule.slug} />
-      <ImageBackground src={backgroundPattern.src} />*
+      <ImageBackground src={backgroundPattern.src} />
       <ContentWrapper>
         <ModuleSectionBody>
           <HeroContainer>
@@ -249,11 +254,11 @@ export function ListItem({
         </ModuleSectionBody>
         {ended.length > 0 && (
           <EndedCoursesLinkContainer>
-            <CTALink
+            <StyledCTALink
               href={`/_new/courses/?tag=${studyModule.slug}&status=${CourseStatus.Ended}`}
             >
               {t("showEndedCourses")}
-            </CTALink>
+            </StyledCTALink>
           </EndedCoursesLinkContainer>
         )}
       </ContentWrapper>

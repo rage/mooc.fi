@@ -112,7 +112,7 @@ const FooterBaseContent = styled("div")(
   address {
     font-style: normal;
   }
-  
+
   a {
     color: ${theme.palette.common.grayscale.white};
   }

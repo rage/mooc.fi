@@ -41,7 +41,7 @@ const HeroRoot = styled("section")(
       content: "";
       margin: 0 auto;
       display: block;
-  
+
       ${theme.breakpoints.up("md")} {
         position: absolute;
         left: 0;
@@ -73,7 +73,7 @@ const HeroRoot = styled("section")(
 const HeroContainer = styled("div")(
   ({ theme }) => `
   position: relative;
-  
+
   ${theme.breakpoints.up("md")} {
     display: grid;
     position: relative;
@@ -123,7 +123,7 @@ const HeroImageContainer = styled("div")(
     margin: 0;
     padding: 0;
     position: relative;
-  
+
     figure {
       margin: 0;
     }
@@ -154,7 +154,7 @@ const HeroContentContainer = styled("div")(
   padding: 24px 1rem 40px;
   margin: 0 auto;
   width: 100%;
-  
+
   ${theme.breakpoints.up("xs")} {
     padding: 40px 2rem;
   }
@@ -186,7 +186,7 @@ const HeroContentContainer = styled("div")(
     width: 100%;
 
     ${theme.breakpoints.up("xs")} {
-      padding: 24px 2rem 40px;      
+      padding: 24px 2rem 40px;
     }
     ${theme.breakpoints.up("md")} {
       order: 2;
@@ -235,6 +235,9 @@ const HeroContentContainer = styled("div")(
     }
     ${theme.breakpoints.up(1920)} {
       min-height: 675px;
+    }
+    ${theme.breakpoints.up(7680)} {
+      min-height: 2700px;
     }
   }
 `,
@@ -299,7 +302,7 @@ const HeroSpacer = styled("div")(
 
 const HeroTitle = styled(Typography)(
   ({ theme }) => `
-  hyphens: auto;
+  hyphens: none;
   display: flex;
   flex-grow: 1;
   flex-shrink: 0;

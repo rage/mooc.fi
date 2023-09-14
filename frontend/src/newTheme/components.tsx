@@ -287,7 +287,7 @@ export const withComponents = (theme: Theme) =>
             [theme.breakpoints.up("lg")]: {
               borderBottom: `1px solid ${theme.palette.common.grayscale.black}`,
               margin: "0 auto",
-              maxWidth: "1920px",
+              maxWidth: "7680px",
             },
           },
         },
