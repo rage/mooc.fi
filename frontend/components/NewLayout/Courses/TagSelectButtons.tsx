@@ -1,11 +1,12 @@
 import React, { useCallback } from "react"
 
-import { Chip, Skeleton, Typography } from "@mui/material"
+// import { Chip, Skeleton, Typography } from "@mui/material"
+import { Chip, Skeleton } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import Button from "../Common/Button"
 import { useTranslator } from "/hooks/useTranslator"
-import { fontSize } from "/src/theme/util"
+// import { fontSize } from "/src/theme/util"
 import CommonTranslations from "/translations/common"
 
 import { TagCoreFieldsFragment } from "/graphql/generated"
