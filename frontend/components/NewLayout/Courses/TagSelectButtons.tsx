@@ -71,7 +71,7 @@ const TagSkeletonContainer = styled("div")`
 const Title = styled(Typography)(
   ({ theme }) => `
   ${fontSize(12, 16)}
-  color: ${theme["grayscale-dark"]};
+  color: ${theme.palette.common.grayscale.dark};
   font-weight: normal;
   letter-spacing: -0.2px;
   margin: 8px 4px 8px 0;
