@@ -9,18 +9,25 @@ import { ModuleNavigation } from "/components/NewLayout/Frontpage/Modules"
 import SelectedCourses from "/components/NewLayout/Frontpage/SelectedCourses"
 
 const HomeContainer = styled("div")`
-  /**/
+  display: flex;
+  justify-content: center;
+`
+
+const ContentContainer = styled("div")`
+  max-width: 1920px;
 `
 
 const Home = () => {
   return (
     <HomeContainer className="main_front_page">
       <Background />
-      <FrontpageHero />
-      {/*<News />*/}
-      <Hype />
-      <SelectedCourses />
-      <ModuleNavigation />
+      <ContentContainer>
+        <FrontpageHero />
+        {/*<News />*/}
+        <Hype />
+        <SelectedCourses />
+        <ModuleNavigation />
+      </ContentContainer>
     </HomeContainer>
   )
 }

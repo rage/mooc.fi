@@ -133,16 +133,6 @@ const ResetFiltersButton = styled(Button)<EnhancedButtonProps>`
   font-weight: bold;
   border-width: 0.15rem;
   max-height: 2.5rem;
-  /*color: ${({ variant }) =>
-    variant === "contained" ? "#F5F6F7" : "#378170"};
-  background-color: ${({ variant }) =>
-    variant === "contained" ? "#378170" : "#F5F6F7"};
-
-  &:hover {
-    border-width: 0.15rem;
-    background-color: ${({ variant }) =>
-    variant === "contained" ? "#378170" : "#F5F6F7"};
-  }*/
 `
 
 const DynamicTagSelectButtons = dynamic(() => import("./TagSelectButtons"), {
