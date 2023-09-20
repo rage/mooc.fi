@@ -19,7 +19,7 @@ export default function redirect({
     nookies.set(
       context,
       "redirect-back",
-      JSON.stringify({ as: context.asPath, href: context.pathname }),
+      JSON.stringify({ url: context.asPath }),
       {
         maxAge: 20 * 60,
         path: "/",
