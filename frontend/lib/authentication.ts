@@ -55,12 +55,12 @@ export const signIn = async (
   }
 
   try {
-    const { href } = JSON.parse(rawRedirectLocation)
+    const { url } = JSON.parse(rawRedirectLocation)
 
     if (redirect) {
       setTimeout(() => {
-        if (href) {
-          Router.push(href, undefined, { shallow, locale })
+        if (url) {
+          Router.push(url, undefined, { shallow, locale })
         } else {
           Router.back()
         }
