@@ -98,7 +98,10 @@ const ManualCompletions = () => {
     setSubmitting(true)
     setMessage(null)
     setMessageSeverity("info")
-    const parsed = parse<CompletionData>(input, { header: true })
+    const parsed = parse<CompletionData>(input, {
+      header: true,
+      transformHeader: (h) => h.trim(),
+    })
     if (parsed.errors.length > 0) {
       setMessage(JSON.stringify(parsed.errors, undefined, 2))
       setMessageSeverity("error")
@@ -109,6 +112,8 @@ const ManualCompletions = () => {
 
     const data: CompletionData[] = parsed.data.map((d) => ({
       ...d,
+      user_id: d.user_id.trim(),
+      grade: d.grade ? d.grade.trim() : undefined,
       completion_date:
         d.completion_date === "" || !d.completion_date
           ? completionDate
