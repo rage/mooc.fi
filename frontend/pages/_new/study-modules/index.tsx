@@ -1,5 +1,3 @@
-import Background from "components/NewLayout/Background"
-
 import { StudyModuleList } from "/components/NewLayout/Modules"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
@@ -13,7 +11,6 @@ function StudyModules() {
 
   return (
     <>
-      <Background />
       <StudyModuleList />
     </>
   )

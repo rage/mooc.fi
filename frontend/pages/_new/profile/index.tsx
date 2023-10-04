@@ -14,7 +14,6 @@ import { styled } from "@mui/material/styles"
 
 import Container from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
-import Background from "/components/NewLayout/Background"
 import ProfilePageHeader from "/components/NewLayout/Profile/Header"
 import ConsentNotification from "/components/Profile/ConsentNotification"
 import ProfileTabs from "/components/Profile/ProfileTabs"
@@ -102,7 +101,6 @@ function Profile() {
 
   return (
     <>
-      <Background />
       <NoSsr>
         <ProfilePageHeader user={currentUser} />
       </NoSsr>

@@ -10,7 +10,6 @@ import CTALink from "../Common/CTALink"
 import CourseCard, { CourseCardSkeleton } from "../Courses/CourseCard"
 import useIsomorphicLayoutEffect from "/hooks/useIsomorphicLayoutEffect"
 import { useTranslator } from "/hooks/useTranslator"
-import backgroundPattern from "/public/images/new/background/backgroundPattern.svg"
 import StudyModulesTranslations from "/translations/_new/study-modules"
 
 import {
@@ -220,7 +219,6 @@ export function ListItem({
   return (
     <ModuleSectionRoot as="li" backgroundColor={backgroundColor}>
       <CorrectedAnchor id={studyModule.slug} />
-      <ImageBackground src={backgroundPattern.src} />
       <ContentWrapper>
         <ModuleSectionBody>
           <HeroContainer>
