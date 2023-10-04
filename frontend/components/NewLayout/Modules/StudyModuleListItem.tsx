@@ -112,14 +112,6 @@ const ImageBackgroundBase = css`
   z-index: -5;
 `
 
-const ImageBackground = styled("span", {
-  shouldForwardProp: (prop) => prop !== "src",
-})<{ src: string }>`
-  ${ImageBackgroundBase.styles};
-  filter: brightness(0) invert(1) opacity(20%);
-  background-image: url(${(props) => props.src});
-`
-
 const SkeletonBackground = styled("span")`
   ${ImageBackgroundBase.styles};
   background-color: #eee;
