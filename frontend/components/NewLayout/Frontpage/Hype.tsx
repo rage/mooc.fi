@@ -12,9 +12,9 @@ import NaviTranslations from "/translations/navi"
 type NaviItem = {
   title: string
   text: string
-  linkText: string
-  img: string
-  link: string
+  linkText?: string
+  img?: string
+  link?: string
 }
 
 /*type CustomNaviItem = {
@@ -44,10 +44,13 @@ function Hype() {
            alt: item.title,
            fill: true
          },*/
-        linkProps: {
-          href: link,
-          children: linkText,
-        },
+        linkProps:
+          link && linkText
+            ? {
+                href: link,
+                children: linkText,
+              }
+            : undefined,
       })),
     [items],
   )

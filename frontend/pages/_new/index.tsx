@@ -1,5 +1,3 @@
-import Background from "components/NewLayout/Background"
-
 import { styled } from "@mui/material/styles"
 
 import FrontpageHero from "/components/NewLayout/Frontpage/FrontpageHero"
@@ -20,7 +18,6 @@ const ContentContainer = styled("div")`
 const Home = () => {
   return (
     <HomeContainer className="main_front_page">
-      <Background />
       <ContentContainer>
         <FrontpageHero />
         {/*<News />*/}

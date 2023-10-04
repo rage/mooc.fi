@@ -10,7 +10,6 @@ import CTALink from "../Common/CTALink"
 import CourseCard, { CourseCardSkeleton } from "../Courses/CourseCard"
 import useIsomorphicLayoutEffect from "/hooks/useIsomorphicLayoutEffect"
 import { useTranslator } from "/hooks/useTranslator"
-import backgroundPattern from "/public/images/new/background/backgroundPattern.svg"
 import StudyModulesTranslations from "/translations/_new/study-modules"
 
 import {
@@ -113,14 +112,6 @@ const ImageBackgroundBase = css`
   z-index: -5;
 `
 
-const ImageBackground = styled("span", {
-  shouldForwardProp: (prop) => prop !== "src",
-})<{ src: string }>`
-  ${ImageBackgroundBase.styles};
-  filter: brightness(0) invert(1) opacity(20%);
-  background-image: url(${(props) => props.src});
-`
-
 const SkeletonBackground = styled("span")`
   ${ImageBackgroundBase.styles};
   background-color: #eee;
@@ -220,7 +211,6 @@ export function ListItem({
   return (
     <ModuleSectionRoot as="li" backgroundColor={backgroundColor}>
       <CorrectedAnchor id={studyModule.slug} />
-      <ImageBackground src={backgroundPattern.src} />
       <ContentWrapper>
         <ModuleSectionBody>
           <HeroContainer>

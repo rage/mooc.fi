@@ -1,4 +1,4 @@
-import { ClickableDiv } from "components/Surfaces/ClickableCard"
+import { ClickableDiv, ShadowedDiv } from "components/Surfaces/ClickableCard"
 import { CardTitle } from "components/Text/headers"
 
 import { Button, EnhancedLink, Grid, Link } from "@mui/material"
@@ -20,6 +20,19 @@ const NaviItemBase = styled(ClickableDiv)`
   align-items: flex-start;
 `
 
+const NaviItemBaseNonClickable = styled(ShadowedDiv)`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  align-items: flex-start;
+`
+
+const NoLinkContainer = styled("div")`
+  height: 100%;
+`
+
 const StyledLink = styled(Link)`
   color: black;
   text-decoration: none;
@@ -28,10 +41,10 @@ const StyledLink = styled(Link)`
 type NaviItem = {
   title?: string
   text: string
-  linkText: string
+  linkText?: string
   img?: string
   imgDimensions?: { width: number; height: number }
-  link: string
+  link?: string
   titleImg?: string
   titleImgDimensions?: { width: number; height: number }
 }
@@ -82,48 +95,92 @@ function WideNaviCard(props: NaviCardProps) {
 
   return (
     <Grid item xs={12}>
-      <StyledLink href={item.link} prefetch={false} aria-label={item.linkText}>
-        <NaviItemBase>
-          {item.img && (
-            <BackgroundImage
-              src={require(`/public/images/navi/${item.img}`)}
-              placeholder="blur"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              alt=""
-              aria-hidden
-              {...(item.imgDimensions ?? { fill: true })}
-            />
-          )}
-          <Background>
-            {item.titleImg ? (
-              <TitleImageContainer>
-                <ContainedImage
-                  src={require(`/public/images/navi/${item.titleImg}`)}
-                  placeholder="blur"
-                  alt={item.title ?? ""}
-                  {...(item.titleImgDimensions ?? {
-                    sizes:
-                      "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
-                    fill: true,
-                  })}
-                />
-              </TitleImageContainer>
-            ) : (
-              <WideNaviCardTitle component="h2" variant="h3" align="left">
-                {item.title}
-              </WideNaviCardTitle>
+      {item.link && item.linkText ? (
+        <StyledLink
+          href={item.link}
+          prefetch={false}
+          aria-label={item.linkText}
+        >
+          <NaviItemBase>
+            {item.img && (
+              <BackgroundImage
+                src={require(`/public/images/navi/${item.img}`)}
+                placeholder="blur"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                alt=""
+                aria-hidden
+                {...(item.imgDimensions ?? { fill: true })}
+              />
             )}
-            <WideNaviCardText paragraph variant="body1" align="left">
-              {item.text}
-            </WideNaviCardText>
-            {item.linkText && (
-              <WideNaviCardbutton aria-disabled>
-                {item.linkText}
-              </WideNaviCardbutton>
+            <Background>
+              {item.titleImg ? (
+                <TitleImageContainer>
+                  <ContainedImage
+                    src={require(`/public/images/navi/${item.titleImg}`)}
+                    placeholder="blur"
+                    alt={item.title ?? ""}
+                    {...(item.titleImgDimensions ?? {
+                      sizes:
+                        "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
+                      fill: true,
+                    })}
+                  />
+                </TitleImageContainer>
+              ) : (
+                <WideNaviCardTitle component="h2" variant="h3" align="left">
+                  {item.title}
+                </WideNaviCardTitle>
+              )}
+              <WideNaviCardText paragraph variant="body1" align="left">
+                {item.text}
+              </WideNaviCardText>
+              {item.linkText && (
+                <WideNaviCardbutton aria-disabled>
+                  {item.linkText}
+                </WideNaviCardbutton>
+              )}
+            </Background>
+          </NaviItemBase>
+        </StyledLink>
+      ) : (
+        <NoLinkContainer>
+          <NaviItemBaseNonClickable>
+            {item.img && (
+              <BackgroundImage
+                src={require(`/public/images/navi/${item.img}`)}
+                placeholder="blur"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                alt=""
+                aria-hidden
+                {...(item.imgDimensions ?? { fill: true })}
+              />
             )}
-          </Background>
-        </NaviItemBase>
-      </StyledLink>
+            <Background>
+              {item.titleImg ? (
+                <TitleImageContainer>
+                  <ContainedImage
+                    src={require(`/public/images/navi/${item.titleImg}`)}
+                    placeholder="blur"
+                    alt={item.title ?? ""}
+                    {...(item.titleImgDimensions ?? {
+                      sizes:
+                        "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
+                      fill: true,
+                    })}
+                  />
+                </TitleImageContainer>
+              ) : (
+                <WideNaviCardTitle component="h2" variant="h3" align="left">
+                  {item.title}
+                </WideNaviCardTitle>
+              )}
+              <WideNaviCardText paragraph variant="body1" align="left">
+                {item.text}
+              </WideNaviCardText>
+            </Background>
+          </NaviItemBaseNonClickable>
+        </NoLinkContainer>
+      )}
     </Grid>
   )
 }

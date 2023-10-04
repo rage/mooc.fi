@@ -20,6 +20,7 @@ const FooterContainer = styled("footer")(
   display: block;
   background-color: ${theme.palette.common.grayscale.black};
   max-width: 100%;
+  margin-top: 5rem;
 `,
 )
 
