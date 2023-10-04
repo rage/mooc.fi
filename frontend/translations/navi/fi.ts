@@ -1,32 +1,29 @@
 export default {
   naviItems: [
     {
-      title: "Kaikille avoimia kursseja",
-      text: "Verkko-oppimista parhaimmillaan. Älä huolehdi kurssimaksuista tai koulumatkoista, vaan opiskele siellä missä sinulle sopii. MOOCit eli kaikille avoimet verkkokurssit (Massive Open Online Course) ovat nimensä mukaisesti avoimia, ilmaisia ja  verkkopohjaisia kursseja.",
+      title: "Avoimia kursseja, kaikille",
+      text: "Kurssimme ovat avoinna kaikille ilman osallistumismaksuja. Voit selata materiaaleja myös ilman tunnuksia.",
       linkText: "Kurssit",
       img: "AllCourses.webp",
       link: "#courses",
     },
     {
-      title: "Ensimmäisen vuoden opinnot kaikille",
-      text: "Digital Education for All -hanke avaa tietojenkäsittelytieteen ensimmäisen vuoden kaikille. Helsingin yliopiston johtamassa Digital Education for All -hankkeessa ovat myös mukana Aalto-yliopisto, Jyväskylän yliopisto, Oulun yliopisto ja Turun yliopisto.",
-      linkText: "DEFA-hanke",
-      img: "DEFA.webp",
-      link: "https://www.helsinki.fi/fi/projektit/digital-education-for-all",
+      title: "Yliopisto-opetusta, kotonasi",
+      text: "Opiskele yliopistokursseja missä vain. Suorituksen rekisteröimällä saat opinnoistasi myös opintopisteitä.",
     },
     {
-      title: "Opeta kursseja omassa luokassasi",
-      text: "Opettaja! Haluatko kurssimme luokkaasi omilla pistelistoillasi ja omalla aikataulullasi. Kaikkia kurssejamme saa käyttää osana omaa opetustaan. Katso lisää Opettajalle-sivulta!",
-      linkText: "Opettajien sivut",
-      img: "Opettajien.webp",
-      link: "/teachers",
-    },
-    {
-      title: "Opiskele kokonaisuuksia",
-      text: "Kokoa oma kurssivalikoimasi laajemmista opintokokonaisuuksista.",
+      title: "Kokonaisuuksia tai yksittäisiä kursseja",
+      text: "Voit suorittaa joko laajemman kokoelman kursseja, tai poimia valikoimastamme vain sinua kiinnostavat kurssit.",
       linkText: "Opintokokonaisuudet",
       img: "taydennysKoulutus.webp",
       link: "#modules",
+    },
+    {
+      title: "Käytä kurssejamme opetuksessasi",
+      text: "Haluatko kurssimme luokkaasi omilla pistelistoillasi? Katso lisää Opettajalle-sivulta! ",
+      linkText: "Opettajien sivut",
+      img: "Opettajien.webp",
+      link: "/teachers",
     },
   ],
   customNaviItems: [

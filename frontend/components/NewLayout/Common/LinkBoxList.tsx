@@ -86,7 +86,13 @@ const LinkBoxList = (props: LinkBoxListProps) => {
               </li>
             ))
           : items?.map((item) => (
-              <li key={item.linkProps.href as string}>
+              <li
+                key={
+                  item.linkProps
+                    ? (item.linkProps.href as string)
+                    : item.title.toLowerCase().replace(/\s/g, "")
+                }
+              >
                 <LinkBox {...item} {...rest} />
               </li>
             ))}

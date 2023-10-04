@@ -12,9 +12,9 @@ import NaviTranslations from "/translations/navi"
 type NaviItem = {
   title: string
   text: string
-  linkText: string
-  img: string
-  link: string
+  linkText?: string
+  img?: string
+  link?: string
 }
 
 const NaviCardGrid = styled(Grid)`

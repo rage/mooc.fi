@@ -39,6 +39,18 @@ const LinkBoxContainer = styled("article")(
 `,
 )
 
+const LinkBoxContainerNonClickable = styled("article")(
+  ({ theme }) => `
+  background-color: ${theme.palette.common.grayscale.backgroundBox};
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  position: relative;
+`,
+)
+
 const LinkBoxContent = styled("div")`
   /* */
 `
@@ -132,7 +144,7 @@ export interface LinkBoxProps {
   title: string
   titleImageProps?: ImageProps
   description?: string
-  linkProps: CTALinkProps
+  linkProps?: CTALinkProps
 }
 
 const LinkBox = ({
@@ -143,7 +155,7 @@ const LinkBox = ({
   linkProps,
   ...props
 }: LinkBoxProps & PropsOf<typeof LinkBoxContainer>) => {
-  return (
+  return linkProps ? (
     <LinkBoxContainer {...props}>
       <LinkBoxContent>
         {imageProps && (
@@ -166,6 +178,28 @@ const LinkBox = ({
       </LinkBoxContent>
       <LinkBoxLink {...linkProps}></LinkBoxLink>
     </LinkBoxContainer>
+  ) : (
+    <LinkBoxContainerNonClickable {...props}>
+      <LinkBoxContent>
+        {imageProps && (
+          <LinkBoxImageContainer>
+            <LinkBoxImage {...imageProps} />
+          </LinkBoxImageContainer>
+        )}
+        <LinkBoxTextContainer>
+          {titleImageProps ? (
+            <LinkBoxTitleImageContainer>
+              <LinkBoxTitleImage {...titleImageProps} />
+            </LinkBoxTitleImageContainer>
+          ) : (
+            <LinkBoxTitle variant="h3">{title}</LinkBoxTitle>
+          )}
+          {description && (
+            <LinkBoxDescription>{description}</LinkBoxDescription>
+          )}
+        </LinkBoxTextContainer>
+      </LinkBoxContent>
+    </LinkBoxContainerNonClickable>
   )
 }
 
