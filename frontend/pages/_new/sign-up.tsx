@@ -27,13 +27,13 @@ const SignUpPage = () => {
 
   const onStepComplete = () => {
     logInOrOut()
-    Router.push(`/_new/research-consent`)
+    Router.push(`/_new/confirm-email`)
 
     addAlert({
       title: t("confirmEmailTitle"),
       message: t("confirmEmailInfo"),
       severity: "info",
-      ignorePages: [Router.pathname, "/_new/research-consent"],
+      ignorePages: [Router.pathname, "/_new/confirm-email"],
     })
     if (typeof window !== "undefined") {
       window.scrollTo(0, 0)
