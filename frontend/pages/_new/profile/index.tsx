@@ -15,7 +15,6 @@ import { styled } from "@mui/material/styles"
 import Container from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
 import ProfilePageHeader from "/components/NewLayout/Profile/Header"
-import ConsentNotification from "/components/Profile/ConsentNotification"
 import ProfileTabs from "/components/Profile/ProfileTabs"
 import StudentDataDisplay from "/components/Profile/StudentDataDisplay"
 import Spinner from "/components/Spinner"
@@ -97,8 +96,6 @@ function Profile() {
     return <ErrorMessage />
   }
 
-  const { research_consent } = data?.currentUser ?? {}
-
   return (
     <>
       <NoSsr>
@@ -109,10 +106,6 @@ function Profile() {
         {!loading && !data?.currentUser && <ErrorMessage />}
         {!loading && data?.currentUser && (
           <>
-            {(research_consent === null ||
-              typeof research_consent === "undefined") && (
-              <ConsentNotification />
-            )}
             <ProfileTabs selected={tab} onChange={handleTabChange}>
               <StudentDataDisplay
                 tab={tab}

@@ -7,6 +7,7 @@ import { Skeleton, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import CTALink, { CTALinkIcon, CTALinkProps } from "./CTALink"
+import { FullCoverTextBackground } from "/components/Images/CardBackgroundFullCover"
 import { fontSize } from "/src/theme/util"
 
 const LinkBoxContainer = styled("article")(
@@ -128,6 +129,7 @@ const LinkBoxDescription = styled("p")(
 const LinkBoxLink = styled(CTALink)`
   margin: 0 -8px 24px 0;
   align-self: flex-end;
+  padding-left: 2rem;
 
   span[aria-hidden="true"] {
     position: absolute;
@@ -139,13 +141,57 @@ const LinkBoxLink = styled(CTALink)`
   }
 ` as typeof CTALink
 
+const FlagBackground = styled(FullCoverTextBackground)(
+  ({ theme }) => `
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+  height: 100%;
+  padding: 0 1rem;
+  background-color: #ffd700;
+  z-index: 2;
+  background-image: linear-gradient(90deg, transparent 20px, white 20px),
+    linear-gradient(180deg, #0057b7 50%, #ffd700 50%);
+  background-repeat: no-repeat;
+  gap: 1rem;
+`,
+)
+
 export interface LinkBoxProps {
   imageProps?: ImageProps
   title: string
   titleImageProps?: ImageProps
   description?: string
   linkProps?: CTALinkProps
+  ukraine?: boolean
 }
+
+const LinkBoxContents = ({
+  imageProps,
+  titleImageProps,
+  title,
+  description,
+}: LinkBoxProps & PropsOf<typeof LinkBoxContainer>) => (
+  <LinkBoxContent>
+    {imageProps && (
+      <LinkBoxImageContainer>
+        <LinkBoxImage {...imageProps} />
+      </LinkBoxImageContainer>
+    )}
+    <LinkBoxTextContainer>
+      {titleImageProps ? (
+        <LinkBoxTitleImageContainer>
+          <LinkBoxTitleImage {...titleImageProps} />
+        </LinkBoxTitleImageContainer>
+      ) : (
+        <LinkBoxTitle variant="h3">{title}</LinkBoxTitle>
+      )}
+      {description && <LinkBoxDescription>{description}</LinkBoxDescription>}
+    </LinkBoxTextContainer>
+  </LinkBoxContent>
+)
 
 const LinkBox = ({
   imageProps,
@@ -153,52 +199,41 @@ const LinkBox = ({
   description,
   titleImageProps,
   linkProps,
+  ukraine,
   ...props
 }: LinkBoxProps & PropsOf<typeof LinkBoxContainer>) => {
   return linkProps ? (
-    <LinkBoxContainer {...props}>
-      <LinkBoxContent>
-        {imageProps && (
-          <LinkBoxImageContainer>
-            <LinkBoxImage {...imageProps} />
-          </LinkBoxImageContainer>
-        )}
-        <LinkBoxTextContainer>
-          {titleImageProps ? (
-            <LinkBoxTitleImageContainer>
-              <LinkBoxTitleImage {...titleImageProps} />
-            </LinkBoxTitleImageContainer>
-          ) : (
-            <LinkBoxTitle variant="h3">{title}</LinkBoxTitle>
-          )}
-          {description && (
-            <LinkBoxDescription>{description}</LinkBoxDescription>
-          )}
-        </LinkBoxTextContainer>
-      </LinkBoxContent>
-      <LinkBoxLink {...linkProps}></LinkBoxLink>
-    </LinkBoxContainer>
+    ukraine ? (
+      <FlagBackground>
+        <LinkBoxContainer {...props}>
+          <LinkBoxContents
+            imageProps={imageProps}
+            titleImageProps={titleImageProps}
+            title={title}
+            description={description}
+          />
+          <LinkBoxLink {...linkProps}></LinkBoxLink>
+        </LinkBoxContainer>
+      </FlagBackground>
+    ) : (
+      <LinkBoxContainer {...props}>
+        <LinkBoxContents
+          imageProps={imageProps}
+          titleImageProps={titleImageProps}
+          title={title}
+          description={description}
+        />
+        <LinkBoxLink {...linkProps}></LinkBoxLink>
+      </LinkBoxContainer>
+    )
   ) : (
     <LinkBoxContainerNonClickable {...props}>
-      <LinkBoxContent>
-        {imageProps && (
-          <LinkBoxImageContainer>
-            <LinkBoxImage {...imageProps} />
-          </LinkBoxImageContainer>
-        )}
-        <LinkBoxTextContainer>
-          {titleImageProps ? (
-            <LinkBoxTitleImageContainer>
-              <LinkBoxTitleImage {...titleImageProps} />
-            </LinkBoxTitleImageContainer>
-          ) : (
-            <LinkBoxTitle variant="h3">{title}</LinkBoxTitle>
-          )}
-          {description && (
-            <LinkBoxDescription>{description}</LinkBoxDescription>
-          )}
-        </LinkBoxTextContainer>
-      </LinkBoxContent>
+      <LinkBoxContents
+        imageProps={imageProps}
+        titleImageProps={titleImageProps}
+        title={title}
+        description={description}
+      />
     </LinkBoxContainerNonClickable>
   )
 }

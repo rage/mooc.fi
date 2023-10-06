@@ -69,7 +69,7 @@ export default {
   hideAll: "Piilota kaikki",
   partners: "Yhteistyökumppanien sisältöä",
   ukraineText: "Auta Ukrainan sodasta kärsiviä.",
-  ukraineLink: "https://www.punainenristi.fi/lahjoita/katastrofirahasto/",
+  ukraineLink: "https://www.punainenristi.fi/lahjoita/ukrainan-kriisi/",
   ukraineLinkText: "Lahjoita Suomen Punaisen Ristin katastrofirahastoon",
   myProfile: "Oma profiili",
   ukraineHyText: "Helsingin yliopiston Ukraina‑keräys",

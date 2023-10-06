@@ -12,7 +12,7 @@ const linkBoxListVariants = ["default", "wide-box"] as const
 export type LinkBoxListVariant = (typeof linkBoxListVariants)[number]
 
 const LinkBoxListComponent = styled("ul")(
-  ({ theme, children }) => `
+  ({ theme }) => `
   padding: 0;
   margin: 0;
   list-style: none;
@@ -24,14 +24,7 @@ const LinkBoxListComponent = styled("ul")(
       grid-template-columns: repeat(2, 1fr);
       gap: 32px 24px;
     }
-    ${theme.breakpoints.up("desktop")} {
-      ${
-        // no orphans
-        React.Children.count(children) % 3 !== 1
-          ? "grid-template-columns: repeat(3, 1fr);"
-          : ""
-      }
-    }
+
     ${theme.breakpoints.up(1920)} {
       gap: 32px;
     }

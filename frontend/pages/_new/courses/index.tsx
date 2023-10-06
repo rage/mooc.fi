@@ -2,6 +2,7 @@ import { styled } from "@mui/material/styles"
 
 import Catalogue from "/components/NewLayout/Courses/Catalogue"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import withNoSsr from "/util/withNoSsr"
 
 /*
   secret project gray palette
@@ -39,4 +40,4 @@ function Courses() {
   )
 }
 
-export default Courses
+export default withNoSsr(Courses)

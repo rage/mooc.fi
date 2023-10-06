@@ -101,4 +101,7 @@ export default {
   showCourseDetails: "Näytä kurssin tiedot",
   copyCourseLink: "Kopioi linkki",
   showTierCourse: "Näytä tasokurssi",
+  TMCSettingsInfo:
+    "Voit muokata käyttäjätilisi asetuksia, kuten päivittää sähköpostisi tai salasanasi, TMC-profiilisivun Settings-välilehdeltä.",
+  TMCProfileLink: "TMC-profiiliin",
 } as const

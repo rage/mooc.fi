@@ -69,7 +69,7 @@ export default {
   hideAll: "Hide all",
   partners: "Content from our partners",
   ukraineText: "Help the victims of the war in Ukraine.",
-  ukraineLink: "https://www.redcross.fi/donate/disaster-relief-fund/",
+  ukraineLink: "https://www.redcross.fi/donate/ukraine-crisis/",
   ukraineLinkText: "Donate to the Finnish Red Cross Disaster Relief Fund",
   myProfile: "My profile",
   ukraineHyLink:
