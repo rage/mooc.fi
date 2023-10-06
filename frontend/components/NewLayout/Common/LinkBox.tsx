@@ -141,8 +141,7 @@ const LinkBoxLink = styled(CTALink)`
   }
 ` as typeof CTALink
 
-const FlagBackground = styled(FullCoverTextBackground)(
-  ({ theme }) => `
+const FlagBackground = styled(FullCoverTextBackground)`
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -156,8 +155,7 @@ const FlagBackground = styled(FullCoverTextBackground)(
     linear-gradient(180deg, #0057b7 50%, #ffd700 50%);
   background-repeat: no-repeat;
   gap: 1rem;
-`,
-)
+`
 
 export interface LinkBoxProps {
   imageProps?: ImageProps
