@@ -12,11 +12,11 @@ function FrontpageHero() {
       color="white"
       size="large"
       imageProps={{
-        src: "/images/new/doggos.png",
+        src: "/images/new/frontpage_hero_image_cropped.png",
         width: 620,
         height: 465,
         priority: true,
-        alt: "hero image of doggos enjoying programming",
+        alt: "hero image of a woman enjoying programming",
       }}
       linkProps={{
         href: "#courses",
