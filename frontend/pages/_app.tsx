@@ -13,7 +13,7 @@ import DynamicLayout from "/components/DynamicLayout"
 import AppContextProvider from "/contexts/AppContextProvider"
 import { LoginStateProvider } from "/contexts/LoginStateContext"
 import useAlternateLanguage from "/hooks/useAlternateLanguage"
-import useIsNew from "/hooks/useIsNew"
+import useIsOld from "/hooks/useIsOld"
 import { useScrollToHash } from "/hooks/useScrollToHash"
 import useSeoConfig from "/hooks/useSeoConfig"
 import useThemeWithLocale from "/hooks/useThemeWithLocale"
@@ -54,7 +54,7 @@ export function MyApp({ Component, pageProps, deviceType }: MyAppProps) {
 
   useScrollToHash()
 
-  const isNew = useIsNew()
+  const isOld = useIsOld()
   const seoConfig = useSeoConfig()
   const themeWithLocale = useThemeWithLocale(deviceType)
   const alternateLanguage = useAlternateLanguage()
@@ -92,7 +92,7 @@ export function MyApp({ Component, pageProps, deviceType }: MyAppProps) {
         <CssBaseline />
         <LoginStateProvider value={loginStateContextValue}>
           <AppContextProvider>
-            <DynamicLayout isNew={isNew}>
+            <DynamicLayout isOld={isOld}>
               <DefaultSeo {...seoConfig} />
               <Component {...pageProps} />
             </DynamicLayout>

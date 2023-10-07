@@ -25,7 +25,7 @@ function withAdmin(Component: any) {
     static async getInitialProps(context: NextPageContext) {
       const admin = isAdmin(context)
       const signedIn = isSignedIn(context)
-      const baseUrl = context.pathname.includes("_new") ? "/_new" : ""
+      const baseUrl = context.pathname.includes("_old") ? "/_old" : ""
 
       prevContext = context
 

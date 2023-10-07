@@ -19,6 +19,7 @@ import {
 import ErrorMessage from "./ErrorMessage"
 import CustomSnackbar from "/components/CustomSnackbar"
 import Spinner from "/components/Spinner"
+import useIsOld from "/hooks/useIsOld"
 import { EmailTemplateType } from "/types/emailTemplates"
 import { isDefinedAndNotEmpty } from "/util/guards"
 
@@ -59,6 +60,9 @@ const CreateEmailTemplateDialog = ({
   const [updateOrganizationEmailTemplateMutation] = useMutation(
     UpdateOrganizationEmailTemplateDocument,
   )
+
+  const isOld = useIsOld()
+  const baseUrl = isOld ? "/_old" : "/admin"
 
   const handleDialogClickOpen = () => {
     setOpenDialog(true)
@@ -140,7 +144,8 @@ const CreateEmailTemplateDialog = ({
       }
 
       const url =
-        "/email-templates/" + addEmailTemplateData!.addEmailTemplate!.id
+        `${baseUrl}/email-templates/` +
+        addEmailTemplateData!.addEmailTemplate!.id
       Router.push(url)
     } catch {
       setIsErrorSnackbarOpen(true)

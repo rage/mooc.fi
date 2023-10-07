@@ -383,7 +383,7 @@ function CourseGrid() {
         if (
           !course.name
             .toLocaleLowerCase(locale)
-            .includes(searchString.toLocaleLowerCase(locale)) ||
+            .includes(searchString.toLocaleLowerCase(locale)) &&
           !course.description
             ?.toLocaleLowerCase(locale)
             .includes(searchString.toLocaleLowerCase(locale))

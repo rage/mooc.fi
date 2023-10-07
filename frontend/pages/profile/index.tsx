@@ -9,12 +9,12 @@ import React, {
 import Router, { useRouter } from "next/router"
 
 import { useQuery } from "@apollo/client"
+import { NoSsr } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import Container from "/components/Container"
 import ErrorMessage from "/components/ErrorMessage"
-import ConsentNotification from "/components/Profile/ConsentNotification"
-import ProfilePageHeader from "/components/Profile/ProfilePageHeader"
+import ProfilePageHeader from "/components/NewLayout/Profile/Header"
 import ProfileTabs from "/components/Profile/ProfileTabs"
 import StudentDataDisplay from "/components/Profile/StudentDataDisplay"
 import Spinner from "/components/Spinner"
@@ -97,29 +97,16 @@ function Profile() {
     return <ErrorMessage />
   }
 
-  const first_name = currentUser?.first_name ?? "No first name"
-  const last_name = currentUser?.last_name ?? "No last name"
-  const email = currentUser?.email ?? "no email"
-  const studentNumber = currentUser?.student_number ?? "no student number"
-  const { research_consent } = data?.currentUser ?? {}
-
   return (
     <>
-      <ProfilePageHeader
-        first_name={first_name}
-        last_name={last_name}
-        email={email}
-        student_number={studentNumber}
-      />
+      <NoSsr>
+        <ProfilePageHeader user={currentUser} />
+      </NoSsr>
       <ProfileContainer>
-        {loading ? (
-          <Spinner />
-        ) : (
+        {loading && <Spinner />}
+        {!loading && !data?.currentUser && <ErrorMessage />}
+        {!loading && data?.currentUser && (
           <>
-            {(research_consent === null ||
-              typeof research_consent === "undefined") && (
-              <ConsentNotification />
-            )}
             <ProfileTabs selected={tab} onChange={handleTabChange}>
               <StudentDataDisplay
                 tab={tab}

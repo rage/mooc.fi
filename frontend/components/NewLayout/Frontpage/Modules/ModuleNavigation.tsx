@@ -89,7 +89,7 @@ export function ModuleNavigation() {
       <Introduction title={t("studyModulesTitle")} />
       <ContentWrapper>
         <ModuleNaviList modules={data?.study_modules} loading={loading} />
-        <CTAButton href="/_new/study-modules">{t("showAllModules")}</CTAButton>
+        <CTAButton href="/study-modules">{t("showAllModules")}</CTAButton>
       </ContentWrapper>
     </section>
   )

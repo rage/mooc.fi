@@ -58,7 +58,7 @@ export const ModuleCard = ({
       <CardBody>
         <CardDescription>{description}</CardDescription>
         <CardActions>
-          <CTALink href={`/_new/study-modules/#${slug}`}>
+          <CTALink href={`/study-modules/#${slug}`}>
             {t("moduleInformation")}
           </CTALink>
         </CardActions>

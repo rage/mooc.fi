@@ -67,7 +67,7 @@ const UserOptionsMenu = () => {
       <NavigationLinks
         items={[
           {
-            href: "/_new/profile",
+            href: "/profile",
             label: t("myProfile"),
             items: [
               {
@@ -86,11 +86,11 @@ const UserOptionsMenu = () => {
     <NavigationLinks
       items={[
         {
-          href: "/_new/sign-in",
+          href: "/sign-in",
           label: t("loginShort"),
         },
         {
-          href: "/_new/sign-up",
+          href: "/sign-up",
           label: t("signUp"),
         },
       ]}

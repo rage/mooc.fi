@@ -126,7 +126,7 @@ function SelectedCourses() {
                 <CommonCourseCard key={course.id} course={course} />
               ))}
         </CoursesGrid>
-        <CTAButton href="/_new/courses">{t("showAllCourses")}</CTAButton>
+        <CTAButton href="/courses">{t("showAllCourses")}</CTAButton>
       </ContentWrapper>
     </section>
   )

@@ -5,7 +5,7 @@ import BookIcon from "@fortawesome/fontawesome-free/svgs/solid/book-open.svg?ico
 import GraduationCapIcon from "@fortawesome/fontawesome-free/svgs/solid/graduation-cap.svg?icon"
 import HandshakeIcon from "@fortawesome/fontawesome-free/svgs/solid/handshake.svg?icon"
 import HelpIcon from "@mui/icons-material/Help"
-import { Link, Skeleton, Typography } from "@mui/material"
+import { Link, Skeleton, Typography, useMediaQuery } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
 import CTALink from "../Common/CTALink"
@@ -19,6 +19,7 @@ import MoocLogoIcon from "/public/images/new/logos/moocfi_white.svg?icon"
 import { fontSize } from "/src/theme/util"
 import CommonTranslations from "/translations/common"
 import { useFormatDateTime } from "/util/dataFormatFunctions"
+import withNoSsr from "/util/withNoSsr"
 
 import { CourseStatus, NewCourseFieldsFragment } from "/graphql/generated"
 
@@ -69,7 +70,7 @@ const ModuleColor = styled("div", {
   position: relative;
   display: flex;
   width: 100%;
-  max-height: 80px; 
+  max-height: 80px;
   height: 80px;
 
   background-color: ${
@@ -423,6 +424,7 @@ const CourseCard = React.forwardRef<
   CourseCardProps & PropsOf<typeof CourseCardRoot>
 >(({ course, studyModule, ...props }, ref) => {
   const t = useTranslator(CommonTranslations)
+  const abbreviate = useMediaQuery("(max-width: 800px)")
 
   const courseStudyModule =
     studyModule ?? course.study_modules[0]?.slug ?? "other"
@@ -456,9 +458,11 @@ const CourseCard = React.forwardRef<
             Helsingin yliopisto
           </CourseDetailItem>
         }
-        languageTags={<LanguageTags course={course} />}
-        difficultyTags={<DifficultyTags course={course} />}
-        moduleTags={<ModuleTags course={course} />}
+        languageTags={<LanguageTags course={course} abbreviated={abbreviate} />}
+        difficultyTags={
+          <DifficultyTags course={course} abbreviated={abbreviate} />
+        }
+        moduleTags={<ModuleTags course={course} abbreviated={abbreviate} />}
         link={
           course?.link && (
             <CourseLink href={course?.link} target="_blank">
@@ -513,4 +517,4 @@ export const CourseCardSkeleton = () => (
   </SkeletonRoot>
 )
 
-export default CourseCard
+export default withNoSsr(CourseCard)

@@ -15,7 +15,7 @@ import { css, styled } from "@mui/material/styles"
 import { ButtonWithPaddingAndMargin } from "/components/Buttons/ButtonWithPaddingAndMargin"
 import LoaderImage from "/components/LoaderImage"
 import { ClickableDiv } from "/components/Surfaces/ClickableCard"
-import useIsNew from "/hooks/useIsNew"
+import useIsOld from "/hooks/useIsOld"
 import { useTranslator } from "/hooks/useTranslator"
 import StudyModulesTranslations from "/translations/study-modules"
 
@@ -118,8 +118,8 @@ interface ModuleCardProps {
 
 function ModuleCard({ studyModule, image, loading }: ModuleCardProps) {
   const t = useTranslator(StudyModulesTranslations)
-  const isNew = useIsNew()
-  const baseUrl = isNew ? "/_new/admin" : ""
+  const isOld = useIsOld()
+  const baseUrl = isOld ? "/_old" : "/admin"
   const moduleFound = !loading && studyModule
   const moduleNotFound = !loading && !studyModule
 

@@ -16,12 +16,12 @@ interface CustomDocumentProps extends DocumentProps {
 
 function CustomDocument(props: CustomDocumentProps) {
   props.__NEXT_DATA__.props.apolloState = props.apolloState
-  const isNew = props.__NEXT_DATA__.page.includes("_new")
+  const isOld = props.__NEXT_DATA__.page.includes("_old")
 
-  const theme = isNew ? newTheme : originalTheme
-  const fontVariableClass = isNew
-    ? newFontVariableClass
-    : originalFontVariableClass
+  const theme = isOld ? originalTheme : newTheme
+  const fontVariableClass = isOld
+    ? originalFontVariableClass
+    : newFontVariableClass
 
   return (
     <Html lang={props.locale ?? "fi"} dir="ltr" className={fontVariableClass}>

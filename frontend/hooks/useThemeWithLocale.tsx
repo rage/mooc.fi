@@ -5,7 +5,7 @@ import { useRouter } from "next/router"
 
 import { createTheme } from "@mui/material/styles"
 
-import useIsNew from "./useIsNew"
+import useIsOld from "./useIsOld"
 import { datePickersfiFI, fiFI } from "/lib/locale"
 import newTheme from "/src/newTheme"
 import originalTheme from "/src/theme"
@@ -33,8 +33,8 @@ export default function useThemeWithLocale(deviceType?: string) {
   const router = useRouter()
   const { locale = "fi" } = router
 
-  const isNew = useIsNew()
-  const theme = isNew ? newTheme : originalTheme
+  const isOld = useIsOld()
+  const theme = isOld ? originalTheme : newTheme
 
   const themeWithLocale = useMemo(
     () =>

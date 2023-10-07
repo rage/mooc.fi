@@ -18,10 +18,10 @@ export const Links = () => {
 
   return (
     <Container>
-      <Link href="/_new/admin/courses">{t("courses")}</Link>
-      <Link href="/_new/admin/study-modules">{t("modules")}</Link>
-      <Link href="/_new/admin/email-templates">{t("emailTemplates")}</Link>
-      <Link href="/_new/admin/users/search">{t("userSearch")}</Link>
+      <Link href="/admin/courses">{t("courses")}</Link>
+      <Link href="/admin/study-modules">{t("modules")}</Link>
+      <Link href="/admin/email-templates">{t("emailTemplates")}</Link>
+      <Link href="/admin/users/search">{t("userSearch")}</Link>
     </Container>
   )
 }

@@ -245,7 +245,7 @@ export function ListItem({
         {ended.length > 0 && (
           <EndedCoursesLinkContainer>
             <StyledCTALink
-              href={`/_new/courses/?tag=${studyModule.slug}&status=${CourseStatus.Ended}`}
+              href={`/courses/?tag=${studyModule.slug}&status=${CourseStatus.Ended}`}
             >
               {t("showEndedCourses")}
             </StyledCTALink>

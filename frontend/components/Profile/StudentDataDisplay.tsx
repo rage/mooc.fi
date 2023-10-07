@@ -54,7 +54,7 @@ const StudentDataDisplay = ({ tab, data }: StudentDataDisplayProps) => {
         <ProfileCompletionsDisplay completions={completions ?? []} />
       </TabPanel>
       <TabPanel index={2} value={tab}>
-        <ProfileSettings data={data} />
+        <ProfileSettings />
       </TabPanel>
     </>
   )

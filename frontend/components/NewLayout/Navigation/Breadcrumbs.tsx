@@ -99,7 +99,7 @@ const Breadcrumbs = () => {
   const { asPath } = useRouter()
   const { breadcrumbs } = useBreadcrumbContext()
 
-  const isHomePage = !!RegExp(/^(?:\/_new)?\/?$/).exec(
+  const isHomePage = !!RegExp(/^(?:\/_old)?\/?$/).exec(
     asPath?.replace(/#(.*)/, ""),
   )
 
@@ -115,7 +115,7 @@ const Breadcrumbs = () => {
         aria-label="breadcrumb"
       >
         <BreadcrumbList>
-          <BreadcrumbItem translation="home" href="/_new" key="home" />
+          <BreadcrumbItem translation="home" href="/" key="home" />
           {breadcrumbs.map((breadcrumb, index) => (
             <BreadcrumbItem
               key={breadcrumb.href ?? breadcrumb.label ?? `breadcrumb-${index}`}

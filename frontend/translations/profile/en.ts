@@ -102,4 +102,7 @@ export default {
   showCourseDetails: "Show course details",
   copyCourseLink: "Copy permanent link",
   showTierCourse: "Show tier course",
+  TMCSettingsInfo:
+    "You can manage your account settings, such as updating your email or password, from your TMC-profile page under the Settings-tab.",
+  TMCProfileLink: "To TMC-profile",
 } as const

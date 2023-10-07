@@ -21,31 +21,31 @@ const NavigationMenu = () => {
         [
           {
             label: t("courses"),
-            href: "/_new/courses",
+            href: "/courses",
           },
           {
             label: t("modules"),
-            href: "/_new/study-modules",
+            href: "/study-modules",
           },
           admin
             ? {
                 label: "Admin",
-                href: "/_new/admin",
+                href: "/admin",
                 items: [
                   {
-                    href: "/_new/admin/courses",
+                    href: "/admin/courses",
                     label: t("courses"),
                   },
                   {
-                    href: "/_new/admin/study-modules",
+                    href: "/admin/study-modules",
                     label: t("modules"),
                   },
                   {
-                    href: "/_new/admin/email-templates",
+                    href: "/admin/email-templates",
                     label: t("emailTemplates"),
                   },
                   {
-                    href: "/_new/admin/users/search",
+                    href: "/admin/users/search",
                     label: t("userSearch"),
                   },
                 ],

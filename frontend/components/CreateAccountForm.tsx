@@ -235,7 +235,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
     const t = getSignUpTranslator(
       (this.props.router.locale ?? "fi") as LanguageKey,
     )
-    const baseUrl = this.props.router.asPath.includes("_new") ? "/_new" : ""
+    const baseUrl = this.props.router.asPath.includes("_old") ? "/_old" : ""
 
     return (
       <StyledPaper>
