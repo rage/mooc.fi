@@ -386,15 +386,7 @@ const Footer = () => {
             </FooterLink>
           )}
           <FooterBaseCopy>
-            This site is maintained by the{" "}
-            <Link
-              aria-label="Rage research group homepage"
-              href="https://www.helsinki.fi/en/researchgroups/data-driven-education"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              RAGE research group
-            </Link>
+            This site is maintained by the University of Helsinki's MOOC center
           </FooterBaseCopy>
         </FooterBaseRight>
       </FooterBase>

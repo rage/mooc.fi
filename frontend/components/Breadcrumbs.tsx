@@ -127,7 +127,7 @@ export function Breadcrumbs() {
   const router = useRouter()
   const { breadcrumbs } = useBreadcrumbContext()
 
-  const isHomePage = !!RegExp(/^(?:\/_new)?\/?$/).exec(
+  const isHomePage = !!RegExp(/^(?:\/_old)?\/?$/).exec(
     router?.asPath?.replace(/#(.*)/, ""),
   )
 

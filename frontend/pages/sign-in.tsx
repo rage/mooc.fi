@@ -1,26 +1,11 @@
-import Paper from "@mui/material/Paper"
-import { styled } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 
-import Container from "/components/Container"
+import ContentWrapper from "/components/NewLayout/Common/ContentWrapper"
 import SignInForm from "/components/SignInForm"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useTranslator } from "/hooks/useTranslator"
 import withSignedOut from "/lib/with-signed-out"
 import SignInTranslations from "/translations/common"
-
-const StyledPaper = styled(Paper)`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1em;
-  margin-top: 2em;
-  margin-bottom: 2em;
-`
-
-const Header = styled(Typography)`
-  margin: 1em;
-` as typeof Typography
 
 const SignInPage = () => {
   const t = useTranslator(SignInTranslations)
@@ -33,22 +18,16 @@ const SignInPage = () => {
   ])
 
   return (
-    <>
-      <Container style={{ width: "90%", maxWidth: 900 }}>
-        <StyledPaper>
-          <Header component="h1" variant="h4" gutterBottom>
-            {t("login")}
-          </Header>
-          <Typography component="p" paragraph>
-            {t("loginDetails")}
-          </Typography>
-          <SignInForm />
-        </StyledPaper>
-      </Container>
-    </>
+    <ContentWrapper sx={{ margin: "0 auto", maxWidth: "600px !important" }}>
+      <Typography variant="h4" component="h2">
+        {t("login")}
+      </Typography>
+      <Typography variant="body1">{t("loginDetails")}</Typography>
+      <SignInForm sx={{ padding: "1rem 0" }} />
+    </ContentWrapper>
   )
 }
 
 //If user is already logged in, redirect them straight to
 //register-completion page
-export default withSignedOut()(SignInPage)
+export default withSignedOut("/")(SignInPage)

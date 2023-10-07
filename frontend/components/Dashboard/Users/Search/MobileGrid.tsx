@@ -21,7 +21,7 @@ import { styled } from "@mui/material/styles"
 import InfoRow from "../InfoRow"
 import Pagination from "./Pagination"
 import UserSearchContext from "/contexts/UserSearchContext"
-import useIsNew from "/hooks/useIsNew"
+import useIsOld from "/hooks/useIsOld"
 import { useTranslator } from "/hooks/useTranslator"
 import UsersTranslations from "/translations/users"
 
@@ -114,8 +114,8 @@ interface DataCardProps {
 }
 
 const DataCard = ({ row }: DataCardProps) => {
-  const isNew = useIsNew()
-  const baseUrl = isNew ? "/_new/admin" : ""
+  const isOld = useIsOld()
+  const baseUrl = isOld ? "/_old" : "/admin"
   const t = useTranslator(UsersTranslations)
 
   const fields = useMemo(() => {

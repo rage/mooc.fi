@@ -11,7 +11,7 @@ import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/
 import CourseImage from "/components/CourseImage"
 import { CardTitle } from "/components/Text/headers"
 import { useFilterContext } from "/contexts/FilterContext"
-import useIsNew from "/hooks/useIsNew"
+import useIsOld from "/hooks/useIsOld"
 import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/courses"
 import { formatDateTime } from "/util/dataFormatFunctions"
@@ -174,8 +174,8 @@ interface CourseCardProps {
 
 const CourseCard = ({ course, loading, isNew }: CourseCardProps) => {
   const t = useTranslator(CoursesTranslations)
-  const isNewLayout = useIsNew()
-  const baseUrl = isNewLayout ? "/_new/admin" : ""
+  const isOldLayout = useIsOld()
+  const baseUrl = isOldLayout ? "/_old" : "/admin"
 
   const { onStatusClick } = useFilterContext()
   const courseFound = !loading && !!course

@@ -357,8 +357,8 @@ const MobileMenuItem = ({ item, level = 0 }: MobileMenuItemProps) => {
   const { pathname } = useRouter()
 
   const hasSubmenu = isSubmenuItem(item)
-  const { href, label } = item
-  const onClick = useEventCallback(() => {
+  const { href, label, onClick } = item
+  const onItemClick = useEventCallback(() => {
     setBreadcrumbs((prev) => [...prev, item])
     setCurrentLevel(level + 1)
   })
@@ -369,13 +369,17 @@ const MobileMenuItem = ({ item, level = 0 }: MobileMenuItemProps) => {
       isActive={pathname === href}
       className={level > 0 ? "submenu" : undefined}
     >
-      <MobileMenuListItemButton variant="text" href={href}>
+      <MobileMenuListItemButton
+        variant="text"
+        href={href}
+        onClick={onClick ? onClick : undefined}
+      >
         {level > 0 && <CaretRightIcon sx={{ fontSize: 10 }} />}
         <span>{label}</span>
       </MobileMenuListItemButton>
       {hasSubmenu && (
         <>
-          <MobileMenuListItemSubmenuButton onClick={onClick}>
+          <MobileMenuListItemSubmenuButton onClick={onItemClick}>
             <CaretRightIcon />
           </MobileMenuListItemSubmenuButton>
           <MobileMenuLevelContainer
@@ -498,7 +502,7 @@ const MobileNavigationMenu = ({
       ...(loggedIn
         ? [
             {
-              href: "/_new/profile",
+              href: "/profile",
               label: t("myProfile"),
             },
             {
@@ -509,11 +513,11 @@ const MobileNavigationMenu = ({
           ]
         : [
             {
-              href: "/_new/sign-in",
+              href: "/sign-in",
               label: t("loginShort"),
             },
             {
-              href: "/_new/sign-up",
+              href: "/sign-up",
               label: t("signUp"),
             },
           ]),

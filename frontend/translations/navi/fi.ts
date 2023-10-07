@@ -23,7 +23,7 @@ export default {
       text: "Haluatko kurssimme luokkaasi omilla pistelistoillasi? Katso lisää Opettajalle-sivulta! ",
       linkText: "Opettajien sivut",
       img: "Opettajien.webp",
-      link: "/_new/teachers",
+      link: "/teachers",
     },
   ],
   customNaviItems: [

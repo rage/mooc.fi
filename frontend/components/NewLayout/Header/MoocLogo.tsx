@@ -31,7 +31,7 @@ const MoocLogoLink = styled(Link)`
   }
 `
 const MoocLogo = () => (
-  <MoocLogoLink href="/_new" aria-label="MOOC.fi homepage">
+  <MoocLogoLink href="/" aria-label="MOOC.fi homepage">
     <MoocLogoFilled sx={{ fontSize: "3rem", marginRight: "0.5rem" }} />
     <MoocLogoText>MOOC.fi</MoocLogoText>
   </MoocLogoLink>

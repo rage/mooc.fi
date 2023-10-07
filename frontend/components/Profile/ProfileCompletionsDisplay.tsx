@@ -2,7 +2,7 @@ import { Typography } from "@mui/material"
 
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 import { CompletionListItem } from "/components/Home/Completions"
-import useIsNew from "/hooks/useIsNew"
+import useIsOld from "/hooks/useIsOld"
 import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
 import { completionHasCourse } from "/util/guards"
@@ -16,7 +16,7 @@ interface CompletionsProps {
 const ProfileCompletionsDisplay = (props: CompletionsProps) => {
   const { completions } = props
   const t = useTranslator(ProfileTranslations)
-  const isNew = useIsNew()
+  const isOld = useIsOld()
 
   return (
     <>
@@ -30,7 +30,7 @@ const ProfileCompletionsDisplay = (props: CompletionsProps) => {
         <Typography>{t("nocompletionsText")}</Typography>
       )}
       <FormSubmitButton
-        href={isNew ? "/_new/profile/completions" : "/profile/completions"}
+        href={isOld ? "/_old/profile/completions" : "/profile/completions"}
         variant="text"
         fullWidth
       >

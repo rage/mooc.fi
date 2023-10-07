@@ -1,18 +1,15 @@
-import { PropsWithChildren } from "react"
+import React from "react"
 
-import dynamic from "next/dynamic"
 import { useRouter } from "next/router"
 
 import { styled } from "@mui/material/styles"
 
-import { Breadcrumbs } from "/components/Breadcrumbs"
-import Footer from "/components/Footer"
 import Alerts from "/components/HeaderBar/Alerts"
-import Header from "/components/HeaderBar/Header"
+import Footer from "/components/NewLayout/Footer"
+import Header from "/components/NewLayout/Header"
+import Breadcrumbs from "/components/NewLayout/Navigation/Breadcrumbs"
 import PageLoadingIndicators from "/components/PageLoadingIndicators"
 import SkipLink from "/components/SkipLink"
-import Snackbars from "/components/Snackbars"
-import { useLoginStateContext } from "/contexts/LoginStateContext"
 
 const FooterDownPusherWrapper = styled("div")`
   display: flex;
@@ -21,29 +18,36 @@ const FooterDownPusherWrapper = styled("div")`
   justify-content: space-between;
 `
 
-// when the footer is visible, it will overlap the content;
-// this empty div appears with the dynamic height of the toolbar to offset this
-const FooterUpPusher = styled("div")(
-  ({ theme }) => `
+const MainContainer = styled("main")`
   display: flex;
-  min-height: ${theme.mixins.toolbar.minHeight}px;
+  margin: 0 auto;
+  max-width: 7680px;
+  padding: 0;
+  width: 100%;
+  position: relative;
+`
 
-  @media (min-width: 1050px) {
-    display: none;
+const LayoutContent = styled("div")(
+  ({ theme }) => `
+  padding: 0;
+  width: 100%;
+
+  ${theme.breakpoints.up("sm")} {
+    margin: 0 auto;
+    width: 100%;
+  }
+  ${theme.breakpoints.up("lg")} {
+    flex-grow: 1;
+    order: 2;
+    width: 80%;
+    padding: 0 2rem;
   }
 `,
 )
-
-const MobileBottomNavigation = dynamic(
-  () => import("../components/MobileBottomNavigation"),
-  {
-    loading: () => null,
-  },
-)
-
-const Layout = ({ children }: PropsWithChildren<unknown>) => {
+const Layout: React.FunctionComponent<React.PropsWithChildren> = ({
+  children,
+}) => {
   const router = useRouter()
-  const { loggedIn, admin } = useLoginStateContext()
 
   const isHomePage = !!RegExp(/^\/?$/).exec(
     router?.asPath?.replace(/#(.*)/, ""),
@@ -54,18 +58,15 @@ const Layout = ({ children }: PropsWithChildren<unknown>) => {
       <PageLoadingIndicators />
       <SkipLink />
       <FooterDownPusherWrapper>
-        <div id="header-to-footer">
-          <Header />
-          <main id="main">
+        <Header />
+        <MainContainer id="main">
+          <LayoutContent>
             {!isHomePage && <Breadcrumbs />}
             <Alerts />
             {children}
-          </main>
-          <Snackbars />
-        </div>
+          </LayoutContent>
+        </MainContainer>
         <Footer />
-        <FooterUpPusher />
-        {loggedIn && admin ? <MobileBottomNavigation /> : null}
       </FooterDownPusherWrapper>
     </>
   )

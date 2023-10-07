@@ -1,15 +1,3 @@
-import ConfirmEmail from "/components/ConfirmEmail"
-import { RegularContainer } from "/components/Container"
-import withSignedIn from "/lib/with-signed-in"
+import ConfirmEmailPage from "pages/_old/confirm-email"
 
-const ConfirmEmailPage = () => {
-  return (
-    <div>
-      <RegularContainer>
-        <ConfirmEmail onComplete={() => void 0} />
-      </RegularContainer>
-    </div>
-  )
-}
-
-export default withSignedIn(ConfirmEmailPage)
+export default ConfirmEmailPage

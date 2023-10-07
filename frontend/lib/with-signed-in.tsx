@@ -26,7 +26,7 @@ export default function withSignedIn(
 
     static async getInitialProps(context: NextContext) {
       const signedIn = isSignedIn(context)
-      const baseUrl = context.pathname.includes("_new") ? "/_new" : ""
+      const baseUrl = context.pathname.includes("_old") ? "/_old" : ""
       prevContext = context
 
       if (!signedIn) {

@@ -27,13 +27,13 @@ const SignUpPage = () => {
 
   const onStepComplete = () => {
     logInOrOut()
-    Router.push(`/research-consent`)
+    Router.push(`/confirm-email`)
 
     addAlert({
       title: t("confirmEmailTitle"),
       message: t("confirmEmailInfo"),
       severity: "info",
-      ignorePages: [Router.pathname, "/research-consent"],
+      ignorePages: [Router.pathname, "/confirm-email"],
     })
     if (typeof window !== "undefined") {
       window.scrollTo(0, 0)
@@ -49,4 +49,4 @@ const SignUpPage = () => {
   )
 }
 
-export default withSignedOut()(SignUpPage)
+export default withSignedOut("/")(SignUpPage)
