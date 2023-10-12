@@ -3,8 +3,8 @@ import { createHash } from "crypto"
 import { NextFunction, Request, Response } from "express"
 import { Logger } from "winston"
 
+import { GRAPHQL_ENDPOINT_PATH } from "../server"
 import redisClient from "../services/redis"
-import { GRAPHQL_ENDPOINT_PATH } from "/server"
 
 const CACHE_EXPIRE_TIME_SECONDS = 300
 
