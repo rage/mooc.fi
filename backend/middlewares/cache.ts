@@ -19,7 +19,8 @@ export const cachePlugin = () =>
         } /* else if (context.req?.connection) {
         rawToken = context.req?.connection.context["Authorization"]
       }*/
-        if (root || info.parentType.toString() !== "Query" || rawToken) {
+        if (info.parentType.toString() !== "Query" || rawToken) {
+          // Not using the response cache for mutations or authenticated queries
           return next(root, args, context, info)
         }
 
