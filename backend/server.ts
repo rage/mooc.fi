@@ -22,7 +22,10 @@ import { apiRouter } from "./api"
 import { DEBUG, isProduction, isTest } from "./config"
 import { createDefaultData } from "./config/defaultData"
 import { ServerContext } from "./context"
+import createExpressGraphqlCacheMiddleware from "./middlewares/expressGraphqlCache"
 import { createSchema } from "./schema/common"
+
+export const GRAPHQL_ENDPOINT_PATH = isProduction ? "/api" : "/"
 
 // wrapped so that the context isn't cached between test instances
 const createExpressAppWithContext = ({
@@ -54,8 +57,10 @@ const addExpressMiddleware = async (
 ) => {
   const { prisma, logger, knex, extraContext } = serverContext
   await createDefaultData(prisma)
+  // cache middleware first so that it's the first to run
+  app.use(createExpressGraphqlCacheMiddleware(logger))
   app.use(
-    isProduction ? "/api" : "/",
+    GRAPHQL_ENDPOINT_PATH,
     expressMiddleware(apolloServer, {
       context: async (ctx) => ({
         ...ctx,
