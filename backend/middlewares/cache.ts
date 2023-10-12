@@ -29,8 +29,14 @@ export const cachePlugin = () =>
 
         const hash = createHash("sha512").update(key).digest("hex")
 
+        let usedGraphqlCache = true
+
         const res = await redisify<any>(
-          async () => next(root, args, context, info),
+          async () => {
+            usedGraphqlCache = false
+            context.logger.info(`Not using graphql response cache for ${key}`)
+            return next(root, args, context, info)
+          },
           {
             prefix: "graphql-response",
             expireTime: 300,
@@ -40,6 +46,9 @@ export const cachePlugin = () =>
             logger: context.logger,
           },
         )
+        if (usedGraphqlCache) {
+          context.logger.info(`Used graphql response cache for ${key}`)
+        }
         return res
       }
     },
