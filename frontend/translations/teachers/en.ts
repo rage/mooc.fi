@@ -1,13 +1,15 @@
 export default {
   siteTitle: "MOOC.fi for teachers",
   siteIntro:
-    'You can utilize most of our materials freely.  Most of them are licensed with a  <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Creative Commons BY-NC-SA </a>  -license, but check the course materials for confirmation. Creative Commons  BY-NC-SA -licence means that you can use the materials either as is or modify them to better suit your teaching purposes as long as you preserve the information of the original creators in the materials, and the usage is non-commercial.',
+    "If you are planning on teaching the basics of programming, our courses are well suited for it. We offer a high quality learing material and very thorough assignment sets which our system can automatically review around the clock! ",
   teachingTitle: "Using MOOCs in your classroom",
   teachingText:
-    "If you are planning on teaching the basics of programming, our courses are well suited for it. We offer a high quality learing material and very thorough assignment sets which our system can automatically review around the clock! ",
+    "You can utilize most of our materials freely.  Most of them are licensed with a",
   teachingText2:
-    "You can host our courses in your learning institution with your own deadlines, free of charge for now. We develop the process continuously. Hosting your own programming course has never been this easy!",
+    "-license, but check the course materials for confirmation. Creative Commons  BY-NC-SA -licence means that you can use the materials either as is or modify them to better suit your teaching purposes as long as you preserve the information of the original creators in the materials, and the usage is non-commercial.",
   teachingText3:
+    "You can host our courses in your learning institution with your own deadlines, free of charge for now. We develop the process continuously. Hosting your own programming course has never been this easy!",
+  teachingText4:
     "MOOCs are a great tool for teachers. Our automatic assessment system enables the teacher to focus on the actual teaching and personal guidance of students.",
   organizeTitle: "How to host your own course",
   organizeText:
