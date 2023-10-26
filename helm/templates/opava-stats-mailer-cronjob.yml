@@ -1,12 +1,12 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: prague-stats-emailer
+  name: opava-stats-emailer
   labels:
     {{- include "helm.labels" . | nindent 4 }}
 spec:
-  # Run at 10:00 AM on 30th of November
-  schedule: "0 10 30 11 *"
+  # Run at 10:00 AM on 31st of January and 31st of July
+  schedule: "0 10 31 1,7 *"
   startingDeadlineSeconds: 3600
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 1
@@ -21,9 +21,9 @@ spec:
         spec:
           restartPolicy: OnFailure
           containers:
-            - name: prague-stats-emailer
+            - name: opava-stats-emailer
               image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
-              command: ["sh", "-c", "npm run prague-stats-emailer"]
+              command: ["sh", "-c", "npm run opava-stats-emailer"]
               envFrom:
                 - secretRef:
                     name: backend-secret
