@@ -3,9 +3,10 @@ import sentryLogger from "../lib/logger"
 import prisma from "../prisma"
 import { sendMail } from "../util/sendMail"
 
-const logger = sentryLogger({ service: "prague-stats-emailer" })
+const logger = sentryLogger({ service: "opava-stats-emailer" })
 
-const pragueStatsEmailer = async () => {
+const opavaStatsEmailer = async () => {
+  // Same recipients as for prague stats as opava stats are sent to the same partner in CZ, who re-distributes the stats to the universities
   const recipients = PRAGUE_COMPLETION_RECIPIENTS?.split(";")
 
   if (!recipients) {
@@ -20,7 +21,7 @@ const pragueStatsEmailer = async () => {
       FROM "user" u
       JOIN completion co on u.id = co.user_id
     WHERE co.course_id = '49cbadd8-be32-454f-9b7d-e84d52100b74'::uuid
-      AND u.email ILIKE '%@vse.cz'
+      AND u.email ILIKE '%@slu.cz'
     GROUP BY co.tier, u.email, co.completion_date
     ORDER BY co.completion_date DESC, u.email, co.tier;
   `
@@ -60,7 +61,7 @@ const pragueStatsEmailer = async () => {
   })
 }
 
-pragueStatsEmailer()
+opavaStatsEmailer()
   .then(() => prisma.$disconnect().then(() => process.exit(0)))
   .catch((error) => {
     logger.error(error)
