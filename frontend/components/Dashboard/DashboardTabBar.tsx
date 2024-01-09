@@ -73,7 +73,7 @@ function DashboardTabBar(props: DashboardTabsProps) {
   const handleChange = useCallback(
     (_: SyntheticEvent<Element, Event>, newValue: number) => {
       setValue(newValue)
-      Router.push(`/courses/${slug}${routes[newValue].path}`)
+      Router.push(`/admin/courses/${slug}${routes[newValue].path}`)
     },
     [slug],
   )
@@ -86,7 +86,7 @@ function DashboardTabBar(props: DashboardTabsProps) {
             variant="fullWidth"
             value={value}
             onChange={handleChange}
-            textColor="inherit"
+            textColor="primary"
             indicatorColor="secondary"
             aria-label="course dashboard navi"
           >
