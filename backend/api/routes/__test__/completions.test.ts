@@ -27,7 +27,8 @@ describe("API", () => {
       const { get } = createRequestHelpers(ctx.port)
       getCompletions = (slug: string, registered = false) =>
         get(
-          `/api/completions/${slug}${registered ? `?registered=${registered}` : ""
+          `/api/completions/${slug}${
+            registered ? `?registered=${registered}` : ""
           }`,
           {},
         )
@@ -105,7 +106,7 @@ describe("API", () => {
       ])
     })
 
-    it("returns correctly on course when registered query parameter is set, skipping duplicate completions", async () => {
+    it("returns correctly on course when registered query parameter is set, not skipping duplicate completions", async () => {
       const res = await getCompletions(
         "course1",
         true,
@@ -117,6 +118,7 @@ describe("API", () => {
         "12400000-0000-0000-0000-000000000001",
         "30000000-0000-0000-0000-000000000102",
         "30000000-0000-0000-0000-000000000104",
+        "30000000-0000-0000-0000-000000000105",
         "30000000-0000-0000-0000-000000000106",
       ])
     })
