@@ -27,8 +27,7 @@ describe("API", () => {
       const { get } = createRequestHelpers(ctx.port)
       getCompletions = (slug: string, registered = false) =>
         get(
-          `/api/completions/${slug}${
-            registered ? `?registered=${registered}` : ""
+          `/api/completions/${slug}${registered ? `?registered=${registered}` : ""
           }`,
           {},
         )
@@ -78,7 +77,8 @@ describe("API", () => {
         })
     })
 
-    it("returns correctly on course, skipping registered and duplicate completions", async () => {
+    it("returns correctly on course, skipping registered and showing duplicate completions", async () => {
+      // Showing duplicate completions is important because students take exams multiple times and get multiple completions that way.
       const res = await getCompletions("course1")({
         headers: { Authorization: "Basic kissa" },
       })
@@ -87,10 +87,12 @@ describe("API", () => {
         "12400000-0000-0000-0000-000000000001",
         "30000000-0000-0000-0000-000000000102",
         "30000000-0000-0000-0000-000000000104",
+        "30000000-0000-0000-0000-000000000105",
       ])
     })
 
-    it("returns correctly on course alias, skipping registered and duplicate completions", async () => {
+    it("returns correctly on course alias, skipping registered and showing duplicate completions", async () => {
+      // Showing duplicate completions is important because students take exams multiple times and get multiple completions that way.
       const res = await getCompletions("alias")({
         headers: { Authorization: "Basic kissa" },
       })
@@ -99,6 +101,7 @@ describe("API", () => {
         "12400000-0000-0000-0000-000000000001",
         "30000000-0000-0000-0000-000000000102",
         "30000000-0000-0000-0000-000000000104",
+        "30000000-0000-0000-0000-000000000105",
       ])
     })
 
