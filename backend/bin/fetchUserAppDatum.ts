@@ -83,7 +83,7 @@ const fetchUserAppDatum = async () => {
           hidden: true,
           teacher_in_charge_name: "",
           teacher_in_charge_email: "",
-          start_date: "",
+          start_date: null,
         },
       })
     }
