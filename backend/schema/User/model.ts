@@ -85,7 +85,6 @@ export const User = objectType({
             where: {
               course_id: course?.id ?? undefined,
             },
-            distinct: ["user_id", "course_id"],
             orderBy: { created_at: "asc" },
           })
       },
