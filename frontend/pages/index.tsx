@@ -5,7 +5,8 @@ import Hype from "/components/NewLayout/Frontpage/Hype"
 import { ModuleNavigation } from "/components/NewLayout/Frontpage/Modules"
 // import News from "/components/NewLayout/Frontpage/News"
 import SelectedCourses from "/components/NewLayout/Frontpage/SelectedCourses"
-import UkraineInfo from "/components/NewLayout/Frontpage/UkraineInfo"
+
+// import UkraineInfo from "/components/NewLayout/Frontpage/UkraineInfo"
 
 const HomeContainer = styled("div")`
   display: flex;
@@ -23,7 +24,7 @@ const Home = () => {
         <FrontpageHero />
         {/*<News />*/}
         <Hype />
-        <UkraineInfo />
+        {/* <UkraineInfo /> */}
         <SelectedCourses />
         <ModuleNavigation />
       </ContentContainer>
