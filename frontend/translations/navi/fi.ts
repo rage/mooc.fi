@@ -2,7 +2,7 @@ export default {
   naviItems: [
     {
       title: "Avoimia kursseja, kaikille",
-      text: "Kurssimme ovat avoinna kaikille ilman osallistumismaksuja. Voit selata materiaaleja myös ilman tunnuksia.",
+      text: "Kurssimme ovat avoinna kaikille. Voit selata materiaaleja myös ilman tunnuksia.",
       linkText: "Kurssit",
       img: "AllCourses.webp",
       link: "#courses",
