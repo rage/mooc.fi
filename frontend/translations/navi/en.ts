@@ -2,7 +2,7 @@ export default {
   naviItems: [
     {
       title: "Open courses for all",
-      text: "Online learning at its best. Don't worry about course fees or the commute. Study where it's convenient for you! As per their name, MOOCs (Massive Open Online Course) are all open, free of charge and fully available online.",
+      text: "Online learning at its best. Don't worry about course fees or the commute. Study where it's convenient for you! As per their name, MOOCs (Massive Open Online Course) are all open and fully available online.",
       linkText: "Courses and Modules",
       img: "AllCourses.webp",
       link: "#courses",

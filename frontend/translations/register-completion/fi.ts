@@ -3,7 +3,7 @@ export default {
   course: "Kurssi: {{course}}",
   credits: "Opintopisteet: {{ects}} (Vaatii suomalaisen henkilötunnuksen).",
   credits_details:
-    "Helsingin yliopiston avoin yliopisto hoitaa suoritusten rekisteröinnin. Opintosuorituksen rekisteröinti on ilmaista.",
+    "Helsingin yliopiston avoin yliopisto hoitaa suoritusten rekisteröinnin.",
   donow:
     "Sinun tulee ilmoittautua Helsingin yliopiston avoimeen yliopistoon, jotta voimme rekisteröidä suorituksesi.",
   "instructions-title": "Toimi näin:",

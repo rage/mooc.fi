@@ -1,5 +1,5 @@
 export default {
-  tagLine: "High-quality, open and free courses for everyone!",
+  tagLine: "High-quality and open courses for everyone!",
   intro:
     "The courses are hosted by University of Helsinki MOOC Center. No prior knowledge is required — beginners can start to learn programming basics from the Introduction to Programming course, or start to get familiar with artificial intelligence from the course Elements of AI.",
   courseButton: "Our courses",

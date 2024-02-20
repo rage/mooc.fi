@@ -3,7 +3,7 @@ export default {
   course: "Course: {{course}}",
   credits: "Credits: {{ects}}",
   credits_details:
-    "The Open University of the University of Helsinki is responsible for registering the credits. Registering the credits is free.",
+    "The Open University of the University of Helsinki is responsible for registering the credits.",
   donow:
     "Register to the Open University of the University of Helsinki, so we can process your credits.",
   "instructions-title": "Follow these instructions: ",
