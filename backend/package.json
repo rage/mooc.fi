@@ -40,7 +40,6 @@
     "kafka-bridge": "node ./dist/bin/kafkaBridge.js",
     "background-emailer": "node ./dist/bin/backgroundEmailer.js",
     "update-course-statuses": "node ./dist/bin/updateCourseStatuses.js",
-    "remove-duplicate-completions": "node ./dist/bin/removeDuplicateCompletions.js",
     "remove-duplicate-exercise-completions": "node ./dist/bin/removeDuplicateExerciseCompletions.js",
     "expire-user-organization-join-confirmations": "node ./dist/bin/expireUserOrganizationJoinConfirmations.js",
     "prune-old-stored-data": "node ./dist/bin/pruneOldStoredData.js",
