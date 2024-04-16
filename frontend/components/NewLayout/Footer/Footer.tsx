@@ -379,12 +379,10 @@ const Footer = () => {
           </FooterBaseSocial>
         </FooterBaseLeft>
         <FooterBaseRight>
-          {locale === "fi" && (
-            <FooterLink href={t("privacyPolicyLink")}>
-              {t("privacyPolicy")}
-              <ArrowRightIcon sx={{ fontSize: 16 }} />
-            </FooterLink>
-          )}
+          <FooterLink href={t("privacyPolicyLink")}>
+            {t("privacyPolicy")}
+            <ArrowRightIcon sx={{ fontSize: 16 }} />
+          </FooterLink>
           <FooterBaseCopy>
             This site is maintained by the University of Helsinki's MOOC center
           </FooterBaseCopy>
