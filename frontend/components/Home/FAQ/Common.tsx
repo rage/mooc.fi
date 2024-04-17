@@ -70,6 +70,7 @@ export const ContentBox = styled("div")`
 export const Title = styled(Typography)`
   margin-bottom: 0.4em;
   padding: 1rem;
+  justify-content: center;
 ` as typeof Typography
 
 export const TitleBackground = styled("div")`
@@ -78,6 +79,9 @@ export const TitleBackground = styled("div")`
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 1em;
+  @media (max-width: 600px) {
+    max-width: 100%;
+  }
 `
 
 export const IngressBackground = styled(TitleBackground)`
