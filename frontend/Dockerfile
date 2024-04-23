@@ -1,4 +1,4 @@
-FROM node:18.20.2-buster
+FROM node:18.16.1-buster
 
 RUN apt-get update \
   && apt-get install -y build-essential libgl1-mesa-glx pigz \
