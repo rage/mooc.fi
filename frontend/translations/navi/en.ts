@@ -12,7 +12,7 @@ export default {
       text: "Teacher! You can have your own courses, with point lists and schedules tailored for you. Some of our courses can be used for your classes for free with some customization for your needs, for example by setting your own deadlines. For more information, see our teacher's manual! ",
       linkText: "For teachers",
       img: "Opettajien.webp",
-      link: "/teacher-guide",
+      link: "/teachers",
     },
   ],
   customNaviItems: [],
