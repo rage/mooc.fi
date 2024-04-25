@@ -15,7 +15,7 @@ const NavigationRightContainer = styled("div")(
   display: flex;
   justify-content: flex-end;
   height: 100%;
-  ${theme.breakpoints.down("sm")} {
+  ${theme.breakpoints.down("lg")} {
     display: none;
   }
 `,
