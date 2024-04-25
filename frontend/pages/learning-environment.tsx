@@ -1,12 +1,9 @@
 import dynamic from "next/dynamic"
 import { useRouter } from "next/router"
 
-import { styled } from "@mui/material/styles"
-
+import { InformationContainer } from "/components/Information/StyledComponents"
 import Spinner from "/components/Spinner"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
-
-const Container = styled("div")``
 
 const LearningEnvironmentPage = () => {
   useBreadcrumbs([
@@ -33,7 +30,7 @@ const LearningEnvironmentPage = () => {
     { loading: Spinner },
   )
 
-  return <Container>{<Content />}</Container>
+  return <InformationContainer>{<Content />}</InformationContainer>
 }
 
 export default LearningEnvironmentPage
