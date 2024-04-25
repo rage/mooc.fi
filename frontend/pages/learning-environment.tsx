@@ -8,11 +8,11 @@ import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const Container = styled("div")``
 
-const TeachersPage = () => {
+const LearningEnvironmentPage = () => {
   useBreadcrumbs([
     {
-      translation: "teachers",
-      href: `/teachers`,
+      translation: "learningEnvironment",
+      href: `/learning-environment`,
     },
   ])
 
@@ -21,7 +21,9 @@ const TeachersPage = () => {
   const Content = dynamic(
     async () => {
       return import(
-        `../public/md_pages/information/teachers_${locale ?? "fi"}.mdx`
+        `../public/md_pages/information/learning_environment_${
+          locale ?? "fi"
+        }.mdx`
       )
         .then((mdx) => mdx)
         .catch(() => {
@@ -34,4 +36,4 @@ const TeachersPage = () => {
   return <Container>{<Content />}</Container>
 }
 
-export default TeachersPage
+export default LearningEnvironmentPage

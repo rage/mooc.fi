@@ -27,6 +27,22 @@ const NavigationMenu = () => {
             label: t("modules"),
             href: "/study-modules",
           },
+          {
+            label: t("teachers"),
+            href: "/teachers",
+          },
+          {
+            label: t("learningEnvironment"),
+            href: "/learning-environment",
+          },
+          {
+            label: t("research"),
+            href: "/research",
+          },
+          {
+            label: t("aboutUs"),
+            href: "/about-us",
+          },
           admin
             ? {
                 label: "Admin",

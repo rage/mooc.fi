@@ -114,4 +114,8 @@ export default {
   shortcuts: "Shortcuts",
   createNewCourse: "Create a new course",
   toMainMenu: "To main menu",
+  teachers: "For teachers",
+  learningEnvironment: "Learning environment",
+  research: "Research",
+  aboutUs: "About us",
 } as const

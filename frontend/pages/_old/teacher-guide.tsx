@@ -49,8 +49,8 @@ const ForTeachers = () => {
 
   useBreadcrumbs([
     {
-      translation: `teachers`,
-      href: `${baseUrl}/teachers`,
+      translation: `teacherGuide`,
+      href: `${baseUrl}/teacher-guide`,
     },
   ])
 
