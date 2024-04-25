@@ -29,4 +29,8 @@ export default {
   home: "Home",
   installation: "Installation",
   admin: "Admin",
+  teacherGuide: "For teachers",
+  learningEnvironment: "Learning environment",
+  research: "Research",
+  aboutUs: "About us",
 } as const

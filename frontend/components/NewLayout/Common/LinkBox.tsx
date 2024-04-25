@@ -6,7 +6,7 @@ import { PropsOf } from "@emotion/react"
 import { Skeleton, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import CTALink, { CTALinkIcon, CTALinkProps } from "./CTALink"
+import CTALink, { CTALinkProps } from "./CTALink"
 import { FullCoverTextBackground } from "/components/Images/CardBackgroundFullCover"
 import { fontSize } from "/src/theme/util"
 
@@ -19,23 +19,6 @@ const LinkBoxContainer = styled("article")(
   justify-content: space-between;
   height: 100%;
   position: relative;
-
-  &:hover {
-    cursor: pointer;
-
-    ${LinkBoxTitle} {
-      color: ${theme.palette.common.brand.main};
-      text-decoration: underline;
-    }
-    ${LinkBoxLink} {
-      text-decoration: underline;
-      ${CTALinkIcon} {
-        background-color: ${theme.palette.common.brand.main};
-        svg {
-          background-color: ${theme.palette.common.brand.main};
-        }
-        }
-    }
   }
 `,
 )

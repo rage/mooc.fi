@@ -32,6 +32,10 @@ export default {
     "/faq": "Frequently asked questions",
     "/faq/[topic]": "Usein kysytyt kysymykset - {{title}}",
     "/": "Home",
+    "/teacher-guide": "For teachers",
+    "/learning-environment": "Learning environment",
+    "/research": "Research",
+    "/about-us": "About us",
   },
   titleTemplate: {
     "/courses": "Courses",
@@ -65,6 +69,10 @@ export default {
     "/register-completion": "Register completion",
     "/faq/[[...topic]]": "Frequently asked questions - %s",
     "/": "Home",
+    "/teacher-guide": "For teachers",
+    "/learning-environment": "Learning environment",
+    "/research": "Research",
+    "/about-us": "About us",
   },
   breadcrumb: {
     "/courses/[slug]": "Course dashboard",

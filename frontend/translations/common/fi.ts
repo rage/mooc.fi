@@ -113,4 +113,8 @@ export default {
   shortcuts: "Oikopolut",
   createNewCourse: "Luo uusi kurssi",
   toMainMenu: "Päävalikkoon",
+  teachers: "Opettajalle",
+  learningEnvironment: "Oppimisympäristö",
+  research: "Tutkimus",
+  aboutUs: "Meistä",
 } as const

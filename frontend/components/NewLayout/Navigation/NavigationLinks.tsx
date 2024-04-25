@@ -29,7 +29,7 @@ const NavigationLink = styled(Link)(
 const NavigationLinksContainer = styled("nav")(
   ({ theme }) => `
   display: none;
-  ${theme.breakpoints.up("sm")} {
+  ${theme.breakpoints.up("md")} {
     height: 100%;
     display: block;
   }

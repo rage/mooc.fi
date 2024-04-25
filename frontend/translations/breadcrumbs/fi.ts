@@ -29,4 +29,8 @@ export default {
   installation: "Asennus",
   home: "Etusivu",
   admin: "Ylläpito",
+  teacherGuide: "Opettajille",
+  learningEnvironment: "Oppimisympäristö",
+  research: "Tutkimus",
+  aboutUs: "Meistä",
 } as const

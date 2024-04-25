@@ -35,7 +35,7 @@ export function useActiveTab() {
   const { pathname } = useRouter()
 
   return pathname.match(
-    "/(courses|study-modules|email-templates|profile|users|admin)",
+    "/(courses|study-modules|teachers|learning-environment|research|about-us|email-templates|profile|users|admin)",
   )?.[1]
 }
 
