@@ -61,21 +61,19 @@ const getIp = (req: NextRequest) => {
 }
 
 const loggerMiddleware = async (req: NextRequest, res: NextResponse) => {
-  const remoteAddress = req.ip || getIp(req) || "-"
-  const remoteUser = "-"
+  const remoteAddress = getIp(req) ?? req.ip ?? "-"
+  const remoteUser = "user"
   const date = new Date().toISOString()
   const method = req.method
   const url = req.url
-  const referrer = req.headers.get("referer") || "-"
-  const userAgent = req.headers.get("user-agent") || "-"
+  const referrer = req.headers.get("referer") ?? "-"
+  const userAgent = req.headers.get("user-agent") ?? "-"
 
   const status = res.status
   const httpVersion = "HTTP/1.1"
-  const resContentLength = res.headers.get("content-length") || "-"
+  const resContentLength = res.headers.get("content-length") ?? 1
 
-  // const color = styles[responseStatusToColor(status)]
-  // const log = `${remoteAddress} ${remoteUser} [${date}] "${color.open}${method} ${url} ${httpVersion}${color.close}" ${status} ${resContentLength} "${referrer}" "${userAgent}"`
-  const message = `${remoteAddress} ${remoteUser} [${date}] "${method} ${url} ${httpVersion}" ${status} ${resContentLength} "${referrer}" "${userAgent}"`
+  const message = `${remoteAddress} - ${remoteUser} [${date}] "${method} ${url} ${httpVersion}" ${status} ${resContentLength} "${referrer}" "${userAgent}"`
   const logFunction = status >= 400 ? console.error : console.log
   logFunction(message)
 
