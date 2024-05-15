@@ -19,16 +19,8 @@ import useSeoConfig from "/hooks/useSeoConfig"
 import useThemeWithLocale from "/hooks/useThemeWithLocale"
 import { getAccessToken, isAdmin, isSignedIn } from "/lib/authentication"
 import withApolloClient from "/lib/with-apollo-client"
-import { createEmotionSsr } from "/src/createEmotionSsr"
 
 import { UserDetailedFieldsFragment } from "/graphql/generated"
-
-const { withAppEmotionCache, augmentDocumentWithEmotionCache } =
-  createEmotionSsr({
-    key: "moocfi",
-  })
-
-export { augmentDocumentWithEmotionCache }
 
 interface MyPageProps {
   signedIn?: boolean
@@ -142,4 +134,4 @@ export function reportWebVitals(metric: NextWebVitalsMetric) {
   // console.log(metric)
 }
 
-export default withAppEmotionCache(withApolloClient(MyApp))
+export default withApolloClient(MyApp)

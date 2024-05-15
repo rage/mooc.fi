@@ -2,7 +2,6 @@ import React from "react"
 
 import { DocumentProps, Head, Html, Main, NextScript } from "next/document"
 
-import { augmentDocumentWithEmotionCache } from "./_app"
 import newTheme from "/src/newTheme"
 import originalTheme from "/src/theme"
 
@@ -31,6 +30,5 @@ function CustomDocument(props: CustomDocumentProps) {
   )
 }
 
-augmentDocumentWithEmotionCache(CustomDocument)
 
 export default CustomDocument
