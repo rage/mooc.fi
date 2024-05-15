@@ -65,7 +65,12 @@ const loggerMiddleware = async (req: NextRequest, res: NextResponse) => {
   const remoteUser = "user"
   const date = new Date().toISOString()
   const method = req.method
-  const url = req.url
+  let url = req.url
+  const url2 = req.nextUrl.href
+  console.log("url2", url2)
+  if (process.env.NODE_ENV === "production") {
+    url = url.replace("localhost:3021", "www.mooc.fi")
+  }
   const referrer = req.headers.get("referer") ?? "-"
   const userAgent = req.headers.get("user-agent") ?? "-"
 
