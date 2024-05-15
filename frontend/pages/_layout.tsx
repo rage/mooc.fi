@@ -1,5 +1,7 @@
 import React from "react"
 
+import '@fontsource-variable/open-sans';
+
 import { useRouter } from "next/router"
 
 import { styled } from "@mui/material/styles"
@@ -25,6 +27,11 @@ const MainContainer = styled("main")`
   padding: 0;
   width: 100%;
   position: relative;
+`
+
+const Wrapper = styled("div")`
+  --header-font: "Open Sans Variable", sans-serif;
+  --body-font: "Open Sans Variable", sans-serif;
 `
 
 const LayoutContent = styled("div")(
@@ -59,7 +66,7 @@ const Layout: React.FunctionComponent<React.PropsWithChildren> = ({
       <SkipLink />
       <FooterDownPusherWrapper>
         {/* NOTE: This component can only have two children */}
-        <div>
+        <Wrapper>
           <Header />
           <MainContainer id="main">
             <LayoutContent>
@@ -68,7 +75,7 @@ const Layout: React.FunctionComponent<React.PropsWithChildren> = ({
               {children}
             </LayoutContent>
           </MainContainer>
-        </div>
+        </Wrapper>
         <Footer />
       </FooterDownPusherWrapper>
     </>

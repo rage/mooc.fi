@@ -3,12 +3,8 @@ import React from "react"
 import { DocumentProps, Head, Html, Main, NextScript } from "next/document"
 
 import { augmentDocumentWithEmotionCache } from "./_app"
-import newTheme, {
-  fontVariableClass as newFontVariableClass,
-} from "/src/newTheme"
-import originalTheme, {
-  fontVariableClass as originalFontVariableClass,
-} from "/src/theme"
+import newTheme from "/src/newTheme"
+import originalTheme from "/src/theme"
 
 interface CustomDocumentProps extends DocumentProps {
   apolloState: any

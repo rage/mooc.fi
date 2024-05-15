@@ -73,9 +73,8 @@ const ModuleColor = styled("div", {
   max-height: 80px;
   height: 80px;
 
-  background-color: ${
-    studyModule ? courseColorSchemes[studyModule] : courseColorSchemes["other"]
-  };
+  background-color: ${studyModule ? courseColorSchemes[studyModule] : courseColorSchemes["other"]
+    };
 
   ${theme.breakpoints.up(768)} {
     width: 80px;
@@ -321,23 +320,20 @@ const Schedule = React.memo(
     if (course) {
       const { status, start_date, end_date } = course
       if (status === CourseStatus.Upcoming) {
-        schedule = `${t("Upcoming")}${
-          start_date ? " " + formatLocaleDateTime(start_date) : ""
-        }`
+        schedule = `${t("Upcoming")}${start_date ? " " + formatLocaleDateTime(start_date) : ""
+          }`
       } else if (status === CourseStatus.Ended) {
-        schedule = `${t("Ended")}${
-          end_date && Date.parse(end_date) < Date.now()
+        schedule = `${t("Ended")}${end_date && Date.parse(end_date) < Date.now()
             ? " " + formatLocaleDateTime(end_date)
             : ""
-        }`
+          }`
       } else {
-        schedule = `${t("Active")} ${
-          end_date
+        schedule = `${t("Active")} ${end_date
             ? formatLocaleDateTime(start_date) +
-              " - " +
-              formatLocaleDateTime(end_date)
+            " - " +
+            formatLocaleDateTime(end_date)
             : "— " + t("unscheduled")
-        }`
+          }`
       }
     }
 

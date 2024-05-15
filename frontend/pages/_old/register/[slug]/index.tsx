@@ -164,7 +164,7 @@ const RegisterToOrganization = () => {
     const isExpired =
       new Date().getTime() >
       new Date(currentUserOrganizationMembership?.created_at).getTime() +
-        3 * 1000 * 60 * 60 * 24
+      3 * 1000 * 60 * 60 * 24
 
     if (isMember) {
       setConfirmationStatus("confirmed")
@@ -412,9 +412,8 @@ const RegisterToOrganization = () => {
             <TextBox>
               {t("joiningEmailHint1")}{" "}
               {organizationData.organization.email != null
-                ? `${t("joiningEmailHint2")}@${
-                    organizationData.organization.email.split("@")[1]
-                  }${t("joiningEmailHint3")}`
+                ? `${t("joiningEmailHint2")}@${organizationData.organization.email.split("@")[1]
+                }${t("joiningEmailHint3")}`
                 : ""}
             </TextBox>
             <StyledForm

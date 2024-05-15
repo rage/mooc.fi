@@ -2,8 +2,8 @@ import { withComponents } from "./components"
 import { withPalette } from "./palette"
 import { withTypography } from "./typography"
 
-import type {} from "@mui/x-date-pickers/themeAugmentation"
-import type {} from "@mui/lab/themeAugmentation"
+import type { } from "@mui/x-date-pickers/themeAugmentation"
+import type { } from "@mui/lab/themeAugmentation"
 
 import { pipe } from "remeda"
 
@@ -27,5 +27,4 @@ let theme = createTheme({
 
 theme = pipe(theme, withPalette, withTypography, withComponents)
 
-export { fontVariableClass } from "./typography"
 export default theme

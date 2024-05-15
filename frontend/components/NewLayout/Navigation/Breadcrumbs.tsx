@@ -55,10 +55,9 @@ const BreadcrumbItemComponent = styled("li")<BreadcrumbItemComponentProps>(
   }
 
   a {
-    color: ${
-      isCurrent
-        ? theme.palette.common.grayscale.dark
-        : theme.palette.common.brand.light
+    color: ${isCurrent
+      ? theme.palette.common.grayscale.dark
+      : theme.palette.common.brand.light
     };
     ${isCurrent ? "display: block;" : ""}
     text-decoration: none;
@@ -76,7 +75,7 @@ const BreadcrumbItemComponent = styled("li")<BreadcrumbItemComponentProps>(
 
 interface BreadcrumbItemProps
   extends BreadcrumbItemComponentProps,
-    Breadcrumb {}
+  Breadcrumb { }
 
 const BreadcrumbItem = ({ isCurrent, ...item }: BreadcrumbItemProps) => {
   const t = useTranslator(BreadcrumbsTranslations)

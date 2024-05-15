@@ -3,10 +3,8 @@ import { CSSProperties } from "react"
 import { createTheme, responsiveFontSizes, Theme } from "@mui/material/styles"
 
 import { themeFontSize } from "../theme/util"
-import { bodyFont, headerFont } from "./fonts"
 
-export const fontVariableClass = `${headerFont.variable} ${bodyFont.variable}`
-export const bodyFontDeclaration = bodyFont.style
+import { headerFontFamily, bodyFontFamily } from "./fonts"
 
 export const withTypography = (theme: Theme) => {
   const commonHeadingStyles: CSSProperties = {
@@ -14,7 +12,7 @@ export const withTypography = (theme: Theme) => {
     margin: 0,
     width: "100%",
     fontWeight: 700,
-    fontFamily: headerFont.style.fontFamily,
+    fontFamily: headerFontFamily,
     padding: "1.5rem 0 1rem",
     display: "flex",
     flexGrow: "1",
@@ -27,10 +25,10 @@ export const withTypography = (theme: Theme) => {
   }
   const typography: Theme["typography"] = {
     ...theme.typography,
-    fontFamily: bodyFont.style.fontFamily,
+    fontFamily: bodyFontFamily,
     button: {
       label: {
-        fontFamily: bodyFont.style.fontFamily,
+        fontFamily: bodyFontFamily,
       },
     },
     h1: {
@@ -86,25 +84,25 @@ export const withTypography = (theme: Theme) => {
       },
     },
     subtitle1: {
-      fontFamily: headerFont.style.fontFamily,
+      fontFamily: headerFontFamily,
       fontSize: "1rem",
     },
     subtitle2: {
-      fontFamily: bodyFont.style.fontFamily,
+      fontFamily: bodyFontFamily,
       fontSize: "0.875rem",
       lineHeight: 1.1429,
     },
     body1: {
       fontSize: "1rem",
-      fontFamily: bodyFont.style.fontFamily,
+      fontFamily: bodyFontFamily,
     },
     body2: {
       fontSize: "0.875rem",
-      fontFamily: bodyFont.style.fontFamily,
+      fontFamily: bodyFontFamily,
     },
     ingress: {
       fontSize: "1.25rem",
-      fontFamily: bodyFont.style.fontFamily,
+      fontFamily: bodyFontFamily,
     },
   }
 
