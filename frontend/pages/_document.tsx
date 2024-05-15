@@ -15,12 +15,9 @@ function CustomDocument(props: CustomDocumentProps) {
   const isOld = props.__NEXT_DATA__.page.includes("_old")
 
   const theme = isOld ? originalTheme : newTheme
-  const fontVariableClass = isOld
-    ? originalFontVariableClass
-    : newFontVariableClass
 
   return (
-    <Html lang={props.locale ?? "fi"} dir="ltr" className={fontVariableClass}>
+    <Html lang={props.locale ?? "fi"} dir="ltr">
       <Head>
         <meta charSet="utf-8" />
         <meta name="theme-color" content={theme.palette.primary.main} />
