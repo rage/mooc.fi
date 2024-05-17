@@ -73,8 +73,13 @@ Saat asennettua nämä käyttöösi seuraamalla näitä ohjeita.
 
 #### Javan asentaminen <a name="adopt-open-jdk"></a>
 
-1. Lataa Java 11:n avoin kehitys- ja suoritusympäristö AdoptOpenJDK11 osoitteesta [https://adoptopenjdk.net](https://adoptium.net/temurin/releases/?os=mac&version=11&package=jdk).
-2. Sivulla pitäisi olla valmiiksi suodatettuna vain macOS-käyttöjärjestelmälle pakettityypin JDK versio 11 - LTS. Valitse asennettavista paketeista oman käyttöjärjestelmäsi arkkitehtuurin mukainen asennuspaketti, ja lataa asennustiedosto .pkg-napista.
+1. Lataa Java 11:n avoin kehitysympäristö OpenJDK11 osoitteesta [https://adoptium.net/](https://adoptium.net/temurin/releases/?os=mac&version=11&package=jdk).
+  - Sivulla pitäisi olla valmiiksi suodatettuna vain macOS-käyttöjärjestelmälle pakettityypin JDK versio 11 - LTS.
+  - Valitse aarch64 tai x64 asennustiedosto macOS-versiosi perusteella. Voit varmistaa oikean version Apple-valikosta --> valitse "About This Mac"
+    - Jos Chip-kohdassa lukee M1, M2 tai M3, valitse aarch64-asennustiedosto.
+    - Jos Chip-kohdassa lukee Intel, valitse x64-asennustiedosto.
+
+2. Lataa asennustiedosto .pkg-napista.
 3. Kun olet ladannut asennustiedoston, avaa se.
 4. Seuraa avautuvan asennusohjelman ohjeita asentaaksesi Javan koneellesi.
 

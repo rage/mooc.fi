@@ -78,8 +78,14 @@ Saat asennettua nämä käyttöösi seuraamalla ohjeita alla.
 
 #### Javan asentaminen <a name="adopt-open-jdk"></a>
 
-1. Lataa Java 11:n avoin kehitys- ja suoritusympäristö AdoptOpenJDK11 osoitteesta [https://adoptopenjdk.net](https://adoptium.net/temurin/releases/?os=windows&version=11&package=jdk).
-2. Sivulla pitäisi olla valmiiksi suodatettuna vain Windows-käyttöjärjestelmälle pakettityypin JDK versio 11 - LTS. Valitse asennettavista paketeista oman käyttöjärjestelmäsi arkkitehtuurin mukainen asennuspaketti (x64 jos käyttöjärjestelmäsi on 64-bittinen, x86 jos käyttöjärjestelmäsi on 32-bittinen), ja lataa asennustiedosto .msi-napista.
+1. Lataa Java 11:n avoin kehitys- ja suoritusympäristö OpenJDK11 osoitteesta [https://adoptium.net/](https://adoptium.net/temurin/releases/?os=windows&version=11&package=jdk).
+- Sivulla pitäisi olla valmiiksi suodatettuna vain Windows-käyttöjärjestelmälle pakettityypin JDK versio 11 - LTS.
+- Valitse asennettavista paketeista oman käyttöjärjestelmäsi arkkitehtuurin mukainen asennuspaketti
+    - x64 jos käyttöjärjestelmäsi on 64-bittinen.
+    - x86 jos käyttöjärjestelmäsi on 32-bittinen.
+    - Voit tarkistaa käyttöjärjestelmäsi version painamalla Start-nappia, valitsemalla Settings --> System --> About. Device specifications:in alta pitäisi löytyä "System type".
+
+2. Lataa asennustiedosto .msi-napista.
 
 **HUOM!** Kun asennat Javaa lataamastasi asennustiedostosta, aseta Custom Setup -vaiheessa sekä "Set JAVA_HOME variable" (kuva 1, kohta 1) että "JavaSoft (Oracle) registry keys" -kohtiin (kuva 2, kohta 2) "Entire feature will be installed on local hard drive".
 Kun nämä on asetettu, paina "Next" (kuva 2, kohta 3).

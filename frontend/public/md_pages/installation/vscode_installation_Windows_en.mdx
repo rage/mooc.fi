@@ -78,8 +78,14 @@ Please install Java following the instructions below.
 
 #### Installing Java <a name="adopt-open-jdk"></a>
 
-1. Download AdoptOpenJDK11, open development and runtime environment for Java 11, from [https://adoptopenjdk.net](https://adoptium.net/temurin/releases/?os=windows&version=11&package=jdk).
-2. The page should be filtered to only show installation packages for Windows, for package type JDK and version 11 - LTS. Select the correct installer for your operating system's architecture type (x64 for 64-bit operating system, x86 for 32-bit operating system), and download the installation file with the .msi-button.
+1. Download OpenJDK11, open development environment for Java 11, from [https://adoptium.net/](https://adoptium.net/temurin/releases/?os=windows&version=11&package=jdk).
+- The page should be filtered to only show installation packages for Windows, for package type JDK and version 11 - LTS.
+- Select the correct installer for your operating system's architecture type
+  - x64 for 64-bit operating system
+  - x86 for 32-bit operating system
+  - You can check which architecture type your operating system is from the Start menu by selecting Settings --> System --> About. Under Device specifications you should find "System type".
+
+2. Download the installation file with the .msi-button.
 
 **NB!** When installing Java with the installation file you just downloaded, in the Custom Setup phase set both "Set JAVA_HOME variable" (pic 1, step 1) and "JavaSoft (Oracle) registry keys" (pic 2, step 2) to "Entire feature will be installed on local hard drive" (see the images below).
 Once you have chosen these, press "Next" (pic 2, step 3).
