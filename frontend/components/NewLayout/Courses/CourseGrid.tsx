@@ -283,6 +283,10 @@ function CourseGrid() {
     enforce: false,
     array: true,
   }) as CourseStatus[]
+  const moduleless = useQueryParameter("moduleless", {
+    enforce: false,
+    array: false,
+  })
 
   const { loading: coursesLoading, data: coursesData } = useQuery(
     NewCoursesDocument,
@@ -380,13 +384,17 @@ function CourseGrid() {
         if (course.hidden || course.course_translations.length === 0) {
           return false
         }
+        if (moduleless === "true" && course.study_modules.length > 0) {
+          return false
+        }
         if (
           !course.name
             .toLocaleLowerCase(locale)
             .includes(searchString.toLocaleLowerCase(locale)) &&
           !course.description
             ?.toLocaleLowerCase(locale)
-            .includes(searchString.toLocaleLowerCase(locale))
+            .includes(searchString.toLocaleLowerCase(locale)) &&
+          !moduleless
         ) {
           return false
         }
