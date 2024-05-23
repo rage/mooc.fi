@@ -28,6 +28,8 @@ const producer = new Kafka.Producer({
   "metadata.broker.list": KAFKA_HOST,
   dr_cb: true,
   // "statistics.interval.ms": 60000, // 1 minute
+  "security.protocol": "ssl",
+  "enable.ssl.certificate.verification": false,
 })
 let kafkaPartitionAssigner: KafkaPartitionAssigner | undefined
 
