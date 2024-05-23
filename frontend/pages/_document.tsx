@@ -30,5 +30,4 @@ function CustomDocument(props: CustomDocumentProps) {
   )
 }
 
-
 export default CustomDocument

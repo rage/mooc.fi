@@ -1,7 +1,7 @@
 import { useInsertionEffect, useMemo } from "react"
 
 import { DefaultSeo } from "next-seo"
-import type { AppContext, AppProps, NextWebVitalsMetric } from "next/app"
+import type { AppProps, NextWebVitalsMetric } from "next/app"
 import Head from "next/head"
 import Script from "next/script"
 
@@ -17,7 +17,6 @@ import useIsOld from "/hooks/useIsOld"
 import { useScrollToHash } from "/hooks/useScrollToHash"
 import useSeoConfig from "/hooks/useSeoConfig"
 import useThemeWithLocale from "/hooks/useThemeWithLocale"
-import { getAccessToken, isAdmin, isSignedIn } from "/lib/authentication"
 import withApolloClient from "/lib/with-apollo-client"
 
 import { UserDetailedFieldsFragment } from "/graphql/generated"
@@ -95,43 +94,9 @@ export function MyApp({ Component, pageProps, deviceType }: MyAppProps) {
   )
 }
 
-// @ts-ignore: initialProps
-const originalGetInitialProps = MyApp.getInitialProps
-
-MyApp.getInitialProps = async (props: AppContext) => {
-  const { ctx, Component } = props
-
-  let originalProps: any = {}
-
-  if (originalGetInitialProps) {
-    originalProps = (await originalGetInitialProps(props)) ?? {}
-  }
-  if (!originalProps?.pageProps) {
-    originalProps.pageProps = {}
-  }
-  if (Component.getInitialProps) {
-    const originalComponentProps = (await Component.getInitialProps(ctx)) ?? {}
-    Object.assign(originalProps.pageProps, originalComponentProps)
-  }
-
-  const signedIn = isSignedIn(ctx)
-  const admin = signedIn && isAdmin(ctx)
-  const accessToken = getAccessToken(ctx)
-
-  return {
-    ...originalProps,
-    pageProps: {
-      ...originalProps.pageProps,
-      signedIn,
-      admin,
-      accessToken,
-    },
-  }
-}
-
 // @ts-ignore: silence for now
 export function reportWebVitals(metric: NextWebVitalsMetric) {
   // console.log(metric)
 }
 
-export default withApolloClient(MyApp)
+export default MyApp

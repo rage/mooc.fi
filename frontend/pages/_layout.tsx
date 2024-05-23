@@ -1,6 +1,6 @@
 import React from "react"
 
-import '@fontsource-variable/open-sans';
+import "@fontsource-variable/open-sans"
 
 import { useRouter } from "next/router"
 

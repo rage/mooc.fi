@@ -105,7 +105,7 @@ function create(
 
   const httpLinkOptions: Parameters<typeof createUploadLink>[0] &
     BatchHttpLink.Options = {
-    uri: production ? "https://www.mooc.fi/api/" : "http://localhost:4000",
+    uri: true ? "https://www.mooc.fi/api/" : "http://localhost:4000",
     credentials: "same-origin",
     fetch,
     fetchOptions: {

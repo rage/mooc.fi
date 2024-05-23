@@ -13,12 +13,12 @@ const tmcClient = new TmcClient(
   "2ddf92a15a31f87c1aabb712b7cfd1b88f3465465ec475811ccce6febb1bad28",
 )
 
-export const isSignedIn = (ctx: NextContext) => {
+export const isSignedIn = (ctx: NextContext | null) => {
   const accessToken = nookies.get(ctx)["access_token"]
   return typeof accessToken == "string"
 }
 
-export const isAdmin = (ctx: NextContext) => {
+export const isAdmin = (ctx: NextContext | null) => {
   const admin = nookies.get(ctx)["admin"]
   return admin === "true"
 }

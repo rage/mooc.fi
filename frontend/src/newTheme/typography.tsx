@@ -3,8 +3,7 @@ import { CSSProperties } from "react"
 import { createTheme, responsiveFontSizes, Theme } from "@mui/material/styles"
 
 import { themeFontSize } from "../theme/util"
-
-import { headerFontFamily, bodyFontFamily } from "./fonts"
+import { bodyFontFamily, headerFontFamily } from "./fonts"
 
 export const withTypography = (theme: Theme) => {
   const commonHeadingStyles: CSSProperties = {
