@@ -120,3 +120,30 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+cronjob:
+  prague: # @vse.cz report, see backend/bin/pragueStatsEmailer.ts
+    crons:
+      - id: "0"
+        day: 24
+        month: 1
+      - id: "1"
+        day: 31
+        month: 5
+      - id: "2"
+        day: 25
+        month: 8
+      - id: "3"
+        day: 29
+        month: 11
+  purkyne: # @ujep.cz report, see backend/bin/purkyneStatsEmailer.ts
+    crons:
+      - id: "0"
+        day: 30
+        month: 6
+      - id: "1"
+        day: 31
+        month: 8
+      - id: "2"
+        day: 20
+        month: 12
