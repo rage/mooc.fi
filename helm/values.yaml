@@ -122,7 +122,7 @@ tolerations: []
 affinity: {}
 
 cronjob:
-  prague:
+  prague: # @vse.cz report, see backend/bin/pragueStatsEmailer.ts
     crons:
       - id: "0"
         day: 24
@@ -136,7 +136,7 @@ cronjob:
       - id: "3"
         day: 29
         month: 11
-  purkyne:
+  purkyne: # @ujep.cz report, see backend/bin/purkyneStatsEmailer.ts
     crons:
       - id: "0"
         day: 30
