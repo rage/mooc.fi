@@ -429,6 +429,9 @@ const CourseCard = React.forwardRef<
   const courseStudyModule =
     studyModule ?? course.study_modules[0]?.slug ?? "other"
 
+  const linkActive =
+    course?.status != "Upcoming" || course?.upcoming_active_link
+
   return (
     <CourseCardRoot ref={ref} {...props}>
       <CourseCardLayout
@@ -464,7 +467,8 @@ const CourseCard = React.forwardRef<
         }
         moduleTags={<ModuleTags course={course} abbreviated={abbreviate} />}
         link={
-          course?.link && (
+          course?.link &&
+          linkActive && (
             <CourseLink href={course?.link} target="_blank">
               {t("showCourse")}
             </CourseLink>
