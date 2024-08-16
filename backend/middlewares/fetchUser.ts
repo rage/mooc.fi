@@ -87,7 +87,7 @@ const setContextUser = async (ctx: Context, rawToken: string) => {
       },
       {
         prefix: "userdetails",
-        expireTime: 3600,
+        expireTime: 604800,
         key: hashUserToken(rawToken),
       },
       ctx,

@@ -89,7 +89,7 @@ export function getUser({ knex, logger }: BaseContext) {
         async () => await client.getCurrentUserDetails(),
         {
           prefix: "userdetails",
-          expireTime: 3600,
+          expireTime: 604800,
           key: hashUserToken(rawToken),
         },
         {
