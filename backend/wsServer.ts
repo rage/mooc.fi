@@ -103,7 +103,7 @@ wsServer.on("request", (request: any) => {
         if (!user) {
           user = await getCurrentUserDetails(accessToken)
           await redisClient?.set(accessToken, JSON.stringify(user), {
-            EX: 604800,
+            EX: 3600,
           })
         }
         const userCourseObject = {
