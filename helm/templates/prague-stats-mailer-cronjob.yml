@@ -3,7 +3,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: prague-stats-emailer
+  name: prague-stats-emailer-{{$cron.id}}
   labels:
     {{- include "helm.labels" $ | nindent 4 }}
 spec:
