@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react"
 
 import { MDXComponents } from "mdx/types"
-import { GetServerSidePropsContext } from "next"
 import dynamic from "next/dynamic"
+import { useRouter } from "next/router"
 
 import { MDXProvider } from "@mdx-js/react"
 import { Link as MUILink, Typography } from "@mui/material"
@@ -130,19 +130,27 @@ const mdxComponents: MDXComponents = {
     />
   ),
 }
-
-interface InstallationInstructionProps {
-  paths: Record<UserOSType, string>
-  id: (typeof allowedPaths)[number]
-}
-
-const InstallationInstructions = ({
-  paths,
-  id,
-}: InstallationInstructionProps) => {
+const InstallationInstructions = () => {
   const [userOS, setUserOS] = useState<UserOSType>("OS")
+  const router = useRouter()
+  const id = router.query.id?.toString() as (typeof allowedPaths)[number]
+  const language = router.locale ?? "en"
 
   const t = useTranslator(InstallationTranslations)
+
+  const paths = useMemo(() => {
+    const paths = {} as Record<UserOSType, string>
+
+    allowedOS.forEach((os) => {
+      // @ts-expect-error: type is not specific enough
+      const lang = combinationOverrides[id]?.languages?.[language] ?? language
+      if (!combinationOverrides[id]?.allowedOS?.includes(os)) {
+        return
+      }
+      paths[os] = `${id}_installation_${os}_${lang}.mdx`
+    })
+    return paths
+  }, [combinationOverrides, id, language])
 
   useBreadcrumbs([
     {
@@ -242,31 +250,31 @@ const combinationOverrides: {
   vscode: { allowedOS: ["Windows", "macOS", "Linux"] },
 }
 
-export async function getServerSideProps({
-  params,
-  locale,
-}: GetServerSidePropsContext) {
-  const id = ((Array.isArray(params?.id) ? params?.id[0] : params?.id) ??
-    "") as (typeof allowedPaths)[number]
-  const language = (locale ?? "fi") as (typeof languages)[number]
-  if (!allowedPaths.includes(id)) {
-    return { notFound: true }
-  }
+// export async function getServerSideProps({
+//   params,
+//   locale,
+// }: GetServerSidePropsContext) {
+//   const id = ((Array.isArray(params?.id) ? params?.id[0] : params?.id) ??
+//     "") as (typeof allowedPaths)[number]
+//   const language = (locale ?? "fi") as (typeof languages)[number]
+//   if (!allowedPaths.includes(id)) {
+//     return { notFound: true }
+//   }
 
-  const paths = {} as Record<UserOSType, string>
+//   const paths = {} as Record<UserOSType, string>
 
-  allowedOS.forEach((os) => {
-    const lang = combinationOverrides[id]?.languages?.[language] ?? language
-    if (!combinationOverrides[id]?.allowedOS?.includes(os)) {
-      return
-    }
-    paths[os] = `${id}_installation_${os}_${lang}.mdx`
-  })
+//   allowedOS.forEach((os) => {
+//     const lang = combinationOverrides[id]?.languages?.[language] ?? language
+//     if (!combinationOverrides[id]?.allowedOS?.includes(os)) {
+//       return
+//     }
+//     paths[os] = `${id}_installation_${os}_${lang}.mdx`
+//   })
 
-  return {
-    props: {
-      paths,
-      id,
-    },
-  }
-}
+//   return {
+//     props: {
+//       paths,
+//       id,
+//     },
+//   }
+// }
