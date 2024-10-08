@@ -366,6 +366,7 @@ interface CourseCardLayoutProps {
   href?: string | null
   studyModule?: string
   ended?: boolean
+  upcoming?: boolean
 }
 
 function CourseCardLayout({
@@ -382,6 +383,7 @@ function CourseCardLayout({
   link,
   ended,
   studyModule,
+  upcoming,
 }: CourseCardLayoutProps) {
   return (
     <CardContainer>
@@ -391,7 +393,7 @@ function CourseCardLayout({
       <ContentContainer>
         <TextContainer>
           <Title variant="h3">
-            <Link href={href ?? "#"}>{title}</Link>
+            {upcoming ? title : <Link href={href ?? "#"}>{title}</Link>}
           </Title>
           {description && <Description>{description}</Description>}
         </TextContainer>
@@ -437,6 +439,7 @@ const CourseCard = React.forwardRef<
       <CourseCardLayout
         studyModule={courseStudyModule}
         ended={course?.status === CourseStatus.Ended}
+        upcoming={course?.status === CourseStatus.Upcoming}
         title={course?.name}
         description={course?.description}
         schedule={<Schedule course={course} />}
