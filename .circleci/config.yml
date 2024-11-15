@@ -35,7 +35,7 @@ jobs:
 
   build_frontend:
     docker:
-      - image: cimg/gcp:2024.03
+      - image: cimg/gcp:2024.08
     working_directory: /mnt/ramdisk
     steps:
       - checkout
@@ -204,7 +204,7 @@ jobs:
 
   build_backend:
     docker:
-      - image: cimg/gcp:2024.03
+      - image: cimg/gcp:2024.08
     working_directory: /mnt/ramdisk
     steps:
       - checkout
@@ -319,7 +319,7 @@ jobs:
   #         command: "bin/push-docker-auth-image.sh"
   deploy_to_production:
     docker:
-      - image: cimg/gcp:2024.03
+      - image: cimg/gcp:2024.08
     working_directory: /mnt/ramdisk
     steps:
       - checkout
