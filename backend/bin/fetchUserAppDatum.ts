@@ -279,6 +279,12 @@ const delay = (ms: number) => new Promise((res) => setTimeout(res, ms))
 
 async function saveProgress(dateToDB: Date) {
   logger.info("saving")
+  const currentTimestamp = new Date()
+
+  if (dateToDB > currentTimestamp) {
+    dateToDB = currentTimestamp
+  }
+
   dateToDB.setMinutes(dateToDB.getMinutes() - 10)
 
   await prisma.userAppDatumConfig.upsert({
