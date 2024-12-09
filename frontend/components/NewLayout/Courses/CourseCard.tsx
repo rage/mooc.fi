@@ -15,7 +15,6 @@ import Sponsors from "./Sponsors"
 import { DifficultyTags, LanguageTags, ModuleTags } from "./Tags"
 import Tooltip from "/components/Tooltip"
 import { useTranslator } from "/hooks/useTranslator"
-import MoocLogoIcon from "/public/images/new/logos/moocfi_white.svg?icon"
 import { fontSize } from "/src/theme/util"
 import CommonTranslations from "/translations/common"
 import { useFormatDateTime } from "/util/dataFormatFunctions"
@@ -260,13 +259,6 @@ const StyledHelpIcon = styled(HelpIcon)`
   }
 `
 
-const MoocLogo = styled(MoocLogoIcon)`
-  fill: #fff;
-  opacity: 0.5;
-  width: 160%;
-  height: 160%;
-`
-
 const iconStyle = css`
   display: flex;
   width: 19px;
@@ -387,9 +379,7 @@ function CourseCardLayout({
 }: CourseCardLayoutProps) {
   return (
     <CardContainer>
-      <ModuleColor studyModule={studyModule} ended={ended}>
-        <MoocLogo viewBox="0 0 257.37 235.365" />
-      </ModuleColor>
+      <ModuleColor studyModule={studyModule} ended={ended} />
       <ContentContainer>
         <TextContainer>
           <Title variant="h3">
