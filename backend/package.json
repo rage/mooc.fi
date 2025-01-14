@@ -19,6 +19,7 @@
     "prague-stats-emailer": "node ./dist/bin/pragueStatsEmailer.js",
     "opava-stats-emailer": "node ./dist/bin/opavaStatsEmailer.js",
     "purkyne-stats-emailer": "node ./dist/bin/purkyneStatsEmailer.js",
+    "masaryk-stats-emailer": "node ./dist/bin/masarykStatsEmailer.js",
     "import-organizations": "node ./dist/bin/importOrganizations.js",
     "parse-file": "node ./dist/bin/parseFile.js",
     "start-kafka-consumers": "concurrently --kill-others --restart-tries 2 npm:kafka-consumer-*",

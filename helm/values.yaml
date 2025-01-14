@@ -147,3 +147,11 @@ cronjob:
       - id: "2"
         day: 20
         month: 12
+  masaryk: # @muni.cz report, see backend/bin/masarykStatsEmailer.ts
+    crons:
+      - id: "0"
+        day: 15
+        month: 1
+      - id: "1"
+        day: 13
+        month: 6
