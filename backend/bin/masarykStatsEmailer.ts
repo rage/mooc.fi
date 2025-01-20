@@ -21,7 +21,7 @@ const masarykStatsEmailer = async () => {
       FROM "user" u
       JOIN completion co on u.id = co.user_id
     WHERE co.course_id = '49cbadd8-be32-454f-9b7d-e84d52100b74'::uuid
-      AND u.email ILIKE '%@muni.cz'
+      AND u.email ILIKE '%@muni.cz' OR u.email ILIKE '%@mail.muni.cz'
     GROUP BY co.tier, u.email, co.completion_date
     ORDER BY co.completion_date DESC, u.email, co.tier;
   `
