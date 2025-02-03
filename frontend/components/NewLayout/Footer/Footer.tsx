@@ -3,7 +3,6 @@ import { useMemo } from "react"
 import { useRouter } from "next/router"
 
 import FacebookIcon from "@fortawesome/fontawesome-free/svgs/brands/facebook.svg?icon"
-import TwitterIcon from "@fortawesome/fontawesome-free/svgs/brands/twitter.svg?icon"
 import YoutubeIcon from "@fortawesome/fontawesome-free/svgs/brands/youtube.svg?icon"
 import { Link as MUILink, type EnhancedLink } from "@mui/material"
 import { styled } from "@mui/material/styles"
