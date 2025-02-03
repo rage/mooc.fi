@@ -352,14 +352,6 @@ const Footer = () => {
           <FooterBaseSocial>
             <FooterBaseSocialItems>
               <SocialLink
-                aria-label="MOOC.fi twitter"
-                href="https://twitter.com/moocfi"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <TwitterIcon />
-              </SocialLink>
-              <SocialLink
                 aria-label="MOOC.fi Facebook"
                 href="https://www.facebook.com/Moocfi"
                 target="_blank"
