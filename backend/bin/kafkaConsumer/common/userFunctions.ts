@@ -88,7 +88,6 @@ export const checkRequiredExerciseCompletions = async ({
       .andWhere("exercise_completion.user_id", user.id)
       .andWhere("exercise_completion.completed", true)
       .andWhereNot("exercise.deleted", true)
-      .andWhereNot("exercise.max_points", 0)
 
     return (
       Number(exercise_completions[0].count) >=
@@ -123,7 +122,6 @@ export const getExerciseCompletionsForCourses = async ({
     .where("ec.user_id", user.id)
     .whereIn("e.course_id", courseIds)
     .andWhere("ec.completed", true)
-    .andWhereNot("e.max_points", 0)
     .andWhereNot("e.deleted", true)
     .orderBy([
       "ec.exercise_id",
@@ -371,7 +369,7 @@ export const createCompletion = async ({
     try {
       const updated = await prisma.$queryRaw<Array<number>>`
         UPDATE
-          completion 
+          completion
         SET tier=${tier}, eligible_for_ects=${eligible_for_ects}, updated_at=now()
         WHERE id=${completions[0].id}::uuid AND COALESCE(tier, 0) < ${tier}
         RETURNING tier;`
