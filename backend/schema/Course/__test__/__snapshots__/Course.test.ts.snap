@@ -16,7 +16,7 @@ exports[`Course model completions works with user_id 1`] = `
   "course": {
     "completions": [
       {
-        "completion_language": null,
+        "completion_language": "en",
         "email": "what@ever.com",
         "id": "12400000-0000-0000-0000-000000000001",
         "user": {
@@ -38,7 +38,7 @@ exports[`Course model completions works with user_upstream_id 1`] = `
   "course": {
     "completions": [
       {
-        "completion_language": null,
+        "completion_language": "en",
         "email": "e@mail.com",
         "id": "30000000-0000-0000-0000-000000000102",
         "user": {

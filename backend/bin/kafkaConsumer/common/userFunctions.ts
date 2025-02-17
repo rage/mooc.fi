@@ -293,7 +293,7 @@ export const createCompletion = async ({
 
   const handlerCourse = handler ?? course
 
-  const completions =
+  let completions =
     (await prisma.user
       .findUnique({
         where: {
@@ -309,11 +309,15 @@ export const createCompletion = async ({
         },
       })) ?? []
 
+  // take course instance language first; then from user course settings
+  const language = course?.language ?? userCourseSettings?.language
+
+  // Filter out completions in other languages so that the user can complete the course in multiple languages
+  completions = completions.filter((c) => c.completion_language === language)
+
   if (completions.length < 1) {
     logger.info("No existing completion found, creating new...")
 
-    // take course instance language first; then from user course settings
-    const language = course?.language ?? userCourseSettings?.language
     const completion_language =
       completionLanguageMap[language as LanguageAbbreviation] ?? null
 
