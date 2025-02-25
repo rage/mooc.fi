@@ -52,7 +52,7 @@ export const UserCourseSummary = objectType({
           : include_deleted_exercises
         const noPoints = isDefined(includeNoPointsAwarded)
           ? includeNoPointsAwarded
-          : include_no_points_awarded_exercises
+          : include_no_points_awarded_exercises ?? true // Default to true if not provided
 
         return (
           (await ctx.prisma.course
@@ -166,7 +166,7 @@ export const UserCourseSummary = objectType({
           : include_deleted_exercises
         const noPoints = isDefined(includeNoPointsAwardedExercises)
           ? includeNoPointsAwardedExercises
-          : include_no_points_awarded_exercises
+          : include_no_points_awarded_exercises ?? true // Default to true if not provided
         const data =
           (await ctx.prisma.course
             .findUnique({

@@ -414,8 +414,9 @@ export class CombinedUserCourseProgress {
     this.progress[index].max_points += progress.max_points
     this.progress[index].n_points += progress.n_points
     this.progress[index].progress =
-      (this.progress[index].n_points || 0) /
-      (this.progress[index].max_points || 1)
+      this.progress[index].max_points > 0
+        ? (this.progress[index].n_points || 0) / this.progress[index].max_points
+        : 0
   }
 }
 
