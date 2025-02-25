@@ -310,16 +310,19 @@ export const createCompletion = async ({
       })) ?? []
 
   // take course instance language first; then from user course settings
-  const language = course?.language ?? userCourseSettings?.language
+  const languageAbbrevation = course?.language ?? userCourseSettings?.language
+  const completionLanguage =
+    completionLanguageMap[languageAbbrevation as LanguageAbbreviation] ?? null
 
-  // Filter out completions in other languages so that the user can complete the course in multiple languages
-  completions = completions.filter((c) => c.completion_language === language)
+  // Filter out completions in other languages using the mapped language value
+  completions = completions.filter(
+    (c) =>
+      c.completion_language === completionLanguage ||
+      c.completion_language === languageAbbrevation,
+  )
 
   if (completions.length < 1) {
     logger.info("No existing completion found, creating new...")
-
-    const completion_language =
-      completionLanguageMap[language as LanguageAbbreviation] ?? null
 
     const newCompletion = await prisma.completion.create({
       data: {
@@ -328,7 +331,7 @@ export const createCompletion = async ({
         user: { connect: { id: user.id } },
         user_upstream_id: user.upstream_id,
         student_number: user.student_number,
-        completion_language,
+        completion_language: completionLanguage,
         eligible_for_ects:
           tier === 1
             ? false
@@ -338,9 +341,9 @@ export const createCompletion = async ({
       },
     })
 
-    if (language && !completion_language) {
+    if (languageAbbrevation && !completionLanguage) {
       logger.warn(
-        `Didn't recognize language ${language} for user_upstream_id ${user.upstream_id}, created completion with id ${newCompletion.id} anyway, completion_language is null`,
+        `Didn't recognize language ${languageAbbrevation} for user_upstream_id ${user.upstream_id}, created completion with id ${newCompletion.id} anyway, completion_language is null`,
       )
     }
 
