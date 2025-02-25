@@ -6,6 +6,7 @@
     "postinstall": "patch-package",
     "test": "TZ=UTC jest",
     "test:ci": "TZ=UTC jest --ci --runInBand --coverage",
+    "test-update-snapshots": "TZ=UTC jest --updateSnapshot",
     "upgrade-interactive": "npx npm-check --update",
     "fetch-ai-completions": "node ./dist/bin/fetchAiCompletions.js",
     "fetch-organizations": "node ./dist/bin/importOrganizations.js",

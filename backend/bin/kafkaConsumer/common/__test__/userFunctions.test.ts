@@ -401,7 +401,7 @@ const testExerciseCompletions = mapIds<Prisma.ExerciseCompletionCreateInput>(
   "18190000-0000-0000-0000-000000000000",
   [
     {
-      // should not appear, no points
+      // should appear even though no points since max points is 0
       user: { connect: { id: USER_ID_1 } },
       exercise: {
         // exercise_1
@@ -582,7 +582,7 @@ describe("exercise completion utilities", () => {
         context,
       })
 
-      expect(result).toHaveLength(2)
+      expect(result).toHaveLength(3)
       expect(result).toMatchSnapshot()
     })
 
@@ -598,7 +598,7 @@ describe("exercise completion utilities", () => {
         context,
       })
 
-      expect(result).toHaveLength(3)
+      expect(result).toHaveLength(4)
       expect(result).toMatchSnapshot()
     })
 

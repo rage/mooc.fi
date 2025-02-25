@@ -51,8 +51,10 @@ function PointsListItemTableChart(props: Props) {
 
   const { title, points, cuttervalue, showDetailed } = props
   const value =
-    (points.courseProgress.n_points / (points.courseProgress.max_points ?? 1)) *
-    100
+    points.courseProgress.max_points > 0
+      ? (points.courseProgress.n_points / points.courseProgress.max_points) *
+        100
+      : 0
 
   return (
     <>
@@ -81,7 +83,11 @@ function PointsListItemTableChart(props: Props) {
             </DetailedCardSubtitle>
             <ColoredProgressBar
               variant="determinate"
-              value={(s["n_points"] / (s["max_points"] ?? 1)) * 100}
+              value={
+                s["max_points"] > 0
+                  ? (s["n_points"] / s["max_points"]) * 100
+                  : 0
+              }
               color="secondary"
             />
           </DetailedChartContainer>

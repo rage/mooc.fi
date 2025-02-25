@@ -387,7 +387,7 @@ export const User = objectType({
           user_id: id,
           includeDeletedExercises: includeDeletedExercises ?? false,
           includeNoPointsAwardedExercises:
-            includeNoPointsAwardedExercises ?? false,
+            includeNoPointsAwardedExercises ?? true,
         }
 
         if (course_id || course_slug) {

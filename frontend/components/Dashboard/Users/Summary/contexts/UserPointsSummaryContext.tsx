@@ -269,6 +269,9 @@ export const UserPointsSummaryContextProvider = ({
 
   useEffect(() => {
     const params = new URLSearchParams()
+    Object.keys(router.query).forEach((k) =>
+      params.append(k, router.query[k]?.toString() ?? ""),
+    )
     if (state.sort && state.sort !== defaultSort) {
       params.append("sort", state.sort)
     }

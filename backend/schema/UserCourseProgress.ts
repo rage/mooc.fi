@@ -157,7 +157,6 @@ export const UserCourseProgress = objectType({
             ) ecs on ecs.exercise_id = e.id and row = 1
           where e.course_id = ${course_id}::uuid
           and e.deleted <> true
-          and e.max_points > 0
         `
 
         const completedExerciseCount = exercises.filter(
@@ -168,7 +167,8 @@ export const UserCourseProgress = objectType({
         ).length
 
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        const totalProgress = (n_points || 0) / (max_points || 1)
+        const totalProgress =
+          max_points && max_points > 0 ? (n_points || 0) / max_points : 0
         const exerciseProgress =
           completedExerciseCount / (exercises.length || 1)
 

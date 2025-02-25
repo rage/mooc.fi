@@ -4,6 +4,13 @@ exports[`exercise completion utilities getExerciseCompletionsForCourses returns 
 [
   {
     "course_id": "00000000-0000-0000-0000-000000000667",
+    "custom_id": "test_exercise_1_no_points",
+    "exercise_id": "18180000-0000-0000-0000-000000000001",
+    "max_points": 0,
+    "n_points": "0.000000000000000000000000000000",
+  },
+  {
+    "course_id": "00000000-0000-0000-0000-000000000667",
     "custom_id": "test_exercise_2",
     "exercise_id": "18180000-0000-0000-0000-000000000002",
     "max_points": 2,
@@ -21,6 +28,13 @@ exports[`exercise completion utilities getExerciseCompletionsForCourses returns 
 
 exports[`exercise completion utilities getExerciseCompletionsForCourses returns correctly with multiple courses specified 1`] = `
 [
+  {
+    "course_id": "00000000-0000-0000-0000-000000000667",
+    "custom_id": "test_exercise_1_no_points",
+    "exercise_id": "18180000-0000-0000-0000-000000000001",
+    "max_points": 0,
+    "n_points": "0.000000000000000000000000000000",
+  },
   {
     "course_id": "00000000-0000-0000-0000-000000000667",
     "custom_id": "test_exercise_2",
