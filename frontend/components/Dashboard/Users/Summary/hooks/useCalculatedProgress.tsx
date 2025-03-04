@@ -23,7 +23,9 @@ const useCalculatedProgress = (
           ? {
               required: extra.pointsNeeded,
               requiredPercentage:
-                (extra.pointsNeeded / (extra.max_points || 1)) * 100,
+                extra.max_points > 0
+                  ? (extra.pointsNeeded / extra.max_points) * 100
+                  : 0,
               success: (extra.n_points ?? 0) >= extra.pointsNeeded,
             }
           : {}),
@@ -37,8 +39,10 @@ const useCalculatedProgress = (
         ? {
             required: course.points_needed,
             requiredPercentage:
-              (course.points_needed / (user_course_progress?.max_points || 1)) *
-              100,
+              user_course_progress?.max_points &&
+              user_course_progress?.max_points > 0
+                ? (course.points_needed / user_course_progress.max_points) * 100
+                : 0,
             success:
               (user_course_progress?.n_points ?? 0) >= course.points_needed,
           }

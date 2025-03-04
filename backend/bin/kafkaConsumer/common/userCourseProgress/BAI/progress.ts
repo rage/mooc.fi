@@ -46,7 +46,7 @@ export const getTierProgress = (
       tier: maxTier,
       max_points,
       n_points,
-      progress: n_points / (max_points || 1),
+      progress: max_points > 0 ? n_points / max_points : 0,
       custom_id,
     }
   }
@@ -187,7 +187,8 @@ export const getProgress = ({
   extra: ProgressExtra
 } => {
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-  const pointsProgress = (n_points || 0) / (max_points || 1)
+  const pointsProgress =
+    max_points && max_points > 0 ? (n_points || 0) / max_points : 0
   const newProgress = {
     progress: [
       {
