@@ -138,9 +138,22 @@ function RegisterCompletionPage() {
   const course_exists = Boolean(courseData?.course?.id)
 
   const completion =
-    userData?.currentUser?.completions?.find(
-      (c) => c.course?.slug == courseSlug,
-    ) ?? undefined
+    userData?.currentUser?.completions
+      ?.filter((c) => c.course?.slug === courseSlug)
+      ?.sort((a, b) => {
+        // First prioritize completions with a completion_link
+        if (a.completion_link && !b.completion_link) {
+          return -1
+        }
+        if (!a.completion_link && b.completion_link) {
+          return 1
+        }
+
+        // If both have or don't have completion_link, sort by created_at (newest first)
+        const aDate = a.created_at ? new Date(a.created_at).getTime() : 0
+        const bDate = b.created_at ? new Date(b.created_at).getTime() : 0
+        return bDate - aDate
+      })[0] ?? undefined
 
   const onRegistrationClick = () => {
     if (!completion?.id) {
