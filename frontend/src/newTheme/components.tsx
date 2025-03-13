@@ -87,7 +87,7 @@ export const withComponents = (theme: Theme) =>
                 ...themeFontSize(15, 15),
                 justifyContent: "center",
                 margin: 0,
-                padding: 0,
+                padding: "0.5rem",
                 transitionDuration: "0.1s",
                 transitionProperty: "all",
                 minHeight: "44px",
