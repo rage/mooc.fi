@@ -1,12 +1,13 @@
+{{- range $cron := .Values.cronjob.opava.crons }}
+---
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: opava-stats-emailer
+  name: opava-stats-emailer-{{$cron.id}}
   labels:
-    {{- include "helm.labels" . | nindent 4 }}
+    {{- include "helm.labels" $ | nindent 4 }}
 spec:
-  # Run at 10:00 AM on 31st of January and 31st of July
-  schedule: "0 10 31 1,7 *"
+  schedule: "0 10 {{$cron.day}} {{$cron.month}} *"
   startingDeadlineSeconds: 3600
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 1
@@ -14,7 +15,7 @@ spec:
   jobTemplate:
     metadata:
       labels:
-        {{- include "helm.selectorLabels" . | nindent 8 }}
+        {{- include "helm.selectorLabels" $ | nindent 8 }}
     spec:
       activeDeadlineSeconds: 7200
       template:
@@ -22,7 +23,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: opava-stats-emailer
-              image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
+              image: "{{ $.Values.image.repository }}/moocfi-backend:{{ $.Values.image.tag | default $.Chart.AppVersion }}"
               command: ["sh", "-c", "npm run opava-stats-emailer"]
               envFrom:
                 - secretRef:
@@ -33,3 +34,4 @@ spec:
                     secretKeyRef:
                       name: new-redis
                       key: redis-password
+{{- end }}
