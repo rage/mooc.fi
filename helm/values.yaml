@@ -155,3 +155,14 @@ cronjob:
       - id: "1"
         day: 13
         month: 6
+  opava: # @slu.cz report, see backend/bin/opavaStatsEmailer.ts
+    crons:
+      - id: "0"
+        day: 31
+        month: 1
+      - id: "1"
+        day: 31
+        month: 7
+      - id: "2"
+        day: 13
+        month: 5
