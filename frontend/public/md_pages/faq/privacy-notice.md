@@ -82,7 +82,7 @@ The controller can remove identifying data as needed, or users can ask to have t
 Student data is retained in accordance with the scheme of the document administration at the University of Helsinki. Personal data are primarily stored for the period of time required for the implementation of the course, but there are also long-term course modules, where the data are retained for a longer time.
 
 ### 11. Information on the existence of automatic decision-making or profiling, as well as on the logic of processing and its significance for the registered student
- 
+
 The automatic assessment of assignments (automatic decision-making) is a necessary feature for the service offered (courses based on automatic feedback). The correctness of a programming assignment, for example, will be assessed automatically based on whether the student’s program passes the automatic tests that a teacher has set. If there is a fault in the automatic assessment, you can ask for it to be corrected primarily by contacting the teacher of the course or the address mooc@cs.helsinki.fi.
 
 Users are not profiled according to personal qualities.
@@ -116,3 +116,19 @@ In some cases, registered students have the right to receive the personal data t
 Registered students have the right to make a complaint, specifically to the local supervising authority of their place of residence or work, if they think it is in breach of the GDPR of the EU (2016/679). Furthermore, registered students have the right to use administrative appeals and other legal remedies.
 
 In requests to use registered students’ rights, we follow the controller’s information request process.
+
+### 13. Consent for communication
+
+Users may be asked to give separate, voluntary consent to receive email communication related to MOOC.fi course offerings, the development of the learning environment, or services that support lifelong learning.
+
+This type of communication is not directly related to teaching or the completion of specific courses, but may include, for example:
+- notifications about new courses, features, or services,
+- invitations to user surveys and development-related activities,
+- newsletters aimed at sharing current information and supporting user-driven service development.
+
+Consent is requested during registration or later via the user profile settings. The user may withdraw their consent at any time without affecting their access to other MOOC services.
+
+University of Helsinki’s internal systems or external service providers (such as Hubspot, Lyyti, Mailchimp, or Salesforce) may be used to deliver this communication. In such cases, the processing of personal data is based on applicable data protection regulations and the European Commission’s standard contractual clauses.
+
+More information about the University of Helsinki’s data protection practices:
+[https://www.helsinki.fi/en/about-us/processing-data-university/data-protection](https://www.helsinki.fi/en/about-us/processing-data-university/data-protection)

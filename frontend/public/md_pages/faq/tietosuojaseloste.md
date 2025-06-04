@@ -1,4 +1,4 @@
-# Tietosuojailmoitus 
+# Tietosuojailmoitus
 
 Tämä MOOC.fi palvelun tietosuojailmoitus kuvaa henkilötietojen käsittelyn yleiset periaatteet ja käyttäjien oikeudet kursseilla, joilla käytetään tmc.mooc.fi-käyttäjätunnuksia. Yksittäisillä kursseilla, jotka voivat sijaita omissa web-osoitteissaan voi olla yksityiskohtaisempia, tätä ilmoitusta täydentäviä tai tämän ilmoituksen korvaavia tietosuojaselosteita.
 
@@ -43,11 +43,11 @@ Lisäksi käytämme Google analytics-palvelua analysoidessamme käyttäjien toim
 
 ### 6. Säännönmukaiset tietolähteet
 
-Tiedot saadaan käyttäjältä itseltään tai opintojakson opettajilta. 
+Tiedot saadaan käyttäjältä itseltään tai opintojakson opettajilta.
 
 ### 7. Tietojen säännönmukaiset luovutukset ja vastaanottajaryhmät
 
-Henkilötietoja käsittelevät ensisijaisesti kurssien opetushenkilökunta ja MOOC-keskuksen henkilökunta (esim. teknisten ongelmien ratkaiseminen ja kurssien/kurssijärjestelmien kehittämiseen tähtäävä tutkimus). 
+Henkilötietoja käsittelevät ensisijaisesti kurssien opetushenkilökunta ja MOOC-keskuksen henkilökunta (esim. teknisten ongelmien ratkaiseminen ja kurssien/kurssijärjestelmien kehittämiseen tähtäävä tutkimus).
 
 Helsingin yliopisto voi käyttää myös ulkopuolisia henkilötietojen käsittelijöitä kuten järjestelmäpalveluita tarjoavia yrityksiä, jotka käsittelevät henkilötietoja Helsingin yliopiston lukuun toimeksiantosopimuksen perusteella.
 
@@ -67,7 +67,7 @@ Lisäksi Helsingin yliopisto voi luovuttaa opiskelijoiden henkilötietoja
 Yliopiston tietosuojapolitiikkana on noudattaa erityistä huolellisuutta, jos henkilötietoa siirretään EU:n ja Euroopan talousalueen (ETA) ulkopuolelle maihin, jotka eivät tarjoa EU:n tietosuoja-asetuksen mukaista tietosuojaa.
 
 Henkilötiedon siirtäminen EU:n ja ETA-alueen ulkopuolelle toteutetaan tietosuoja-asetuksen vaatimusten mukaisesti.
-Kurssien palvelimet voivat sijaita kansainvälisten yritysten (tällä hetkellä Google) EU- ja ETA-alueella sijaitsevilla palvelimilla. Tällöin MOOC-keskus laatii palveluntarjoajien kanssa erilliset sopimukset henkilötietojen käsittelystä. 
+Kurssien palvelimet voivat sijaita kansainvälisten yritysten (tällä hetkellä Google) EU- ja ETA-alueella sijaitsevilla palvelimilla. Tällöin MOOC-keskus laatii palveluntarjoajien kanssa erilliset sopimukset henkilötietojen käsittelystä.
 
 ### 9. Rekisterin suojauksen periaatteet
 
@@ -79,7 +79,7 @@ Tietoverkossa siirrettäessä henkilötiedot on suojattu. Käyttäjärekisteriä
 
 Rekisterin ylläpitäjä voi poistaa yksilöivät tiedot tarvittaessa, tai käyttäjä voi pyytää häntä koskevien henkilötietojen poistamista rekisteristä, mutta tietoja ei poisteta automaattisesti.
 
-Opiskelutietoja säilytetään Helsingin yliopiston asiakirjahallinnon suunnitelmien mukaisesti. Pääsääntöisesti henkilötietoja säilytetään opintojakson toteutuksen vaatiman ajan, mutta palvelussa on myös pitkäkestoisia kurssialueita, joilla tiedot säilyvät pidempään. 
+Opiskelutietoja säilytetään Helsingin yliopiston asiakirjahallinnon suunnitelmien mukaisesti. Pääsääntöisesti henkilötietoja säilytetään opintojakson toteutuksen vaatiman ajan, mutta palvelussa on myös pitkäkestoisia kurssialueita, joilla tiedot säilyvät pidempään.
 
 ### 11. Tieto automaattisen päätöksenteon tai profiloinnin olemassaolosta sekä tieto käsittelyn logiikasta ja merkityksestä rekisteröidylle
 
@@ -97,7 +97,7 @@ _Yksilöivät tiedot_ voi tarkistaa ja niitä voi muokata kirjautumalla palveluu
 
 **Oikeus tietojen poistamiseen**
 
-Käyttäjätunnuksen poistaminen tapahtuu kirjautumalla palveluun http://tmc.mooc.fi/, klikkaamalla käyttäjätunnustasi sivun oikeassa yläreunassa ja menemällä välilehdelle tilin asetukset. Paina tämän jälkeen sivun alareunassa olevaa _poista käyttäjätunnus_ -nappulaa. Saat sähköpostiisi viestin josta sinun tulee vielä vahvistaa tilisi poisto. Tällöin kaikki tunnistetiedot poistetaan. Opiskelua koskevat tiedot voidaan säilyttää anonymisoidussa muodossa vaikka _Yksilöivät tiedot_ poistetaankin. 
+Käyttäjätunnuksen poistaminen tapahtuu kirjautumalla palveluun http://tmc.mooc.fi/, klikkaamalla käyttäjätunnustasi sivun oikeassa yläreunassa ja menemällä välilehdelle tilin asetukset. Paina tämän jälkeen sivun alareunassa olevaa _poista käyttäjätunnus_ -nappulaa. Saat sähköpostiisi viestin josta sinun tulee vielä vahvistaa tilisi poisto. Tällöin kaikki tunnistetiedot poistetaan. Opiskelua koskevat tiedot voidaan säilyttää anonymisoidussa muodossa vaikka _Yksilöivät tiedot_ poistetaankin.
 
 **Oikeus käsittelyn rajoittamiseen**
 
@@ -109,10 +109,26 @@ Henkilöllä on tietyissä tilanteissa oikeus henkilökohtaiseen, erityiseen til
 
 **Oikeus siirtää tiedot järjestelmästä toiseen**
 
-Rekisteröidyllä on tietyissä tilanteissa oikeus saada häntä koskevat henkilötiedot, jotka hän on toimittanut rekisterinpitäjälle, jäsennellyssä, yleisesti käytetyssä ja koneellisesti luettavassa muodossa, ja oikeus siirtää tiedot toiselle rekisterinpitäjälle. 
+Rekisteröidyllä on tietyissä tilanteissa oikeus saada häntä koskevat henkilötiedot, jotka hän on toimittanut rekisterinpitäjälle, jäsennellyssä, yleisesti käytetyssä ja koneellisesti luettavassa muodossa, ja oikeus siirtää tiedot toiselle rekisterinpitäjälle.
 
 **Oikeus tehdä valitus valvontaviranomaiselle**
 
 Rekisteröidyllä on oikeus tehdä valitus erityisesti vakinaisen asuin- tai työpaikkansa sijainnin mukaiselle valvontaviranomaiselle, jos hän katsoo, että henkilötietojen käsittelyssä rikotaan EU:n yleistä tietosuoja-asetusta (EU) 2016/679. Rekisteröidyllä on lisäksi oikeus käyttää hallinnollisia muutoksenhakukeinoja sekä muita oikeussuojakeinoja.
 
 Rekisteröidyn oikeuksien käyttämistä koskevissa pyynnöissä noudatetaan rekisterinpitäjän tietopyyntöprosessia.
+
+### 13. Viestintään annettu suostumus
+
+Käyttäjältä voidaan pyytää erillinen, vapaaehtoinen suostumus siihen, että hänelle lähetetään sähköpostitse viestintää, joka liittyy MOOC.fi-portaalin kurssitarjontaan, oppimisympäristön kehittämiseen tai elinikäistä oppimista tukeviin palveluihin.
+
+Tällainen viestintä ei liity suoraan opetukseen tai yksittäisten kurssien suorittamiseen, vaan voi sisältää esimerkiksi:
+- tiedotteita uusista kursseista, ominaisuuksista tai palveluista,
+- kutsuja käyttäjäkyselyihin ja kehitystyöhön osallistumiseen,
+- uutiskirjeitä, joiden tavoitteena on jakaa ajankohtaista tietoa ja kehittää palvelua käyttäjälähtöisesti.
+
+Suostumus pyydetään rekisteröitymisen yhteydessä tai myöhemmin käyttäjäprofiilin asetuksissa. Suostumuksen voi peruuttaa milloin tahansa, eikä peruminen vaikuta oikeuteen käyttää muita MOOC-palveluita.
+
+Viestinnän toteutuksessa voidaan käyttää Helsingin yliopiston sisäisiä järjestelmiä tai ulkopuolisia palveluntarjoajia (esimerkiksi Hubspot, Lyyti, Mailchimp tai Salesforce). Tällöin henkilötietojen käsittely perustuu voimassa oleviin tietosuojasäännöksiin ja Euroopan komission hyväksymiin mallisopimuslausekkeisiin.
+
+Lisätietoja Helsingin yliopiston tietosuojakäytännöistä:
+[https://www.helsinki.fi/fi/tutustu-meihin/tietojen-kasittely-yliopistolla/tietosuoja](https://www.helsinki.fi/fi/tutustu-meihin/tietojen-kasittely-yliopistolla/tietosuoja)
