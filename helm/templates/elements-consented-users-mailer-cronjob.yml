@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: elements-consented-users-emailer
+  labels:
+    {{- include "helm.labels" . | nindent 4 }}
+spec:
+  # Every Wednesday at 12:00pm
+  schedule: "0 12 * * 3"
+  startingDeadlineSeconds: 3600
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 3
+  jobTemplate:
+    metadata:
+      labels:
+        {{- include "helm.selectorLabels" . | nindent 8 }}
+    spec:
+      activeDeadlineSeconds: 7200
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: elements-consented-users-emailer
+              image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
+              command: ["sh", "-c", "npm run elements-consented-users-emailer"]
+              envFrom:
+                - secretRef:
+                    name: backend-secret
+              env:
+                - name: REDIS_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: new-redis
+                      key: redis-password
