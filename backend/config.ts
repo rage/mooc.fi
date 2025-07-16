@@ -123,6 +123,7 @@ export const {
   // Linköping University/Prague completion addresses, separated by :
   LINKOPING_COMPLETION_RECIPIENTS,
   PRAGUE_COMPLETION_RECIPIENTS,
+  ELEMENTS_CONSENTED_USERS_RECIPIENTS,
 } = process.env
 
 export const PRIVATE_KEY_TEST = "config/mooc-private-test.pem"
