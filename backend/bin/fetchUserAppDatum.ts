@@ -1,4 +1,5 @@
 import { DateTime } from "luxon"
+import { v4 as uuidv4 } from "uuid"
 
 import { Course, Prisma, UserCourseSetting } from "@prisma/client"
 
@@ -243,7 +244,10 @@ const getUserFromTmcAndSaveToDB = async (user_id: number, tmc: TmcClient) => {
     throw e
   }
 
+  const prismaId = details.courses_mooc_fi_user_id ?? uuidv4()
+
   const prismaDetails = {
+    id: prismaId,
     upstream_id: details.id,
     administrator: details.administrator,
     email: details.email.trim(),
