@@ -21,7 +21,8 @@
     "noEmitHelpers": true,
     "importHelpers": true,
     "resolveJsonModule": true,
-    "sourceRoot": "/"
+    "sourceRoot": "/",
+    "skipLibCheck": true
   },
   "include": [".", "./bin/**/*"],
   "exclude": ["node_modules", "__mocks__", "dist"]

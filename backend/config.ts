@@ -115,6 +115,8 @@ export const {
   // redis
   REDIS_URL = "redis://127.0.0.1:7001",
   REDIS_PASSWORD,
+  REDIS_SENTINELS,
+  REDIS_SENTINEL_MASTER_NAME,
   USER_HASH_SECRET = "",
   // prisma log levels for debugging
   PRISMA_LOG_LEVELS,

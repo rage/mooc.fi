@@ -1,5 +1,5 @@
 import parseJSON from "json-parse-even-better-errors"
-import * as redis from "redis"
+import { createSentinel } from "redis"
 import * as winston from "winston"
 
 import {
@@ -7,7 +7,8 @@ import {
   NEXUS_REFLECTION,
   REDIS_DB,
   REDIS_PASSWORD,
-  REDIS_URL,
+  REDIS_SENTINEL_MASTER_NAME,
+  REDIS_SENTINELS,
 } from "../config"
 import { BaseContext } from "../context"
 import { isDefined, isPromise } from "../util"
@@ -22,7 +23,7 @@ const _logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
-let redisClient: ReturnType<typeof redis.createClient> | undefined
+let redisClient: ReturnType<typeof createSentinel> | undefined
 
 export const redisReconnectStrategy =
   (redisName = "Redis", logger: winston.Logger = _logger) =>
@@ -39,7 +40,7 @@ export const redisReconnectStrategy =
     return nextDelay
   }
 
-const getRedisClient = (): typeof redisClient => {
+const getRedisClient = (): ReturnType<typeof createSentinel> | undefined => {
   if (redisClient) {
     return redisClient
   }
@@ -47,25 +48,38 @@ const getRedisClient = (): typeof redisClient => {
     return
   }
 
-  const client = redis.createClient({
-    url: REDIS_URL,
-    password: REDIS_PASSWORD,
-    database: REDIS_DB,
-    socket: {
-      reconnectStrategy: redisReconnectStrategy(),
+  const sentinels = REDIS_SENTINELS?.split(",").map((sentinel: string) => {
+    const [host, port] = sentinel.trim().split(":")
+    return { host, port: parseInt(port) ?? 26379 }
+  })
+
+  const client = createSentinel({
+    name: REDIS_SENTINEL_MASTER_NAME!,
+    sentinelRootNodes: sentinels ?? [],
+    nodeClientOptions: {
+      password: REDIS_PASSWORD,
+      database: REDIS_DB,
+      socket: {
+        reconnectStrategy: redisReconnectStrategy(),
+      },
     },
   })
 
   client.on("error", (err: any) => {
-    _logger.error(`Redis error`, err)
+    _logger.error(`Redis Sentinel error`, err)
   })
   client.on("ready", () => {
-    _logger.info(`Redis connected`)
+    _logger.info(
+      `Redis Sentinel connected to master: ${REDIS_SENTINEL_MASTER_NAME}`,
+    )
   })
-  client?.connect()
+
+  // Connect the Sentinel client
+  client.connect().catch((err: any) => {
+    _logger.error(`Redis Sentinel connection failed`, err)
+  })
 
   redisClient = client
-
   return client
 }
 
@@ -127,8 +141,15 @@ export async function redisify<T>(
   let value: T | undefined
   let resolveSuccess = false
 
+  // If Redis client is not connected, skip cache entirely (unless in test mode)
+  if (!isTest && (!client || !client.isOpen)) {
+    logger.info(`Redis not connected, skipping cache for: ${prefix}`)
+    value = await resolveValue()
+    return value
+  }
+
   try {
-    const res = await client?.get(prefixedKey)
+    const res = client ? await client.get(prefixedKey) : undefined
 
     if (res) {
       logger.info(`Cache hit: ${prefix}`)
@@ -171,14 +192,15 @@ export async function redisify<T>(
   }
 
   try {
-    if (typeof value === "undefined") {
-      await client?.del(prefixedKey)
-    } else {
-      await client?.set(prefixedKey, JSON.stringify(value), {
-        EX: expireTime,
-      })
+    if (client) {
+      if (typeof value === "undefined") {
+        await client.del(prefixedKey)
+      } else {
+        await client.set(prefixedKey, JSON.stringify(value), {
+          EX: expireTime,
+        })
+      }
     }
-
     return value
   } catch (e) {
     logger.warn(
@@ -208,4 +230,4 @@ export const invalidate = async (prefix: string, key: string) => {
   await redisClient?.del(`${prefix}:${key}`)
 }
 
-export default getRedisClient()
+export default getRedisClient

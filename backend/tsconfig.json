@@ -19,6 +19,8 @@
     "noUnusedParameters": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
+    // https://github.com/redis/node-redis/issues/3009
+    "skipLibCheck": true,
   },
   "include": [".", "./bin/**/*"],
   "exclude": ["node_modules", "dist"]

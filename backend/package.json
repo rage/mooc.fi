@@ -102,7 +102,7 @@
     "pg-query-stream": "^4.5.1",
     "prisma": "^5.0.0",
     "prisma-graphql-type-decimal": "^3.0.0",
-    "redis": "^4.6.7",
+    "redis": "^5.8.3",
     "sharp": "^0.32.3",
     "shortid": "^2.2.16",
     "tmc-client-js": "^0.0.11",

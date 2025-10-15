@@ -1,13 +1,12 @@
 import { createServer } from "http"
 
 import parseJSON from "json-parse-even-better-errors"
-import * as redis from "redis"
 import * as WebSocketServer from "websocket"
 import * as winston from "winston"
 
 import { isTest, NEXUS_REFLECTION } from "./config"
 import { UserInfo } from "./domain/UserInfo"
-import redisClient, { redisReconnectStrategy } from "./services/redis"
+import getRedisClient from "./services/redis"
 import { getCurrentUserDetails } from "./services/tmc"
 
 const logger = winston.createLogger({
@@ -33,7 +32,7 @@ const wsServer = new WebSocketServer.server({
 const connectionByUserCourse = new Map()
 const userCourseByConnection = new Map()
 
-let subscriber: ReturnType<typeof redis.createClient> | undefined
+let subscriber: ReturnType<typeof getRedisClient> | undefined
 
 export enum MessageType {
   PROGRESS_UPDATED = "PROGRESS_UPDATED",
@@ -62,13 +61,13 @@ export const pushMessageToClient = async (
       )
     } else {
       connectionByUserCourse.delete(userCourseObjectString)
-      await redisClient?.publish(
+      await getRedisClient()?.publish(
         "websocket",
         JSON.stringify({ userId, courseId, type, message: payload }),
       )
     }
   } else {
-    await redisClient?.publish(
+    await getRedisClient()?.publish(
       "websocket",
       JSON.stringify({ userId, courseId, type, message: payload }),
     )
@@ -98,11 +97,11 @@ wsServer.on("request", (request: any) => {
       const courseId = data.courseId as string
       try {
         let user = parseJSON(
-          (await redisClient?.get(accessToken)) ?? "",
+          (await getRedisClient()?.get(accessToken)) ?? "",
         ) as UserInfo | null
         if (!user) {
           user = await getCurrentUserDetails(accessToken)
-          await redisClient?.set(accessToken, JSON.stringify(user), {
+          await getRedisClient()?.set(accessToken, JSON.stringify(user), {
             EX: 3600,
           })
         }
@@ -136,19 +135,14 @@ const createSubscriber = async () => {
     return
   }
 
-  while (!redisClient?.isOpen) {
+  while (!getRedisClient()?.isOpen) {
     logger.info(
       "Waiting on Redis client to be created to create a subscriber...",
     )
     await new Promise((resolve) => setTimeout(resolve, 100))
   }
 
-  subscriber = redisClient?.duplicate({
-    name: "subscriber",
-    socket: {
-      reconnectStrategy: redisReconnectStrategy("Redis subscriber", logger),
-    },
-  })
+  subscriber = getRedisClient()
 
   subscriber?.on("error", (err: any) => {
     logger.error("Redis subscriber error", err)
