@@ -166,3 +166,5 @@ cronjob:
       - id: "2"
         day: 13
         month: 5
+  elementsConsentedUsers:
+    suspend: true
