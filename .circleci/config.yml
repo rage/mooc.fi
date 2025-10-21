@@ -147,6 +147,7 @@ jobs:
       - run:
           name: "Run tests"
           command: |
+            export NODE_OPTIONS="--max-old-space-size=8192"
             TEST=$(circleci tests glob ./**/*.test.ts | grep -v node_modules | circleci tests split --split-by=timings)
             echo $TEST
             npm run test:ci -- --runTestsByPath $TEST
