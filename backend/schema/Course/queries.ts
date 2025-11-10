@@ -270,24 +270,20 @@ export const CourseQueries = extendType({
                 },
               }
             : {}),
-          ...(language
-            ? {
-                include: {
-                  course_translations: {
-                    where: {
-                      language,
-                    },
-                  },
-                },
-              }
-            : {}),
+          include: {
+            course_translations: true,
+          },
         })
 
         const filtered = courses
           .map((course) => {
-            if (language && !course.course_translations?.length) {
-              return null
-            }
+            const translationForLanguage = language
+              ? course?.course_translations?.find(
+                  (t) => t.language === language,
+                )
+              : undefined
+            const translation =
+              translationForLanguage ?? course?.course_translations?.[0]
 
             return {
               ...omit(course, [
@@ -295,12 +291,9 @@ export const CourseQueries = extendType({
                 "tags",
                 "handles_completions_for",
               ]),
-              description: course?.course_translations?.[0]?.description ?? "",
-              link: course?.course_translations?.[0]?.link ?? "",
-              name:
-                (language
-                  ? course?.course_translations?.[0]?.name ?? course?.name
-                  : course?.name) ?? "",
+              description: translation?.description ?? "",
+              link: translation?.link ?? "",
+              name: translation?.name ?? course?.name ?? "",
             }
           })
           .filter(isDefined)
