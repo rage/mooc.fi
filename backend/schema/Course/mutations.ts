@@ -8,6 +8,7 @@ import { Course, CourseSponsor, Prisma, StudyModule, Tag } from "@prisma/client"
 import { isAdmin } from "../../accessControl"
 import { Context } from "../../context"
 import { GraphQLUserInputError } from "../../lib/errors"
+import { invalidateAllGraphqlCachedQueries } from "../../middlewares/expressGraphqlCache"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import { invalidate } from "../../services/redis"
 import { emptyOrNullToUndefined, isDefined } from "../../util"
@@ -149,6 +150,12 @@ export const CourseMutations = extendType({
         await kafkaProducer.queueProducerMessage(producerMessage)
         await kafkaProducer.disconnect()
 
+        await invalidateAllGraphqlCachedQueries(ctx.logger).catch((e) => {
+          ctx.logger.warn(
+            `Failed to invalidate GraphQL cache after course creation: ${e}`,
+          )
+        })
+
         return newCourse
       },
     })
@@ -281,6 +288,12 @@ export const CourseMutations = extendType({
             tags: tagsMutation,
             sponsors: sponsorsMutation,
           },
+        })
+
+        await invalidateAllGraphqlCachedQueries(ctx.logger).catch((e) => {
+          ctx.logger.warn(
+            `Failed to invalidate GraphQL cache after course update: ${e}`,
+          )
         })
 
         return updatedCourse
