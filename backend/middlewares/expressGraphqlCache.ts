@@ -84,34 +84,58 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
       req.originalUrl?.startsWith(GRAPHQL_ENDPOINT_PATH) ||
       `${req.baseUrl || ""}${req.path || ""}` === GRAPHQL_ENDPOINT_PATH
 
-    if (!isGraphqlPath || req.method !== "POST") return next()
+    if (!isGraphqlPath || req.method !== "POST") {
+      logger.debug("GraphQL cache: skip (not GraphQL POST request)", {
+        method: req.method,
+        path: req.originalUrl || req.path,
+      })
+      return next()
+    }
+
     const client = redisClient()
-    if (!client?.isReady) return next()
+    if (!client?.isReady) {
+      logger.warn("GraphQL cache: skip (Redis client not ready)")
+      return next()
+    }
 
     // Skip if authenticated via Authorization header (per your setup)
     if (req.headers.authorization !== undefined) {
-      logger.debug("GraphQL cache: skip (Authorization present)")
+      logger.debug("GraphQL cache: skip (Authorization header present)")
       return next()
     }
 
     // Only cache queries
     if (!isGraphQLQuery(req.body)) {
-      logger.debug("GraphQL cache: skip (not a query)")
+      logger.debug("GraphQL cache: skip (not a GraphQL query)", {
+        bodyType: typeof req.body,
+        hasQuery: !!req.body?.query,
+      })
       return next()
     }
 
     try {
       const key = buildCacheKey(req)
+      const operationName = req.body?.operationName || "unnamed"
       const cached = await client.get(key)
 
       if (cached) {
-        logger.debug(`GraphQL cache: HIT ${key}`)
+        logger.info("GraphQL cache: HIT", {
+          key,
+          operationName,
+          cacheKey: key.substring(CACHE_PREFIX.length),
+        })
         res.status(200)
         res.setHeader("Content-Type", "application/json; charset=utf-8")
         res.setHeader("X-Cache", "HIT")
         res.send(cached)
         return
       }
+
+      logger.debug("GraphQL cache: MISS", {
+        key,
+        operationName,
+        cacheKey: key.substring(CACHE_PREFIX.length),
+      })
 
       // Cache MISS: wrap send to store only successful, error-free JSON responses
       const originalSend = res.send.bind(res)
@@ -120,15 +144,16 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
         try {
           const status = res.statusCode
           const is2xx = status >= 200 && status < 300
-          const contentType = (res.getHeader("Content-Type") || "").toString()
+          const contentType = (res.getHeader("Content-Type") ?? "").toString()
           const isJson =
             contentType.includes("application/json") || typeof body === "object"
+          const hasErrors = hasGraphQLErrors(body)
 
           // Only cache if:
           // - HTTP 2xx
           // - JSON response
           // - NO GraphQL errors
-          if (is2xx && isJson && client?.isReady && !hasGraphQLErrors(body)) {
+          if (is2xx && isJson && client?.isReady && !hasErrors) {
             const payload =
               typeof body === "string"
                 ? body
@@ -138,27 +163,59 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
 
             client
               .set(key, payload, { EX: CACHE_EXPIRE_TIME_SECONDS })
-              .then(() => logger.debug(`GraphQL cache: MISS -> STORED ${key}`))
-              .catch((e: any) => logger.warn(`GraphQL cache: set error ${e}`))
+              .then(() => {
+                logger.info("GraphQL cache: STORED", {
+                  key,
+                  operationName,
+                  cacheKey: key.substring(CACHE_PREFIX.length),
+                  ttl: CACHE_EXPIRE_TIME_SECONDS,
+                  payloadSize: payload.length,
+                })
+              })
+              .catch((e: any) => {
+                logger.error("GraphQL cache: failed to store", {
+                  key,
+                  operationName,
+                  error: e instanceof Error ? e.message : String(e),
+                })
+              })
 
             res.setHeader("X-Cache", "MISS")
           } else {
-            logger.debug(
-              `GraphQL cache: not stored (status=${status}, json=${isJson}, gqlErrors=${hasGraphQLErrors(
-                body,
-              )})`,
-            )
+            const reason = !is2xx
+              ? `status=${status}`
+              : !isJson
+              ? "not JSON"
+              : hasErrors
+              ? "GraphQL errors present"
+              : "unknown"
+            logger.debug("GraphQL cache: not stored", {
+              key,
+              operationName,
+              reason,
+              status,
+              isJson,
+              hasErrors,
+            })
             res.setHeader("X-Cache", "BYPASS")
           }
         } catch (e) {
-          logger.warn(`GraphQL cache: error during set ${e}`)
+          logger.error("GraphQL cache: error during response handling", {
+            key,
+            error: e instanceof Error ? e.message : String(e),
+            stack: e instanceof Error ? e.stack : undefined,
+          })
         }
         return originalSend(body)
       }
 
       return next()
     } catch (e) {
-      logger.error(`GraphQL cache: middleware error ${e}`)
+      logger.error("GraphQL cache: middleware error", {
+        error: e instanceof Error ? e.message : String(e),
+        stack: e instanceof Error ? e.stack : undefined,
+        path: req.originalUrl || req.path,
+      })
       return next()
     }
   }
@@ -177,40 +234,67 @@ export async function invalidateAllGraphqlCachedQueries(
 ): Promise<number> {
   const client = redisClient()
   if (!client?.isReady) {
+    logger?.error("GraphQL cache: invalidation failed (Redis client not ready)")
     throw new Error("Redis client is not ready")
   }
 
+  logger?.info("GraphQL cache: starting invalidation of all cached queries")
+
   let deleted = 0
   let failed = 0
+  let scanIterations = 0
 
   try {
     let cursor = "0"
     do {
+      scanIterations += 1
       const reply = await client.scan(cursor, {
         MATCH: `${CACHE_PREFIX}*`,
         COUNT: 1000,
       })
       cursor = reply.cursor
       const keys = reply.keys
+      logger?.debug("GraphQL cache: scan iteration", {
+        iteration: scanIterations,
+        keysFound: keys.length,
+        cursor,
+      })
+
       for (const key of keys) {
         try {
           await client.del(key)
           deleted += 1
         } catch (e) {
           failed += 1
-          logger?.warn?.(`GraphQL cache: failed to delete key ${key}: ${e}`)
+          logger?.warn("GraphQL cache: failed to delete key", {
+            key,
+            error: e instanceof Error ? e.message : String(e),
+          })
         }
       }
     } while (cursor !== "0")
+
     if (failed > 0) {
-      logger?.warn?.(
-        `GraphQL cache: invalidated ${deleted} keys, ${failed} deletions failed`,
-      )
+      logger?.warn("GraphQL cache: invalidation completed with errors", {
+        deleted,
+        failed,
+        total: deleted + failed,
+        scanIterations,
+      })
     } else {
-      logger?.info?.(`GraphQL cache: invalidated ${deleted} keys`)
+      logger?.info("GraphQL cache: invalidation completed successfully", {
+        deleted,
+        scanIterations,
+      })
     }
   } catch (e) {
-    logger?.error?.(`GraphQL cache: invalidation error ${e}`)
+    logger?.error("GraphQL cache: invalidation error", {
+      error: e instanceof Error ? e.message : String(e),
+      stack: e instanceof Error ? e.stack : undefined,
+      deleted,
+      failed,
+      scanIterations,
+    })
     throw e
   }
 
