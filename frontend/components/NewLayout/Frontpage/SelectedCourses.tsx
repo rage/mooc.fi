@@ -1,5 +1,5 @@
 import { useRouter } from "next/router"
-import { range, sample } from "remeda"
+import { range } from "remeda"
 
 import { useQuery } from "@apollo/client"
 import { Button, Typography, TypographyProps } from "@mui/material"
@@ -25,9 +25,8 @@ import { formatDateTime } from "/util/dataFormatFunctions"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
 import {
-  CourseStatus,
   NewCourseFieldsFragment,
-  NewCoursesDocument,
+  PopularCoursesDocument,
 } from "/graphql/generated"
 
 const CardHeader = styled("div")`
@@ -105,14 +104,12 @@ function SelectedCourses() {
   const { locale = "fi" } = useRouter()
   const t = useTranslator(HomeTranslations)
   const language = mapNextLanguageToLocaleCode(locale)
-  const { loading, data } = useQuery(NewCoursesDocument, {
-    variables: { language },
+  const { loading, data } = useQuery(PopularCoursesDocument, {
+    variables: { popularCoursesForLanguage: language },
     ssr: false,
   })
 
-  const notEndedCourses =
-    data?.courses?.filter((course) => course.status !== CourseStatus.Ended) ??
-    []
+  const courses = data?.popularCourses ?? []
   return (
     <section id="courses">
       <Introduction title={t("popularCoursesTitle")} />
@@ -122,7 +119,7 @@ function SelectedCourses() {
             ? range(0, 4).map((index) => (
                 <CourseCardSkeleton key={`skeleton-${index}`} />
               ))
-            : sample(notEndedCourses, 4).map((course) => (
+            : courses.map((course) => (
                 <CommonCourseCard key={course.id} course={course} />
               ))}
         </CoursesGrid>

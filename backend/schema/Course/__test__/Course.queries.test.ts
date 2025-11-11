@@ -323,6 +323,121 @@ describe("Course", () => {
       })
     })
 
+    describe("popularCourses", () => {
+      beforeEach(async () => {
+        await seed(ctx.prisma)
+
+        await ctx.prisma.course.update({
+          where: { slug: "course2" },
+          data: { status: "Ended" },
+        })
+
+        await ctx.prisma.course.update({
+          where: { slug: "handled" },
+          data: {
+            status: "Active",
+            course_translations: {
+              create: {
+                language: "fi_FI",
+                name: "handled_fi_FI",
+                description: "handled course description",
+                created_at: "1900-01-01T10:00:00.00+02:00",
+                updated_at: "1900-01-01T10:00:00.00+02:00",
+              },
+            },
+          },
+        })
+      })
+
+      it("returns courses filtered by language", async () => {
+        const res = await ctx.client.request<any>(popularCoursesQuery, {
+          popularCoursesForLanguage: "fi_FI",
+        })
+
+        expect(res.popularCourses).toBeDefined()
+        expect(Array.isArray(res.popularCourses)).toBe(true)
+        expect(res.popularCourses.length).toBeGreaterThan(0)
+        expect(res.popularCourses.length).toBeLessThanOrEqual(4)
+
+        res.popularCourses.forEach((course: any) => {
+          expect(course).toHaveProperty("id")
+          expect(course).toHaveProperty("slug")
+          expect(course).toHaveProperty("name")
+          expect(course).toHaveProperty("description")
+          expect(course).toHaveProperty("link")
+        })
+      })
+
+      it("excludes ended courses", async () => {
+        const res = await ctx.client.request<any>(popularCoursesQuery, {
+          popularCoursesForLanguage: "fi_FI",
+        })
+
+        const endedCourseSlugs = res.popularCourses
+          .map((c: any) => c.slug)
+          .filter((slug: string) => slug === "course2")
+
+        expect(endedCourseSlugs.length).toBe(0)
+      })
+
+      it("excludes hidden courses", async () => {
+        const res = await ctx.client.request<any>(popularCoursesQuery, {
+          popularCoursesForLanguage: "fi_FI",
+        })
+
+        const hiddenCourseSlugs = res.popularCourses
+          .map((c: any) => c.slug)
+          .filter((slug: string) => slug === "handled")
+
+        expect(hiddenCourseSlugs.length).toBe(0)
+      })
+
+      it("only returns courses with translations in the specified language", async () => {
+        const res = await ctx.client.request<any>(popularCoursesQuery, {
+          popularCoursesForLanguage: "fi_FI",
+        })
+
+        res.popularCourses.forEach((course: any) => {
+          expect(course.name).toBeDefined()
+          expect(course.description).toBeDefined()
+        })
+      })
+
+      it("returns at most 4 courses", async () => {
+        const res = await ctx.client.request<any>(popularCoursesQuery, {
+          popularCoursesForLanguage: "fi_FI",
+        })
+
+        expect(res.popularCourses.length).toBeLessThanOrEqual(4)
+      })
+
+      it("returns empty array for language with no courses", async () => {
+        const res = await ctx.client.request<any>(popularCoursesQuery, {
+          popularCoursesForLanguage: "sv_SE",
+        })
+
+        expect(res.popularCourses).toBeDefined()
+        expect(Array.isArray(res.popularCourses)).toBe(true)
+        expect(res.popularCourses.length).toBe(0)
+      })
+
+      it("applies correct translations for the requested language", async () => {
+        const res = await ctx.client.request<any>(popularCoursesQuery, {
+          popularCoursesForLanguage: "fi_FI",
+        })
+
+        const course1 = res.popularCourses.find(
+          (c: any) => c.slug === "course1",
+        )
+
+        if (course1) {
+          expect(course1.name).toBe("course1_fi_FI")
+          expect(course1.description).toBe("course1_description_fi_FI")
+          expect(course1.link).toBe("http:/link.fi.com")
+        }
+      })
+    })
+
     describe("handlerCourses", () => {
       beforeEach(async () => {
         await seed(ctx.prisma)
@@ -530,6 +645,20 @@ const coursesQuery = gql`
 const courseExistsQuery = gql`
   query courseExists($slug: String!) {
     course_exists(slug: $slug)
+  }
+`
+
+const popularCoursesQuery = gql`
+  query popularCourses($popularCoursesForLanguage: String!) {
+    popularCourses(popularCoursesForLanguage: $popularCoursesForLanguage) {
+      id
+      slug
+      name
+      description
+      link
+      status
+      hidden
+    }
   }
 `
 
