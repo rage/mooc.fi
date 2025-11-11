@@ -42,6 +42,7 @@ export const logger = {
   },
   createLogger: jest.fn().mockImplementation(function () {
     return {
+      debug: jest.fn(),
       info: jest.fn(),
       warn: jest.fn(),
       error: jest.fn(),
