@@ -107,7 +107,9 @@ describe("GraphQL response cache middleware", () => {
   test("on MISS wraps res.send, stores only successful JSON and sets X-Cache=MISS", async () => {
     const logger = makeLogger()
     const mw = createMiddleware(logger)
+    mockRedisClient.isReady = true
     ;(mockRedisClient.get as jest.Mock).mockResolvedValueOnce(null)
+    ;(mockRedisClient.set as jest.Mock).mockResolvedValue(undefined)
 
     const req = makeReq()
     const res = makeRes()
@@ -115,12 +117,12 @@ describe("GraphQL response cache middleware", () => {
 
     await mw(req, res, next)
 
+    expect(next).toHaveBeenCalledTimes(1)
+
     res.setHeader("Content-Type", "application/json; charset=utf-8")
     res.status(200)
     const body = { data: { me: { id: "2" } } }
     res.send(body)
-
-    expect(next).toHaveBeenCalledTimes(1)
 
     expect(mockRedisClient.set).toHaveBeenCalledTimes(1)
     const [, payload, opts] = (mockRedisClient.set as jest.Mock).mock.calls[0]
