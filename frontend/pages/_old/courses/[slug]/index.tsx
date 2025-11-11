@@ -50,6 +50,11 @@ const Row = styled(Paper)`
   gap: 0.5rem;
 `
 
+const StyledWideContainer = styled(WideContainer)`
+  display: grid;
+  justify-content: center;
+`
+
 const Course = () => {
   const isOld = useIsOld()
   const baseUrl = isOld ? "/_old" : "/admin"
@@ -162,7 +167,7 @@ const Course = () => {
       <section>
         <DashboardTabBar slug={slug} selectedValue={0} />
 
-        <WideContainer>
+        <StyledWideContainer>
           <H1NoBackground component="h1" variant="h1" align="center">
             {data.course?.name}
           </H1NoBackground>
@@ -234,9 +239,14 @@ const Course = () => {
               </Button>
             </div>
             {checkMessage !== "" && <Typography>{checkMessage}</Typography>}
+            <div>
+              <Button href={`${baseUrl}/courses/${slug}/manual-completions`}>
+                Manual completions
+              </Button>
+            </div>
           </Row>
           <CourseDashboard />
-        </WideContainer>
+        </StyledWideContainer>
       </section>
     </>
   )

@@ -6,7 +6,7 @@ exports[`API /api/progressv2 returns correct data on course id, include deleted 
     "completion": {
       "certificate_id": null,
       "completion_date": "2000-01-01T08:00:00.000Z",
-      "completion_language": null,
+      "completion_language": "en",
       "completion_registration_attempt_date": "2022-01-01T08:00:00.000Z",
       "course_id": "00000000-0000-0000-0000-000000000001",
       "created_at": "2000-01-01T08:00:00.000Z",
@@ -56,7 +56,7 @@ exports[`API /api/progressv2 returns correct data on course id, include deleted 
     "completion": {
       "certificate_id": null,
       "completion_date": "2000-01-01T08:00:00.000Z",
-      "completion_language": null,
+      "completion_language": "en",
       "completion_registration_attempt_date": "2022-01-01T08:00:00.000Z",
       "course_id": "00000000-0000-0000-0000-000000000001",
       "created_at": "2000-01-01T08:00:00.000Z",
@@ -117,7 +117,7 @@ exports[`API /api/progressv2 returns correct data on course slug, include delete
     "completion": {
       "certificate_id": null,
       "completion_date": "2000-01-01T08:00:00.000Z",
-      "completion_language": null,
+      "completion_language": "en",
       "completion_registration_attempt_date": "2022-01-01T08:00:00.000Z",
       "course_id": "00000000-0000-0000-0000-000000000001",
       "created_at": "2000-01-01T08:00:00.000Z",
@@ -167,7 +167,7 @@ exports[`API /api/progressv2 returns correct data on course slug, include delete
     "completion": {
       "certificate_id": null,
       "completion_date": "2000-01-01T08:00:00.000Z",
-      "completion_language": null,
+      "completion_language": "en",
       "completion_registration_attempt_date": "2022-01-01T08:00:00.000Z",
       "course_id": "00000000-0000-0000-0000-000000000001",
       "created_at": "2000-01-01T08:00:00.000Z",

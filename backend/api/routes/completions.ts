@@ -66,7 +66,6 @@ export class CompletionController extends Controller {
 
     const sql = knex
       .select<any, Completion[]>("completion.*")
-      .distinctOn("completion.user_id", "completion.course_id")
       .from("completion")
       .fullOuterJoin(
         "completion_registered",

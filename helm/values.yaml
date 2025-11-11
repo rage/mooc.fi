@@ -27,7 +27,7 @@ kafkaConsumer:
     userPointsRealtime:
       replicaCount: 1
     userCoursePoints:
-      replicaCount: 3
+      replicaCount: 1
     userCoursePointsRealtime:
       replicaCount: 1
 
@@ -120,3 +120,51 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+cronjob:
+  prague: # @vse.cz report, see backend/bin/pragueStatsEmailer.ts
+    crons:
+      - id: "0"
+        day: 28
+        month: 1
+      - id: "1"
+        day: 2
+        month: 6
+      - id: "2"
+        day: 22
+        month: 8
+      - id: "3"
+        day: 15
+        month: 12
+  purkyne: # @ujep.cz report, see backend/bin/purkyneStatsEmailer.ts
+    crons:
+      - id: "0"
+        day: 30
+        month: 6
+      - id: "1"
+        day: 31
+        month: 8
+      - id: "2"
+        day: 20
+        month: 12
+  masaryk: # @muni.cz report, see backend/bin/masarykStatsEmailer.ts
+    crons:
+      - id: "0"
+        day: 21
+        month: 1
+      - id: "1"
+        day: 13
+        month: 6
+  opava: # @slu.cz report, see backend/bin/opavaStatsEmailer.ts
+    crons:
+      - id: "0"
+        day: 31
+        month: 1
+      - id: "1"
+        day: 31
+        month: 7
+      - id: "2"
+        day: 13
+        month: 5
+  elementsConsentedUsers:
+    suspend: true

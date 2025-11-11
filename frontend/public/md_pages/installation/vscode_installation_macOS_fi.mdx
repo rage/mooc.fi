@@ -13,9 +13,9 @@ import TableOfContents from "/public/md_pages/installation/sisallysluettelo_vsco
 </ContentBox>
 
 <ContentBox>
-Seuraa alla olevia ohjeita asentaaksesi Visual Studio Code (VS Code) ja TestMyCode (TMC) -laajennus VS Codeen. 
+Seuraa alla olevia ohjeita asentaaksesi Visual Studio Code (VS Code) ja TestMyCode (TMC) -laajennus VS Codeen.
 
-Tarvitset järjestelmävalvojaoikeudet tietokoneellesi asentaaksesi tarvittavat ohjelmat.  
+Tarvitset järjestelmävalvojaoikeudet tietokoneellesi asentaaksesi tarvittavat ohjelmat.
 Mikäli sinulla on käytössäsi Tietojenkäsittelytieteen osaston laite, voit siirtyä suoraan [TestMyCode -laajennuksen asentamiseen](#TestMyCode-asentaminen).
 
 ###  Visual Studio Coden asentaminen <a name="VSCoden-asentaminen"></a>
@@ -26,9 +26,9 @@ Mikäli sinulla on käytössäsi Tietojenkäsittelytieteen osaston laite, voit s
 
 ### TestMyCode -laajennuksen asentaminen VS Codeen <a name="TestMyCode-asentaminen"></a>
 
-1. Avaa Visual Studio Code ohjelma.  
-2. Ohjelman vasemmassa sivupalkissa näkyy ikoneita, valitse sieltä Extensions -näkymä (kuvassa kohta 1).  
-3. Kirjoita hakukenttään **TestMyCode** (kuvassa kohta 2).  
+1. Avaa Visual Studio Code ohjelma.
+2. Ohjelman vasemmassa sivupalkissa näkyy ikoneita, valitse sieltä Extensions -näkymä (kuvassa kohta 1).
+3. Kirjoita hakukenttään **TestMyCode** (kuvassa kohta 2).
 4. Valitse **TestMyCode** hakutuloksesta.
 5. Paina "Install" -painiketta (kuvassa kohta 3).
 
@@ -42,7 +42,7 @@ Ensimmäisen käynnistyksen yhteydessä laajennus lataa sen tarvitsemat komponen
 
 ### Python-ympäristön asentaminen <a name="python-asentaminen"></a>
 
-Python -ohjelmointikursseilla tulet tarvitsemaan Python3:a ja Python-laajennusta Visual Studio Codeen suorittaaksesi lähdekoodia.  
+Python -ohjelmointikursseilla tulet tarvitsemaan Python3:a ja Python-laajennusta Visual Studio Codeen suorittaaksesi lähdekoodia.
 Saat asennettua nämä käyttöösi seuraamalla näitä ohjeita.
 
 #### Pythonin asentaminen <a name="python3"></a>
@@ -68,13 +68,18 @@ Saat asennettua nämä käyttöösi seuraamalla näitä ohjeita.
 
 ### Java-ympäristön asentaminen <a name="javan-asentaminen"></a>
 
-Java-ohjelmointikursseilla tarvitset Java-kehitys- ja suoritusympäristön, Java-laajennuksen Visual Studio Codeen sekä Mavenin.  
-Saat asennettua nämä käyttöösi seuraamalla näitä ohjeita. 
+Java-ohjelmointikursseilla tarvitset Java-kehitys- ja suoritusympäristön, Java-laajennuksen Visual Studio Codeen sekä Mavenin.
+Saat asennettua nämä käyttöösi seuraamalla näitä ohjeita.
 
 #### Javan asentaminen <a name="adopt-open-jdk"></a>
 
-1. Lataa Java 11:n avoin kehitys- ja suoritusympäristö AdoptOpenJDK11 osoitteesta [https://adoptopenjdk.net](https://adoptopenjdk.net/?variant=openjdk11&jvmVariant=hotspot).
-2. Valitse sivulta OpenJDK 11 (LTS) ja HotSpot. Sitten voit painaa Latest release -nappia ladataksesi Javan.
+1. Lataa Java 11:n avoin kehitysympäristö OpenJDK11 osoitteesta [https://adoptium.net/](https://adoptium.net/temurin/releases/?os=mac&version=11&package=jdk).
+  - Sivulla pitäisi olla valmiiksi suodatettuna vain macOS-käyttöjärjestelmälle pakettityypin JDK versio 11 - LTS.
+  - Valitse aarch64 tai x64 asennustiedosto macOS-versiosi perusteella. Voit varmistaa oikean version Apple-valikosta --> valitse "About This Mac"
+    - Jos Chip-kohdassa lukee M1, M2 tai M3, valitse aarch64-asennustiedosto.
+    - Jos Chip-kohdassa lukee Intel, valitse x64-asennustiedosto.
+
+2. Lataa asennustiedosto .pkg-napista.
 3. Kun olet ladannut asennustiedoston, avaa se.
 4. Seuraa avautuvan asennusohjelman ohjeita asentaaksesi Javan koneellesi.
 
@@ -97,16 +102,16 @@ Tarvitset Java-laajennuksen Visual Studio Codeen, jotta voit kääntää ja suor
 
 #### Mavenin asentaminen ja asetusten määrittäminen <a name="maven-ja-asetukset"></a>
 
-Saat asennettua Mavenin seuraamalla alla olevia ohjeita.  
+Saat asennettua Mavenin seuraamalla alla olevia ohjeita.
 
 1. Lataa viimeisin Binary zip archive, `apache-maven-3.x.y-bin.zip`, osoitteesta [https://maven.apache.org/download.cgi](https://maven.apache.org/download.cgi).
 2. Pura arkisto haluaamaasi paikkaan, esim. `/usr/local/`, tämä luo automaattisesti kansion `apache-maven-3.x.y` purkamaasi paikkaan.
 3. Mikäli asensit Java-laajennuksen VS Codeen, tämän mukana tulee `Maven for Java` -lisäosa. Aseta Mavenin tiedostopolku kyseisen lisäosan asetuksiin seuraavasti:
     * Avaa Visual Studio Code
     * Paina ylhäältä "File -> Preferences -> Settings" tai näppäimistössä pikanäppäintä kyseiselle toiminnallisuudelle: `CTRL + ,`
-    * Etsi `maven.executable.path` (kuvassa 1) ja aseta Maven polku (kuvassa 2) seuraavasti:  
-    `<purkamasi paikka>/apache-maven-3.x.y/bin/mvn`  
-    esim. Versio 3.6.3 Mavenista purettuna /usr/local/ alle olisi asetettuna seuraavasti:  
+    * Etsi `maven.executable.path` (kuvassa 1) ja aseta Maven polku (kuvassa 2) seuraavasti:
+    `<purkamasi paikka>/apache-maven-3.x.y/bin/mvn`
+    esim. Versio 3.6.3 Mavenista purettuna /usr/local/ alle olisi asetettuna seuraavasti:
     `/usr/local/apache-maven-3.6.3/bin/mvn`
 
     ![Mavenin tiedostopolun määritys](vscode/maven_executable_path.webp)

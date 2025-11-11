@@ -32,7 +32,7 @@ const MobileMenuContainer = styled("div")(
   ({ theme }) => `
   display: flex;
   justify-content: flex-end;
-  ${theme.breakpoints.up("sm")} {
+  ${theme.breakpoints.up("lg")} {
     display: none;
   }
 `,

@@ -78,7 +78,8 @@ describe("API", () => {
         })
     })
 
-    it("returns correctly on course, skipping registered and duplicate completions", async () => {
+    it("returns correctly on course, skipping registered and showing duplicate completions", async () => {
+      // Showing duplicate completions is important because students take exams multiple times and get multiple completions that way.
       const res = await getCompletions("course1")({
         headers: { Authorization: "Basic kissa" },
       })
@@ -87,10 +88,12 @@ describe("API", () => {
         "12400000-0000-0000-0000-000000000001",
         "30000000-0000-0000-0000-000000000102",
         "30000000-0000-0000-0000-000000000104",
+        "30000000-0000-0000-0000-000000000105",
       ])
     })
 
-    it("returns correctly on course alias, skipping registered and duplicate completions", async () => {
+    it("returns correctly on course alias, skipping registered and showing duplicate completions", async () => {
+      // Showing duplicate completions is important because students take exams multiple times and get multiple completions that way.
       const res = await getCompletions("alias")({
         headers: { Authorization: "Basic kissa" },
       })
@@ -99,10 +102,11 @@ describe("API", () => {
         "12400000-0000-0000-0000-000000000001",
         "30000000-0000-0000-0000-000000000102",
         "30000000-0000-0000-0000-000000000104",
+        "30000000-0000-0000-0000-000000000105",
       ])
     })
 
-    it("returns correctly on course when registered query parameter is set, skipping duplicate completions", async () => {
+    it("returns correctly on course when registered query parameter is set, not skipping duplicate completions", async () => {
       const res = await getCompletions(
         "course1",
         true,
@@ -114,6 +118,7 @@ describe("API", () => {
         "12400000-0000-0000-0000-000000000001",
         "30000000-0000-0000-0000-000000000102",
         "30000000-0000-0000-0000-000000000104",
+        "30000000-0000-0000-0000-000000000105",
         "30000000-0000-0000-0000-000000000106",
       ])
     })

@@ -1,7 +1,7 @@
 export default {
-  tagLine: "Laadukkaita, avoimia ja ilmaisia verkkokursseja kaikille",
+  tagLine: "Laadukkaita ja avoimia verkkokursseja kaikille",
   intro:
-    "Helsingin yliopiston MOOC-keskus ylläpitää laadukkaita, avoimia ja ilmaisia verkkokursseja kaikille. Aloittelija voi lähteä liikkeelle Ohjelmoinnin MOOCista tai tekoälyn perusteisiin keskittyvästä Elements of AI -kurssista. Osaamistaan päivittävä voi syventyä vaikkapa tietoturvaan tai Fullstack -ohjelmointiin.",
+    "Helsingin yliopiston MOOC-keskus ylläpitää laadukkaita ja avoimia verkkokursseja kaikille. Aloittelija voi lähteä liikkeelle Ohjelmoinnin MOOCista tai tekoälyn perusteisiin keskittyvästä Elements of AI -kurssista. Osaamistaan päivittävä voi syventyä vaikkapa tietoturvaan tai Fullstack -ohjelmointiin.",
   courseButton: "Kurssimme",
   highlightTitle: "Aloita näistä",
   highlightSubtitle:

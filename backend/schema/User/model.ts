@@ -85,7 +85,6 @@ export const User = objectType({
             where: {
               course_id: course?.id ?? undefined,
             },
-            distinct: ["user_id", "course_id"],
             orderBy: { created_at: "asc" },
           })
       },
@@ -388,7 +387,7 @@ export const User = objectType({
           user_id: id,
           includeDeletedExercises: includeDeletedExercises ?? false,
           includeNoPointsAwardedExercises:
-            includeNoPointsAwardedExercises ?? false,
+            includeNoPointsAwardedExercises ?? true,
         }
 
         if (course_id || course_slug) {

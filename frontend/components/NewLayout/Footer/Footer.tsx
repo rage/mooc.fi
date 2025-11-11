@@ -3,7 +3,6 @@ import { useMemo } from "react"
 import { useRouter } from "next/router"
 
 import FacebookIcon from "@fortawesome/fontawesome-free/svgs/brands/facebook.svg?icon"
-import TwitterIcon from "@fortawesome/fontawesome-free/svgs/brands/twitter.svg?icon"
 import YoutubeIcon from "@fortawesome/fontawesome-free/svgs/brands/youtube.svg?icon"
 import { Link as MUILink, type EnhancedLink } from "@mui/material"
 import { styled } from "@mui/material/styles"
@@ -352,14 +351,6 @@ const Footer = () => {
           <FooterBaseSocial>
             <FooterBaseSocialItems>
               <SocialLink
-                aria-label="MOOC.fi twitter"
-                href="https://twitter.com/moocfi"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <TwitterIcon />
-              </SocialLink>
-              <SocialLink
                 aria-label="MOOC.fi Facebook"
                 href="https://www.facebook.com/Moocfi"
                 target="_blank"
@@ -379,12 +370,10 @@ const Footer = () => {
           </FooterBaseSocial>
         </FooterBaseLeft>
         <FooterBaseRight>
-          {locale === "fi" && (
-            <FooterLink href={t("privacyPolicyLink")}>
-              {t("privacyPolicy")}
-              <ArrowRightIcon sx={{ fontSize: 16 }} />
-            </FooterLink>
-          )}
+          <FooterLink href={t("privacyPolicyLink")}>
+            {t("privacyPolicy")}
+            <ArrowRightIcon sx={{ fontSize: 16 }} />
+          </FooterLink>
           <FooterBaseCopy>
             This site is maintained by the University of Helsinki's MOOC center
           </FooterBaseCopy>

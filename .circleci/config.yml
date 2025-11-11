@@ -7,7 +7,7 @@ orbs:
 executors:
   node_postgres:
     docker:
-      - image: cimg/node:18.17.0
+      - image: cimg/node:18.20.2
       - image: cimg/postgres:15.3
         environment:
           POSTGRES_USER: root
@@ -17,7 +17,7 @@ executors:
 jobs:
   code_style:
     docker:
-      - image: cimg/node:18.17.0
+      - image: cimg/node:18.20.2
     steps:
       - checkout
       - node/install-packages
@@ -35,12 +35,12 @@ jobs:
 
   build_frontend:
     docker:
-      - image: cimg/gcp:2023.07
+      - image: cimg/gcp:2024.08
     working_directory: /mnt/ramdisk
     steps:
       - checkout
       - setup_remote_docker:
-          version: "20.10.18"
+          version: default
           docker_layer_caching: true
       - restore_cache:
           keys:
@@ -147,6 +147,7 @@ jobs:
       - run:
           name: "Run tests"
           command: |
+            export NODE_OPTIONS="--max-old-space-size=8192"
             TEST=$(circleci tests glob ./**/*.test.ts | grep -v node_modules | circleci tests split --split-by=timings)
             echo $TEST
             npm run test:ci -- --runTestsByPath $TEST
@@ -201,15 +202,15 @@ jobs:
   #           echo "Not implemented yet"
   # could also be only for master/staging since now we're doing npm install earlier, and if it passes there, it will pass here too
   # - only that the node version is different in backend image?
-  
+
   build_backend:
     docker:
-      - image: cimg/gcp:2023.07
+      - image: cimg/gcp:2024.08
     working_directory: /mnt/ramdisk
     steps:
       - checkout
       - setup_remote_docker:
-          version: "20.10.18"
+          version: default
           docker_layer_caching: true
       - jq/install
       - run:
@@ -319,7 +320,7 @@ jobs:
   #         command: "bin/push-docker-auth-image.sh"
   deploy_to_production:
     docker:
-      - image: cimg/gcp:2023.07
+      - image: cimg/gcp:2024.08
     working_directory: /mnt/ramdisk
     steps:
       - checkout
@@ -329,7 +330,7 @@ jobs:
           version: v3.4.2
       - run:
           name: Install envsubst
-          command: sudo apt-get update && sudo apt-get install -qq -y gettext
+          command: sudo apt-get update --ignore-missing || true && sudo apt-get install -y gettext
       - run:
           name: "Deploy"
           command: "bin/ci-update-deployments.sh"

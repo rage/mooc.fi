@@ -43,4 +43,6 @@ export default {
   modulePhotoTitle: "Kuva",
   edit: "Muokkaa",
   create: "Luo",
+  modulelessCoursesLink:
+    "Tutustu näiden opintokokonaisuuksien ulkopuolisiin kursseihin.",
 } as const

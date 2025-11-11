@@ -23,7 +23,10 @@ spec:
                 - /bin/sh
                 - -c
                 - |
+                  kubectl rollout restart deployment/kafka-bridge
                   kubectl rollout restart deployment/kafka-consumer-exercises
+                  kubectl rollout restart deployment/kafka-consumer-user-course-points-batch
+                  kubectl rollout restart deployment/kafka-consumer-user-course-points-realtime
                   kubectl rollout restart deployment/kafka-consumer-user-course-progress-batch
                   kubectl rollout restart deployment/kafka-consumer-user-course-progress-realtime
                   kubectl rollout restart deployment/kafka-consumer-user-points-batch

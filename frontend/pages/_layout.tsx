@@ -58,14 +58,17 @@ const Layout: React.FunctionComponent<React.PropsWithChildren> = ({
       <PageLoadingIndicators />
       <SkipLink />
       <FooterDownPusherWrapper>
-        <Header />
-        <MainContainer id="main">
-          <LayoutContent>
-            {!isHomePage && <Breadcrumbs />}
-            <Alerts />
-            {children}
-          </LayoutContent>
-        </MainContainer>
+        {/* NOTE: This component can only have two children */}
+        <div>
+          <Header />
+          <MainContainer id="main">
+            <LayoutContent>
+              {!isHomePage && <Breadcrumbs />}
+              <Alerts />
+              {children}
+            </LayoutContent>
+          </MainContainer>
+        </div>
         <Footer />
       </FooterDownPusherWrapper>
     </>

@@ -37,7 +37,7 @@ const createExpressAppWithContext = ({
 
   app.use(
     cors<cors.CorsRequest>(),
-    bodyParser.json(),
+    bodyParser.json({ limit: "2mb" }),
     frameguard(),
     graphqlUploadExpress(),
   )

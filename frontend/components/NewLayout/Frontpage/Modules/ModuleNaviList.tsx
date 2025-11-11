@@ -24,7 +24,7 @@ function ModuleNaviList({ modules, loading }: ModuleNaviListProps) {
             title: name,
             description: description ?? undefined,
             linkProps: {
-              href: `#${slug}`,
+              href: `/study-modules/#${slug}`,
               children: t("moduleInformation"),
             },
             imageProps: {

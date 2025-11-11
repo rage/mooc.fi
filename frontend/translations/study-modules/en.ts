@@ -43,4 +43,5 @@ export default {
   modulePhotoTitle: "Photo",
   edit: "Edit",
   create: "Create",
+  modulelessCoursesLink: "Browse courses outside of these study modules.",
 } as const

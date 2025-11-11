@@ -23,7 +23,7 @@ const StyledLanguageButton = styled(Button)`
   width: 33%;
   background-color: #378170;
   margin: 0.5rem;
-  color: white;
+  color: white !important;
   @media (max-width: 600px) {
     font-size: 16px;
     padding: 2rem;

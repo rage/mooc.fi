@@ -3,6 +3,7 @@ import { useRouter } from "next/router"
 import { useQuery } from "@apollo/client"
 import { styled } from "@mui/material/styles"
 
+import CTALink from "../Common/CTALink"
 import Introduction from "../Common/Introduction"
 import { moduleColorSchemes } from "../Courses/common"
 import ModuleNaviList from "../Frontpage/Modules/ModuleNaviList"
@@ -33,6 +34,14 @@ const ModuleList = styled("ul")(
   }
 `,
 )
+
+const StyledCTALink = styled(CTALink)`
+  padding: 2rem;
+`
+
+const ModulelessLinkContainer = styled("div")`
+  text-align: center;
+`
 
 export function StudyModuleList() {
   const t = useTranslator(StudyModulesTranslations)
@@ -76,6 +85,11 @@ export function StudyModuleList() {
     <section>
       <Introduction title={t("modulesTitle")} />
       <ModuleNaviList modules={data?.study_modules} loading={loading} />
+      <ModulelessLinkContainer>
+        <StyledCTALink href={`/courses/?moduleless=true`}>
+          {t("modulelessCoursesLink")}
+        </StyledCTALink>
+      </ModulelessLinkContainer>
       <ModuleList>
         {data?.study_modules?.map((studyModule) => (
           <ListItem
@@ -89,6 +103,11 @@ export function StudyModuleList() {
           />
         ))}
       </ModuleList>
+      <ModulelessLinkContainer>
+        <StyledCTALink href={`/courses/?moduleless=true`}>
+          {t("modulelessCoursesLink")}
+        </StyledCTALink>
+      </ModulelessLinkContainer>
     </section>
   )
 }

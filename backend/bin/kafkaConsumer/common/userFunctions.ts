@@ -88,7 +88,6 @@ export const checkRequiredExerciseCompletions = async ({
       .andWhere("exercise_completion.user_id", user.id)
       .andWhere("exercise_completion.completed", true)
       .andWhereNot("exercise.deleted", true)
-      .andWhereNot("exercise.max_points", 0)
 
     return (
       Number(exercise_completions[0].count) >=
@@ -123,7 +122,6 @@ export const getExerciseCompletionsForCourses = async ({
     .where("ec.user_id", user.id)
     .whereIn("e.course_id", courseIds)
     .andWhere("ec.completed", true)
-    .andWhereNot("e.max_points", 0)
     .andWhereNot("e.deleted", true)
     .orderBy([
       "ec.exercise_id",
@@ -293,7 +291,7 @@ export const createCompletion = async ({
 
   const handlerCourse = handler ?? course
 
-  const completions =
+  let completions =
     (await prisma.user
       .findUnique({
         where: {
@@ -309,13 +307,20 @@ export const createCompletion = async ({
         },
       })) ?? []
 
+  // take course instance language first; then from user course settings
+  const languageAbbrevation = course?.language ?? userCourseSettings?.language
+  const completionLanguage =
+    completionLanguageMap[languageAbbrevation as LanguageAbbreviation] ?? null
+
+  // Filter out completions in other languages using the mapped language value
+  completions = completions.filter(
+    (c) =>
+      c.completion_language === completionLanguage ||
+      c.completion_language === languageAbbrevation,
+  )
+
   if (completions.length < 1) {
     logger.info("No existing completion found, creating new...")
-
-    // take course instance language first; then from user course settings
-    const language = course?.language ?? userCourseSettings?.language
-    const completion_language =
-      completionLanguageMap[language as LanguageAbbreviation] ?? null
 
     const newCompletion = await prisma.completion.create({
       data: {
@@ -324,7 +329,7 @@ export const createCompletion = async ({
         user: { connect: { id: user.id } },
         user_upstream_id: user.upstream_id,
         student_number: user.student_number,
-        completion_language,
+        completion_language: completionLanguage,
         eligible_for_ects:
           tier === 1
             ? false
@@ -334,9 +339,9 @@ export const createCompletion = async ({
       },
     })
 
-    if (language && !completion_language) {
+    if (languageAbbrevation && !completionLanguage) {
       logger.warn(
-        `Didn't recognize language ${language} for user_upstream_id ${user.upstream_id}, created completion with id ${newCompletion.id} anyway, completion_language is null`,
+        `Didn't recognize language ${languageAbbrevation} for user_upstream_id ${user.upstream_id}, created completion with id ${newCompletion.id} anyway, completion_language is null`,
       )
     }
 
@@ -364,7 +369,7 @@ export const createCompletion = async ({
     try {
       const updated = await prisma.$queryRaw<Array<number>>`
         UPDATE
-          completion 
+          completion
         SET tier=${tier}, eligible_for_ects=${eligible_for_ects}, updated_at=now()
         WHERE id=${completions[0].id}::uuid AND COALESCE(tier, 0) < ${tier}
         RETURNING tier;`
@@ -409,8 +414,9 @@ export class CombinedUserCourseProgress {
     this.progress[index].max_points += progress.max_points
     this.progress[index].n_points += progress.n_points
     this.progress[index].progress =
-      (this.progress[index].n_points || 0) /
-      (this.progress[index].max_points || 1)
+      this.progress[index].max_points > 0
+        ? (this.progress[index].n_points || 0) / this.progress[index].max_points
+        : 0
   }
 }
 

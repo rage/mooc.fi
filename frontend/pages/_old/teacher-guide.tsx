@@ -49,8 +49,8 @@ const ForTeachers = () => {
 
   useBreadcrumbs([
     {
-      translation: `teachers`,
-      href: `${baseUrl}/teachers`,
+      translation: `teacherGuide`,
+      href: `${baseUrl}/teacher-guide`,
     },
   ])
 
@@ -67,9 +67,16 @@ const ForTeachers = () => {
         <H1NoBackground variant="h4" component="h2" align="center">
           {t("teachingTitle")}
         </H1NoBackground>
-        <TextBlock>{t("teachingText")}</TextBlock>
-        <TextBlock>{t("teachingText2")}</TextBlock>
+        <TextBlock>
+          {t("teachingText")}{" "}
+          <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">
+            Creative Commons BY-NC-SA{" "}
+          </a>{" "}
+          {t("teachingText2")}
+        </TextBlock>
+
         <TextBlock>{t("teachingText3")}</TextBlock>
+        <TextBlock>{t("teachingText4")}</TextBlock>
       </ContentBlock>
       <ContentBlock>
         <BookOpenIcon css={iconStyle} />

@@ -1,7 +1,7 @@
 apiVersion: kafka.strimzi.io/v1beta1
 kind: KafkaTopic
 metadata:
-  name: exercises-realtime
+  name: exercise
   namespace: kafka
   labels:
     strimzi.io/cluster: kafka-cluster

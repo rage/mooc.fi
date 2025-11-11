@@ -47,6 +47,8 @@ export const createKafkaConsumer = ({
     offset_commit_cb: logCommit(logger),
     "enable.auto.commit": false,
     "partition.assignment.strategy": "roundrobin",
+    "security.protocol": "ssl",
+    "enable.ssl.certificate.verification": false,
   }
   if (KAFKA_DEBUG_CONTEXTS) {
     globalConfig["debug"] = KAFKA_DEBUG_CONTEXTS

@@ -41,7 +41,7 @@ RUN cp .env.example .env \
     && npm run generate \
     && env NODE_ENV=production GOOGLE_CLOUD_STORAGE_BUCKET=x npm run build
 RUN npm run build-sourcemap
-RUN npm run copy-env 
+RUN npm run copy-env
 
 ENV NODE_ENV=production
 
