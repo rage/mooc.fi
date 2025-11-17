@@ -6,7 +6,7 @@ import * as winston from "winston"
 
 import { isTest, NEXUS_REFLECTION } from "./config"
 import { UserInfo } from "./domain/UserInfo"
-import getRedisClient from "./services/redis"
+import getRedisClient, { getRedisSubscriberClient } from "./services/redis"
 import { getCurrentUserDetails } from "./services/tmc"
 
 const logger = winston.createLogger({
@@ -135,14 +135,12 @@ const createSubscriber = async () => {
     return
   }
 
-  while (!getRedisClient()?.isOpen) {
-    logger.info(
-      "Waiting on Redis client to be created to create a subscriber...",
-    )
+  while (!getRedisSubscriberClient()?.isOpen) {
+    logger.info("Waiting on Redis subscriber client to be created...")
     await new Promise((resolve) => setTimeout(resolve, 100))
   }
 
-  subscriber = getRedisClient()
+  subscriber = getRedisSubscriberClient()
 
   subscriber?.on("error", (err: any) => {
     logger.error("Redis subscriber error", err)
