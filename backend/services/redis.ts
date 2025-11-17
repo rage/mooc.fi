@@ -1,5 +1,5 @@
 import parseJSON from "json-parse-even-better-errors"
-import { createClient, createSentinel } from "redis"
+import { createClient } from "redis"
 import * as winston from "winston"
 
 import {
@@ -7,8 +7,6 @@ import {
   NEXUS_REFLECTION,
   REDIS_DB,
   REDIS_PASSWORD,
-  REDIS_SENTINEL_MASTER_NAME,
-  REDIS_SENTINELS,
   REDIS_URL,
 } from "../config"
 import { BaseContext } from "../context"
@@ -24,9 +22,7 @@ const _logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
-type RedisClient =
-  | ReturnType<typeof createClient>
-  | ReturnType<typeof createSentinel>
+type RedisClient = ReturnType<typeof createClient>
 let redisClient: RedisClient | undefined
 let redisSubscriberClient: RedisClient | undefined
 
@@ -53,72 +49,33 @@ const getRedisClient = (): RedisClient | undefined => {
     return
   }
 
-  const useSentinel = REDIS_SENTINELS && REDIS_SENTINEL_MASTER_NAME
-
-  let client: RedisClient
-
-  if (useSentinel && REDIS_SENTINELS && REDIS_SENTINEL_MASTER_NAME) {
-    const sentinels = REDIS_SENTINELS.split(",").map((sentinel: string) => {
-      const [host, port] = sentinel.trim().split(":")
-      return { host, port: parseInt(port) ?? 26379 }
-    })
-
-    const sentinelClient = createSentinel({
-      name: REDIS_SENTINEL_MASTER_NAME,
-      sentinelRootNodes: sentinels,
-      nodeClientOptions: {
-        password: REDIS_PASSWORD,
-        database: REDIS_DB,
-        socket: {
-          reconnectStrategy: redisReconnectStrategy(),
-        },
-      },
-    })
-
-    sentinelClient.on("error", (err: any) => {
-      _logger.error(`Redis Sentinel error`, err)
-    })
-    sentinelClient.on("ready", () => {
-      _logger.info(
-        `Redis Sentinel connected to master: ${REDIS_SENTINEL_MASTER_NAME}`,
-      )
-    })
-
-    sentinelClient.connect().catch((err: any) => {
-      _logger.error(`Redis Sentinel connection failed`, err)
-    })
-
-    client = sentinelClient as RedisClient
-  } else {
-    let url = (REDIS_URL && REDIS_URL.trim()) || "redis://127.0.0.1:6379"
-    if (url && !url.startsWith("redis://") && !url.startsWith("rediss://")) {
-      url = `redis://${url}`
-    }
-    if (url && !url.includes(":") && !url.includes("/")) {
-      url = `${url}:6379`
-    }
-    const regularClient = createClient({
-      url,
-      password: REDIS_PASSWORD,
-      database: REDIS_DB,
-      socket: {
-        reconnectStrategy: redisReconnectStrategy(),
-      },
-    })
-
-    regularClient.on("error", (err: any) => {
-      _logger.error(`Redis error`, err)
-    })
-    regularClient.on("ready", () => {
-      _logger.info(`Redis connected to: ${url}`)
-    })
-
-    regularClient.connect().catch((err: any) => {
-      _logger.error(`Redis connection failed`, err)
-    })
-
-    client = regularClient as RedisClient
+  let url = (REDIS_URL && REDIS_URL.trim()) || "redis://127.0.0.1:6379"
+  if (url && !url.startsWith("redis://") && !url.startsWith("rediss://")) {
+    url = `redis://${url}`
   }
+  if (url && !url.includes(":") && !url.includes("/")) {
+    url = `${url}:6379`
+  }
+
+  const client = createClient({
+    url,
+    password: REDIS_PASSWORD,
+    database: REDIS_DB,
+    socket: {
+      reconnectStrategy: redisReconnectStrategy(),
+    },
+  })
+
+  client.on("error", (err: any) => {
+    _logger.error(`Redis error`, err)
+  })
+  client.on("ready", () => {
+    _logger.info(`Redis connected to: ${url}`)
+  })
+
+  client.connect().catch((err: any) => {
+    _logger.error(`Redis connection failed`, err)
+  })
 
   redisClient = client
   return client
@@ -152,17 +109,13 @@ const getRedisSubscriberClient = (): RedisClient | undefined => {
     socket: {
       reconnectStrategy: redisReconnectStrategy("Redis Subscriber"),
     },
-  }) as RedisClient
+  })
 
   subscriber.on("error", (err: any) => {
     _logger.error(`Redis subscriber error`, err)
   })
   subscriber.on("ready", () => {
     _logger.info(`Redis subscriber connected to: ${url}`)
-  })
-
-  subscriber.connect().catch((err: any) => {
-    _logger.error(`Redis subscriber connection failed`, err)
   })
 
   redisSubscriberClient = subscriber
