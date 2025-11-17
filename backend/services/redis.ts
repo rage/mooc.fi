@@ -89,7 +89,13 @@ const getRedisClient = (): RedisClient | undefined => {
 
     client = sentinelClient as RedisClient
   } else {
-    const url = REDIS_URL ?? "redis://127.0.0.1:6379"
+    let url = (REDIS_URL && REDIS_URL.trim()) || "redis://127.0.0.1:6379"
+    if (url && !url.startsWith("redis://") && !url.startsWith("rediss://")) {
+      url = `redis://${url}`
+    }
+    if (url && !url.includes(":") && !url.includes("/")) {
+      url = `${url}:6379`
+    }
     const regularClient = createClient({
       url,
       password: REDIS_PASSWORD,

@@ -151,7 +151,9 @@ const createSubscriber = async () => {
     logger.info(`Redis subscriber connected`)
   })
 
-  await subscriber?.connect()
+  if (subscriber && !subscriber.isOpen) {
+    await subscriber.connect()
+  }
 
   await subscriber?.subscribe("websocket", (message: any) => {
     let data
