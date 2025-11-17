@@ -135,12 +135,13 @@ const createSubscriber = async () => {
     return
   }
 
-  while (!getRedisSubscriberClient()?.isOpen) {
-    logger.info("Waiting on Redis subscriber client to be created...")
+  // Wait for main Redis client to be ready
+  while (!getRedisClient()?.isOpen) {
+    logger.info("Waiting on main Redis client to be ready...")
     await new Promise((resolve) => setTimeout(resolve, 100))
   }
 
-  subscriber = getRedisSubscriberClient()
+  subscriber = await getRedisSubscriberClient()
 
   if (!subscriber) {
     logger.error("Failed to get Redis subscriber client")

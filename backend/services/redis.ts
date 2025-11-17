@@ -124,7 +124,7 @@ const getRedisClient = (): RedisClient | undefined => {
   return client
 }
 
-const getRedisSubscriberClient = (): RedisClient | undefined => {
+const getRedisSubscriberClient = async (): Promise<RedisClient | undefined> => {
   if (redisSubscriberClient) {
     return redisSubscriberClient
   }
@@ -132,43 +132,16 @@ const getRedisSubscriberClient = (): RedisClient | undefined => {
     return
   }
 
-  const useSentinel = REDIS_SENTINELS && REDIS_SENTINEL_MASTER_NAME
+  // Wait for main client to be ready first
+  const mainClient = getRedisClient()
+  if (!mainClient?.isOpen) {
+    _logger.info(
+      "Waiting for main Redis client to be ready before creating subscriber",
+    )
+    return
+  }
 
-  let client: RedisClient
-
-  if (useSentinel && REDIS_SENTINELS && REDIS_SENTINEL_MASTER_NAME) {
-    const sentinels = REDIS_SENTINELS.split(",").map((sentinel: string) => {
-      const [host, port] = sentinel.trim().split(":")
-      return { host, port: parseInt(port) ?? 26379 }
-    })
-
-    const sentinelClient = createSentinel({
-      name: REDIS_SENTINEL_MASTER_NAME,
-      sentinelRootNodes: sentinels,
-      nodeClientOptions: {
-        password: REDIS_PASSWORD,
-        database: REDIS_DB,
-        socket: {
-          reconnectStrategy: redisReconnectStrategy("Redis Subscriber"),
-        },
-      },
-    })
-
-    sentinelClient.on("error", (err: any) => {
-      _logger.error(`Redis Sentinel subscriber error`, err)
-    })
-    sentinelClient.on("ready", () => {
-      _logger.info(
-        `Redis Sentinel subscriber connected to master: ${REDIS_SENTINEL_MASTER_NAME}`,
-      )
-    })
-
-    sentinelClient.connect().catch((err: any) => {
-      _logger.error(`Redis Sentinel subscriber connection failed`, err)
-    })
-
-    client = sentinelClient as RedisClient
-  } else {
+  try {
     let url = (REDIS_URL && REDIS_URL.trim()) || "redis://127.0.0.1:6379"
     if (url && !url.startsWith("redis://") && !url.startsWith("rediss://")) {
       url = `redis://${url}`
@@ -176,31 +149,31 @@ const getRedisSubscriberClient = (): RedisClient | undefined => {
     if (url && !url.includes(":") && !url.includes("/")) {
       url = `${url}:6379`
     }
-    const regularClient = createClient({
+
+    const subscriber = createClient({
       url,
       password: REDIS_PASSWORD,
       database: REDIS_DB,
       socket: {
         reconnectStrategy: redisReconnectStrategy("Redis Subscriber"),
       },
-    })
+    }) as RedisClient
 
-    regularClient.on("error", (err: any) => {
+    subscriber.on("error", (err: any) => {
       _logger.error(`Redis subscriber error`, err)
     })
-    regularClient.on("ready", () => {
+    subscriber.on("ready", () => {
       _logger.info(`Redis subscriber connected to: ${url}`)
     })
 
-    regularClient.connect().catch((err: any) => {
-      _logger.error(`Redis subscriber connection failed`, err)
-    })
+    await subscriber.connect()
 
-    client = regularClient as RedisClient
+    redisSubscriberClient = subscriber
+    return redisSubscriberClient
+  } catch (err) {
+    _logger.error("Failed to create Redis subscriber client", err)
+    return
   }
-
-  redisSubscriberClient = client
-  return client
 }
 
 export { getRedisSubscriberClient }
