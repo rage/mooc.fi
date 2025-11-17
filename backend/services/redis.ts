@@ -49,7 +49,7 @@ const getRedisClient = (): RedisClient | undefined => {
     return
   }
 
-  let url = (REDIS_URL && REDIS_URL.trim()) || "redis://127.0.0.1:6379"
+  let url = REDIS_URL?.trim() || "redis://127.0.0.1:6379"
   if (url && !url.startsWith("redis://") && !url.startsWith("rediss://")) {
     url = `redis://${url}`
   }
@@ -81,6 +81,23 @@ const getRedisClient = (): RedisClient | undefined => {
   return client
 }
 
+export const initializeRedis = async (): Promise<void> => {
+  _logger.info("Initializing Redis")
+  try {
+    const client = getRedisClient()
+    if (client && !client.isOpen) {
+      try {
+        await client.connect()
+        _logger.info("Redis connection established")
+      } catch (err: any) {
+        _logger.warn(`Redis connection failed, will retry automatically`, err)
+      }
+    }
+  } catch (err: any) {
+    _logger.warn(`Redis initialization error, continuing without cache`, err)
+  }
+}
+
 const getRedisSubscriberClient = (): RedisClient | undefined => {
   if (redisSubscriberClient) {
     return redisSubscriberClient
@@ -94,7 +111,7 @@ const getRedisSubscriberClient = (): RedisClient | undefined => {
     return
   }
 
-  let url = (REDIS_URL && REDIS_URL.trim()) || "redis://127.0.0.1:6379"
+  let url = REDIS_URL?.trim() || "redis://127.0.0.1:6379"
   if (url && !url.startsWith("redis://") && !url.startsWith("rediss://")) {
     url = `redis://${url}`
   }

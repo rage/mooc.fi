@@ -5,6 +5,7 @@ import { KafkaError } from "../../../lib/errors"
 import sentryLogger from "../../../lib/logger"
 import prisma from "../../../prisma"
 import knex from "../../../services/knex"
+import { initializeRedis } from "../../../services/redis"
 import { createKafkaConsumer } from "../common/createKafkaConsumer"
 import { handleMessage } from "../common/handleMessage"
 import { KafkaContext } from "../common/kafkaContext"
@@ -24,6 +25,10 @@ const logger = sentryLogger({
   service: "kafka-consumer-UserCourseProgress-realtime",
 })
 const consumer = createKafkaConsumer({ logger, prisma })
+
+initializeRedis().catch((err) => {
+  logger.warn("Redis initialization failed, continuing without cache", err)
+})
 
 consumer.connect()
 
