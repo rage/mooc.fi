@@ -142,18 +142,23 @@ const createSubscriber = async () => {
 
   subscriber = getRedisSubscriberClient()
 
-  subscriber?.on("error", (err: any) => {
+  if (!subscriber) {
+    logger.error("Failed to get Redis subscriber client")
+    return
+  }
+
+  subscriber.on("error", (err: any) => {
     logger.error("Redis subscriber error", err)
   })
-  subscriber?.on("ready", () => {
+  subscriber.on("ready", () => {
     logger.info(`Redis subscriber connected`)
   })
 
-  if (subscriber && !subscriber.isOpen) {
-    await subscriber.connect()
-  }
+  subscriber.on("message", (channel: string, message: string) => {
+    if (channel !== "websocket") {
+      return
+    }
 
-  await subscriber?.subscribe("websocket", (message: any) => {
     let data
     try {
       data = parseJSON(message)
@@ -186,6 +191,14 @@ const createSubscriber = async () => {
         }
       }
     }
+  })
+
+  if (!subscriber.isOpen) {
+    await subscriber.connect()
+  }
+
+  await subscriber.subscribe("websocket", () => {
+    logger.info("Subscribed to websocket channel")
   })
 }
 
