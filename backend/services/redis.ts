@@ -1,5 +1,5 @@
 import parseJSON from "json-parse-even-better-errors"
-import { createSentinel } from "redis"
+import { createClient, createSentinel } from "redis"
 import * as winston from "winston"
 
 import {
@@ -9,6 +9,7 @@ import {
   REDIS_PASSWORD,
   REDIS_SENTINEL_MASTER_NAME,
   REDIS_SENTINELS,
+  REDIS_URL,
 } from "../config"
 import { BaseContext } from "../context"
 import { isDefined, isPromise } from "../util"
@@ -23,7 +24,10 @@ const _logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
-let redisClient: ReturnType<typeof createSentinel> | undefined
+type RedisClient =
+  | ReturnType<typeof createClient>
+  | ReturnType<typeof createSentinel>
+let redisClient: RedisClient | undefined
 
 export const redisReconnectStrategy =
   (redisName = "Redis", logger: winston.Logger = _logger) =>
@@ -40,44 +44,74 @@ export const redisReconnectStrategy =
     return nextDelay
   }
 
-const getRedisClient = (): ReturnType<typeof createSentinel> | undefined => {
+const getRedisClient = (): RedisClient | undefined => {
   if (redisClient) {
     return redisClient
   }
-  if (NEXUS_REFLECTION || isTest) {
+  if (NEXUS_REFLECTION ?? isTest) {
     return
   }
 
-  const sentinels = REDIS_SENTINELS?.split(",").map((sentinel: string) => {
-    const [host, port] = sentinel.trim().split(":")
-    return { host, port: parseInt(port) ?? 26379 }
-  })
+  const useSentinel = REDIS_SENTINELS && REDIS_SENTINEL_MASTER_NAME
 
-  const client = createSentinel({
-    name: REDIS_SENTINEL_MASTER_NAME!,
-    sentinelRootNodes: sentinels ?? [],
-    nodeClientOptions: {
+  let client: RedisClient
+
+  if (useSentinel && REDIS_SENTINELS && REDIS_SENTINEL_MASTER_NAME) {
+    const sentinels = REDIS_SENTINELS.split(",").map((sentinel: string) => {
+      const [host, port] = sentinel.trim().split(":")
+      return { host, port: parseInt(port) ?? 26379 }
+    })
+
+    const sentinelClient = createSentinel({
+      name: REDIS_SENTINEL_MASTER_NAME,
+      sentinelRootNodes: sentinels,
+      nodeClientOptions: {
+        password: REDIS_PASSWORD,
+        database: REDIS_DB,
+        socket: {
+          reconnectStrategy: redisReconnectStrategy(),
+        },
+      },
+    })
+
+    sentinelClient.on("error", (err: any) => {
+      _logger.error(`Redis Sentinel error`, err)
+    })
+    sentinelClient.on("ready", () => {
+      _logger.info(
+        `Redis Sentinel connected to master: ${REDIS_SENTINEL_MASTER_NAME}`,
+      )
+    })
+
+    sentinelClient.connect().catch((err: any) => {
+      _logger.error(`Redis Sentinel connection failed`, err)
+    })
+
+    client = sentinelClient as RedisClient
+  } else {
+    const url = REDIS_URL ?? "redis://127.0.0.1:6379"
+    const regularClient = createClient({
+      url,
       password: REDIS_PASSWORD,
       database: REDIS_DB,
       socket: {
         reconnectStrategy: redisReconnectStrategy(),
       },
-    },
-  })
+    })
 
-  client.on("error", (err: any) => {
-    _logger.error(`Redis Sentinel error`, err)
-  })
-  client.on("ready", () => {
-    _logger.info(
-      `Redis Sentinel connected to master: ${REDIS_SENTINEL_MASTER_NAME}`,
-    )
-  })
+    regularClient.on("error", (err: any) => {
+      _logger.error(`Redis error`, err)
+    })
+    regularClient.on("ready", () => {
+      _logger.info(`Redis connected to: ${url}`)
+    })
 
-  // Connect the Sentinel client
-  client.connect().catch((err: any) => {
-    _logger.error(`Redis Sentinel connection failed`, err)
-  })
+    regularClient.connect().catch((err: any) => {
+      _logger.error(`Redis connection failed`, err)
+    })
+
+    client = regularClient as RedisClient
+  }
 
   redisClient = client
   return client

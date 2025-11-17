@@ -32,13 +32,3 @@ spec:
                     secretKeyRef:
                       name: new-redis
                       key: redis-password
-                - name: REDIS_SENTINELS
-                  valueFrom:
-                    secretKeyRef:
-                      name: new-redis
-                      key: redis-sentinels
-                - name: REDIS_SENTINEL_MASTER_NAME
-                  valueFrom:
-                    secretKeyRef:
-                      name: new-redis
-                      key: redis-sentinel-master-name
