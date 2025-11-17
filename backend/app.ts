@@ -6,7 +6,6 @@ import prisma from "./prisma"
 import server from "./server"
 import knex from "./services/knex"
 import { attachPrismaEvents } from "./util"
-import { wsListen } from "./wsServer"
 
 require("sharp") // image library sharp seems to crash without this require
 
@@ -40,8 +39,6 @@ const startApp = async () => {
     httpServer.listen(4000, () => {
       console.log("server running on port 4000")
     })
-
-    wsListen()
   }
 }
 

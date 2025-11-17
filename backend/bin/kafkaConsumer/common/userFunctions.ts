@@ -17,7 +17,6 @@ import {
   ensureDefinedArray,
   isNullish,
 } from "../../../util"
-import { MessageType, pushMessageToClient } from "../../../wsServer"
 import {
   ExerciseCompletionPart,
   ServiceProgressPartType,
@@ -346,11 +345,6 @@ export const createCompletion = async ({
     }
 
     // TODO: this only sends the completion email for the first tier completed
-    await pushMessageToClient(
-      user.upstream_id,
-      course.id,
-      MessageType.COURSE_CONFIRMED,
-    )
 
     if (course.completion_email_id) {
       await prisma.emailDelivery.create({

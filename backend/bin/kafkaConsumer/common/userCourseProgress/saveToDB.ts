@@ -9,7 +9,6 @@ import {
 
 import { DatabaseInputError, TMCError } from "../../../../lib/errors"
 import { err, ok, parseTimestamp, Result } from "../../../../util"
-import { MessageType, pushMessageToClient } from "../../../../wsServer"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"
 import { KafkaContext } from "../kafkaContext"
 import { generateUserCourseProgress } from "./generateUserCourseProgress"
@@ -151,12 +150,6 @@ export const saveToDatabase = async (
     userCourseProgress,
     context,
   })
-
-  await pushMessageToClient(
-    message.user_id,
-    message.course_id,
-    MessageType.PROGRESS_UPDATED,
-  )
 
   return ok("Saved to DB successfully")
 }
