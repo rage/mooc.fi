@@ -124,7 +124,7 @@ const getRedisClient = (): RedisClient | undefined => {
   return client
 }
 
-const getRedisSubscriberClient = async (): Promise<RedisClient | undefined> => {
+const getRedisSubscriberClient = (): RedisClient | undefined => {
   if (redisSubscriberClient) {
     return redisSubscriberClient
   }
@@ -132,48 +132,41 @@ const getRedisSubscriberClient = async (): Promise<RedisClient | undefined> => {
     return
   }
 
-  // Wait for main client to be ready first
   const mainClient = getRedisClient()
   if (!mainClient?.isOpen) {
-    _logger.info(
-      "Waiting for main Redis client to be ready before creating subscriber",
-    )
     return
   }
 
-  try {
-    let url = (REDIS_URL && REDIS_URL.trim()) || "redis://127.0.0.1:6379"
-    if (url && !url.startsWith("redis://") && !url.startsWith("rediss://")) {
-      url = `redis://${url}`
-    }
-    if (url && !url.includes(":") && !url.includes("/")) {
-      url = `${url}:6379`
-    }
-
-    const subscriber = createClient({
-      url,
-      password: REDIS_PASSWORD,
-      database: REDIS_DB,
-      socket: {
-        reconnectStrategy: redisReconnectStrategy("Redis Subscriber"),
-      },
-    }) as RedisClient
-
-    subscriber.on("error", (err: any) => {
-      _logger.error(`Redis subscriber error`, err)
-    })
-    subscriber.on("ready", () => {
-      _logger.info(`Redis subscriber connected to: ${url}`)
-    })
-
-    await subscriber.connect()
-
-    redisSubscriberClient = subscriber
-    return redisSubscriberClient
-  } catch (err) {
-    _logger.error("Failed to create Redis subscriber client", err)
-    return
+  let url = (REDIS_URL && REDIS_URL.trim()) || "redis://127.0.0.1:6379"
+  if (url && !url.startsWith("redis://") && !url.startsWith("rediss://")) {
+    url = `redis://${url}`
   }
+  if (url && !url.includes(":") && !url.includes("/")) {
+    url = `${url}:6379`
+  }
+
+  const subscriber = createClient({
+    url,
+    password: REDIS_PASSWORD,
+    database: REDIS_DB,
+    socket: {
+      reconnectStrategy: redisReconnectStrategy("Redis Subscriber"),
+    },
+  }) as RedisClient
+
+  subscriber.on("error", (err: any) => {
+    _logger.error(`Redis subscriber error`, err)
+  })
+  subscriber.on("ready", () => {
+    _logger.info(`Redis subscriber connected to: ${url}`)
+  })
+
+  subscriber.connect().catch((err: any) => {
+    _logger.error(`Redis subscriber connection failed`, err)
+  })
+
+  redisSubscriberClient = subscriber
+  return redisSubscriberClient
 }
 
 export { getRedisSubscriberClient }
