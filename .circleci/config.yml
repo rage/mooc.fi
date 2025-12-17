@@ -253,8 +253,10 @@ jobs:
               - equal: [ staging, << pipeline.git.branch >> ]
           steps:
             - run:
-                name: "Install Sentry client"
-                command: npm i --prefix=$HOME/.local -g @sentry/cli
+                name: Install sentry-cli
+                command: |
+                  curl -sL https://sentry.io/get-cli/ | bash
+                  sentry-cli --version
             - run:
                 name: "Push image"
                 command: "bin/push-docker-backend-image.sh"
