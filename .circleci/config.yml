@@ -253,9 +253,13 @@ jobs:
               - equal: [ staging, << pipeline.git.branch >> ]
           steps:
             - run:
-                name: Install sentry-cli
+                name: Install latest sentry-cli
                 command: |
+                  npm uninstall -g @sentry/cli || true
+
                   curl -sL https://sentry.io/get-cli/ | bash
+
+                  which sentry-cli
                   sentry-cli --version
             - run:
                 name: "Push image"
