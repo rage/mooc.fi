@@ -125,16 +125,13 @@ cronjob:
   prague: # @vse.cz report, see backend/bin/pragueStatsEmailer.ts
     crons:
       - id: "0"
-        day: 28
-        month: 1
+        day: 25
+        month: 5
       - id: "1"
-        day: 2
-        month: 6
-      - id: "2"
-        day: 22
+        day: 24
         month: 8
-      - id: "3"
-        day: 15
+      - id: "2"
+        day: 17
         month: 12
   purkyne: # @ujep.cz report, see backend/bin/purkyneStatsEmailer.ts
     crons:
