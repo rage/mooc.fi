@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 set -euo pipefail
 
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
@@ -15,7 +15,7 @@ SENTRY_ORG="moocfi"
 cd backend
 
 sentry-cli releases --org $SENTRY_ORG new $SENTRY_RELEASE --project $SENTRY_PROJECT
-sentry-cli releases --org $SENTRY_ORG -p $SENTRY_PROJECT files $SENTRY_RELEASE upload-sourcemaps ./sourcemap
+sentry-cli releases files upload-sourcemaps --org $SENTRY_ORG -p $SENTRY_PROJECT $SENTRY_RELEASE ./sourcemap
 sentry-cli releases --org $SENTRY_ORG finalize $SENTRY_RELEASE
 
 cd ..
