@@ -56,13 +56,13 @@ interface NavigationItemProps {
 }
 
 const NavigationItem = ({ item }: NavigationItemProps) => {
-  const { name, label, href, onClick } = item
+  const { name, label, href, onClick, target, rel } = item
   return (
     <NavigationLinkItem key={name ?? label}>
       {isSubmenuItem(item) ? (
         <NavigationDropdownLink item={item} />
       ) : (
-        <NavigationLink href={href} onClick={onClick}>
+        <NavigationLink href={href} onClick={onClick} target={target} rel={rel}>
           {label}
         </NavigationLink>
       )}
