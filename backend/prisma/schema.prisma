@@ -1,12 +1,12 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch", "postgresqlExtensions"]
-  // , "fieldReference", 
+  previewFeatures = ["fullTextSearch", "postgresqlExtensions", "multiSchema"]
 }
 
 datasource db {
   provider   = "postgresql"
   url        = env("DATABASE_URL")
+  schemas    = ["default$default"]
   extensions = [uuidOssp(map: "uuid-ossp", schema: "extensions"), pg_trgm(schema: "extensions"), btree_gin(schema: "extensions")]
 }
 
@@ -23,6 +23,7 @@ model AbEnrollment {
   @@unique([user_id, ab_study_id])
   @@index([ab_study_id])
   @@map("ab_enrollment")
+  @@schema("default$default")
 }
 
 model AbStudy {
@@ -34,6 +35,7 @@ model AbStudy {
   ab_enrollments AbEnrollment[]
 
   @@map("ab_study")
+  @@schema("default$default")
 }
 
 model Completion {
@@ -60,6 +62,7 @@ model Completion {
   @@index([course_id, user_id, created_at])
   @@index([user_id, course_id, created_at])
   @@map("completion")
+  @@schema("default$default")
 }
 
 model CompletionRegistered {
@@ -82,6 +85,7 @@ model CompletionRegistered {
   @@index([organization_id])
   @@index([user_id, course_id])
   @@map("completion_registered")
+  @@schema("default$default")
 }
 
 model Course {
@@ -149,6 +153,7 @@ model Course {
   @@index([completions_handled_by_id])
   @@index([status])
   @@map("course")
+  @@schema("default$default")
 }
 
 model CourseAlias {
@@ -161,6 +166,7 @@ model CourseAlias {
 
   @@index([course_id])
   @@map("course_alias")
+  @@schema("default$default")
 }
 
 model CourseOrganization {
@@ -174,6 +180,7 @@ model CourseOrganization {
   organization    Organization? @relation(fields: [organization_id], references: [id], onUpdate: NoAction)
 
   @@map("course_organization")
+  @@schema("default$default")
 }
 
 model CourseTranslation {
@@ -191,6 +198,7 @@ model CourseTranslation {
   @@index([course_id, language])
   @@index([name])
   @@map("course_translation")
+  @@schema("default$default")
 }
 
 model CourseVariant {
@@ -206,6 +214,7 @@ model CourseVariant {
   @@index([course_id])
   @@index([slug])
   @@map("course_variant")
+  @@schema("default$default")
 }
 
 model EmailDelivery {
@@ -228,6 +237,7 @@ model EmailDelivery {
   @@index([email_template_id])
   @@index([user_id, email_template_id])
   @@map("email_delivery")
+  @@schema("default$default")
 }
 
 model EmailTemplate {
@@ -252,6 +262,7 @@ model EmailTemplate {
 
   @@index([triggered_automatically_by_course_id, template_type])
   @@map("email_template")
+  @@schema("default$default")
 }
 
 model Exercise {
@@ -275,6 +286,7 @@ model Exercise {
   @@index([custom_id])
   @@index([service_id])
   @@map("exercise")
+  @@schema("default$default")
 }
 
 model ExerciseCompletion {
@@ -294,6 +306,7 @@ model ExerciseCompletion {
 
   @@index([user_id, exercise_id, timestamp(sort: Desc), updated_at(sort: Desc)])
   @@map("exercise_completion")
+  @@schema("default$default")
 }
 
 model ExerciseCompletionRequiredAction {
@@ -303,6 +316,7 @@ model ExerciseCompletionRequiredAction {
   exercise_completion    ExerciseCompletion? @relation(fields: [exercise_completion_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@map("exercise_completion_required_actions")
+  @@schema("default$default")
 }
 
 model Image {
@@ -321,6 +335,7 @@ model Image {
   courses               Course[]
 
   @@map("image")
+  @@schema("default$default")
 }
 
 model OpenUniversityRegistrationLink {
@@ -338,6 +353,7 @@ model OpenUniversityRegistrationLink {
 
   @@index([course_id])
   @@map("open_university_registration_link")
+  @@schema("default$default")
 }
 
 model Organization {
@@ -380,6 +396,7 @@ model Organization {
 
   @@index([creator_id])
   @@map("organization")
+  @@schema("default$default")
 }
 
 model OrganizationTranslation {
@@ -394,6 +411,7 @@ model OrganizationTranslation {
 
   @@index([organization_id])
   @@map("organization_translation")
+  @@schema("default$default")
 }
 
 model Service {
@@ -407,6 +425,7 @@ model Service {
   courses                        Course[]                    @relation("course_to_service")
 
   @@map("service")
+  @@schema("default$default")
 }
 
 model StoredData {
@@ -422,6 +441,7 @@ model StoredData {
   @@unique([course_id, user_id])
   @@index([user_id])
   @@map("stored_data")
+  @@schema("default$default")
 }
 
 model StudyModule {
@@ -436,6 +456,7 @@ model StudyModule {
   courses                   Course[]                 @relation("study_module_to_course")
 
   @@map("study_module")
+  @@schema("default$default")
 }
 
 model StudyModuleTranslation {
@@ -450,6 +471,7 @@ model StudyModuleTranslation {
 
   @@index([study_module_id, language])
   @@map("study_module_translation")
+  @@schema("default$default")
 }
 
 model User {
@@ -484,6 +506,7 @@ model User {
   @@index([first_name(ops: raw("gin_trgm_ops")), last_name(ops: raw("gin_trgm_ops"))], type: Gin)
   @@index([last_name(ops: raw("gin_trgm_ops"))], type: Gin)
   @@map("user")
+  @@schema("default$default")
 }
 
 model UserAppDatumConfig {
@@ -494,6 +517,7 @@ model UserAppDatumConfig {
   updated_at DateTime  @default(now()) @updatedAt
 
   @@map("user_app_datum_config")
+  @@schema("default$default")
 }
 
 model UserCourseProgress {
@@ -513,6 +537,7 @@ model UserCourseProgress {
   @@index([course_id, user_id])
   @@index([user_id])
   @@map("user_course_progress")
+  @@schema("default$default")
 }
 
 model UserCourseServiceProgress {
@@ -534,6 +559,7 @@ model UserCourseServiceProgress {
   @@index([service_id, course_id, user_id])
   @@index([user_id])
   @@map("user_course_service_progress")
+  @@schema("default$default")
 }
 
 model UserCourseSetting {
@@ -556,6 +582,7 @@ model UserCourseSetting {
   @@index([language])
   @@index([user_id])
   @@map("user_course_setting")
+  @@schema("default$default")
 }
 
 model UserCourseSettingsVisibility {
@@ -567,6 +594,7 @@ model UserCourseSettingsVisibility {
   course     Course?  @relation(fields: [course_id], references: [id], onUpdate: NoAction)
 
   @@map("user_course_settings_visibility")
+  @@schema("default$default")
 }
 
 model UserOrganization {
@@ -586,6 +614,7 @@ model UserOrganization {
   user_organization_join_confirmations UserOrganizationJoinConfirmation[]
 
   @@map("user_organization")
+  @@schema("default$default")
 }
 
 model VerifiedUser {
@@ -606,6 +635,7 @@ model VerifiedUser {
 
   @@unique([user_id, personal_unique_code, home_organization])
   @@map("verified_user")
+  @@schema("default$default")
 }
 
 model CourseOwnership {
@@ -619,6 +649,7 @@ model CourseOwnership {
 
   @@unique([user_id, course_id])
   @@map("course_ownership")
+  @@schema("default$default")
 }
 
 model CourseStatsSubscription {
@@ -632,6 +663,7 @@ model CourseStatsSubscription {
 
   @@unique([user_id, email_template_id])
   @@map("course_stats_subscription")
+  @@schema("default$default")
 }
 
 model UserOrganizationJoinConfirmation {
@@ -652,6 +684,7 @@ model UserOrganizationJoinConfirmation {
   email_delivery       EmailDelivery?   @relation(fields: [email_delivery_id], references: [id])
 
   @@map("user_organization_join_confirmation")
+  @@schema("default$default")
 }
 
 model Tag {
@@ -664,6 +697,7 @@ model Tag {
   tag_translations TagTranslation[]
 
   @@map("tag")
+  @@schema("default$default")
 }
 
 model TagType {
@@ -673,6 +707,7 @@ model TagType {
   tags       Tag[]    @relation("TagToTagType")
 
   @@map("tag_type")
+  @@schema("default$default")
 }
 
 model TagTranslation {
@@ -688,6 +723,7 @@ model TagTranslation {
   @@id([tag_id, language])
   @@unique([name, language])
   @@map("tag_translation")
+  @@schema("default$default")
 }
 
 model Sponsor {
@@ -700,6 +736,7 @@ model Sponsor {
   updated_at   DateTime             @default(now()) @updatedAt
 
   @@map("sponsor")
+  @@schema("default$default")
 }
 
 model SponsorTranslation {
@@ -715,6 +752,7 @@ model SponsorTranslation {
 
   @@id([sponsor_id, language])
   @@map("sponsor_translation")
+  @@schema("default$default")
 }
 
 model SponsorImage {
@@ -729,6 +767,7 @@ model SponsorImage {
 
   @@id([sponsor_id, type])
   @@map("sponsor_image")
+  @@schema("default$default")
 }
 
 model CourseSponsor {
@@ -742,6 +781,7 @@ model CourseSponsor {
 
   @@id([course_id, sponsor_id])
   @@map("course_sponsor")
+  @@schema("default$default")
 }
 
 enum CourseStatus {
@@ -750,6 +790,7 @@ enum CourseStatus {
   Upcoming
 
   @@map("course_status")
+  @@schema("default$default")
 }
 
 enum OrganizationRole {
@@ -758,4 +799,5 @@ enum OrganizationRole {
   OrganizationAdmin
 
   @@map("organization_role")
+  @@schema("default$default")
 }
