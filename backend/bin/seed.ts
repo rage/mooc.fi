@@ -406,7 +406,7 @@ const seed = async () => {
         photo: undefined,
         teacher_in_charge_name: "",
         teacher_in_charge_email: "",
-        start_date: undefined,
+        start_date: "",
         status: course.status as CourseStatus,
         course_translations: course.course_translations
           ? {

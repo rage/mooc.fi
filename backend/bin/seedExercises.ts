@@ -25,21 +25,16 @@ const createExerciseCompletion = (exercise: Exercise) => ({
 const addExercises = async () => {
   const courses = await prisma.course.findMany()
 
-  if (courses.length === 0) {
-    throw new Error("No courses found; run the main seed first")
-  }
-
   for (const course of courses) {
-    const count = Math.floor(Math.random() * 10) + 1 // always at least 1
     await Promise.all(
-      Array.from({ length: count }).map(async () =>
-        prisma.exercise.create({
+      Array.from({ length: Math.random() * 10 }).map(async (_) => {
+        return prisma.exercise.create({
           data: {
             ...createExercise(),
             course: { connect: { id: course.id } },
           },
-        }),
-      ),
+        })
+      }),
     )
   }
 }
