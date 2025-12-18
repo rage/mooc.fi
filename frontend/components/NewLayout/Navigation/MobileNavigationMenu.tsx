@@ -357,7 +357,7 @@ const MobileMenuItem = ({ item, level = 0 }: MobileMenuItemProps) => {
   const { pathname } = useRouter()
 
   const hasSubmenu = isSubmenuItem(item)
-  const { href, label, onClick } = item
+  const { href, label, onClick, target, rel } = item
   const onItemClick = useEventCallback(() => {
     setBreadcrumbs((prev) => [...prev, item])
     setCurrentLevel(level + 1)
@@ -373,6 +373,8 @@ const MobileMenuItem = ({ item, level = 0 }: MobileMenuItemProps) => {
         variant="text"
         href={href}
         onClick={onClick ? onClick : undefined}
+        target={target}
+        rel={rel}
       >
         {level > 0 && <CaretRightIcon sx={{ fontSize: 10 }} />}
         <span>{label}</span>
@@ -517,8 +519,10 @@ const MobileNavigationMenu = ({
               label: t("loginShort"),
             },
             {
-              href: "/sign-up",
+              href: "https://courses.mooc.fi/signup",
               label: t("signUp"),
+              target: "_blank",
+              rel: "noopener noreferrer",
             },
           ]),
     ],

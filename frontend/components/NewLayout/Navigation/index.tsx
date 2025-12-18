@@ -45,6 +45,8 @@ export type NavigationMenuLinkItem = {
   name?: string
   description?: string
   onClick?: (...params: any[]) => any
+  target?: string
+  rel?: string
 }
 
 export type NavigationMenuShortcutItem = {
