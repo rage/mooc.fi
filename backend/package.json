@@ -78,6 +78,7 @@
     "concurrently": "^8.2.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
+    "dataloader": "^2.2.3",
     "dotenv-safe": "^8.2.0",
     "express": "^4.17.1",
     "graphql": "16.6.0",

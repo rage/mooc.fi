@@ -24,6 +24,7 @@ export const normalUserDetails: UserInfo = {
   },
   username: "user",
   extra_fields: {},
+  courses_mooc_fi_user_id: null,
 }
 
 export const adminUser = {
@@ -33,6 +34,7 @@ export const adminUser = {
   first_name: "first",
   last_name: "last",
   username: "admin",
+  courses_mooc_fi_user_id: null,
 }
 
 export const adminUserDetails = {
@@ -48,6 +50,7 @@ export const adminUserDetails = {
   },
   username: "admin",
   extra_fields: {},
+  courses_mooc_fi_user_id: null,
 }
 
 export const thirdUserDetails: UserInfo = {
@@ -63,6 +66,7 @@ export const thirdUserDetails: UserInfo = {
   },
   username: "third_user_with_organization",
   extra_fields: {},
+  courses_mooc_fi_user_id: null,
 }
 
 export const emailTemplateOrganizations: Prisma.EmailTemplateCreateInput[] = [

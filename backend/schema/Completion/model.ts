@@ -53,22 +53,10 @@ export const Completion = objectType({
         if (!course_id) {
           return null
         }
-        const links = await ctx.prisma.course
-          .findUnique({
-            where: { id: course_id },
-          })
-          .open_university_registration_links({
-            where: {
-              ...(completion_language && completion_language !== "unknown"
-                ? {
-                    language: completion_language,
-                  }
-                : {}),
-            },
-            take: 1,
-          })
-
-        return links?.[0]?.link ?? null
+        return await ctx.loaders.completionLink.load({
+          courseId: course_id,
+          language: completion_language ?? null,
+        })
       },
     })
 

@@ -1,4 +1,3 @@
-import { uniqBy } from "lodash"
 import { booleanArg, intArg, list, nonNull, objectType, stringArg } from "nexus"
 
 import { Prisma } from "@prisma/client"
@@ -162,61 +161,13 @@ export const Course = objectType({
         { language, types, search, includeHidden },
         ctx,
       ) => {
-        const tagsWhere = {} as Prisma.TagWhereInput
-
-        if (language) {
-          tagsWhere.tag_translations = {
-            some: {
-              language,
-            },
-          }
-        }
-        if (types) {
-          tagsWhere.tag_types = {
-            some: {
-              name: { in: types },
-            },
-          }
-        }
-        if (search) {
-          tagsWhere.tag_translations = {
-            some: {
-              ...(language && { language }),
-              OR: [
-                {
-                  name: { contains: search, mode: "insensitive" },
-                },
-                {
-                  description: { contains: search, mode: "insensitive" },
-                },
-              ],
-            },
-          }
-        }
-        if (!includeHidden) {
-          tagsWhere.OR = [{ hidden: false }, { hidden: { not: true } }]
-        }
-
-        const res = await ctx.prisma.course.findUnique({
-          where: { id: parent.id },
-          include: {
-            tags: { where: tagsWhere },
-            handles_completions_for: {
-              include: {
-                tags: {
-                  where: tagsWhere,
-                },
-              },
-            },
-          },
+        const tags = await ctx.loaders.courseTags.load({
+          courseId: parent.id,
+          language,
+          types,
+          search,
+          includeHidden,
         })
-
-        const tags = uniqBy(
-          (res?.tags ?? []).concat(
-            res?.handles_completions_for?.flatMap((c) => c.tags ?? []) ?? [],
-          ),
-          "id",
-        )
 
         return tags.map((t) => ({ ...t, language }))
       },
@@ -228,34 +179,10 @@ export const Course = objectType({
         language: stringArg(),
       },
       resolve: async (parent, { language }, ctx) => {
-        const sponsors = await ctx.prisma.course
-          .findUnique({
-            where: {
-              id: parent.id,
-            },
-          })
-          .sponsors({
-            ...(language && {
-              where: {
-                sponsor: {
-                  translations: {
-                    some: {
-                      language,
-                    },
-                  },
-                },
-              },
-            }),
-            include: {
-              sponsor: true,
-            },
-          })
-
-        return (sponsors ?? []).flatMap(({ sponsor, order }) => ({
-          ...sponsor,
-          order,
+        return await ctx.loaders.courseSponsors.load({
+          courseId: parent.id,
           language,
-        }))
+        })
       },
     })
   },

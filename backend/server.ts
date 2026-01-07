@@ -22,6 +22,7 @@ import { apiRouter } from "./api"
 import { DEBUG, isProduction, isTest } from "./config"
 import { createDefaultData } from "./config/defaultData"
 import { ServerContext } from "./context"
+import { createLoaders } from "./loaders/createLoaders"
 import { createSchema } from "./schema/common"
 
 // wrapped so that the context isn't cached between test instances
@@ -57,14 +58,18 @@ const addExpressMiddleware = async (
   app.use(
     isProduction ? "/api" : "/",
     expressMiddleware(apolloServer, {
-      context: async (ctx) => ({
-        ...ctx,
-        locale: ctx.req?.headers?.["accept-language"],
-        prisma,
-        logger,
-        knex,
-        ...extraContext,
-      }),
+      context: async (ctx) => {
+        const loaders = createLoaders(prisma)
+        return {
+          ...ctx,
+          locale: ctx.req?.headers?.["accept-language"],
+          prisma,
+          logger,
+          knex,
+          loaders,
+          ...extraContext,
+        }
+      },
     }),
   )
 
@@ -113,12 +118,14 @@ const server = async (serverContext: ServerContext) => {
       schema,
       context: (ctx) => {
         const { prisma, logger, knex, extraContext } = serverContext
+        const loaders = createLoaders(prisma)
 
         return {
           ...ctx,
           prisma,
           logger,
           knex,
+          loaders,
           ...extraContext,
         }
       },

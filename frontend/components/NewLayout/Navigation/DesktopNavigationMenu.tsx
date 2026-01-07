@@ -90,8 +90,10 @@ const UserOptionsMenu = () => {
           label: t("loginShort"),
         },
         {
-          href: "/sign-up",
+          href: "https://courses.mooc.fi/signup",
           label: t("signUp"),
+          target: "_blank",
+          rel: "noopener noreferrer",
         },
       ]}
     />
