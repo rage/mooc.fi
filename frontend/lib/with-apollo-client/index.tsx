@@ -68,7 +68,7 @@ const withApolloClient = (App: any) => {
     // 2. We've decided to discard apollo cache between page transitions to avoid bugs.
     //  @ts-ignore: ignore type error on ctx
     const apollo = getApollo(apolloState, accessToken, ctx.locale)
-    const currentUser = await fetchUserDetails(apollo)
+    const currentUser = await fetchUserDetails(accessToken)
 
     if (App.getInitialProps) {
       ;(ctx as any).apolloClient = apollo
@@ -82,7 +82,7 @@ const withApolloClient = (App: any) => {
     pageProps.pageProps.currentUser = currentUser
 
     if (typeof window === "undefined") {
-      if (ctx?.res?.headersSent || ctx?.res?.finished) {
+      if (ctx?.res?.headersSent ?? ctx?.res?.finished) {
         return pageProps ?? {}
       }
       const props = { ...pageProps, apolloState, apollo }

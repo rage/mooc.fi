@@ -1,16 +1,13 @@
 import { useRouter } from "next/router"
 
-import { useQuery } from "@apollo/client"
-
 import ContentWrapper from "../../Common/ContentWrapper"
 import CTAButton from "../../Common/CTAButton"
 import Introduction from "../../Common/Introduction"
 import ModuleNaviList from "./ModuleNaviList"
+import { useFrontpageData } from "/hooks/usePublicData"
 import { useTranslator } from "/hooks/useTranslator"
 import HomeTranslations from "/translations/home"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
-
-import { StudyModulesDocument } from "/graphql/generated"
 
 /*const ShowMore = styled(Button)`
   --color: #eee;
@@ -80,9 +77,7 @@ export function ModuleNavigation() {
   const { locale = "fi" } = useRouter()
   const t = useTranslator(HomeTranslations)
   const language = mapNextLanguageToLocaleCode(locale)
-  const { loading, data } = useQuery(StudyModulesDocument, {
-    variables: { language },
-  })
+  const { isLoading: loading, data } = useFrontpageData(language)
 
   return (
     <section id="modules">

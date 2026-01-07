@@ -1,4 +1,4 @@
-import { useInsertionEffect, useMemo } from "react"
+import { useInsertionEffect, useMemo, useState } from "react"
 
 import { DefaultSeo } from "next-seo"
 import type { AppContext, AppProps, NextWebVitalsMetric } from "next/app"
@@ -8,6 +8,7 @@ import Script from "next/script"
 import { NormalizedCacheObject } from "@apollo/client"
 import { CssBaseline } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 import DynamicLayout from "/components/DynamicLayout"
 import AppContextProvider from "/contexts/AppContextProvider"
@@ -44,6 +45,18 @@ interface MyAppProps extends AppProps<MyPageProps> {
 
 export function MyApp({ Component, pageProps, deviceType }: MyAppProps) {
   const { signedIn, admin, currentUser } = pageProps ?? {}
+
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 5 * 60 * 1000,
+            refetchOnWindowFocus: false,
+          },
+        },
+      }),
+  )
 
   useInsertionEffect(() => {
     const jssStyles = document?.querySelector("#jss-server-side")
@@ -90,14 +103,16 @@ export function MyApp({ Component, pageProps, deviceType }: MyAppProps) {
       </Head>
       <ThemeProvider theme={themeWithLocale}>
         <CssBaseline />
-        <LoginStateProvider value={loginStateContextValue}>
-          <AppContextProvider>
-            <DynamicLayout isOld={isOld}>
-              <DefaultSeo {...seoConfig} />
-              <Component {...pageProps} />
-            </DynamicLayout>
-          </AppContextProvider>
-        </LoginStateProvider>
+        <QueryClientProvider client={queryClient}>
+          <LoginStateProvider value={loginStateContextValue}>
+            <AppContextProvider>
+              <DynamicLayout isOld={isOld}>
+                <DefaultSeo {...seoConfig} />
+                <Component {...pageProps} />
+              </DynamicLayout>
+            </AppContextProvider>
+          </LoginStateProvider>
+        </QueryClientProvider>
       </ThemeProvider>
     </>
   )

@@ -15,12 +15,13 @@ import Sponsors from "./Sponsors"
 import { DifficultyTags, LanguageTags, ModuleTags } from "./Tags"
 import Tooltip from "/components/Tooltip"
 import { useTranslator } from "/hooks/useTranslator"
+import { NewCourseFields } from "/lib/api-types"
 import { fontSize } from "/src/theme/util"
 import CommonTranslations from "/translations/common"
 import { useFormatDateTime } from "/util/dataFormatFunctions"
 import withNoSsr from "/util/withNoSsr"
 
-import { CourseStatus, NewCourseFieldsFragment } from "/graphql/generated"
+import { CourseStatus } from "/graphql/generated"
 
 const ContainerBase = css`
   list-style-type: none;
@@ -300,7 +301,7 @@ const CourseLink = styled(CTALink)(
 ) as typeof CTALink
 
 interface ScheduleProps {
-  course?: NewCourseFieldsFragment
+  course?: NewCourseFields
 }
 
 const Schedule = React.memo(
@@ -407,7 +408,7 @@ function CourseCardLayout({
 }
 
 interface CourseCardProps {
-  course: NewCourseFieldsFragment
+  course: NewCourseFields
   studyModule?: string
 }
 
