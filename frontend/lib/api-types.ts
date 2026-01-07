@@ -144,5 +144,6 @@ export interface CurrentUserResponse {
     real_student_number: string | null
     created_at: string
     updated_at: string
+    administrator: boolean
   } | null
 }

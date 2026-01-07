@@ -14,11 +14,13 @@ export interface ApiError {
 async function fetchApi<T>(
   endpoint: string,
   options: RequestInit = {},
+  accessToken?: string,
 ): Promise<T> {
-  const accessToken = getCookie("access_token")
+  // Use provided token, or fallback to browser cookie
+  const token = accessToken ?? getCookie("access_token")
   const headers: HeadersInit = {
     "Content-Type": "application/json",
-    ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
+    ...(token && { Authorization: `Bearer ${token}` }),
     ...options.headers,
   }
 
@@ -74,7 +76,11 @@ export const apiClient = {
     )
   },
 
-  getCurrentUser: (): Promise<CurrentUserResponse> => {
-    return fetchApi<CurrentUserResponse>("/api/public/current-user")
+  getCurrentUser: (accessToken?: string): Promise<CurrentUserResponse> => {
+    return fetchApi<CurrentUserResponse>(
+      "/api/public/current-user",
+      {},
+      accessToken,
+    )
   },
 }

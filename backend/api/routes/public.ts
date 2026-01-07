@@ -227,6 +227,7 @@ interface CurrentUserResponse {
     real_student_number: string | null
     created_at: Date
     updated_at: Date
+    administrator: boolean
   } | null
 }
 
@@ -538,6 +539,7 @@ export class PublicController extends Controller {
         real_student_number: user.real_student_number,
         created_at: user.created_at,
         updated_at: user.updated_at,
+        administrator: user.administrator,
       },
     })
   }
