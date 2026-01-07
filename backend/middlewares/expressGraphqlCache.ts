@@ -74,6 +74,7 @@ function hasGraphQLErrors(body: any): boolean {
 }
 
 const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
+  // eslint-disable-next-line complexity
   const expressCacheMiddleware = async (
     req: Request,
     res: Response,
@@ -114,9 +115,31 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
 
     // Only cache queries
     if (!isGraphQLQuery(req.body)) {
+      const body = req.body ?? {}
+      const queryStr = typeof body.query === "string" ? body.query : null
+      const queryPreview = queryStr
+        ? queryStr.substring(0, 100).replace(/\s+/g, " ").trim()
+        : null
+      const operationType = queryStr
+        ? queryStr.trim().toLowerCase().startsWith("mutation")
+          ? "mutation"
+          : queryStr.trim().toLowerCase().startsWith("subscription")
+          ? "subscription"
+          : queryStr.trim().toLowerCase().startsWith("query")
+          ? "query (invalid format)"
+          : "unknown"
+        : "missing"
+      const bodyKeys =
+        typeof body === "object" && body !== null ? Object.keys(body) : []
+
       logger.info("GraphQL cache: skip (not a GraphQL query)", {
+        path: req.originalUrl || req.path,
         bodyType: typeof req.body,
-        hasQuery: !!req.body?.query,
+        hasQuery: !!body.query,
+        operationType,
+        bodyKeys,
+        queryPreview: queryPreview || undefined,
+        operationName: body.operationName || undefined,
       })
       return next()
     }
