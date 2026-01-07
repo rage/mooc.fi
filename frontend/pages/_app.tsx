@@ -85,6 +85,7 @@ export function MyApp({ Component, pageProps, deviceType }: MyAppProps) {
           <Script
             id="container-query-polyfill"
             src="https://cdn.jsdelivr.net/npm/container-query-polyfill@1/dist/container-query-polyfill.modern.js"
+            strategy="lazyOnload"
           />
         )}
       </Head>

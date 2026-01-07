@@ -82,6 +82,7 @@ export function ModuleNavigation() {
   const language = mapNextLanguageToLocaleCode(locale)
   const { loading, data } = useQuery(StudyModulesDocument, {
     variables: { language },
+    ssr: false,
   })
 
   return (

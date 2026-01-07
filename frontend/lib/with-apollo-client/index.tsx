@@ -7,7 +7,7 @@ import { ApolloProvider, type ApolloClient } from "@apollo/client"
 
 import fetchUserDetails from "./fetch-user-details"
 import getApollo from "./get-apollo"
-import { getAccessToken } from "/lib/authentication"
+import { getAccessToken, isSignedIn } from "/lib/authentication"
 
 interface Props {
   apollo: ApolloClient<object>
@@ -20,6 +20,54 @@ interface Props {
 const isAppContext = (ctx: AppContext | NextPageContext): ctx is AppContext => {
   // @ts-ignore: ctx.ctx doesn't exist in NextPageContext
   return Boolean(ctx?.ctx)
+}
+
+const PUBLIC_ROUTES_NO_SSR = [
+  "/",
+  "/courses",
+  "/about-us",
+  "/research",
+  "/learning-environment",
+  "/teachers",
+  "/faq",
+  "/installation",
+]
+
+const isPublicRoute = (pathname: string): boolean => {
+  if (!pathname) return false
+  const normalizedPath = pathname.replace(/\/_old/, "").split("?")[0]
+  return (
+    PUBLIC_ROUTES_NO_SSR.some((route) => normalizedPath === route) ||
+    normalizedPath.startsWith("/installation/") ||
+    normalizedPath.startsWith("/faq/")
+  )
+}
+
+const shouldSkipSSR = (
+  ctx: NextPageContext | AppContext["ctx"],
+  pageProps: any,
+): boolean => {
+  if (pageProps?.skipSSR === true) {
+    return true
+  }
+  const pathname = ctx?.pathname || ctx?.asPath?.split("?")[0] || ""
+  return isPublicRoute(pathname)
+}
+
+const shouldFetchUserDetails = (
+  ctx: NextPageContext | AppContext["ctx"],
+  pageProps: any,
+): boolean => {
+  if (pageProps?.requireAuth === true) {
+    return true
+  }
+  const signedIn = isSignedIn(ctx)
+  if (!signedIn) {
+    return false
+  }
+  const pathname = ctx?.pathname || ctx?.asPath?.split("?")[0] || ""
+  const authRequiredRoutes = ["/profile", "/admin", "/dashboard"]
+  return authRequiredRoutes.some((route) => pathname.startsWith(route))
 }
 
 const withApolloClient = (App: any) => {
@@ -68,7 +116,6 @@ const withApolloClient = (App: any) => {
     // 2. We've decided to discard apollo cache between page transitions to avoid bugs.
     //  @ts-ignore: ignore type error on ctx
     const apollo = getApollo(apolloState, accessToken, ctx.locale)
-    const currentUser = await fetchUserDetails(apollo)
 
     if (App.getInitialProps) {
       ;(ctx as any).apolloClient = apollo
@@ -79,9 +126,21 @@ const withApolloClient = (App: any) => {
       pageProps.pageProps = {}
     }
 
+    const skipSSR = shouldSkipSSR(ctx, pageProps)
+    const needsUserDetails = shouldFetchUserDetails(ctx, pageProps)
+
+    let currentUser = undefined
+    if (needsUserDetails) {
+      try {
+        currentUser = await fetchUserDetails(apollo)
+      } catch (error) {
+        console.error("Error fetching user details", error)
+      }
+    }
+
     pageProps.pageProps.currentUser = currentUser
 
-    if (typeof window === "undefined") {
+    if (typeof window === "undefined" && !skipSSR) {
       if (ctx?.res?.headersSent || ctx?.res?.finished) {
         return pageProps ?? {}
       }
@@ -90,20 +149,29 @@ const withApolloClient = (App: any) => {
 
       const { getMarkupFromTree } = await import("@apollo/client/react/ssr")
 
-      // Run the graphql queries on server and pass the results to frontend by using the Apollo cache.
+      const SSR_TIMEOUT = 3000
 
       try {
-        // getDataFromTree is using getMarkupFromTree anyway?
-        await getMarkupFromTree({
+        const getMarkupPromise = getMarkupFromTree({
           renderFunction: renderToString,
           tree: <AppTree {...appTreeProps} Component={Component} />,
         })
-        // Run all GraphQL queries
+
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => {
+            reject(new Error("SSR timeout exceeded"))
+          }, SSR_TIMEOUT)
+        })
+
+        await Promise.race([getMarkupPromise, timeoutPromise])
       } catch (error) {
-        // Prevent Apollo Client GraphQL errors from crashing SSR.
-        // Handle them in components via the data.error prop:
-        // https://www.apollographql.com/docs/react/api/react-apollo.html#graphql-query-data-error
-        console.error("Error while running `getDataFromTree`", error)
+        if (error instanceof Error && error.message === "SSR timeout exceeded") {
+          console.warn(
+            `[SSR] Timeout after ${SSR_TIMEOUT}ms, sending partial HTML. Queries will complete client-side.`,
+          )
+        } else {
+          console.error("Error while running `getMarkupFromTree`", error)
+        }
       }
     }
 

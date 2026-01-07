@@ -2,11 +2,11 @@ import { Open_Sans, Roboto } from "next/font/google"
 
 export const bodyFont = Roboto({
   subsets: ["latin"],
-  weight: ["100", "300", "400", "500", "700", "900"],
+  weight: ["300", "400", "500", "700"],
   style: ["italic", "normal"],
   fallback: ["Franklin Gothic Medium", "Tahoma", "Arial", "sans-serif"],
   variable: "--body-font",
-  display: "block",
+  display: "swap",
 })
 
 export const headerFont = Open_Sans({
@@ -15,5 +15,5 @@ export const headerFont = Open_Sans({
   axes: ["wdth"],
   fallback: ["Impact", "Franklin Gothic Bold", "sans-serif"],
   variable: "--header-font",
-  display: "block",
+  display: "swap",
 })

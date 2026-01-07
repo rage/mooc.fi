@@ -197,7 +197,7 @@ const nextConfiguration = (_phase) => ({
     }
 
     if (options.isServer && isProduction) {
-      config.devtool = "source-map" // false
+      config.devtool = false
     }
     if (!isProduction) {
       config.devtool = "eval-source-map"
