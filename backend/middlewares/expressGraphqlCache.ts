@@ -54,6 +54,25 @@ function buildCacheKey(req: Request): string {
   return `${CACHE_PREFIX}${hash}`
 }
 
+function isBatchedRequest(body: any): boolean {
+  return Array.isArray(body) && body.length > 0
+}
+
+function buildBatchCacheKey(batch: any[]): string {
+  const normalizedBatch = batch.map((op) => ({
+    query: typeof op.query === "string" ? normalizeQuery(op.query) : "",
+    variables: op.variables ? stableStringify(op.variables) : "",
+    operationName: op.operationName ?? "",
+  }))
+  const payload = stableStringify(normalizedBatch)
+  const hash = createHash("sha512").update(payload).digest("hex")
+  return `${CACHE_PREFIX}batch:${hash}`
+}
+
+function allOperationsAreQueries(batch: any[]): boolean {
+  return batch.every((op) => isGraphQLQuery(op))
+}
+
 // Detect GraphQL errors in a response payload
 function hasGraphQLErrors(body: any): boolean {
   try {
@@ -111,6 +130,170 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
     if (req.headers.authorization !== undefined) {
       logger.info("GraphQL cache: skip (Authorization header present)")
       return next()
+    }
+
+    // Handle batched requests
+    if (isBatchedRequest(req.body)) {
+      const batch = req.body as any[]
+      const allQueries = allOperationsAreQueries(batch)
+
+      if (!allQueries) {
+        const operationTypes = batch.map((op) => {
+          const src = op?.query?.trim().toLowerCase() || ""
+          return src.startsWith("mutation")
+            ? "mutation"
+            : src.startsWith("subscription")
+            ? "subscription"
+            : src.startsWith("query") || src.startsWith("{")
+            ? "query"
+            : "unknown"
+        })
+
+        logger.info(
+          "GraphQL cache: skip batched request (contains non-queries)",
+          {
+            path: req.originalUrl || req.path,
+            batchSize: batch.length,
+            operationTypes,
+            operationNames: batch.map((op) => op.operationName || "unnamed"),
+          },
+        )
+        return next()
+      }
+
+      try {
+        const key = buildBatchCacheKey(batch)
+        const operationNames = batch
+          .map((op) => op.operationName || "unnamed")
+          .join(", ")
+        const cached = await client.get(key)
+
+        if (cached) {
+          logger.info("GraphQL cache: batch HIT", {
+            key,
+            batchSize: batch.length,
+            operationNames,
+            cacheKey: key.substring(CACHE_PREFIX.length),
+          })
+          res.status(200)
+          res.setHeader("Content-Type", "application/json; charset=utf-8")
+          res.setHeader("X-Cache", "HIT")
+          res.send(cached)
+          return
+        }
+
+        logger.info("GraphQL cache: batch MISS", {
+          key,
+          batchSize: batch.length,
+          operationNames,
+          cacheKey: key.substring(CACHE_PREFIX.length),
+        })
+
+        const originalSend = res.send.bind(res)
+
+        res.send = (body?: any): Response => {
+          try {
+            const status = res.statusCode
+            const is2xx = status >= 200 && status < 300
+            const contentType = (res.getHeader("Content-Type") ?? "").toString()
+            const isJson =
+              contentType.includes("application/json") ||
+              typeof body === "object"
+
+            if (is2xx && isJson && client?.isReady) {
+              const responseArray = Array.isArray(body)
+                ? body
+                : typeof body === "string"
+                ? JSON.parse(body)
+                : Buffer.isBuffer(body)
+                ? JSON.parse(body.toString("utf8"))
+                : body
+
+              if (Array.isArray(responseArray)) {
+                const hasAnyErrors = responseArray.some((item) =>
+                  hasGraphQLErrors(item),
+                )
+
+                if (!hasAnyErrors) {
+                  const payload =
+                    typeof body === "string"
+                      ? body
+                      : Buffer.isBuffer(body)
+                      ? body.toString("utf8")
+                      : JSON.stringify(body)
+
+                  client
+                    .set(key, payload, { EX: CACHE_EXPIRE_TIME_SECONDS })
+                    .then(() => {
+                      logger.info("GraphQL cache: batch STORED", {
+                        key,
+                        batchSize: batch.length,
+                        operationNames,
+                        cacheKey: key.substring(CACHE_PREFIX.length),
+                        ttl: CACHE_EXPIRE_TIME_SECONDS,
+                        payloadSize: payload.length,
+                      })
+                    })
+                    .catch((e: any) => {
+                      logger.error("GraphQL cache: batch failed to store", {
+                        key,
+                        operationNames,
+                        error: e instanceof Error ? e.message : String(e),
+                      })
+                    })
+
+                  res.setHeader("X-Cache", "MISS")
+                } else {
+                  logger.info("GraphQL cache: batch not stored (has errors)", {
+                    key,
+                    batchSize: batch.length,
+                    operationNames,
+                  })
+                  res.setHeader("X-Cache", "BYPASS")
+                }
+              } else {
+                logger.warn("GraphQL cache: batch response is not an array", {
+                  key,
+                  responseType: typeof responseArray,
+                })
+                res.setHeader("X-Cache", "BYPASS")
+              }
+            } else {
+              const reason = !is2xx
+                ? `status=${status}`
+                : !isJson
+                ? "not JSON"
+                : "unknown"
+              logger.info("GraphQL cache: batch not stored", {
+                key,
+                operationNames,
+                reason,
+                status,
+              })
+              res.setHeader("X-Cache", "BYPASS")
+            }
+          } catch (e) {
+            logger.error(
+              "GraphQL cache: batch error during response handling",
+              {
+                key,
+                error: e instanceof Error ? e.message : String(e),
+                stack: e instanceof Error ? e.stack : undefined,
+              },
+            )
+          }
+          return originalSend(body)
+        }
+
+        return next()
+      } catch (e) {
+        logger.error("GraphQL cache: batch middleware error", {
+          error: e instanceof Error ? e.message : String(e),
+          stack: e instanceof Error ? e.stack : undefined,
+          path: req.originalUrl || req.path,
+        })
+        return next()
+      }
     }
 
     // Only cache queries
