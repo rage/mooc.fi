@@ -10,17 +10,8 @@ import {
   stringArg,
 } from "nexus"
 
-import { isDefined, isNullish } from "../util"
+import { isDefined } from "../util"
 import { filterNull } from "../util/db-functions"
-
-function ifDefined<T, U>(value: T, obj: U): U
-function ifDefined<_, U>(value: null | undefined, obj: U): undefined
-function ifDefined<T, U>(value: T | null | undefined, obj: U): U | undefined {
-  if (isNullish(value)) {
-    return undefined
-  }
-  return obj
-}
 
 export const Sponsor = objectType({
   name: "Sponsor",

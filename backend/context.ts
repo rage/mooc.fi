@@ -18,7 +18,10 @@ import {
 import { Role } from "./accessControl"
 import { UserInfo } from "./domain/UserInfo"
 import { CompletionLinkKey } from "./loaders/completionLinkLoader"
-import { CourseSponsorsKey, LoadedCourseSponsor } from "./loaders/courseSponsorsLoader"
+import {
+  CourseSponsorsKey,
+  LoadedCourseSponsor,
+} from "./loaders/courseSponsorsLoader"
 import { CourseTagsKey } from "./loaders/courseTagsLoader"
 import { SponsorImagesKey } from "./loaders/sponsorImagesLoader"
 import { SponsorTranslationsKey } from "./loaders/sponsorTranslationsLoader"

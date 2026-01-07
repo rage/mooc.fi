@@ -1,4 +1,3 @@
-import { uniqBy } from "lodash"
 import { booleanArg, intArg, list, nonNull, objectType, stringArg } from "nexus"
 
 import { Prisma } from "@prisma/client"
