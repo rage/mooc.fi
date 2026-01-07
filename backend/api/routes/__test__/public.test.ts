@@ -286,15 +286,15 @@ describe("API", () => {
         }
       })
 
-      it("returns study modules ordered by order.sort", async () => {
+      it("returns study modules ordered by order", async () => {
         const response = await getStudyModules()({})
 
         expect(response.status).toBe(200)
         const modules = response.data.study_modules
         if (modules.length > 1) {
           for (let i = 1; i < modules.length; i++) {
-            const prevOrder = modules[i - 1].order?.sort ?? Infinity
-            const currOrder = modules[i].order?.sort ?? Infinity
+            const prevOrder = modules[i - 1].order ?? Infinity
+            const currOrder = modules[i].order ?? Infinity
             expect(currOrder).toBeGreaterThanOrEqual(prevOrder)
           }
         }
