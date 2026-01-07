@@ -1,12 +1,10 @@
-import { ApolloClient } from "@apollo/client"
-
 import { apiClient } from "/lib/api-client"
 
 import { CurrentUserQuery } from "/graphql/generated"
 
-export default async function fetchUserDetails(
-  _pollo: ApolloClient<object>,
-): Promise<CurrentUserQuery["currentUser"]> {
+export default async function fetchUserDetails(): Promise<
+  CurrentUserQuery["currentUser"]
+> {
   try {
     const response = await apiClient.getCurrentUser()
     return response.currentUser

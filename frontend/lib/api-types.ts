@@ -1,3 +1,5 @@
+import { CourseStatus } from "/graphql/generated"
+
 export interface ImageCoreFields {
   id: string
   name: string | null
@@ -69,7 +71,7 @@ export interface NewFrontpageCourseFields {
   id: string
   slug: string
   name: string
-  ects: number | null
+  ects: string | null
   language: string | null
   created_at: string
   updated_at: string
@@ -78,11 +80,11 @@ export interface NewFrontpageCourseFields {
   order: number | null
   study_module_order: number | null
   promote: boolean | null
-  status: string | null
+  status: CourseStatus | null
   start_point: boolean | null
   study_module_start_point: boolean | null
   hidden: boolean | null
-  upcoming_active_link: string | null
+  upcoming_active_link: boolean | null
   tier: number | null
   support_email: string | null
   teacher_in_charge_email: string | null
