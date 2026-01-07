@@ -1,10 +1,9 @@
-import { useCallback, useEffect, useMemo, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 
 import dynamic from "next/dynamic"
 import { useRouter } from "next/router"
 import { difference, sort } from "remeda"
 
-import { useQuery } from "@apollo/client"
 import ClearIcon from "@mui/icons-material/Clear"
 import {
   Checkbox,
@@ -28,20 +27,16 @@ import {
 } from "./common"
 import CourseCard, { CourseCardSkeleton } from "./CourseCard"
 import BorderedSection from "/components/BorderedSection"
+import { useCoursesData } from "/hooks/usePublicData"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useTranslator } from "/hooks/useTranslator"
+import { NewCourseFields, TagCoreFields } from "/lib/api-types"
 import CourseTranslations from "/translations/_new/courses"
 import CommonTranslations from "/translations/common"
 import { isDefinedAndNotEmpty } from "/util/guards"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
-import {
-  CourseCatalogueTagsDocument,
-  CourseStatus,
-  NewCourseFieldsFragment,
-  NewCoursesDocument,
-  TagCoreFieldsFragment,
-} from "/graphql/generated"
+import { CourseStatus } from "/graphql/generated"
 
 /*  Coming in a later PR for better mobile view
   const Container = styled.div`
@@ -167,7 +162,7 @@ const joinWithCustomLastSeparator = (arr: Array<string>, separator = "or") => {
 }
 
 interface SearchResultStatusProps {
-  tags?: Array<TagCoreFieldsFragment>
+  tags?: Array<TagCoreFields>
   statuses?: Array<CourseStatus>
   count: number
 }
@@ -238,20 +233,14 @@ const SearchResultStatus = ({
   )
 }
 
-const courseHasTag = (
-  course: NewCourseFieldsFragment | null,
-  tag: TagCoreFieldsFragment,
-) => {
+const courseHasTag = (course: NewCourseFields | null, tag: TagCoreFields) => {
   if (!course) {
     return false
   }
   return course.tags.some((courseTag) => courseTag.name === tag.name)
 }
 
-const compareCourses = (
-  course1: NewCourseFieldsFragment,
-  course2: NewCourseFieldsFragment,
-) => {
+const compareCourses = (course1: NewCourseFields, course2: NewCourseFields) => {
   if (course1.study_modules.length == 0) {
     return 1
   } else if (course2.study_modules.length == 0) {
@@ -282,71 +271,72 @@ function CourseGrid() {
   const initialStatuses = useQueryParameter("status", {
     enforce: false,
     array: true,
-  }) as CourseStatus[]
+  })
+
+  const typedInitialStatuses: CourseStatus[] = Array.isArray(initialStatuses)
+    ? initialStatuses.filter((s): s is CourseStatus => {
+        const statusValues: string[] = Object.values(CourseStatus)
+        return statusValues.includes(s)
+      })
+    : []
   const moduleless = useQueryParameter("moduleless", {
     enforce: false,
     array: false,
   })
 
-  const { loading: coursesLoading, data: coursesData } = useQuery(
-    NewCoursesDocument,
-    {
-      variables: { language },
-      ssr: false,
-    },
-  )
+  const { isLoading: coursesLoading, data: coursesData } =
+    useCoursesData(language)
 
-  const { loading: tagsLoading, data: tagsData } = useQuery(
-    CourseCatalogueTagsDocument,
-    {
-      variables: { language },
-      ssr: false,
-      onCompleted(data) {
-        if (initialActiveTags) {
-          setActiveTags(
-            data.tags?.filter((tag) => initialActiveTags.includes(tag.id)) ??
-              [],
-          )
-        } else {
-          const defaultLanguageTag = data.tags?.find(
-            (tag) => tag.id === locale && tag.types?.includes("language"),
-          )
-          if (defaultLanguageTag) {
-            setActiveTags([defaultLanguageTag])
-          }
+  const tagsData = coursesData
+
+  const tagsLoading = coursesLoading
+
+  React.useEffect(() => {
+    if (tagsData?.tags) {
+      if (initialActiveTags) {
+        setActiveTags(
+          tagsData.tags.filter((tag) => initialActiveTags.includes(tag.id)) ??
+            [],
+        )
+      } else {
+        const defaultLanguageTag = tagsData.tags.find(
+          (tag) => tag.id === locale && tag.types?.includes("language"),
+        )
+        if (defaultLanguageTag) {
+          setActiveTags([defaultLanguageTag])
         }
-      },
-    },
-  )
+      }
+    }
+  }, [tagsData, initialActiveTags, locale])
 
   let initialFilteredStatuses = [CourseStatus.Active, CourseStatus.Upcoming]
-  if (initialStatuses && initialStatuses.length > 0) {
-    initialFilteredStatuses = initialStatuses
+  if (typedInitialStatuses.length > 0) {
+    initialFilteredStatuses = typedInitialStatuses
   }
 
   const [searchString, setSearchString] = useState<string>("")
-  const [activeTags, setActiveTags] = useState<Array<TagCoreFieldsFragment>>([])
+  const [activeTags, setActiveTags] = useState<Array<TagCoreFields>>([])
   const [filteredStatuses, setFilteredStatuses] = useState<CourseStatus[]>(
     initialFilteredStatuses,
   )
 
   const tags = useMemo(() => {
-    const res = (tagsData?.tags ?? []).reduce(
-      (acc, curr) => {
-        curr?.types?.forEach((t) => {
-          if (
-            t === "language" &&
-            curr.id &&
-            !allowedLanguages.includes(curr.id)
-          ) {
-            return acc
-          }
-          acc[t] = (acc[t] ?? []).concat(curr)
-        })
-        return acc
-      },
-      {} as Record<string, Array<TagCoreFieldsFragment>>,
-    )
+    const res: Record<string, Array<TagCoreFields>> = {}
+    for (const curr of tagsData?.tags ?? []) {
+      curr?.types?.forEach((t) => {
+        if (
+          t === "language" &&
+          curr.id &&
+          !allowedLanguages.includes(curr.id)
+        ) {
+          return
+        }
+        if (!res[t]) {
+          res[t] = []
+        }
+        res[t].push(curr)
+      })
+    }
 
     if (res["language"]) {
       res["language"].sort(sortByLanguage)
@@ -418,7 +408,7 @@ function CourseGrid() {
         if (
           filteredStatuses.length > 0 &&
           course.status &&
-          !filteredStatuses.includes(CourseStatus[course.status])
+          !filteredStatuses.includes(course.status as CourseStatus)
         ) {
           return false
         }
@@ -436,7 +426,7 @@ function CourseGrid() {
         activeTags.map((t) => t.id),
         initialActiveTags,
       ) &&
-      areEqual(filteredStatuses, initialStatuses)
+      areEqual(filteredStatuses, typedInitialStatuses)
     ) {
       return
     }

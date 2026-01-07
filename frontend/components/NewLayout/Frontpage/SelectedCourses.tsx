@@ -1,7 +1,6 @@
 import { useRouter } from "next/router"
 import { range, sample } from "remeda"
 
-import { useQuery } from "@apollo/client"
 import { Button, Typography, TypographyProps } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
@@ -18,17 +17,14 @@ import CommonCourseCard, {
   CourseCardSkeleton,
 } from "/components/NewLayout/Courses/CourseCard"
 import { CardTitle } from "/components/Text/headers"
+import { useCoursesData } from "/hooks/usePublicData"
 import { useTranslator } from "/hooks/useTranslator"
 import moocLogo from "/public/images/new/logos/moocfi-transparent.svg"
 import HomeTranslations from "/translations/home"
 import { formatDateTime } from "/util/dataFormatFunctions"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
-import {
-  CourseStatus,
-  NewCourseFieldsFragment,
-  NewCoursesDocument,
-} from "/graphql/generated"
+import { CourseStatus } from "/graphql/generated"
 
 const CardHeader = styled("div")`
   position: relative;
@@ -57,7 +53,12 @@ const CourseCard = ({
   description,
   start_date,
   end_date,
-}: NewCourseFieldsFragment) => {
+}: {
+  name: string
+  description?: string | null
+  start_date?: string | null
+  end_date?: string | null
+}) => {
   const date =
     start_date && end_date
       ? `${formatDateTime(start_date)} - ${formatDateTime(end_date)}`
@@ -105,10 +106,7 @@ function SelectedCourses() {
   const { locale = "fi" } = useRouter()
   const t = useTranslator(HomeTranslations)
   const language = mapNextLanguageToLocaleCode(locale)
-  const { loading, data } = useQuery(NewCoursesDocument, {
-    variables: { language },
-    ssr: false,
-  })
+  const { isLoading: loading, data } = useCoursesData(language)
 
   const notEndedCourses =
     data?.courses?.filter((course) => course.status !== CourseStatus.Ended) ??
