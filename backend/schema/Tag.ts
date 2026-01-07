@@ -39,13 +39,10 @@ export const Tag = objectType({
     t.string("name", {
       // @ts-ignore: language exists
       resolve: async ({ id, language: parentLanguage }, _args, ctx) => {
-        const translation = await ctx.prisma.tagTranslation.findUnique({
-          where: {
-            tag_id_language: {
-              tag_id: id,
-              language: parentLanguage ?? localeToLanguage(ctx.locale) ?? "",
-            },
-          },
+        const language = parentLanguage ?? localeToLanguage(ctx.locale) ?? ""
+        const translation = await ctx.loaders.tagTranslation.load({
+          tagId: id,
+          language,
         })
 
         return translation?.name ?? null
@@ -54,13 +51,10 @@ export const Tag = objectType({
     t.string("description", {
       // @ts-ignore: language exists
       resolve: async ({ id, language: parentLanguage }, _args, ctx) => {
-        const translation = await ctx.prisma.tagTranslation.findUnique({
-          where: {
-            tag_id_language: {
-              tag_id: id,
-              language: parentLanguage ?? localeToLanguage(ctx.locale) ?? "",
-            },
-          },
+        const language = parentLanguage ?? localeToLanguage(ctx.locale) ?? ""
+        const translation = await ctx.loaders.tagTranslation.load({
+          tagId: id,
+          language,
         })
 
         return translation?.description ?? null
@@ -69,13 +63,10 @@ export const Tag = objectType({
     t.string("abbreviation", {
       // @ts-ignore: language exists
       resolve: async ({ id, language: parentLanguage }, _args, ctx) => {
-        const translation = await ctx.prisma.tagTranslation.findUnique({
-          where: {
-            tag_id_language: {
-              tag_id: id,
-              language: parentLanguage ?? localeToLanguage(ctx.locale) ?? "",
-            },
-          },
+        const language = parentLanguage ?? localeToLanguage(ctx.locale) ?? ""
+        const translation = await ctx.loaders.tagTranslation.load({
+          tagId: id,
+          language,
         })
 
         return translation?.abbreviation ?? null

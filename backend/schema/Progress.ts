@@ -28,21 +28,14 @@ export const Progress = objectType({
         const course_id = parent.course_id
         const user_id = parent.user_id
 
-        if (!course_id) {
+        if (!course_id || !user_id) {
           return null
         }
 
-        const progresses = await ctx.prisma.course
-          .findUnique({
-            where: { id: course_id },
-          })
-          .user_course_progresses({
-            where: { user_id },
-            orderBy: { created_at: "asc" },
-            take: 1,
-          })
-
-        return progresses?.[0] ?? null
+        return await ctx.loaders.userCourseProgress.load({
+          courseId: course_id,
+          userId: user_id,
+        })
       },
     })
 
@@ -52,21 +45,14 @@ export const Progress = objectType({
         const course_id = parent.course_id
         const user_id = parent.user_id
 
-        if (!course_id) {
-          return null
+        if (!course_id || !user_id) {
+          return []
         }
 
-        const progresses = await ctx.prisma.course
-          .findUnique({
-            where: { id: course_id },
-          })
-          .user_course_service_progresses({
-            where: { user_id },
-            distinct: ["course_id", "service_id", "user_id"],
-            orderBy: { created_at: "asc" },
-          })
-
-        return progresses ?? []
+        return await ctx.loaders.userCourseServiceProgresses.load({
+          courseId: course_id,
+          userId: user_id,
+        })
       },
     })
   },
