@@ -23,6 +23,7 @@ import { DEBUG, isProduction, isTest } from "./config"
 import { createDefaultData } from "./config/defaultData"
 import { ServerContext } from "./context"
 import createExpressGraphqlCacheMiddleware from "./middlewares/expressGraphqlCache"
+import { createLoaders } from "./loaders/createLoaders"
 import { createSchema } from "./schema/common"
 
 export const GRAPHQL_ENDPOINT_PATH = isProduction ? "/api" : "/"
@@ -62,14 +63,18 @@ const addExpressMiddleware = async (
   app.use(
     GRAPHQL_ENDPOINT_PATH,
     expressMiddleware(apolloServer, {
-      context: async (ctx) => ({
-        ...ctx,
-        locale: ctx.req?.headers?.["accept-language"],
-        prisma,
-        logger,
-        knex,
-        ...extraContext,
-      }),
+      context: async (ctx) => {
+        const loaders = createLoaders(prisma)
+        return {
+          ...ctx,
+          locale: ctx.req?.headers?.["accept-language"],
+          prisma,
+          logger,
+          knex,
+          loaders,
+          ...extraContext,
+        }
+      },
     }),
   )
 
@@ -118,12 +123,14 @@ const server = async (serverContext: ServerContext) => {
       schema,
       context: (ctx) => {
         const { prisma, logger, knex, extraContext } = serverContext
+        const loaders = createLoaders(prisma)
 
         return {
           ...ctx,
           prisma,
           logger,
           knex,
+          loaders,
           ...extraContext,
         }
       },

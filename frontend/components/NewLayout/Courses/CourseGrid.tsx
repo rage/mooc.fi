@@ -307,6 +307,13 @@ function CourseGrid() {
             data.tags?.filter((tag) => initialActiveTags.includes(tag.id)) ??
               [],
           )
+        } else {
+          const defaultLanguageTag = data.tags?.find(
+            (tag) => tag.id === locale && tag.types?.includes("language"),
+          )
+          if (defaultLanguageTag) {
+            setActiveTags([defaultLanguageTag])
+          }
         }
       },
     },
@@ -381,7 +388,11 @@ function CourseGrid() {
   const filteredCourses = useMemo(
     () =>
       (coursesData?.courses ?? []).filter((course) => {
-        if (course.hidden || course.course_translations.length === 0) {
+        if (
+          course.hidden ||
+          !course.course_translations ||
+          course.course_translations.length === 0
+        ) {
           return false
         }
         if (moduleless === "true" && course.study_modules.length > 0) {

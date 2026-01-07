@@ -5,6 +5,7 @@ export interface UserInfo {
   user_field: UserField
   extra_fields: ExtraFields
   administrator: boolean
+  courses_mooc_fi_user_id: string | null
 }
 
 export type ExtraFields = Record<string, any>
