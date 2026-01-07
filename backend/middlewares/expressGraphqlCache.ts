@@ -79,15 +79,23 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
+    logger.info("GraphQL cache: middleware invoked", {
+      method: req.method,
+      path: req.originalUrl || req.path,
+      baseUrl: req.baseUrl,
+      graphqlPath: GRAPHQL_ENDPOINT_PATH,
+    })
+
     // Only handle GraphQL endpoint POSTs
     const isGraphqlPath =
       req.originalUrl?.startsWith(GRAPHQL_ENDPOINT_PATH) ||
       `${req.baseUrl || ""}${req.path || ""}` === GRAPHQL_ENDPOINT_PATH
 
     if (!isGraphqlPath || req.method !== "POST") {
-      logger.debug("GraphQL cache: skip (not GraphQL POST request)", {
+      logger.info("GraphQL cache: skip (not GraphQL POST request)", {
         method: req.method,
         path: req.originalUrl || req.path,
+        isGraphqlPath,
       })
       return next()
     }
@@ -100,13 +108,13 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
 
     // Skip if authenticated via Authorization header (per your setup)
     if (req.headers.authorization !== undefined) {
-      logger.debug("GraphQL cache: skip (Authorization header present)")
+      logger.info("GraphQL cache: skip (Authorization header present)")
       return next()
     }
 
     // Only cache queries
     if (!isGraphQLQuery(req.body)) {
-      logger.debug("GraphQL cache: skip (not a GraphQL query)", {
+      logger.info("GraphQL cache: skip (not a GraphQL query)", {
         bodyType: typeof req.body,
         hasQuery: !!req.body?.query,
       })
@@ -131,7 +139,7 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
         return
       }
 
-      logger.debug("GraphQL cache: MISS", {
+      logger.info("GraphQL cache: MISS", {
         key,
         operationName,
         cacheKey: key.substring(CACHE_PREFIX.length),
@@ -189,7 +197,7 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
               : hasErrors
               ? "GraphQL errors present"
               : "unknown"
-            logger.debug("GraphQL cache: not stored", {
+            logger.info("GraphQL cache: not stored", {
               key,
               operationName,
               reason,
@@ -254,7 +262,7 @@ export async function invalidateAllGraphqlCachedQueries(
       })
       cursor = reply.cursor
       const keys = reply.keys
-      logger?.debug("GraphQL cache: scan iteration", {
+      logger?.info("GraphQL cache: scan iteration", {
         iteration: scanIterations,
         keysFound: keys.length,
         cursor,
