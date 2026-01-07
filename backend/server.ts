@@ -21,10 +21,15 @@ import {
 import { apiRouter } from "./api"
 import { DEBUG, isProduction, isTest } from "./config"
 import { createDefaultData } from "./config/defaultData"
-import { ServerContext } from "./context"
+import { Context, ServerContext } from "./context"
 import { createLoaders } from "./loaders/createLoaders"
+import {
+  createApolloPerformancePlugin,
+  createRequestTimingMiddleware,
+} from "./middlewares"
 import createExpressGraphqlCacheMiddleware from "./middlewares/expressGraphqlCache"
 import { createSchema } from "./schema/common"
+import { prismaContextStorage } from "./util/prismaLogger"
 
 export const GRAPHQL_ENDPOINT_PATH = isProduction ? "/api" : "/"
 
@@ -35,6 +40,8 @@ const createExpressAppWithContext = ({
   logger,
 }: ServerContext) => {
   const app = express()
+
+  app.use(createRequestTimingMiddleware(logger))
 
   app.use(
     cors<cors.CorsRequest>(),
@@ -53,29 +60,55 @@ const createExpressAppWithContext = ({
 
 const addExpressMiddleware = async (
   app: Express,
-  apolloServer: ApolloServer<ServerContext>,
+  apolloServer: ApolloServer<Context>,
   serverContext: ServerContext,
 ) => {
   const { prisma, logger, knex, extraContext } = serverContext
   await createDefaultData(prisma)
   // cache middleware first so that it's the first to run
   app.use(createExpressGraphqlCacheMiddleware(logger))
+
+  const apolloMiddleware = expressMiddleware(apolloServer, {
+    context: async (ctx) => {
+      const correlationId = ctx.req?.timing?.correlationId
+      const loaders = createLoaders(prisma)
+
+      const contextValue: Context = {
+        ...ctx,
+        locale: ctx.req?.headers?.["accept-language"],
+        prisma,
+        logger,
+        knex,
+        loaders,
+        correlationId,
+        disableRelations: false,
+        ...extraContext,
+      }
+
+      return prismaContextStorage.run({ correlationId }, () => contextValue)
+    },
+  })
+
   app.use(
     GRAPHQL_ENDPOINT_PATH,
-    expressMiddleware(apolloServer, {
-      context: async (ctx) => {
-        const loaders = createLoaders(prisma)
-        return {
-          ...ctx,
-          locale: ctx.req?.headers?.["accept-language"],
-          prisma,
-          logger,
-          knex,
-          loaders,
-          ...extraContext,
+    (
+      req: express.Request,
+      res: express.Response,
+      next: express.NextFunction,
+    ) => {
+      const apolloStartTime = Date.now()
+
+      const originalEnd = res.end.bind(res)
+      res.end = function (chunk?: any, encoding?: any) {
+        if (req.timing) {
+          const apolloDuration = Date.now() - apolloStartTime
+          req.timing.middlewareTimings["apollo"] = apolloDuration
         }
-      },
-    }),
+        return originalEnd(chunk, encoding)
+      }
+
+      apolloMiddleware(req, res, next)
+    },
   )
 
   return app
@@ -86,7 +119,7 @@ const server = async (serverContext: ServerContext) => {
   const httpServer = http.createServer(app)
   const schema = createSchema()
 
-  const apolloServer = new ApolloServer<ServerContext>({
+  const apolloServer = new ApolloServer<Context>({
     schema,
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
@@ -95,6 +128,7 @@ const server = async (serverContext: ServerContext) => {
             embed: true,
           } as ApolloServerPluginEmbeddedLandingPageProductionDefaultOptions)
         : ApolloServerPluginLandingPageLocalDefault(),
+      createApolloPerformancePlugin(serverContext.logger),
       {
         async serverWillStart() {
           return {

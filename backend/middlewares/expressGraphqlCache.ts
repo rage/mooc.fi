@@ -5,6 +5,7 @@ import { Logger } from "winston"
 
 import { GRAPHQL_ENDPOINT_PATH } from "../server"
 import redisClient from "../services/redis"
+import { trackMiddlewareTiming } from "./requestTiming"
 
 const CACHE_EXPIRE_TIME_SECONDS = 60 * 60 // 1 hour
 const CACHE_PREFIX = "express-graphql-response-cache:"
@@ -79,7 +80,10 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
+    const cacheStartTime = Date.now()
+
     logger.info("GraphQL cache: middleware invoked", {
+      correlationId: req.timing?.correlationId,
       method: req.method,
       path: req.originalUrl || req.path,
       baseUrl: req.baseUrl,
@@ -93,31 +97,41 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
 
     if (!isGraphqlPath || req.method !== "POST") {
       logger.info("GraphQL cache: skip (not GraphQL POST request)", {
+        correlationId: req.timing?.correlationId,
         method: req.method,
         path: req.originalUrl || req.path,
         isGraphqlPath,
       })
+      trackMiddlewareTiming(req, "graphqlCache", cacheStartTime)
       return next()
     }
 
     const client = redisClient()
     if (!client?.isReady) {
-      logger.warn("GraphQL cache: skip (Redis client not ready)")
+      logger.warn("GraphQL cache: skip (Redis client not ready)", {
+        correlationId: req.timing?.correlationId,
+      })
+      trackMiddlewareTiming(req, "graphqlCache", cacheStartTime)
       return next()
     }
 
     // Skip if authenticated via Authorization header (per your setup)
     if (req.headers.authorization !== undefined) {
-      logger.info("GraphQL cache: skip (Authorization header present)")
+      logger.info("GraphQL cache: skip (Authorization header present)", {
+        correlationId: req.timing?.correlationId,
+      })
+      trackMiddlewareTiming(req, "graphqlCache", cacheStartTime)
       return next()
     }
 
     // Only cache queries
     if (!isGraphQLQuery(req.body)) {
       logger.info("GraphQL cache: skip (not a GraphQL query)", {
+        correlationId: req.timing?.correlationId,
         bodyType: typeof req.body,
         hasQuery: !!req.body?.query,
       })
+      trackMiddlewareTiming(req, "graphqlCache", cacheStartTime)
       return next()
     }
 
@@ -127,7 +141,9 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
       const cached = await client.get(key)
 
       if (cached) {
+        trackMiddlewareTiming(req, "graphqlCache", cacheStartTime)
         logger.info("GraphQL cache: HIT", {
+          correlationId: req.timing?.correlationId,
           key,
           operationName,
           cacheKey: key.substring(CACHE_PREFIX.length),
@@ -140,6 +156,7 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
       }
 
       logger.info("GraphQL cache: MISS", {
+        correlationId: req.timing?.correlationId,
         key,
         operationName,
         cacheKey: key.substring(CACHE_PREFIX.length),
@@ -149,6 +166,7 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
       const originalSend = res.send.bind(res)
 
       res.send = (body?: any): Response => {
+        trackMiddlewareTiming(req, "graphqlCache", cacheStartTime)
         try {
           const status = res.statusCode
           const is2xx = status >= 200 && status < 300
@@ -173,6 +191,7 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
               .set(key, payload, { EX: CACHE_EXPIRE_TIME_SECONDS })
               .then(() => {
                 logger.info("GraphQL cache: STORED", {
+                  correlationId: req.timing?.correlationId,
                   key,
                   operationName,
                   cacheKey: key.substring(CACHE_PREFIX.length),
@@ -182,6 +201,7 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
               })
               .catch((e: any) => {
                 logger.error("GraphQL cache: failed to store", {
+                  correlationId: req.timing?.correlationId,
                   key,
                   operationName,
                   error: e instanceof Error ? e.message : String(e),
@@ -198,6 +218,7 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
               ? "GraphQL errors present"
               : "unknown"
             logger.info("GraphQL cache: not stored", {
+              correlationId: req.timing?.correlationId,
               key,
               operationName,
               reason,
@@ -209,6 +230,7 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
           }
         } catch (e) {
           logger.error("GraphQL cache: error during response handling", {
+            correlationId: req.timing?.correlationId,
             key,
             error: e instanceof Error ? e.message : String(e),
             stack: e instanceof Error ? e.stack : undefined,
@@ -219,7 +241,9 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
 
       return next()
     } catch (e) {
+      trackMiddlewareTiming(req, "graphqlCache", cacheStartTime)
       logger.error("GraphQL cache: middleware error", {
+        correlationId: req.timing?.correlationId,
         error: e instanceof Error ? e.message : String(e),
         stack: e instanceof Error ? e.stack : undefined,
         path: req.originalUrl || req.path,

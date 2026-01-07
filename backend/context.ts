@@ -45,10 +45,11 @@ export interface Context extends BaseContext {
   disableRelations: boolean
   role?: Role
   userDetails?: UserInfo
-  tmcClient: TmcClient
+  tmcClient?: TmcClient
   locale?: string
   req: IncomingMessage
   connectionParams?: Record<string, any>
+  correlationId?: string
   loaders: {
     courseTags: DataLoader<CourseTagsKey, Tag[], string>
     courseSponsors: DataLoader<CourseSponsorsKey, LoadedCourseSponsor[], string>

@@ -1,5 +1,7 @@
+export * from "./apolloPerformance"
 export * from "./cache"
 export * from "./fetchUser"
 export * from "./locale"
 export * from "./logger"
+export * from "./requestTiming"
 export * from "./validate"
