@@ -41,20 +41,10 @@ export const Sponsor = objectType({
       },
       // @ts-ignore: parent language exists
       resolve: async ({ id, language: parentLanguage }, { language }, ctx) => {
-        const translations = await ctx.prisma.sponsor
-          .findUnique({
-            where: {
-              id,
-            },
-          })
-          .translations({
-            ...((parentLanguage || language) && {
-              where: {
-                language: language ?? parentLanguage,
-              },
-            }),
-          })
-        return translations ?? []
+        return await ctx.loaders.sponsorTranslations.load({
+          sponsorId: id,
+          language: language ?? parentLanguage ?? null,
+        })
       },
     })
 
@@ -72,29 +62,14 @@ export const Sponsor = objectType({
         { type, minWidth, minHeight, maxWidth, maxHeight },
         ctx,
       ) => {
-        const dimensions = [
-          ifDefined(minWidth, { width: { gte: minWidth as number } }),
-          ifDefined(maxWidth, { width: { lte: maxWidth as number } }),
-          ifDefined(minHeight, { height: { gte: minHeight as number } }),
-          ifDefined(maxHeight, { height: { lte: maxHeight as number } }),
-        ].filter(isDefined)
-
-        return ctx.prisma.sponsor
-          .findUnique({
-            where: {
-              id,
-            },
-          })
-          .images({
-            where: {
-              ...(type && {
-                type,
-              }),
-              ...(dimensions.length && {
-                AND: dimensions,
-              }),
-            },
-          })
+        return await ctx.loaders.sponsorImages.load({
+          sponsorId: id,
+          type: type ?? null,
+          minWidth: minWidth ?? null,
+          minHeight: minHeight ?? null,
+          maxWidth: maxWidth ?? null,
+          maxHeight: maxHeight ?? null,
+        })
       },
     })
   },
