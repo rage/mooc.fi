@@ -247,7 +247,7 @@ export class PublicController extends Controller {
       where: {
         OR: [{ hidden: false }, { hidden: null }],
       },
-      orderBy: [{ order: { sort: "asc" } }],
+      orderBy: [{ order: "asc" }],
       include: {
         course_translations: {
           orderBy: { language: "asc" },
@@ -273,7 +273,7 @@ export class PublicController extends Controller {
     const courses = await this.getVisibleCourses(prisma)
 
     const studyModules = await prisma.studyModule.findMany({
-      orderBy: [{ order: { sort: "asc" } }],
+      orderBy: [{ order: "asc" }],
       ...(language
         ? {
             where: {
@@ -408,7 +408,7 @@ export class PublicController extends Controller {
     const loaders = createLoaders(prisma)
 
     const studyModules = await prisma.studyModule.findMany({
-      orderBy: [{ order: { sort: "asc" } }],
+      orderBy: [{ order: "asc" }],
       ...(language
         ? {
             where: {

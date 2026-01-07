@@ -102,6 +102,12 @@ export interface NewCourseFields extends NewFrontpageCourseFields {
   sponsors: Array<CourseSponsorFields>
 }
 
+export interface FrontpageCourseFields extends NewFrontpageCourseFields {
+  course_translations?: Array<CourseTranslationCoreFields>
+  tags: Array<TagCoreFields>
+  sponsors: Array<CourseSponsorFields>
+}
+
 export interface StudyModuleFields {
   id: string
   slug: string
@@ -118,7 +124,7 @@ export interface StudyModuleFieldsWithCourses extends StudyModuleFields {
 }
 
 export interface FrontpageResponse {
-  courses: Array<NewCourseFields>
+  courses: Array<FrontpageCourseFields>
   study_modules: Array<StudyModuleFields>
 }
 
