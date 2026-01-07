@@ -6,7 +6,7 @@ import { Logger } from "winston"
 import { GRAPHQL_ENDPOINT_PATH } from "../server"
 import redisClient from "../services/redis"
 
-const CACHE_EXPIRE_TIME_SECONDS = 60 * 60 // 1 hour
+const CACHE_EXPIRE_TIME_SECONDS = 60 * 60 * 5 // 5 hours
 const CACHE_PREFIX = "express-graphql-response-cache:"
 
 function normalizeQuery(query: string): string {
