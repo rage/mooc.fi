@@ -7,7 +7,7 @@ import { ApolloProvider, type ApolloClient } from "@apollo/client"
 
 import fetchUserDetails from "./fetch-user-details"
 import getApollo from "./get-apollo"
-import { getAccessToken } from "/lib/authentication"
+import { getAccessToken, isSignedIn } from "/lib/authentication"
 
 interface Props {
   apollo: ApolloClient<object>
@@ -52,17 +52,37 @@ const withApolloClient = (App: any) => {
     const { AppTree } = ctx
     const Component = inAppContext ? pageCtx.Component : undefined
 
+    const signedIn = isSignedIn(ctx)
+    const accessToken = getAccessToken(ctx)
+
     let pageProps = {} as any
     let apolloState =
       typeof window !== "undefined"
         ? window.__NEXT_DATA__.props.apolloState
         : ({} as any)
 
+    if (!signedIn) {
+      const apollo = getApollo(apolloState, accessToken, ctx.locale)
+
+      if (!pageProps.pageProps) {
+        pageProps.pageProps = {}
+      }
+
+      pageProps.pageProps.currentUser = null
+      pageProps.pageProps.apolloState = apolloState
+
+      return {
+        ...pageProps,
+        accessToken,
+        apolloState,
+        apollo,
+      }
+    }
+
     // Run all GraphQL queries in the component tree
     // and extract the resulting data
     // @ts-ignore: ctx in ctx
 
-    const accessToken = getAccessToken(ctx)
     // It is important to use a new apollo since the page has changed because
     // 1. access token might have changed
     // 2. We've decided to discard apollo cache between page transitions to avoid bugs.
