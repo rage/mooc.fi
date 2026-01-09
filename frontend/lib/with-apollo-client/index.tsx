@@ -71,6 +71,9 @@ const withApolloClient = (App: any) => {
       pageProps.pageProps.currentUser = null
       pageProps.pageProps.apolloState = apolloState
 
+      // @ts-ignore: ignore
+      apollo.toJSON = () => null
+
       return {
         ...pageProps,
         accessToken,
