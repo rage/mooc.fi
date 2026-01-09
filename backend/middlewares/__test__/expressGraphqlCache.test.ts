@@ -127,7 +127,7 @@ describe("GraphQL response cache middleware", () => {
     expect(mockRedisClient.set).toHaveBeenCalledTimes(1)
     const [, payload, opts] = (mockRedisClient.set as jest.Mock).mock.calls[0]
     expect(typeof payload).toBe("string")
-    expect(opts).toEqual(expect.objectContaining({ EX: 60 * 60 }))
+    expect(opts).toEqual(expect.objectContaining({ EX: 60 * 60 * 5 }))
     expect(res._headers["x-cache"]).toBe("MISS")
   })
 
