@@ -15,6 +15,7 @@ interface Props {
   apolloState: any
   accessToken?: string
   router?: Router
+  skipSsrFetch?: boolean
 }
 
 const isAppContext = (ctx: AppContext | NextPageContext): ctx is AppContext => {
@@ -27,12 +28,18 @@ const withApolloClient = (App: any) => {
     apollo,
     apolloState,
     accessToken,
+    skipSsrFetch,
     ...pageProps
   }: Props) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const router = useRouter()
     const locale = router.locale ?? pageProps?.router?.locale
-    const apolloClient = getApollo(apolloState, accessToken, locale)
+    const apolloClient = getApollo(
+      apolloState,
+      accessToken,
+      locale,
+      skipSsrFetch,
+    )
 
     return (
       <ApolloProvider client={apolloClient}>
@@ -62,7 +69,13 @@ const withApolloClient = (App: any) => {
         : ({} as any)
 
     if (!signedIn) {
-      const apollo = getApollo(apolloState, accessToken, ctx.locale)
+      const skipSsrFetch = typeof window === "undefined"
+      const apollo = getApollo(
+        apolloState,
+        accessToken,
+        ctx.locale,
+        skipSsrFetch,
+      )
 
       if (!pageProps.pageProps) {
         pageProps.pageProps = {}
@@ -79,6 +92,7 @@ const withApolloClient = (App: any) => {
         accessToken,
         apolloState,
         apollo,
+        skipSsrFetch,
       }
     }
 
