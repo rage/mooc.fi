@@ -36,7 +36,13 @@ const TemplateListItem = styled("li")`
   list-style-type: none;
 `
 
-const EmailTemplates = (admin: boolean) => {
+interface EmailTemplatesProps {
+  admin?: boolean
+  signedIn?: boolean
+  baseUrl?: string
+}
+
+const EmailTemplates = ({ admin = false }: EmailTemplatesProps) => {
   const isOld = useIsOld()
   const baseUrl = isOld ? "/_old" : "/admin"
   const { loading, error, data } = useQuery(EmailTemplatesDocument)
