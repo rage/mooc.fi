@@ -109,6 +109,10 @@ const originalGetInitialProps = MyApp.getInitialProps
 MyApp.getInitialProps = async (props: AppContext) => {
   const { ctx, Component } = props
 
+  const signedIn = isSignedIn(ctx)
+  const admin = signedIn && isAdmin(ctx)
+  const accessToken = getAccessToken(ctx)
+
   let originalProps: any = {}
 
   if (originalGetInitialProps) {
@@ -117,14 +121,10 @@ MyApp.getInitialProps = async (props: AppContext) => {
   if (!originalProps?.pageProps) {
     originalProps.pageProps = {}
   }
-  if (Component.getInitialProps) {
+  if (signedIn && Component.getInitialProps) {
     const originalComponentProps = (await Component.getInitialProps(ctx)) ?? {}
     Object.assign(originalProps.pageProps, originalComponentProps)
   }
-
-  const signedIn = isSignedIn(ctx)
-  const admin = signedIn && isAdmin(ctx)
-  const accessToken = getAccessToken(ctx)
 
   return {
     ...originalProps,
