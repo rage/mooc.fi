@@ -75,6 +75,7 @@ function create(
   initialState: any,
   originalAccessToken?: string,
   locale?: string,
+  skipSsrFetch?: boolean,
 ) {
   const authLink = setContext((_, { headers }) => {
     // Always get the current access token from cookies in case it has changed
@@ -206,6 +207,13 @@ function create(
     })
   })
 
+  const skipSsrFetchLink = new ApolloLink(() => {
+    return new Observable((observer) => {
+      observer.next({ data: null })
+      observer.complete()
+    })
+  })
+
   const cache = createCache()
 
   return new ApolloClient<NormalizedCacheObject>({
@@ -215,6 +223,8 @@ function create(
             isDefinedAndNotEmpty,
           ),
         )
+      : skipSsrFetch
+      ? skipSsrFetchLink
       : ApolloLink.from(
           [
             development ? metricsLink : undefined,
@@ -246,6 +256,7 @@ export default function getApollo(
   initialState: any,
   accessToken?: string,
   locale?: string,
+  skipSsrFetch?: boolean,
 ) {
   const userChanged = accessToken !== previousAccessToken
   const localeChanged = locale !== previousLocale
@@ -256,7 +267,7 @@ export default function getApollo(
   const _apolloClient =
     !userChanged && !localeChanged && isBrowser
       ? apolloClient ?? create(initialState, accessToken, locale)
-      : create(undefined, accessToken, locale)
+      : create(undefined, accessToken, locale, skipSsrFetch)
 
   previousAccessToken = accessToken
   previousLocale = locale

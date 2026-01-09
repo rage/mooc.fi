@@ -5,6 +5,7 @@ import Hype from "/components/NewLayout/Frontpage/Hype"
 import { ModuleNavigation } from "/components/NewLayout/Frontpage/Modules"
 // import News from "/components/NewLayout/Frontpage/News"
 import SelectedCourses from "/components/NewLayout/Frontpage/SelectedCourses"
+import withNoSsr from "/util/withNoSsr"
 
 // import UkraineInfo from "/components/NewLayout/Frontpage/UkraineInfo"
 
@@ -32,4 +33,4 @@ const Home = () => {
   )
 }
 
-export default Home
+export default withNoSsr(Home)
