@@ -145,6 +145,7 @@ cronjob:
         day: 20
         month: 12
   masaryk: # @muni.cz report, see backend/bin/masarykStatsEmailer.ts
+    suspend: true
     crons:
       - id: "0"
         day: 21
