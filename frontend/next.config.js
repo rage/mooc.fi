@@ -48,6 +48,18 @@ const nextConfiguration = (_phase) => ({
     ],
   },
   trailingSlash: true,
+  async rewrites() {
+    // In development, proxy API requests to the backend server
+    if (!isProduction) {
+      return [
+        {
+          source: "/api/:path*",
+          destination: "http://localhost:4000/api/:path*",
+        },
+      ]
+    }
+    return []
+  },
   i18n: {
     locales: ["en", "fi"],
     defaultLocale: "fi",
