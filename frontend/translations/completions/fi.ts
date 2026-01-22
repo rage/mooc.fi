@@ -25,8 +25,11 @@ export default {
   downloadCompletionsDownload: "Lataa",
   downloadCompletionsSuccess: "Lataus onnistui",
   downloadCompletionsSuccessMessage:
-    "Suorituksien CSV-tiedosto on ladattu onnistuneesti.",
+    "Suorituksien tiedosto on ladattu onnistuneesti.",
   downloadCompletionsError: "Lataus epäonnistui",
   downloadCompletionsErrorMessage:
     "Virhe suorituksien lataamisessa. Yritä uudelleen.",
+  downloadCompletionsFileFormat: "Tiedostomuoto",
+  downloadCompletionsFormatCsv: "CSV",
+  downloadCompletionsFormatExcel: "Excel (.xlsx)",
 } as const

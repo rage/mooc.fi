@@ -24,8 +24,11 @@ export default {
   downloadCompletionsDownload: "Download",
   downloadCompletionsSuccess: "Download successful",
   downloadCompletionsSuccessMessage:
-    "Your completions CSV file has been downloaded successfully.",
+    "Your completions file has been downloaded successfully.",
   downloadCompletionsError: "Download failed",
   downloadCompletionsErrorMessage:
     "An error occurred while downloading completions. Please try again.",
+  downloadCompletionsFileFormat: "File Format",
+  downloadCompletionsFormatCsv: "CSV",
+  downloadCompletionsFormatExcel: "Excel (.xlsx)",
 } as const

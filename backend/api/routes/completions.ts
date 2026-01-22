@@ -3,6 +3,7 @@ import { Request, Response } from "express"
 import JSONStream from "JSONStream"
 import jwt, { Secret } from "jsonwebtoken"
 import { chunk, omit } from "lodash"
+import * as XLSX from "xlsx"
 import * as yup from "yup"
 
 import {
@@ -33,6 +34,7 @@ if (!JWT_SECRET) {
 interface DownloadTokenPayload {
   courseId: string
   fromDate?: string
+  format?: "csv" | "excel"
 }
 
 interface RegisterCompletionInput {
@@ -115,7 +117,7 @@ export class CompletionController extends Controller {
     res: Response,
   ) => {
     const { courseId } = req.params
-    const { fromDate } = req.query
+    const { fromDate, format } = req.query
     const adminRes = await this.requireAdmin(req, res)
 
     if (adminRes.isErr()) {
@@ -134,6 +136,7 @@ export class CompletionController extends Controller {
     const payload: DownloadTokenPayload = {
       courseId,
       fromDate: typeof fromDate === "string" ? fromDate : undefined,
+      format: format === "excel" ? "excel" : "csv",
     }
 
     const token = jwt.sign(payload, JWT_SECRET, {
@@ -173,6 +176,7 @@ export class CompletionController extends Controller {
     }
 
     const fromDate = tokenData.fromDate
+    const format = tokenData.format ?? "csv"
 
     const course = await this.ctx.prisma.course.findUnique({
       where: { id: courseId },
@@ -233,6 +237,32 @@ export class CompletionController extends Controller {
       row.grade,
     ])
 
+    if (format === "excel") {
+      // Generate Excel file
+      const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows])
+      const workbook = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Completions")
+
+      const excelBuffer = XLSX.write(workbook, {
+        type: "buffer",
+        bookType: "xlsx",
+      })
+
+      res.setHeader(
+        "Content-Type",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      )
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename="completions_${
+          fromDate ? fromDate.toString().split("T")[0] : "all"
+        }.xlsx"`,
+      )
+
+      return res.status(200).send(excelBuffer)
+    }
+
+    // Default CSV format
     const csvContent = stringify([headers, ...rows])
 
     res.setHeader("Content-Type", "text/csv")

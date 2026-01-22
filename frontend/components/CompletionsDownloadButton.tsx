@@ -10,6 +10,11 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
@@ -51,6 +56,7 @@ const CompletionsDownloadButton = ({
   const { addAlert } = useAlertContext()
   const [dialogOpen, setDialogOpen] = useState(false)
   const [selectedDate, setSelectedDate] = useState<DateTime | null>(null)
+  const [format, setFormat] = useState<"csv" | "excel">("csv")
   const [isLoading, setIsLoading] = useState(false)
   const dialogTitleId = useId()
 
@@ -61,6 +67,7 @@ const CompletionsDownloadButton = ({
   const handleCloseDialog = useCallback(() => {
     setDialogOpen(false)
     setSelectedDate(null)
+    setFormat("csv")
   }, [])
 
   const handleDownload = useCallback(async () => {
@@ -75,6 +82,7 @@ const CompletionsDownloadButton = ({
         }
         tokenParams.append("fromDate", isoDate)
       }
+      tokenParams.append("format", format)
 
       const accessToken = getAccessToken(undefined)
 
@@ -106,6 +114,7 @@ const CompletionsDownloadButton = ({
 
       setDialogOpen(false)
       setSelectedDate(null)
+      setFormat("csv")
     } catch (error) {
       addAlert({
         title: t("downloadCompletionsError"),
@@ -118,7 +127,7 @@ const CompletionsDownloadButton = ({
     } finally {
       setIsLoading(false)
     }
-  }, [selectedDate, courseId, t, addAlert])
+  }, [selectedDate, format, courseId, t, addAlert])
 
   return (
     <>
@@ -150,6 +159,24 @@ const CompletionsDownloadButton = ({
               },
             }}
           />
+          <FormControl sx={{ marginTop: "1.5rem" }}>
+            <FormLabel>{t("downloadCompletionsFileFormat")}</FormLabel>
+            <RadioGroup
+              value={format}
+              onChange={(e) => setFormat(e.target.value as "csv" | "excel")}
+            >
+              <FormControlLabel
+                value="csv"
+                control={<Radio />}
+                label={t("downloadCompletionsFormatCsv")}
+              />
+              <FormControlLabel
+                value="excel"
+                control={<Radio />}
+                label={t("downloadCompletionsFormatExcel")}
+              />
+            </RadioGroup>
+          </FormControl>
         </StyledDialogContent>
         <StyledDialogActions>
           <Button onClick={handleCloseDialog} disabled={isLoading}>
