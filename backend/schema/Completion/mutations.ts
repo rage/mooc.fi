@@ -27,24 +27,14 @@ async function authorizeByCourseIdentifier(
   root: any,
   info: any,
 ) {
+  // If user is admin, they're authorized regardless of course existence
+  if (isAdmin(root, args, ctx, info)) {
+    return true
+  }
+
+  // For non-admins, check course ownership
   const courseId = args.course_id
   const courseSlug = args.course_slug ?? args.slug
-
-  // Validate that at least one identifier is provided
-  if (!courseId && !courseSlug) {
-    throw new GraphQLUserInputError("must provide course_id or slug", [
-      "course_id",
-      "slug",
-    ])
-  }
-
-  // Validate that only one identifier is provided
-  if (courseId && courseSlug) {
-    throw new GraphQLUserInputError(
-      "must provide exactly one of course_id or slug",
-      ["course_id", "slug"],
-    )
-  }
 
   const course = await ctx.prisma.course.findUniqueOrAlias({
     where: {
@@ -55,7 +45,7 @@ async function authorizeByCourseIdentifier(
   })
 
   if (!course) {
-    throw new GraphQLUserInputError("course not found", ["course_id", "slug"])
+    return false
   }
 
   return await isAdminOrCourseOwner(course.id)(root, args, ctx, info)
@@ -222,6 +212,20 @@ export const CompletionMutations = extendType({
       args: {
         course_id: idArg(),
         slug: stringArg(),
+      },
+      validate: (_, { course_id, slug }) => {
+        if (!course_id && !slug) {
+          throw new GraphQLUserInputError("must provide course_id or slug", [
+            "course_id",
+            "slug",
+          ])
+        }
+        if (course_id && slug) {
+          throw new GraphQLUserInputError(
+            "must provide exactly one of course_id or slug",
+            ["course_id", "slug"],
+          )
+        }
       },
       authorize: authorizeByCourseIdentifier,
       resolve: async (_, { course_id: id, slug }, ctx) => {
