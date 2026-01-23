@@ -18,13 +18,13 @@ import { isDefined } from "../../util"
 import { ConflictError } from "../common"
 
 async function authorizeByCourseIdentifier(
+  root: any,
   args: {
     course_id?: string | null
     course_slug?: string | null
     slug?: string | null
   },
   ctx: any,
-  root: any,
   info: any,
 ) {
   // If user is admin, they're authorized regardless of course existence
