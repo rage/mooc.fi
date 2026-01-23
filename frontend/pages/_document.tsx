@@ -2,7 +2,6 @@ import React from "react"
 
 import { DocumentProps, Head, Html, Main, NextScript } from "next/document"
 
-import { augmentDocumentWithEmotionCache } from "./_app"
 import newTheme, {
   fontVariableClass as newFontVariableClass,
 } from "/src/newTheme"
@@ -10,12 +9,7 @@ import originalTheme, {
   fontVariableClass as originalFontVariableClass,
 } from "/src/theme"
 
-interface CustomDocumentProps extends DocumentProps {
-  apolloState: any
-}
-
-function CustomDocument(props: CustomDocumentProps) {
-  props.__NEXT_DATA__.props.apolloState = props.apolloState
+function CustomDocument(props: DocumentProps) {
   const isOld = props.__NEXT_DATA__.page.includes("_old")
 
   const theme = isOld ? originalTheme : newTheme
@@ -37,7 +31,5 @@ function CustomDocument(props: CustomDocumentProps) {
     </Html>
   )
 }
-
-augmentDocumentWithEmotionCache(CustomDocument)
 
 export default CustomDocument

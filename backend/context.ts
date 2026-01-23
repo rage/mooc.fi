@@ -10,6 +10,7 @@ import {
   SponsorTranslation,
   Tag,
   TagTranslation,
+  TagType,
   User,
   UserCourseProgress,
   UserCourseServiceProgress,
@@ -26,6 +27,7 @@ import { CourseTagsKey } from "./loaders/courseTagsLoader"
 import { SponsorImagesKey } from "./loaders/sponsorImagesLoader"
 import { SponsorTranslationsKey } from "./loaders/sponsorTranslationsLoader"
 import { TagTranslationKey } from "./loaders/tagTranslationLoader"
+import { TagTypesKey } from "./loaders/tagTypesLoader"
 import { UserCourseProgressKey } from "./loaders/userCourseProgressLoader"
 import { UserCourseServiceProgressesKey } from "./loaders/userCourseServiceProgressesLoader"
 import { ExtendedPrismaClient } from "./prisma"
@@ -57,6 +59,7 @@ export interface Context extends BaseContext {
     >
     sponsorImages: DataLoader<SponsorImagesKey, SponsorImage[], string>
     tagTranslation: DataLoader<TagTranslationKey, TagTranslation | null, string>
+    tagTypes: DataLoader<TagTypesKey, TagType[], string>
     completionLink: DataLoader<CompletionLinkKey, string | null, string>
     userCourseProgress: DataLoader<
       UserCourseProgressKey,

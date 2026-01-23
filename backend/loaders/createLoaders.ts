@@ -5,6 +5,7 @@ import { createCourseTagsLoader } from "./courseTagsLoader"
 import { createSponsorImagesLoader } from "./sponsorImagesLoader"
 import { createSponsorTranslationsLoader } from "./sponsorTranslationsLoader"
 import { createTagTranslationLoader } from "./tagTranslationLoader"
+import { createTagTypesLoader } from "./tagTypesLoader"
 import { createUserCourseProgressLoader } from "./userCourseProgressLoader"
 import { createUserCourseServiceProgressesLoader } from "./userCourseServiceProgressesLoader"
 
@@ -15,6 +16,7 @@ export function createLoaders(prisma: ExtendedPrismaClient) {
     sponsorTranslations: createSponsorTranslationsLoader(prisma),
     sponsorImages: createSponsorImagesLoader(prisma),
     tagTranslation: createTagTranslationLoader(prisma),
+    tagTypes: createTagTypesLoader(prisma),
     completionLink: createCompletionLinkLoader(prisma),
     userCourseProgress: createUserCourseProgressLoader(prisma),
     userCourseServiceProgresses:

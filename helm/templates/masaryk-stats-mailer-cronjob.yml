@@ -8,6 +8,7 @@ metadata:
     {{- include "helm.labels" $ | nindent 4 }}
 spec:
   schedule: "0 10 {{$cron.day}} {{$cron.month}} *"
+  suspend: {{ $.Values.cronjob.masaryk.suspend | default false }}
   startingDeadlineSeconds: 3600
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 1

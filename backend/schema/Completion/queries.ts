@@ -5,7 +5,12 @@ import { extendType, idArg, intArg, nonNull, stringArg } from "nexus"
 import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
 import { Prisma } from "@prisma/client"
 
-import { isAdmin, isOrganization, or } from "../../accessControl"
+import {
+  isAdmin,
+  isAdminOrCourseOwner,
+  isOrganization,
+  or,
+} from "../../accessControl"
 import { GraphQLForbiddenError, GraphQLUserInputError } from "../../lib/errors"
 import { buildUserSearch } from "../../util"
 
@@ -22,7 +27,25 @@ export const CompletionQueries = extendType({
         last: intArg(),
         before: idArg(),
       },
-      authorize: or(isOrganization, isAdmin),
+      authorize: async (root, args, ctx, info) => {
+        if (
+          isOrganization(root, args, ctx, info) ||
+          isAdmin(root, args, ctx, info)
+        ) {
+          return true
+        }
+
+        const course = await ctx.prisma.course.findUniqueOrAlias({
+          where: { slug: args.course },
+          select: { id: true },
+        })
+
+        if (!course) {
+          return false
+        }
+
+        return await isAdminOrCourseOwner(course.id)(root, args, ctx, info)
+      },
       resolve: async (_, args, ctx) => {
         const { first, last, completion_language } = args
         const { course: slug } = args

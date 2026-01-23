@@ -41,6 +41,13 @@ export function useLoginStateContext() {
 
 const reducer = (state: LoginState, action: any) => {
   switch (action.type) {
+    case "sync":
+      return {
+        ...state,
+        loggedIn: action.payload.loggedIn,
+        admin: action.payload.admin,
+        currentUser: action.payload.currentUser,
+      }
     case "logInOrOut":
       return {
         ...state,
@@ -77,13 +84,11 @@ export const LoginStateProvider = React.memo(function LoginStateProvider({
   })
 
   useEffect(() => {
-    if (currentUser !== state.currentUser) {
-      dispatch({
-        type: "updateUser",
-        payload: { user: currentUser, admin },
-      })
-    }
-  }, [currentUser])
+    dispatch({
+      type: "sync",
+      payload: { loggedIn, admin, currentUser },
+    })
+  }, [loggedIn, admin, currentUser])
 
   const loginStateContextValue = useMemo(
     () => ({

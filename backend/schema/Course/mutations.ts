@@ -5,9 +5,10 @@ import { NexusGenInputs } from "nexus-typegen"
 
 import { Course, CourseSponsor, Prisma, StudyModule, Tag } from "@prisma/client"
 
-import { isAdmin } from "../../accessControl"
+import { isAdmin, isAdminOrCourseOwner } from "../../accessControl"
 import { Context } from "../../context"
 import { GraphQLUserInputError } from "../../lib/errors"
+import { invalidateAllGraphqlCachedQueries } from "../../middlewares/expressGraphqlCache"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import { invalidate } from "../../services/redis"
 import { emptyOrNullToUndefined, isDefined } from "../../util"
@@ -149,6 +150,12 @@ export const CourseMutations = extendType({
         await kafkaProducer.queueProducerMessage(producerMessage)
         await kafkaProducer.disconnect()
 
+        await invalidateAllGraphqlCachedQueries(ctx.logger).catch((e) => {
+          ctx.logger.warn(
+            `Failed to invalidate GraphQL cache after course creation: ${e}`,
+          )
+        })
+
         return newCourse
       },
     })
@@ -162,7 +169,24 @@ export const CourseMutations = extendType({
           }),
         ),
       },
-      authorize: isAdmin,
+      authorize: async (root, { course }, ctx, info) => {
+        if (!course.slug) {
+          return false
+        }
+        const existingCourse = await ctx.prisma.course.findUnique({
+          where: { slug: course.slug },
+          select: { id: true },
+        })
+        if (!existingCourse) {
+          return false
+        }
+        return await isAdminOrCourseOwner(existingCourse.id)(
+          root,
+          { course },
+          ctx,
+          info,
+        )
+      },
       resolve: async (_, { course }, ctx: Context) => {
         const {
           id,
@@ -283,6 +307,12 @@ export const CourseMutations = extendType({
           },
         })
 
+        await invalidateAllGraphqlCachedQueries(ctx.logger).catch((e) => {
+          ctx.logger.warn(
+            `Failed to invalidate GraphQL cache after course update: ${e}`,
+          )
+        })
+
         return updatedCourse
       },
     })
@@ -293,7 +323,24 @@ export const CourseMutations = extendType({
         id: idArg(),
         slug: stringArg(),
       },
-      authorize: isAdmin,
+      authorize: async (root, { id, slug }, ctx, info) => {
+        const course = await ctx.prisma.course.findUnique({
+          where: {
+            id: id ?? undefined,
+            slug: slug ?? undefined,
+          },
+          select: { id: true },
+        })
+        if (!course) {
+          return false
+        }
+        return await isAdminOrCourseOwner(course.id)(
+          root,
+          { id, slug },
+          ctx,
+          info,
+        )
+      },
       validate: (_, { id, slug }) => {
         if (!id && !slug) {
           throw new GraphQLUserInputError("must provide id or slug")

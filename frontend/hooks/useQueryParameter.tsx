@@ -22,7 +22,7 @@ export function useQueryParameter(
 
   const router = useRouter()
 
-  if (!router) {
+  if (!router || !router.isReady) {
     return array ? [] : ""
   }
 

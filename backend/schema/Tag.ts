@@ -10,7 +10,7 @@ import {
   stringArg,
 } from "nexus"
 
-import { Prisma, Tag as TypeofTag } from "@prisma/client"
+import { Prisma, TagType, Tag as TypeofTag } from "@prisma/client"
 
 import { isAdmin, Role } from "../accessControl"
 import { GraphQLForbiddenError, GraphQLUserInputError } from "../lib/errors"
@@ -75,11 +75,8 @@ export const Tag = objectType({
 
     t.list.nonNull.string("types", {
       resolve: async ({ id }, _args, ctx) => {
-        const types = await ctx.prisma.tag
-          .findUnique({ where: { id } })
-          .tag_types()
-
-        return (types ?? []).map((type) => type.name)
+        const types = await ctx.loaders.tagTypes.load({ tagId: id })
+        return types.map((type: TagType) => type.name)
       },
     })
   },

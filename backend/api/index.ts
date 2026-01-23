@@ -18,6 +18,11 @@ export function apiRouter(ctx: ApiContext) {
 
   return Router()
     .get("/completions/:slug", completionController.completions)
+    .get(
+      "/completions/:courseId/csv/token",
+      completionController.completionsCSVToken,
+    )
+    .get("/completions/:courseId/csv", completionController.completionsCSV)
     .get("/completionTiers/:slug", completionController.completionTiers)
     .get(
       "/completionInstructions/:slug/:language",

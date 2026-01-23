@@ -1,4 +1,3 @@
-import fetch from "isomorphic-unfetch"
 import { NextPageContext as NextContext } from "next"
 import Router from "next/router"
 import nookies from "nookies"
@@ -6,20 +5,28 @@ import TmcClient from "tmc-client-js"
 
 import { ApolloClient } from "@apollo/client"
 
-import { getCookie } from "/util/cookie"
-
 const tmcClient = new TmcClient(
   "59a09eef080463f90f8c2f29fbf63014167d13580e1de3562e57b9e6e4515182",
   "2ddf92a15a31f87c1aabb712b7cfd1b88f3465465ec475811ccce6febb1bad28",
 )
 
-export const isSignedIn = (ctx: NextContext) => {
-  const accessToken = nookies.get(ctx)["access_token"]
-  return typeof accessToken == "string"
+export const isSignedIn = (ctx?: NextContext): boolean => {
+  if (typeof window !== "undefined") {
+    const match = document.cookie.match(/(?:^|; )access_token=([^;]*)/)
+    return Boolean(match?.[1])
+  }
+  const cookies = nookies.get(ctx)
+  const accessToken = cookies["access_token"]
+  return typeof accessToken === "string"
 }
 
-export const isAdmin = (ctx: NextContext) => {
-  const admin = nookies.get(ctx)["admin"]
+export const isAdmin = (ctx?: NextContext): boolean => {
+  if (typeof window !== "undefined") {
+    const match = document.cookie.match(/(?:^|; )admin=([^;]*)/)
+    return match?.[1] === "true"
+  }
+  const cookies = nookies.get(ctx)
+  const admin = cookies["admin"]
   return admin === "true"
 }
 
@@ -33,7 +40,7 @@ interface SignInProps {
 export const signIn = async (
   { email, password, redirect = true, shallow = true }: SignInProps,
   apollo?: ApolloClient<object>,
-  cb?: (...args: any[]) => any,
+  cb?: () => void,
 ) => {
   const { locale = "fi" } = Router
   const res = await tmcClient.authenticate({ username: email, password })
@@ -75,10 +82,7 @@ export const signIn = async (
   return details
 }
 
-export const signOut = async (
-  apollo: ApolloClient<object>,
-  cb: (...args: any[]) => any,
-) => {
+export const signOut = async (apollo: ApolloClient<object>, cb: () => void) => {
   document.cookie =
     "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
   document.cookie = "admin" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
@@ -91,12 +95,15 @@ export const signOut = async (
   }, 100)
 }
 
-export const getAccessToken = (ctx: NextContext | undefined) => {
-  if (!ctx) {
-    return getCookie("access_token")
+export const getAccessToken = (ctx?: NextContext): string | undefined => {
+  if (typeof window !== "undefined") {
+    const match = document.cookie.match(/(?:^|; )access_token=([^;]*)/)
+    if (match?.[1]) {
+      return match[1]
+    }
   }
-
-  return nookies.get(ctx)["access_token"]
+  const cookies = nookies.get(ctx)
+  return cookies["access_token"]
 }
 
 interface UserInfo {

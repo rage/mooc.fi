@@ -1,44 +1,38 @@
-import { PropsWithChildren, Component as ReactComponent } from "react"
+import { ComponentType, useEffect } from "react"
 
-import { NextPageContext as NextContext } from "next"
+import { useRouter } from "next/router"
 
-import { isSignedIn } from "/lib/authentication"
-import redirectTo from "/lib/redirect"
+import { useAuth } from "/hooks/useAuth"
 
-// TODO: add more redirect parameters?
 export default function withSignedOut(redirect = "/") {
-  return (Component: any) => {
-    return class WithSignedOut extends ReactComponent<
-      PropsWithChildren<{ signedIn: boolean }>
-    > {
-      static displayName = `withSignedOut(${
-        Component.name || Component.displayName || "AnonymousComponent"
-      })`
+  return <P extends object = object>(
+    Component: ComponentType<P & { signedIn?: boolean }>,
+  ) => {
+    const WithSignedOut = (props: P) => {
+      const router = useRouter()
+      const { loading, signedIn } = useAuth()
 
-      static async getInitialProps(context: NextContext) {
-        const signedIn = isSignedIn(context)
-
-        if (signedIn) {
-          redirectTo({
-            context,
-            target: redirect,
-            shallow: false,
-          })
+      useEffect(() => {
+        if (!loading && signedIn) {
+          router.push(redirect)
         }
+      }, [loading, signedIn, router])
 
-        return {
-          ...(await Component.getInitialProps?.(context)),
-          signedIn,
-        }
+      if (loading) {
+        return <div>Loading...</div>
       }
 
-      render() {
-        if (this.props.signedIn) {
-          return <div>Redirecting...</div>
-        }
-
-        return <Component {...this.props}>{this.props.children}</Component>
+      if (signedIn) {
+        return <div>Redirecting...</div>
       }
+
+      return <Component {...props} signedIn={signedIn} />
     }
+
+    WithSignedOut.displayName = `withSignedOut(${
+      Component.name ?? Component.displayName ?? "AnonymousComponent"
+    })`
+
+    return WithSignedOut
   }
 }

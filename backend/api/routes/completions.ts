@@ -1,6 +1,9 @@
+import { stringify } from "csv-stringify/sync"
 import { Request, Response } from "express"
 import JSONStream from "JSONStream"
+import jwt, { Secret } from "jsonwebtoken"
 import { chunk, omit } from "lodash"
+import * as XLSX from "xlsx"
 import * as yup from "yup"
 
 import {
@@ -14,11 +17,25 @@ import {
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
 import { err, isDefined } from "../../util"
 import { ApiContext, Controller } from "../types"
+import { requireAdminOrCourseOwner } from "../utils"
 
 const languageMap: Record<string, string> = {
   en: "en_US",
   sv: "sv_SE",
   fi: "fi_FI",
+}
+
+// JWT secret for signing download tokens
+const JWT_SECRET = process.env.JWT_SECRET as Secret
+
+if (!JWT_SECRET) {
+  throw new Error("JWT_SECRET environment variable is required")
+}
+
+interface DownloadTokenPayload {
+  courseId: string
+  fromDate?: string
+  format?: "csv" | "excel"
 }
 
 interface RegisterCompletionInput {
@@ -94,6 +111,174 @@ export class CompletionController extends Controller {
     req.on("close", stream.end.bind(stream))
 
     return // NOSONAR
+  }
+
+  completionsCSVToken = async (
+    req: Request<{ courseId: string }>,
+    res: Response,
+  ) => {
+    const { courseId } = req.params
+    const { fromDate, format } = req.query
+
+    const authRes = await requireAdminOrCourseOwner(courseId, this.ctx)(
+      req,
+      res,
+    )
+
+    if (authRes.isErr()) {
+      return authRes.error
+    }
+
+    const course = await this.ctx.prisma.course.findUnique({
+      where: { id: courseId },
+    })
+
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" })
+    }
+
+    // Generate a signed JWT token valid for 30 seconds
+    const payload: DownloadTokenPayload = {
+      courseId,
+      fromDate: typeof fromDate === "string" ? fromDate : undefined,
+      format: format === "excel" ? "excel" : "csv",
+    }
+
+    const token = jwt.sign(payload, JWT_SECRET, {
+      expiresIn: "30s",
+    })
+
+    return res.status(200).json({ token })
+  }
+
+  completionsCSV = async (
+    req: Request<{ courseId: string }>,
+    res: Response,
+  ) => {
+    const { courseId } = req.params
+    const { token } = req.query
+    const { knex } = this.ctx
+
+    // Validate token
+    if (!token || typeof token !== "string") {
+      return res.status(401).json({ message: "Invalid or missing token" })
+    }
+
+    let tokenData: DownloadTokenPayload
+    try {
+      tokenData = jwt.verify(token, JWT_SECRET) as DownloadTokenPayload
+    } catch (error) {
+      if (error instanceof jwt.TokenExpiredError) {
+        return res.status(401).json({ message: "Token expired" })
+      }
+      return res.status(401).json({ message: "Invalid token" })
+    }
+
+    if (tokenData.courseId !== courseId) {
+      return res
+        .status(403)
+        .json({ message: "Token not valid for this course" })
+    }
+
+    const fromDate = tokenData.fromDate
+    const format = tokenData.format ?? "csv"
+
+    const course = await this.ctx.prisma.course.findUnique({
+      where: { id: courseId },
+    })
+
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" })
+    }
+
+    let query = knex
+      .select<any, any[]>(
+        "u.id",
+        "com.email",
+        "u.first_name",
+        "u.last_name",
+        "com.completion_date",
+        "com.completion_language",
+        "com.grade",
+      )
+      .from("completion as com")
+      .join("course as c", "com.course_id", "c.id")
+      .join("user as u", "com.user_id", "u.id")
+      .where("c.id", course.completions_handled_by_id ?? course.id)
+      .distinct("u.id", "com.course_id")
+      .orderBy("com.completion_date", "asc")
+      .orderBy("u.last_name", "asc")
+      .orderBy("u.first_name", "asc")
+      .orderBy("u.id", "asc")
+
+    if (fromDate && typeof fromDate === "string") {
+      try {
+        const date = new Date(fromDate)
+        query = query.where("com.completion_date", ">=", date)
+      } catch (e) {
+        return res.status(400).json({ message: "Invalid date format" })
+      }
+    }
+
+    const completions = await query
+
+    const headers = [
+      "User ID",
+      "Email",
+      "First Name",
+      "Last Name",
+      "Completion Date",
+      "Completion Language",
+      "Grade",
+    ]
+
+    const rows = completions.map((row) => [
+      row.id,
+      row.email,
+      row.first_name,
+      row.last_name,
+      row.completion_date,
+      row.completion_language,
+      row.grade,
+    ])
+
+    if (format === "excel") {
+      // Generate Excel file
+      const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows])
+      const workbook = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Completions")
+
+      const excelBuffer = XLSX.write(workbook, {
+        type: "buffer",
+        bookType: "xlsx",
+      })
+
+      res.setHeader(
+        "Content-Type",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      )
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename="completions_${
+          fromDate ? fromDate.toString().split("T")[0] : "all"
+        }.xlsx"`,
+      )
+
+      return res.status(200).send(excelBuffer)
+    }
+
+    // Default CSV format
+    const csvContent = stringify([headers, ...rows])
+
+    res.setHeader("Content-Type", "text/csv")
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="completions_${
+        fromDate ? fromDate.toString().split("T")[0] : "all"
+      }.csv"`,
+    )
+
+    return res.status(200).send(csvContent)
   }
 
   completionInstructions = async (

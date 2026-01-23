@@ -5,11 +5,51 @@ import { v4 as uuidv4 } from "uuid"
 import { Completion } from "@prisma/client"
 import { User } from "@sentry/node"
 
-import { isAdmin, isUser, or, Role } from "../../accessControl"
+import {
+  isAdmin,
+  isAdminOrCourseOwner,
+  isUser,
+  or,
+  Role,
+} from "../../accessControl"
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
 import { GraphQLUserInputError } from "../../lib/errors"
 import { isDefined } from "../../util"
 import { ConflictError } from "../common"
+
+async function authorizeByCourseIdentifier(
+  root: any,
+  args: {
+    course_id?: string | null
+    course_slug?: string | null
+    slug?: string | null
+  },
+  ctx: any,
+  info: any,
+) {
+  // If user is admin, they're authorized regardless of course existence
+  if (isAdmin(root, args, ctx, info)) {
+    return true
+  }
+
+  // For non-admins, check course ownership
+  const courseId = args.course_id
+  const courseSlug = args.course_slug ?? args.slug
+
+  const course = await ctx.prisma.course.findUniqueOrAlias({
+    where: {
+      id: courseId ?? undefined,
+      slug: courseSlug ?? undefined,
+    },
+    select: { id: true },
+  })
+
+  if (!course) {
+    return false
+  }
+
+  return await isAdminOrCourseOwner(course.id)(root, args, ctx, info)
+}
 
 export const CompletionMutations = extendType({
   type: "Mutation",
@@ -25,7 +65,9 @@ export const CompletionMutations = extendType({
         completion_language: stringArg(),
         tier: intArg(),
       },
-      authorize: isAdmin,
+      authorize: async (root, args, ctx, info) => {
+        return await isAdminOrCourseOwner(args.course)(root, args, ctx, info)
+      },
       resolve: (_, args, ctx) => {
         const {
           user_upstream_id,
@@ -65,8 +107,14 @@ export const CompletionMutations = extendType({
             ["course_id", "course_slug"],
           )
         }
+        if (course_id && course_slug) {
+          throw new GraphQLUserInputError(
+            "must provide exactly one of course_id or course_slug",
+            ["course_id", "course_slug"],
+          )
+        }
       },
-      authorize: isAdmin,
+      authorize: authorizeByCourseIdentifier,
       resolve: async (_, args, ctx) => {
         const { course_id, course_slug } = args
 
@@ -171,15 +219,22 @@ export const CompletionMutations = extendType({
         course_id: idArg(),
         slug: stringArg(),
       },
-      authorize: isAdmin,
-      resolve: async (_, { course_id: id, slug }, ctx) => {
-        if ((!id && !slug) || (id && slug)) {
+      validate: (_, { course_id, slug }) => {
+        if (!course_id && !slug) {
+          throw new GraphQLUserInputError("must provide course_id or slug", [
+            "course_id",
+            "slug",
+          ])
+        }
+        if (course_id && slug) {
           throw new GraphQLUserInputError(
-            "must provide exactly one of course_id or slug!",
+            "must provide exactly one of course_id or slug",
             ["course_id", "slug"],
           )
         }
-
+      },
+      authorize: authorizeByCourseIdentifier,
+      resolve: async (_, { course_id: id, slug }, ctx) => {
         const course = await ctx.prisma.course.findUniqueOrAlias({
           where: {
             id: id ?? undefined,
