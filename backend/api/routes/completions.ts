@@ -205,11 +205,7 @@ export class CompletionController extends Controller {
       .join("course as c", "com.course_id", "c.id")
       .join("user as u", "com.user_id", "u.id")
       .where("c.id", course.completions_handled_by_id ?? course.id)
-      .distinct("u.id", "com.course_id")
       .orderBy("com.completion_date", "asc")
-      .orderBy("u.last_name", "asc")
-      .orderBy("u.first_name", "asc")
-      .orderBy("u.id", "asc")
 
     if (fromDate && typeof fromDate === "string") {
       try {
@@ -222,6 +218,27 @@ export class CompletionController extends Controller {
 
     const completions = await query
 
+    // Filter to keep only the oldest completion per user (already sorted by completion_date asc)
+    const seenUsers = new Set<string>()
+    const uniqueCompletions = completions.filter((row) => {
+      if (seenUsers.has(row.id)) {
+        return false
+      }
+      seenUsers.add(row.id)
+      return true
+    })
+
+    // Sort by last name, first name, and ID
+    uniqueCompletions.sort((a, b) => {
+      if (a.last_name !== b.last_name) {
+        return (a.last_name || "").localeCompare(b.last_name || "")
+      }
+      if (a.first_name !== b.first_name) {
+        return (a.first_name || "").localeCompare(b.first_name || "")
+      }
+      return a.id.localeCompare(b.id)
+    })
+
     const headers = [
       "User ID",
       "Email",
@@ -232,12 +249,14 @@ export class CompletionController extends Controller {
       "Grade",
     ]
 
-    const rows = completions.map((row) => [
+    const rows = uniqueCompletions.map((row) => [
       row.id,
       row.email,
       row.first_name,
       row.last_name,
-      row.completion_date,
+      row.completion_date
+        ? new Date(row.completion_date).toISOString()
+        : row.completion_date,
       row.completion_language,
       row.grade,
     ])
