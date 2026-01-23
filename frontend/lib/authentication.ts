@@ -95,7 +95,7 @@ export const signOut = async (apollo: ApolloClient<object>, cb: () => void) => {
   }, 100)
 }
 
-export const getAccessToken = (ctx?: NextContext): string => {
+export const getAccessToken = (ctx?: NextContext): string | undefined => {
   if (typeof window !== "undefined") {
     const match = document.cookie.match(/(?:^|; )access_token=([^;]*)/)
     if (match?.[1]) {

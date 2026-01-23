@@ -34,7 +34,8 @@ function withAdminOrCourseOwner<P extends object = object>(
     const router = useRouter()
     const { signedIn, loading, admin } = useAuth()
     const baseUrl = router.pathname.includes("_old") ? "/_old" : ""
-    const slug = (router.query.slug as string) ?? ""
+    const rawSlug = router.query.slug
+    const slug = Array.isArray(rawSlug) ? rawSlug[0] ?? "" : rawSlug ?? ""
 
     const {
       data,

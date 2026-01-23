@@ -17,6 +17,31 @@ import { GraphQLUserInputError } from "../../lib/errors"
 import { isDefined } from "../../util"
 import { ConflictError } from "../common"
 
+async function authorizeByCourseIdentifier(
+  args: {
+    course_id?: string | null
+    course_slug?: string | null
+    slug?: string | null
+  },
+  ctx: any,
+  root: any,
+  info: any,
+) {
+  const course = await ctx.prisma.course.findUniqueOrAlias({
+    where: {
+      id: args.course_id ?? undefined,
+      slug: args.course_slug ?? args.slug ?? undefined,
+    },
+    select: { id: true },
+  })
+
+  if (!course) {
+    return false
+  }
+
+  return await isAdminOrCourseOwner(course.id)(root, args, ctx, info)
+}
+
 export const CompletionMutations = extendType({
   type: "Mutation",
   definition(t) {
@@ -74,21 +99,7 @@ export const CompletionMutations = extendType({
           )
         }
       },
-      authorize: async (root, args, ctx, info) => {
-        const course = await ctx.prisma.course.findUnique({
-          where: {
-            id: args.course_id ?? undefined,
-            slug: args.course_slug ?? undefined,
-          },
-          select: { id: true },
-        })
-
-        if (!course) {
-          return false
-        }
-
-        return await isAdminOrCourseOwner(course.id)(root, args, ctx, info)
-      },
+      authorize: authorizeByCourseIdentifier,
       resolve: async (_, args, ctx) => {
         const { course_id, course_slug } = args
 
@@ -193,21 +204,7 @@ export const CompletionMutations = extendType({
         course_id: idArg(),
         slug: stringArg(),
       },
-      authorize: async (root, args, ctx, info) => {
-        const course = await ctx.prisma.course.findUniqueOrAlias({
-          where: {
-            id: args.course_id ?? undefined,
-            slug: args.slug ?? undefined,
-          },
-          select: { id: true },
-        })
-
-        if (!course) {
-          return false
-        }
-
-        return await isAdminOrCourseOwner(course.id)(root, args, ctx, info)
-      },
+      authorize: authorizeByCourseIdentifier,
       resolve: async (_, { course_id: id, slug }, ctx) => {
         if ((!id && !slug) || (id && slug)) {
           throw new GraphQLUserInputError(
