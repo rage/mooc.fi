@@ -27,16 +27,35 @@ async function authorizeByCourseIdentifier(
   root: any,
   info: any,
 ) {
+  const courseId = args.course_id
+  const courseSlug = args.course_slug ?? args.slug
+
+  // Validate that at least one identifier is provided
+  if (!courseId && !courseSlug) {
+    throw new GraphQLUserInputError("must provide course_id or slug", [
+      "course_id",
+      "slug",
+    ])
+  }
+
+  // Validate that only one identifier is provided
+  if (courseId && courseSlug) {
+    throw new GraphQLUserInputError(
+      "must provide exactly one of course_id or slug",
+      ["course_id", "slug"],
+    )
+  }
+
   const course = await ctx.prisma.course.findUniqueOrAlias({
     where: {
-      id: args.course_id ?? undefined,
-      slug: args.course_slug ?? args.slug ?? undefined,
+      id: courseId ?? undefined,
+      slug: courseSlug ?? undefined,
     },
     select: { id: true },
   })
 
   if (!course) {
-    return false
+    throw new GraphQLUserInputError("course not found", ["course_id", "slug"])
   }
 
   return await isAdminOrCourseOwner(course.id)(root, args, ctx, info)
@@ -206,13 +225,6 @@ export const CompletionMutations = extendType({
       },
       authorize: authorizeByCourseIdentifier,
       resolve: async (_, { course_id: id, slug }, ctx) => {
-        if ((!id && !slug) || (id && slug)) {
-          throw new GraphQLUserInputError(
-            "must provide exactly one of course_id or slug!",
-            ["course_id", "slug"],
-          )
-        }
-
         const course = await ctx.prisma.course.findUniqueOrAlias({
           where: {
             id: id ?? undefined,
