@@ -105,7 +105,7 @@ function SelectedCourses() {
   const t = useTranslator(HomeTranslations)
   const language = mapNextLanguageToLocaleCode(locale)
   const { loading, data } = useQuery(PopularCoursesDocument, {
-    variables: { popularCoursesForLanguage: language },
+    variables: { popularCoursesForLanguage: language, language },
     ssr: false,
   })
 
