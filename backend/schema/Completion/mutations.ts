@@ -107,6 +107,12 @@ export const CompletionMutations = extendType({
             ["course_id", "course_slug"],
           )
         }
+        if (course_id && course_slug) {
+          throw new GraphQLUserInputError(
+            "must provide exactly one of course_id or course_slug",
+            ["course_id", "course_slug"],
+          )
+        }
       },
       authorize: authorizeByCourseIdentifier,
       resolve: async (_, args, ctx) => {
