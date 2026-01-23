@@ -18,6 +18,12 @@ query NewCourses($language: String) {
   }
 }
 
+query PopularCourses($popularCoursesForLanguage: String!, $language: String) {
+  popularCourses(popularCoursesForLanguage: $popularCoursesForLanguage) {
+    ...NewCourseFields
+  }
+}
+
 query FrontpageCoursesModules($language: String) {
   courses(
     orderBy: [{ order: { sort: asc } }]

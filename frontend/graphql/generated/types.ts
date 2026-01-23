@@ -11,7 +11,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
-// Generated on 2023-08-30T10:42:08+03:00
+// Generated on 2026-01-23T15:49:15+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -2942,6 +2942,7 @@ export type Query = {
   /** Get organization by id or slug. Admins can also query hidden/disabled courses. Fields that can be queried is more limited on normal users. */
   organization: Maybe<Organization>;
   organizations: Maybe<Array<Organization>>;
+  popularCourses: Maybe<Array<Course>>;
   registeredCompletions: Maybe<Array<CompletionRegistered>>;
   service: Maybe<Service>;
   services: Array<Service>;
@@ -3116,6 +3117,11 @@ export type QueryorganizationsArgs = {
   orderBy?: InputMaybe<Array<OrganizationOrderByWithRelationAndSearchRelevanceInput>>;
   skip?: InputMaybe<Scalars['Int']['input']>;
   take?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QuerypopularCoursesArgs = {
+  popularCoursesForLanguage: Scalars['String']['input'];
 };
 
 
@@ -5276,6 +5282,14 @@ export type NewCoursesQueryVariables = Exact<{
 
 export type NewCoursesQuery = { __typename?: 'Query', courses: Array<{ __typename?: 'Course', description: string | null, link: string | null, order: number | null, study_module_order: number | null, promote: boolean | null, status: CourseStatus | null, start_point: boolean | null, study_module_start_point: boolean | null, hidden: boolean | null, upcoming_active_link: boolean | null, tier: number | null, support_email: string | null, teacher_in_charge_email: string, teacher_in_charge_name: string, start_date: any | null, end_date: any | null, has_certificate: boolean | null, name: string, ects: string | null, language: string | null, created_at: any, updated_at: any, id: string, slug: string, course_translations: Array<{ __typename?: 'CourseTranslation', id: string, language: string, name: string }>, tags: Array<{ __typename?: 'Tag', id: string, hidden: boolean, types: Array<string> | null, name: string | null, abbreviation: string | null, tag_translations: Array<{ __typename?: 'TagTranslation', tag_id: string, name: string, description: string | null, language: string, abbreviation: string | null }> }>, sponsors: Array<{ __typename?: 'Sponsor', order: number | null, id: string, name: string, translations: Array<{ __typename?: 'SponsorTranslation', sponsor_id: string, language: string, name: string, description: string | null, link: string | null, link_text: string | null }>, images: Array<{ __typename?: 'SponsorImage', sponsor_id: string, type: string, width: number, height: number, uri: string }> | null }>, study_modules: Array<{ __typename?: 'StudyModule', id: string, slug: string, name: string }> }> | null };
 
+export type PopularCoursesQueryVariables = Exact<{
+  popularCoursesForLanguage: Scalars['String']['input'];
+  language?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type PopularCoursesQuery = { __typename?: 'Query', popularCourses: Array<{ __typename?: 'Course', description: string | null, link: string | null, order: number | null, study_module_order: number | null, promote: boolean | null, status: CourseStatus | null, start_point: boolean | null, study_module_start_point: boolean | null, hidden: boolean | null, upcoming_active_link: boolean | null, tier: number | null, support_email: string | null, teacher_in_charge_email: string, teacher_in_charge_name: string, start_date: any | null, end_date: any | null, has_certificate: boolean | null, name: string, ects: string | null, language: string | null, created_at: any, updated_at: any, id: string, slug: string, course_translations: Array<{ __typename?: 'CourseTranslation', id: string, language: string, name: string }>, tags: Array<{ __typename?: 'Tag', id: string, hidden: boolean, types: Array<string> | null, name: string | null, abbreviation: string | null, tag_translations: Array<{ __typename?: 'TagTranslation', tag_id: string, name: string, description: string | null, language: string, abbreviation: string | null }> }>, sponsors: Array<{ __typename?: 'Sponsor', order: number | null, id: string, name: string, translations: Array<{ __typename?: 'SponsorTranslation', sponsor_id: string, language: string, name: string, description: string | null, link: string | null, link_text: string | null }>, images: Array<{ __typename?: 'SponsorImage', sponsor_id: string, type: string, width: number, height: number, uri: string }> | null }>, study_modules: Array<{ __typename?: 'StudyModule', id: string, slug: string, name: string }> }> | null };
+
 export type FrontpageCoursesModulesQueryVariables = Exact<{
   language?: InputMaybe<Scalars['String']['input']>;
 }>;
@@ -6077,7 +6091,7 @@ export type ProgressExtraFieldPolicy = {
 	totalExerciseCompletionsNeeded?: FieldPolicy<any> | FieldReadFunction<any>,
 	totalExerciseCount?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type QueryKeySpecifier = ('completions' | 'completionsPaginated' | 'completionsPaginated_type' | 'course' | 'courseAliases' | 'courseOrganizations' | 'courseTranslations' | 'courseVariant' | 'courseVariants' | 'course_exists' | 'courses' | 'currentUser' | 'email_template' | 'email_templates' | 'exercise' | 'exerciseCompletion' | 'exerciseCompletions' | 'exercises' | 'handlerCourses' | 'openUniversityRegistrationLink' | 'openUniversityRegistrationLinks' | 'organization' | 'organizations' | 'registeredCompletions' | 'service' | 'services' | 'sponsors' | 'studyModuleTranslations' | 'study_module' | 'study_module_exists' | 'study_modules' | 'tagTypes' | 'tags' | 'user' | 'userCourseProgress' | 'userCourseProgresses' | 'userCourseServiceProgress' | 'userCourseServiceProgresses' | 'userCourseSetting' | 'userCourseSettingCount' | 'userCourseSettings' | 'userDetailsContains' | 'userOrganizationJoinConfirmation' | 'userOrganizations' | 'users' | QueryKeySpecifier)[];
+export type QueryKeySpecifier = ('completions' | 'completionsPaginated' | 'completionsPaginated_type' | 'course' | 'courseAliases' | 'courseOrganizations' | 'courseTranslations' | 'courseVariant' | 'courseVariants' | 'course_exists' | 'courses' | 'currentUser' | 'email_template' | 'email_templates' | 'exercise' | 'exerciseCompletion' | 'exerciseCompletions' | 'exercises' | 'handlerCourses' | 'openUniversityRegistrationLink' | 'openUniversityRegistrationLinks' | 'organization' | 'organizations' | 'popularCourses' | 'registeredCompletions' | 'service' | 'services' | 'sponsors' | 'studyModuleTranslations' | 'study_module' | 'study_module_exists' | 'study_modules' | 'tagTypes' | 'tags' | 'user' | 'userCourseProgress' | 'userCourseProgresses' | 'userCourseServiceProgress' | 'userCourseServiceProgresses' | 'userCourseSetting' | 'userCourseSettingCount' | 'userCourseSettings' | 'userDetailsContains' | 'userOrganizationJoinConfirmation' | 'userOrganizations' | 'users' | QueryKeySpecifier)[];
 export type QueryFieldPolicy = {
 	completions?: FieldPolicy<any> | FieldReadFunction<any>,
 	completionsPaginated?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -6102,6 +6116,7 @@ export type QueryFieldPolicy = {
 	openUniversityRegistrationLinks?: FieldPolicy<any> | FieldReadFunction<any>,
 	organization?: FieldPolicy<any> | FieldReadFunction<any>,
 	organizations?: FieldPolicy<any> | FieldReadFunction<any>,
+	popularCourses?: FieldPolicy<any> | FieldReadFunction<any>,
 	registeredCompletions?: FieldPolicy<any> | FieldReadFunction<any>,
 	service?: FieldPolicy<any> | FieldReadFunction<any>,
 	services?: FieldPolicy<any> | FieldReadFunction<any>,

@@ -1,4 +1,4 @@
-import { omit } from "lodash"
+import { omit, shuffle } from "lodash"
 import {
   arg,
   booleanArg,
@@ -9,7 +9,7 @@ import {
   stringArg,
 } from "nexus"
 
-import { Course, CourseTranslation, Prisma } from "@prisma/client"
+import { Course, CourseStatus, CourseTranslation, Prisma } from "@prisma/client"
 
 import { isAdmin, isUser, or } from "../../accessControl"
 import { GraphQLUserInputError } from "../../lib/errors"
@@ -300,6 +300,86 @@ export const CourseQueries = extendType({
 
         // TODO: (?) provide proper typing
         return filtered as Array<
+          Course & {
+            description: string
+            link: string
+          }
+        >
+      },
+    })
+
+    t.list.nonNull.field("popularCourses", {
+      type: "Course",
+      args: {
+        popularCoursesForLanguage: nonNull(stringArg()),
+      },
+      resolve: async (_, args, ctx) => {
+        const { popularCoursesForLanguage } = args
+
+        const courses: Array<
+          Course & {
+            course_translations?: Array<CourseTranslation>
+          }
+        > = await ctx.prisma.course.findMany({
+          where: {
+            AND: [
+              {
+                OR: [
+                  {
+                    hidden: false,
+                  },
+                  {
+                    hidden: null,
+                  },
+                ],
+              },
+              {
+                status: {
+                  not: CourseStatus.Ended,
+                },
+              },
+              {
+                course_translations: {
+                  some: {
+                    language: popularCoursesForLanguage,
+                  },
+                },
+              },
+              {
+                completions_handled_by_id: null,
+              },
+            ],
+          },
+          include: {
+            course_translations: true,
+          },
+        })
+
+        const filtered = courses
+          .map((course) => {
+            const translationForLanguage = course?.course_translations?.find(
+              (t) => t.language === popularCoursesForLanguage,
+            )
+            const translation =
+              translationForLanguage ?? course?.course_translations?.[0]
+
+            return {
+              ...omit(course, [
+                "course_translations",
+                "tags",
+                "handles_completions_for",
+              ]),
+              description: translation?.description ?? "",
+              link: translation?.link ?? "",
+              name: translation?.name ?? course?.name ?? "",
+            }
+          })
+          .filter(isDefined)
+
+        const shuffled = shuffle(filtered)
+        const sampled = shuffled.slice(0, 4)
+
+        return sampled as Array<
           Course & {
             description: string
             link: string
