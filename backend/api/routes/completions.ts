@@ -228,7 +228,7 @@ export class CompletionController extends Controller {
       return true
     })
 
-    // Sort by usuniqueCr name and ID
+    // Sort by last name, first name, and ID
     uniqueCompletions.sort((a, b) => {
       if (a.last_name !== b.last_name) {
         return (a.last_name || "").localeCompare(b.last_name || "")
@@ -249,7 +249,7 @@ export class CompletionController extends Controller {
       "Grade",
     ]
 
-    const rows = completions.map((row) => [
+    const rows = uniqueCompletions.map((row) => [
       row.id,
       row.email,
       row.first_name,
