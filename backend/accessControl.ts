@@ -74,6 +74,16 @@ export const isCourseOwner =
     return Boolean(ownership)
   }
 
+export const isAdminOrCourseOwner =
+  (course_id: string): AuthorizeFunction =>
+  async (root, args, ctx, info) => {
+    if (isAdmin(root, args, ctx, info)) {
+      return true
+    }
+
+    return await isCourseOwner(course_id)(root, args, ctx, info)
+  }
+
 export const or =
   (...predicates: AuthorizeFunction[]): AuthorizeFunction =>
   (...params) =>

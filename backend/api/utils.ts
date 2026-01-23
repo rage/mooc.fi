@@ -71,6 +71,40 @@ export function requireAdmin(ctx: BaseContext) {
   }
 }
 
+export function requireAdminOrCourseOwner(courseId: string, ctx: BaseContext) {
+  return async function (
+    req: Request,
+    res: Response,
+  ): Promise<Result<boolean, Response>> {
+    const getUserResult = await getUser(ctx)(req, res)
+
+    if (getUserResult.isErr()) {
+      return err(getUserResult.error)
+    }
+
+    const { user, details } = getUserResult.value
+
+    // Allow if user is admin
+    if (details.administrator) {
+      return ok(true)
+    }
+
+    // Check if user has course ownership for this course
+    const ownership = await ctx.knex
+      .select("id")
+      .from("course_ownership")
+      .where("user_id", user.id)
+      .andWhere("course_id", courseId)
+      .first()
+
+    if (ownership) {
+      return ok(true)
+    }
+
+    return err(res.status(401).json({ message: "unauthorized" }))
+  }
+}
+
 export function getUser({ knex, logger }: BaseContext) {
   return async function (
     req: Request,

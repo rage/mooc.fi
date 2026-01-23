@@ -5,7 +5,13 @@ import { v4 as uuidv4 } from "uuid"
 import { Completion } from "@prisma/client"
 import { User } from "@sentry/node"
 
-import { isAdmin, isUser, or, Role } from "../../accessControl"
+import {
+  isAdmin,
+  isAdminOrCourseOwner,
+  isUser,
+  or,
+  Role,
+} from "../../accessControl"
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
 import { GraphQLUserInputError } from "../../lib/errors"
 import { isDefined } from "../../util"
@@ -25,7 +31,9 @@ export const CompletionMutations = extendType({
         completion_language: stringArg(),
         tier: intArg(),
       },
-      authorize: isAdmin,
+      authorize: async (root, args, ctx, info) => {
+        return await isAdminOrCourseOwner(args.course)(root, args, ctx, info)
+      },
       resolve: (_, args, ctx) => {
         const {
           user_upstream_id,
@@ -66,7 +74,21 @@ export const CompletionMutations = extendType({
           )
         }
       },
-      authorize: isAdmin,
+      authorize: async (root, args, ctx, info) => {
+        const course = await ctx.prisma.course.findUnique({
+          where: {
+            id: args.course_id ?? undefined,
+            slug: args.course_slug ?? undefined,
+          },
+          select: { id: true },
+        })
+
+        if (!course) {
+          return false
+        }
+
+        return await isAdminOrCourseOwner(course.id)(root, args, ctx, info)
+      },
       resolve: async (_, args, ctx) => {
         const { course_id, course_slug } = args
 
@@ -171,7 +193,21 @@ export const CompletionMutations = extendType({
         course_id: idArg(),
         slug: stringArg(),
       },
-      authorize: isAdmin,
+      authorize: async (root, args, ctx, info) => {
+        const course = await ctx.prisma.course.findUniqueOrAlias({
+          where: {
+            id: args.course_id ?? undefined,
+            slug: args.slug ?? undefined,
+          },
+          select: { id: true },
+        })
+
+        if (!course) {
+          return false
+        }
+
+        return await isAdminOrCourseOwner(course.id)(root, args, ctx, info)
+      },
       resolve: async (_, { course_id: id, slug }, ctx) => {
         if ((!id && !slug) || (id && slug)) {
           throw new GraphQLUserInputError(

@@ -17,6 +17,7 @@ import {
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
 import { err, isDefined } from "../../util"
 import { ApiContext, Controller } from "../types"
+import { requireAdminOrCourseOwner } from "../utils"
 
 const languageMap: Record<string, string> = {
   en: "en_US",
@@ -118,10 +119,14 @@ export class CompletionController extends Controller {
   ) => {
     const { courseId } = req.params
     const { fromDate, format } = req.query
-    const adminRes = await this.requireAdmin(req, res)
 
-    if (adminRes.isErr()) {
-      return adminRes.error
+    const authRes = await requireAdminOrCourseOwner(courseId, this.ctx)(
+      req,
+      res,
+    )
+
+    if (authRes.isErr()) {
+      return authRes.error
     }
 
     const course = await this.ctx.prisma.course.findUnique({
