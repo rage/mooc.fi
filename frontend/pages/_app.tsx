@@ -7,6 +7,8 @@ import Script from "next/script"
 
 import { CssBaseline } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
+import { LocalizationProvider } from "@mui/x-date-pickers"
+import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
 
 import DynamicLayout from "/components/DynamicLayout"
 import AppContextProvider from "/contexts/AppContextProvider"
@@ -71,14 +73,16 @@ export function MyApp({ Component, pageProps, deviceType }: MyAppProps) {
       </Head>
       <ThemeProvider theme={themeWithLocale}>
         <CssBaseline />
-        <LoginStateProvider value={loginStateContextValue}>
-          <AppContextProvider>
-            <DynamicLayout isOld={isOld}>
-              <DefaultSeo {...seoConfig} />
-              <Component {...pageProps} />
-            </DynamicLayout>
-          </AppContextProvider>
-        </LoginStateProvider>
+        <LocalizationProvider dateAdapter={AdapterLuxon}>
+          <LoginStateProvider value={loginStateContextValue}>
+            <AppContextProvider>
+              <DynamicLayout isOld={isOld}>
+                <DefaultSeo {...seoConfig} />
+                <Component {...pageProps} />
+              </DynamicLayout>
+            </AppContextProvider>
+          </LoginStateProvider>
+        </LocalizationProvider>
       </ThemeProvider>
     </>
   )

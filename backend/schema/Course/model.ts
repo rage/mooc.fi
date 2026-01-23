@@ -2,7 +2,7 @@ import { booleanArg, intArg, list, nonNull, objectType, stringArg } from "nexus"
 
 import { Prisma } from "@prisma/client"
 
-import { isAdmin } from "../../accessControl"
+import { isAdmin, isAdminOrCourseOwner } from "../../accessControl"
 import { GraphQLForbiddenError, GraphQLUserInputError } from "../../lib/errors"
 import { filterNullFields } from "../../util"
 
@@ -82,7 +82,9 @@ export const Course = objectType({
         user_id: stringArg(),
         user_upstream_id: intArg(),
       },
-      authorize: isAdmin,
+      authorize: async (parent, args, ctx, info) => {
+        return await isAdminOrCourseOwner(parent.id)({}, args, ctx, info)
+      },
       validate: (_, { user_id, user_upstream_id }) => {
         if (!user_id && !user_upstream_id) {
           throw new GraphQLUserInputError("needs user_id or user_upstream_id", [

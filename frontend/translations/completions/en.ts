@@ -17,4 +17,18 @@ export default {
   certificateGeneratedTitle: "Certificate generated",
   certificateGeneratedMessage:
     "Your certificate was generated successfully! Press 'Show your certificate' to view it.",
+  downloadCompletions: "Download Completions",
+  downloadCompletionsDialogTitle: "Download Completions",
+  downloadCompletionsDateLabel: "From Date (optional)",
+  downloadCompletionsCancel: "Cancel",
+  downloadCompletionsDownload: "Download",
+  downloadCompletionsSuccess: "Download successful",
+  downloadCompletionsSuccessMessage:
+    "Your completions file has been downloaded successfully.",
+  downloadCompletionsError: "Download failed",
+  downloadCompletionsErrorMessage:
+    "An error occurred while downloading completions. Please try again.",
+  downloadCompletionsFileFormat: "File Format",
+  downloadCompletionsFormatCsv: "CSV",
+  downloadCompletionsFormatExcel: "Excel (.xlsx)",
 } as const

@@ -8,6 +8,7 @@ import { TextField } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import { useEventCallback } from "@mui/material/utils"
 
+import CompletionsDownloadButton from "/components/CompletionsDownloadButton"
 import { WideContainer } from "/components/Container"
 import CompletionsList from "/components/Dashboard/CompletionsList"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
@@ -20,7 +21,7 @@ import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import useIsOld from "/hooks/useIsOld"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useTranslator } from "/hooks/useTranslator"
-import withAdmin from "/lib/with-admin"
+import withAdminOrCourseOwner from "/lib/with-admin-or-course-owner"
 import CoursesTranslations from "/translations/courses"
 
 import { CourseFromSlugDocument } from "/graphql/generated"
@@ -30,6 +31,39 @@ import { CourseFromSlugDocument } from "/graphql/generated"
 const ContentArea = styled("div")`
   max-width: 39em;
   margin: auto;
+`
+
+const TitleContainer = styled("div")`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  gap: 1rem;
+  max-width: 60em;
+  margin-left: auto;
+  margin-right: auto;
+
+  & h1 {
+    flex-shrink: 1;
+    min-width: 0;
+  }
+
+  & button {
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: flex-start;
+
+    & h1 {
+      width: 100%;
+    }
+
+    & button {
+      align-self: flex-start;
+    }
+  }
 `
 
 const Completions = () => {
@@ -109,9 +143,12 @@ const Completions = () => {
         <DashboardTabBar slug={slug} selectedValue={1} />
 
         <WideContainer>
-          <H1NoBackground component="h1" variant="h1" align="center">
-            {data.course.name}
-          </H1NoBackground>
+          <TitleContainer>
+            <H1NoBackground component="h1" variant="h1">
+              {data.course.name}
+            </H1NoBackground>
+            <CompletionsDownloadButton courseId={data.course.id} />
+          </TitleContainer>
           <SubtitleNoBackground
             component="p"
             variant="subtitle1"
@@ -143,4 +180,4 @@ const Completions = () => {
 
 Completions.displayName = "Completions"
 
-export default withAdmin(Completions)
+export default withAdminOrCourseOwner(Completions)

@@ -24,7 +24,7 @@ import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import useIsOld from "/hooks/useIsOld"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useTranslator } from "/hooks/useTranslator"
-import withAdmin from "/lib/with-admin"
+import withAdminOrCourseOwner from "/lib/with-admin-or-course-owner"
 import CoursesTranslations from "/translations/courses"
 
 import {
@@ -252,4 +252,4 @@ const Course = () => {
   )
 }
 
-export default withAdmin(Course)
+export default withAdminOrCourseOwner(Course)

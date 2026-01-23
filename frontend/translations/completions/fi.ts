@@ -18,4 +18,18 @@ export default {
   certificateGeneratedTitle: "Sertifikaatti generoitu",
   certificateGeneratedMessage:
     "Sertifikaattisi on nyt generoitu! Paina 'Näytä sertifikaatti' nähdäksesi sen.",
+  downloadCompletions: "Lataa suoritukset",
+  downloadCompletionsDialogTitle: "Lataa suoritukset",
+  downloadCompletionsDateLabel: "Alkamispäivä (valinnainen)",
+  downloadCompletionsCancel: "Peruuta",
+  downloadCompletionsDownload: "Lataa",
+  downloadCompletionsSuccess: "Lataus onnistui",
+  downloadCompletionsSuccessMessage:
+    "Suorituksien tiedosto on ladattu onnistuneesti.",
+  downloadCompletionsError: "Lataus epäonnistui",
+  downloadCompletionsErrorMessage:
+    "Virhe suorituksien lataamisessa. Yritä uudelleen.",
+  downloadCompletionsFileFormat: "Tiedostomuoto",
+  downloadCompletionsFormatCsv: "CSV",
+  downloadCompletionsFormatExcel: "Excel (.xlsx)",
 } as const

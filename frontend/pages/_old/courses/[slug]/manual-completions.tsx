@@ -25,7 +25,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import useIsOld from "/hooks/useIsOld"
 import { useQueryParameter } from "/hooks/useQueryParameter"
-import withAdmin from "/lib/with-admin"
+import withAdminOrCourseOwner from "/lib/with-admin-or-course-owner"
 
 import {
   AddManualCompletionDocument,
@@ -280,4 +280,4 @@ const ManualCompletions = () => {
   )
 }
 
-export default withAdmin(ManualCompletions)
+export default withAdminOrCourseOwner(ManualCompletions)
