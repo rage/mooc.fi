@@ -37,7 +37,8 @@ export async function sendEmailTemplateToUser({
     : undefined
 
   if (context.test) {
-    ;(context.logger?.info || console.log)(
+    const logger = context.logger ?? console
+    logger.info(
       `To: ${
         email ?? user.email
       }\nSubject: ${title}\nText: ${text}\nHtml: ${html_body}`,
@@ -45,12 +46,15 @@ export async function sendEmailTemplateToUser({
 
     return
   }
-  await sendMail({
-    to: email ?? user.email,
-    subject: emptyOrNullToUndefined(title),
-    text,
-    html: emptyOrNullToUndefined(html_body),
-  })
+  await sendMail(
+    {
+      to: email ?? user.email,
+      subject: emptyOrNullToUndefined(title),
+      text,
+      html: emptyOrNullToUndefined(html_body),
+    },
+    { logger: context.logger },
+  )
 }
 
 interface ApplyTemplateArgs {
