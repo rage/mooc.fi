@@ -95,8 +95,7 @@ async function withRetries({
 }: RetryOptions) {
   const BASE_DELAY_MS = 1000
   const jitter = () => Math.floor(Math.random() * 250)
-  const log =
-    logInfo ?? ((message: string) => console.log(message))
+  const log = logInfo ?? ((message: string) => console.log(message))
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
