@@ -31,8 +31,8 @@ export async function sendMail(
   { to, text, subject, html }: SendMailOptions,
   context?: SendMailContext,
 ) {
-  const logger = context?.logger ?? console
-  const logInfo = logger.info.bind(logger)
+  const logger = context?.logger
+  const logInfo = logger?.info.bind(logger) ?? console.log
 
   const options: SMTPTransport.Options = {
     host: SMTP_HOST,
@@ -42,7 +42,6 @@ export async function sendMail(
       user: SMTP_USER, // generated ethereal user
       pass: SMTP_PASS, // generated ethereal password
     },
-    pool: false, // Disable pooling for better retry isolation
     connectionTimeout: 15000,
     greetingTimeout: 15000,
     socketTimeout: 30000,
@@ -50,7 +49,6 @@ export async function sendMail(
 
   await withRetries({
     maxRetries: 3,
-    logger,
     logInfo,
     operationName: "SMTP send",
     isTransientError: isTransientSmtpError,
@@ -78,7 +76,6 @@ export async function sendMail(
 
 interface RetryOptions {
   maxRetries: number
-  logger?: winston.Logger
   logInfo?: (message: string) => void
   operationName: string
   operation: (attempt: number) => Promise<void>
@@ -87,7 +84,6 @@ interface RetryOptions {
 
 async function withRetries({
   maxRetries,
-  logger,
   logInfo,
   operationName,
   operation,
