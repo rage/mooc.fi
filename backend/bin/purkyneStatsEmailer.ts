@@ -22,7 +22,7 @@ const purkyneStatsEmailer = async () => {
         JOIN completion co on u.id = co.user_id
       WHERE co.course_id = '49cbadd8-be32-454f-9b7d-e84d52100b74'::uuid
         AND u.email ILIKE '%@ujep.cz'
-      ORDER BY u.email, co.tier, co.completion_date DESC
+      ORDER BY u.email, co.tier, co.completion_date DESC NULLS LAST
     )
     SELECT tier, email, completion_date
       FROM unique_completions

@@ -25,7 +25,7 @@ const linkopingStatsEmailer = async () => {
         AND ucs.other ->> 'bai_completion' = 'true'
         AND c.course_id = '49cbadd8-be32-454f-9b7d-e84d52100b74'::uuid
         AND ucs.country = 'Sweden'
-      ORDER BY u.email, c.tier, c.completion_date
+      ORDER BY u.email, c.tier, c.completion_date DESC NULLS LAST
     )
     SELECT email, completion_date, tier
       FROM unique_completions
