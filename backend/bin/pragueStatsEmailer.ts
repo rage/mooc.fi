@@ -12,17 +12,20 @@ const pragueStatsEmailer = async () => {
     throw new Error("No recipients set for completion emails")
   }
 
-  // TODO: one completion per user?
   const result = await prisma.$queryRaw<
     Array<{ email: string; completion_date: string; tier: number }>
   >`
-    SELECT co.tier, u.email, co.completion_date
-      FROM "user" u
-      JOIN completion co on u.id = co.user_id
-    WHERE co.course_id = '49cbadd8-be32-454f-9b7d-e84d52100b74'::uuid
-      AND u.email ILIKE '%@vse.cz'
-    GROUP BY co.tier, u.email, co.completion_date
-    ORDER BY co.completion_date DESC, u.email, co.tier;
+    WITH unique_completions AS (
+      SELECT DISTINCT ON (u.email, co.tier) co.tier, u.email, co.completion_date
+        FROM "user" u
+        JOIN completion co on u.id = co.user_id
+      WHERE co.course_id = '49cbadd8-be32-454f-9b7d-e84d52100b74'::uuid
+        AND u.email ILIKE '%@vse.cz'
+      ORDER BY u.email, co.tier, co.completion_date DESC NULLS LAST
+    )
+    SELECT tier, email, completion_date
+      FROM unique_completions
+    ORDER BY completion_date DESC, email, tier;
   `
 
   const tiers: Record<number, Array<string>> = {}
