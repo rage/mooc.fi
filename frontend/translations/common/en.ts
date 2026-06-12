@@ -48,7 +48,7 @@ export default {
   research5:
     "This field of research is called learning analytics, and those interested in learning more about it are encouraged to read an article that provides an overview of the area called ",
   research6:
-    "Petri Ihantola, the director of the MOOC center at the University of Helsinki is responsible for the research. You can request the deletion of data related to you at any time by sending an email to mooc@cs.helsinki.fi",
+    "Petri Ihantola, the director of the MOOC center at the University of Helsinki is responsible for the research. You can request the deletion of data related to you at any time by sending an email to mooc@helsinki.fi",
   research7:
     "Data from the learning process is used in this research. The data includes information about learning material usage, course assignment progress and completion, and exam performance. Individual students cannot be identified from the results. Participation is voluntary, and if you do not wish to participate in the research, there are no consequences to you.",
   researchAgree: "Taking part on the research",

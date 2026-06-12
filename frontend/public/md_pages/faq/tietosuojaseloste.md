@@ -10,7 +10,7 @@ Helsingin yliopisto, Helsingin yliopiston MOOC-keskus
 
 ### 2. Yhteysosoite rekisteriä koskevissa asioissa
 
-mooc@cs.helsinki.fi
+mooc@helsinki.fi
 
 ### 3. Helsingin yliopiston tietosuojavastaavan yhteystiedot
 
@@ -83,7 +83,7 @@ Opiskelutietoja säilytetään Helsingin yliopiston asiakirjahallinnon suunnitel
 
 ### 11. Tieto automaattisen päätöksenteon tai profiloinnin olemassaolosta sekä tieto käsittelyn logiikasta ja merkityksestä rekisteröidylle
 
-Harjoitustehtävien automaattinen arviointi (automaattinen päätöksenteko) on tarjottavan palvelun (kurssit, jotka perustuvat automaattiseen palautteeseen) kannalta välttämätön ominaisuus. Esimerkiksi ohjelmointitehtävän oikeellisuutta arvioidaan automaattisesti sen perusteella läpäiseekö opiskelijan tuottama ohjelma opettajan määrittelemät automaattisesti suoritettavat testit. Mikäli automaattinen arviointi on virheellistä, voit pyytää asian oikaisemista ensisijaisesti ottamalla yhteyttä kurssin opettajaan tai mooc@cs.helsinki.fi -osoitteeseen.
+Harjoitustehtävien automaattinen arviointi (automaattinen päätöksenteko) on tarjottavan palvelun (kurssit, jotka perustuvat automaattiseen palautteeseen) kannalta välttämätön ominaisuus. Esimerkiksi ohjelmointitehtävän oikeellisuutta arvioidaan automaattisesti sen perusteella läpäiseekö opiskelijan tuottama ohjelma opettajan määrittelemät automaattisesti suoritettavat testit. Mikäli automaattinen arviointi on virheellistä, voit pyytää asian oikaisemista ensisijaisesti ottamalla yhteyttä kurssin opettajaan tai mooc@helsinki.fi -osoitteeseen.
 
 Käyttäjiä ei profiloida henkilökohtaisten ominaisuuksien perusteella.
 
@@ -93,7 +93,7 @@ Rekisteröidyllä on, ellei tietosuojalainsäädännöstä muuta johdu:
 
 **Tietojen tarkastusoikeus (oikeus saada pääsy henkilötietoihin) ja oikeus tietojen oikaisemiseen**
 
-_Yksilöivät tiedot_ voi tarkistaa ja niitä voi muokata kirjautumalla palveluun http://tmc.mooc.fi/ ja klikkaamalla käyttäjätunnustasi sivun oikeassa yläreunassa ja menemällä välilehdelle _tilin asetukset_. _Opiskelua koskevat tiedot_ voi tarkistaa jokaisen kurssin osalta erikseen kirjautumalla kyseisen kurssin kotisivulle. Mikäli opiskelua koskevat tiedot ovat virheellisiä voit pyytää niiden oikaisemista lähettämällä sähköpostia osoitteeseen mooc@cs.helsinki.fi
+_Yksilöivät tiedot_ voi tarkistaa ja niitä voi muokata kirjautumalla palveluun http://tmc.mooc.fi/ ja klikkaamalla käyttäjätunnustasi sivun oikeassa yläreunassa ja menemällä välilehdelle _tilin asetukset_. _Opiskelua koskevat tiedot_ voi tarkistaa jokaisen kurssin osalta erikseen kirjautumalla kyseisen kurssin kotisivulle. Mikäli opiskelua koskevat tiedot ovat virheellisiä voit pyytää niiden oikaisemista lähettämällä sähköpostia osoitteeseen mooc@helsinki.fi
 
 **Oikeus tietojen poistamiseen**
 

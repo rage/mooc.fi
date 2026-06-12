@@ -92,7 +92,7 @@ function Footer() {
 
   return (
     <FooterBar>
-      <EmailContainer>mooc@cs.helsinki.fi</EmailContainer>
+      <EmailContainer>mooc@helsinki.fi</EmailContainer>
       <UniversityLogo />
       <SocialContainer>
         <Link

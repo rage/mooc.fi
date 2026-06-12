@@ -10,7 +10,7 @@ The University of Helsinki, the MOOC Centre at the University of Helsinki
 
 ### 2. Contact address for matters concerning the register
 
-mooc@cs.helsinki.fi
+mooc@helsinki.fi
 
 ### 3. Contact details for the person in charge of data protection at the University of Helsinki
 
@@ -83,7 +83,7 @@ Student data is retained in accordance with the scheme of the document administr
 
 ### 11. Information on the existence of automatic decision-making or profiling, as well as on the logic of processing and its significance for the registered student
 
-The automatic assessment of assignments (automatic decision-making) is a necessary feature for the service offered (courses based on automatic feedback). The correctness of a programming assignment, for example, will be assessed automatically based on whether the student’s program passes the automatic tests that a teacher has set. If there is a fault in the automatic assessment, you can ask for it to be corrected primarily by contacting the teacher of the course or the address mooc@cs.helsinki.fi.
+The automatic assessment of assignments (automatic decision-making) is a necessary feature for the service offered (courses based on automatic feedback). The correctness of a programming assignment, for example, will be assessed automatically based on whether the student’s program passes the automatic tests that a teacher has set. If there is a fault in the automatic assessment, you can ask for it to be corrected primarily by contacting the teacher of the course or the address mooc@helsinki.fi.
 
 Users are not profiled according to personal qualities.
 
@@ -93,7 +93,7 @@ Registered students have the following rights, unless the data protection legisl
 
 **The right to check and correct personal data (access rights to their own data)**
 
-_Identifying data_ may be checked and modified by logging into the service http://tmc.mooc.fi/ and clicking on your username at the top right and going to the tab _account settings_. You can check _Information on studies_ separately for each course by logging in to the course page. If the information on studies is incorrect, you can ask to have it corrected by sending a request to mooc@cs.helsinki.fi.
+_Identifying data_ may be checked and modified by logging into the service http://tmc.mooc.fi/ and clicking on your username at the top right and going to the tab _account settings_. You can check _Information on studies_ separately for each course by logging in to the course page. If the information on studies is incorrect, you can ask to have it corrected by sending a request to mooc@helsinki.fi.
 
 **The right to have data deleted**
 

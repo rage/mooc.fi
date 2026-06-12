@@ -43,5 +43,5 @@ export default {
     'Lähivuosina kaikki opettelevat ohjelmointia peruskoulusta asti. Tämä vaatii opettajilta ohjelmointiosaamista. Suosittelemme opettajille opetuksen tueksi erityisesti <a href="http://koodiaapinen.fi/"> Koodiaapista </a>. Koodiaapinen kerää ja tarjoaa opettajille suunnattuja  resursseja, jotka auttavat ohjelmointiopetuksen järjestämisessä. Voit osallistua koodiaapisen luomiseen myös itse.',
   contactTitle: "Ota yhteyttä",
   contactText:
-    'Saat meihin parhaiten yhteyden lähettämällä sähköpostia osoitteeseen <a href="mailto:mooc@cs.helsinki.fi">mooc@cs.helsinki.fi</a>',
+    'Saat meihin parhaiten yhteyden lähettämällä sähköpostia osoitteeseen <a href="mailto:mooc@helsinki.fi">mooc@helsinki.fi</a>',
 } as const

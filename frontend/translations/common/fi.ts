@@ -48,7 +48,7 @@ export default {
   research5:
     "Tällaisesta oppimisanalytiikaksi kutsutusta tutkimuksesta kiinnostuneiden kannattaa tutustua esimerkiksi artikkeliin ",
   research6:
-    "Tutkimuksesta vastaa Helsingin yliopiston MOOC-keskuksen johtaja Petri Ihantola. Voit pyytää milloin tahansa sinusta kerätyn datan poistamista lähettämällä sähköpostin osoitteeseen mooc@cs.helsinki.fi",
+    "Tutkimuksesta vastaa Helsingin yliopiston MOOC-keskuksen johtaja Petri Ihantola. Voit pyytää milloin tahansa sinusta kerätyn datan poistamista lähettämällä sähköpostin osoitteeseen mooc@helsinki.fi",
   research7:
     "Työskentelystä kerättyä tietoa käytetään tutkimuksessa. Kerätty tieto sisältää tietoa oppimateriaalien käytöstä, kurssitehtävien tekemisestä sekä kokeissa pärjäämisestä. Tutkimustuloksista ei pystytä tunnistamaan yksittäisiä opiskelijoita. Osallistuminen on vapaaehtoista, ja jos et osallistu tutkimukseen, siitä ei tule minkäänlaisia seuraamuksia.",
   researchAgree: "Tutkimukseen osallistuminen",

@@ -346,7 +346,7 @@ const Footer = () => {
             </HyLogoLink>
           </FooterBaseLogo>
           <FooterBaseContent>
-            <address>mooc@cs.helsinki.fi</address>
+            <address>mooc@helsinki.fi</address>
           </FooterBaseContent>
           <FooterBaseSocial>
             <FooterBaseSocialItems>

@@ -39,5 +39,5 @@ export default {
   "2016Text": "",
   contactTitle: "Keep in touch",
   contactText:
-    'You can best reach us by email at <a href="mailto:mooc@cs.helsinki.fi/">mooc@cs.helsinki.fi</a>',
+    'You can best reach us by email at <a href="mailto:mooc@helsinki.fi/">mooc@helsinki.fi</a>',
 } as const
