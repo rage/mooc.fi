@@ -18,4 +18,7 @@ export default {
   resultEndedPlural: "ended",
   resultOr: "or",
   resultAnd: "and",
+  sortBy: "Sort",
+  sortByModule: "By module",
+  sortByName: "Alphabetical",
 } as const

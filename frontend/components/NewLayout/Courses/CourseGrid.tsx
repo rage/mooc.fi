@@ -10,6 +10,7 @@ import {
   Checkbox,
   EnhancedButtonProps,
   FormControlLabel,
+  MenuItem,
   Skeleton,
   TextField,
   Typography,
@@ -135,6 +136,18 @@ const ResetFiltersButton = styled(Button)<EnhancedButtonProps>`
   max-height: 2.5rem;
 `
 
+const ListHeader = styled("div")`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+`
+
+const SortSelect = styled(TextField)`
+  min-width: 15rem;
+`
+
 const DynamicTagSelectButtons = dynamic(() => import("./TagSelectButtons"), {
   loading: () => <Skeleton variant="rectangular" width="100%" height={96} />,
 })
@@ -248,20 +261,33 @@ const courseHasTag = (
   return course.tags.some((courseTag) => courseTag.name === tag.name)
 }
 
-const compareCourses = (
-  course1: NewCourseFieldsFragment,
-  course2: NewCourseFieldsFragment,
-) => {
-  if (course1.study_modules.length == 0) {
-    return 1
-  } else if (course2.study_modules.length == 0) {
-    return -1
-  } else if (course1.study_modules[0].name < course2.study_modules[0].name) {
-    return -1
-  } else if (course1.study_modules[0].name >= course2.study_modules[0].name) {
-    return 1
-  } else {
-    return 0
+type CourseSort = "module" | "name"
+
+const compareCoursesByName =
+  (locale?: string) =>
+  (course1: NewCourseFieldsFragment, course2: NewCourseFieldsFragment) =>
+    course1.name.localeCompare(course2.name, locale)
+
+const compareCoursesByModule = (locale?: string) => {
+  const byName = compareCoursesByName(locale)
+
+  return (
+    course1: NewCourseFieldsFragment,
+    course2: NewCourseFieldsFragment,
+  ) => {
+    // courses without a module sort last
+    if (course1.study_modules.length === 0) {
+      return course2.study_modules.length === 0 ? byName(course1, course2) : 1
+    }
+    if (course2.study_modules.length === 0) {
+      return -1
+    }
+    return (
+      course1.study_modules[0].name.localeCompare(
+        course2.study_modules[0].name,
+        locale,
+      ) || byName(course1, course2)
+    )
   }
 }
 
@@ -270,7 +296,7 @@ function areEqual<T>(a: Array<T>, b: Array<T>) {
 }
 
 function CourseGrid() {
-  const t = useTranslator(CommonTranslations)
+  const t = useTranslator(CommonTranslations, CourseTranslations)
   const router = useRouter()
   const { locale = "fi" } = router
   const language = mapNextLanguageToLocaleCode(locale)
@@ -329,6 +355,7 @@ function CourseGrid() {
   const [filteredStatuses, setFilteredStatuses] = useState<CourseStatus[]>(
     initialFilteredStatuses,
   )
+  const [courseSort, setCourseSort] = useState<CourseSort>("name")
 
   const tags = useMemo(() => {
     const res = (tagsData?.tags ?? []).reduce(
@@ -380,6 +407,11 @@ function CourseGrid() {
     (e: React.ChangeEvent<HTMLInputElement>) => setSearchString(e.target.value),
   )
 
+  const handleSortChange = useEventCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      setCourseSort(e.target.value as CourseSort),
+  )
+
   const handleSelectAllTags = useCallback(
     () => setActiveTags([...(tagsData?.tags ?? [])]),
     [tagsData],
@@ -425,6 +457,17 @@ function CourseGrid() {
         return true
       }),
     [coursesData, searchString, activeTags, filteredStatuses],
+  )
+
+  const sortedCourses = useMemo(
+    () =>
+      sort(
+        filteredCourses,
+        courseSort === "name"
+          ? compareCoursesByName(locale)
+          : compareCoursesByModule(locale),
+      ),
+    [filteredCourses, courseSort, locale],
   )
 
   useEffect(() => {
@@ -527,13 +570,27 @@ function CourseGrid() {
           </>
         ) : (
           <>
-            <SearchResultStatus
-              tags={activeTags}
-              statuses={filteredStatuses}
-              count={filteredCourses.length}
-            />
+            <ListHeader>
+              <SearchResultStatus
+                tags={activeTags}
+                statuses={filteredStatuses}
+                count={filteredCourses.length}
+              />
+              <SortSelect
+                id="courseSort"
+                select
+                fullWidth={false}
+                size="small"
+                label={t("sortBy")}
+                value={courseSort}
+                onChange={handleSortChange}
+              >
+                <MenuItem value="name">{t("sortByName")}</MenuItem>
+                <MenuItem value="module">{t("sortByModule")}</MenuItem>
+              </SortSelect>
+            </ListHeader>
             <CardsContainer>
-              {sort(filteredCourses, compareCourses).map((course) => (
+              {sortedCourses.map((course) => (
                 <CourseCard key={course.id} course={course} />
               ))}
               {filteredCourses.length === 0 && (
