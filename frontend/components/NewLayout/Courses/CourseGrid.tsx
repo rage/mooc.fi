@@ -246,6 +246,7 @@ const SearchResultStatus = ({
   return (
     <Typography
       variant="caption"
+      role="status"
       dangerouslySetInnerHTML={{ __html: result }}
     />
   )
