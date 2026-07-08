@@ -18,4 +18,7 @@ export default {
   resultEndedPlural: "päättynyttä",
   resultOr: "tai",
   resultAnd: "ja",
+  sortBy: "Järjestä",
+  sortByModule: "Kokonaisuuden mukaan",
+  sortByName: "Aakkosjärjestyksessä",
 } as const
