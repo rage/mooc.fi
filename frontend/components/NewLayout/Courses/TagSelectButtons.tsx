@@ -123,7 +123,7 @@ const SelectAllButton = styled(Button)(
   border: 2px solid ${theme.palette.common.brand.main} !important;
   &:hover {
     color: ${theme.palette.common.brand.active} !important;
-    border: 2px solid ${theme.palette.common.brand.active} !important};
+    border: 2px solid ${theme.palette.common.brand.active} !important;
   }
   &[aria-selected="true"] {
     background-color: ${theme.palette.common.brand.main} !important;
