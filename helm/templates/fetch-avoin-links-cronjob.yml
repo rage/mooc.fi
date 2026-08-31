@@ -5,6 +5,7 @@ metadata:
   labels:
     {{- include "helm.labels" . | nindent 4 }}
 spec:
+  suspend: {{ .Values.cronjob.fetchAvoinLinks.suspend | default false }}
   schedule: "15 0 * * *"
   startingDeadlineSeconds: 900
   concurrencyPolicy: Forbid

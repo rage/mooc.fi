@@ -166,3 +166,5 @@ cronjob:
         month: 5
   elementsConsentedUsers:
     suspend: true
+  fetchAvoinLinks:
+    suspend: true
