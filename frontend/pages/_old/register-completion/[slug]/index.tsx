@@ -143,8 +143,9 @@ const AnswerButtons = styled("div")`
   margin-top: 0.5rem;
 `
 
-// The theme paints buttons from the color prop, not the variant, so the unselected answer is
-// color="secondary" (its outlined treatment) rather than variant="outlined".
+// The two themes disagree on what makes a button outlined: newTheme keys off the color prop
+// (secondary is its outlined treatment), the legacy theme behind /_old keys off the variant.
+// Both props are set so the unselected answer reads as outlined either way.
 const AnswerButton = styled(Button)`
   min-width: 7rem;
 `
@@ -458,6 +459,7 @@ function RegisterCompletionPage() {
           <QuestionHint>{t("studentTypeQuestionHint")}</QuestionHint>
           <AnswerButtons>
             <AnswerButton
+              variant={studentTypeAnswer === "yes" ? "contained" : "outlined"}
               color={studentTypeAnswer === "yes" ? "primary" : "secondary"}
               aria-pressed={studentTypeAnswer === "yes"}
               onClick={() => setStudentTypeAnswer("yes")}
@@ -465,6 +467,7 @@ function RegisterCompletionPage() {
               {t("yes")}
             </AnswerButton>
             <AnswerButton
+              variant={studentTypeAnswer === "no" ? "contained" : "outlined"}
               color={studentTypeAnswer === "no" ? "primary" : "secondary"}
               aria-pressed={studentTypeAnswer === "no"}
               onClick={() => setStudentTypeAnswer("no")}
