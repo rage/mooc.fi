@@ -1,4 +1,4 @@
-import { Box, Button, EnhancedButton, Paper, Typography } from "@mui/material"
+import { Button, EnhancedButton, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { useRouter } from "next/router"
@@ -14,25 +14,42 @@ const OPEN_UNIVERSITY_ENROLLMENT_INFO_URL_FI =
 const OPEN_UNIVERSITY_ENROLLMENT_INFO_URL_EN =
   "https://www.helsinki.fi/en/admissions-and-education/open-university/enrollment-and-study-fees"
 
-const RegisterCompletionContainer = styled(Paper)`
-  padding: 1em;
-  margin: 1em;
+const RegisterCompletionContainer = styled("div")`
   display: flex;
   flex-direction: column;
+  gap: 1rem;
 `
+
+const InstructionText = styled(Typography)`
+  margin: 0;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: #313947;
+` as typeof Typography
 
 const RegistrationLinkButton = styled(Button)`
-  width: 65%;
-  margin: auto;
-  margin-bottom: 1em;
+  align-self: flex-start;
+  /* Long labels have to wrap on narrow screens, so the fixed control height gives way. */
+  height: auto;
+  min-height: 48px;
+  padding: 0.75rem 1.5rem;
+  line-height: 1.3;
+  text-align: left;
 ` as EnhancedButton
 
-const RegistrationButtons = styled("div")`
+const TierBlock = styled("div")`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: 100%;
+  align-items: flex-start;
+  gap: 0.5rem;
 `
+
+const TierName = styled(Typography)`
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: #1a2333;
+` as typeof Typography
 
 const OutboundLinkText = styled(Typography)`
   ${OutboundLinkTextStyle}
@@ -49,7 +66,7 @@ function LinkButton({ link, onRegistrationClick }: LinkButtonProps) {
   return (
     <RegistrationLinkButton
       variant="contained"
-      color="secondary"
+      color="primary"
       size="medium"
       title={t("linkAria")}
       href={link}
@@ -85,37 +102,24 @@ function RegisterCompletionText({
 
   return (
     <RegisterCompletionContainer>
-      <Typography paragraph>{t("credits_details")}</Typography>
-      <Typography
-        paragraph
+      <InstructionText>{t("credits_details")}</InstructionText>
+      <InstructionText
         dangerouslySetInnerHTML={{ __html: t("donow", { email, infoUrl }) }}
       />
-      <Box
-        padding={2}
-        bgcolor="rgba(0,0,0,0.05)"
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-      >
-        <Typography paragraph alignSelf="flex-start">
-          {t("grades")}
-        </Typography>
-        {tiers.length > 0 ? (
-          tiers.map((tier: any) => (
-            <RegistrationButtons key={tier.name}>
-              <Typography paragraph align="center">
-                {tier.name}
-              </Typography>
-              <LinkButton
-                link={tier.link}
-                onRegistrationClick={onRegistrationClick}
-              />
-            </RegistrationButtons>
-          ))
-        ) : (
-          <LinkButton link={link} onRegistrationClick={onRegistrationClick} />
-        )}
-      </Box>
+      <InstructionText>{t("grades")}</InstructionText>
+      {tiers.length > 0 ? (
+        tiers.map((tier: any) => (
+          <TierBlock key={tier.name}>
+            <TierName>{tier.name}</TierName>
+            <LinkButton
+              link={tier.link}
+              onRegistrationClick={onRegistrationClick}
+            />
+          </TierBlock>
+        ))
+      ) : (
+        <LinkButton link={link} onRegistrationClick={onRegistrationClick} />
+      )}
     </RegisterCompletionContainer>
   )
 }
