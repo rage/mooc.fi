@@ -143,13 +143,11 @@ const AnswerButtons = styled("div")`
   margin-top: 0.5rem;
 `
 
+// The two themes disagree on what makes a button outlined: newTheme keys off the color prop
+// (secondary is its outlined treatment), the legacy theme behind /_old keys off the variant.
+// Both props are set so the unselected answer reads as outlined either way.
 const AnswerButton = styled(Button)`
   min-width: 7rem;
-
-  &.MuiButton-outlined {
-    border-color: #d8dbdd;
-    color: #313947;
-  }
 `
 
 const CallToActionButton = styled(Button)`
@@ -462,7 +460,7 @@ function RegisterCompletionPage() {
           <AnswerButtons>
             <AnswerButton
               variant={studentTypeAnswer === "yes" ? "contained" : "outlined"}
-              color="primary"
+              color={studentTypeAnswer === "yes" ? "primary" : "secondary"}
               aria-pressed={studentTypeAnswer === "yes"}
               onClick={() => setStudentTypeAnswer("yes")}
             >
@@ -470,7 +468,7 @@ function RegisterCompletionPage() {
             </AnswerButton>
             <AnswerButton
               variant={studentTypeAnswer === "no" ? "contained" : "outlined"}
-              color="primary"
+              color={studentTypeAnswer === "no" ? "primary" : "secondary"}
               aria-pressed={studentTypeAnswer === "no"}
               onClick={() => setStudentTypeAnswer("no")}
             >
