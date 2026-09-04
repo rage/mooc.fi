@@ -3,7 +3,7 @@ import { useRouter } from "next/router"
 import { Button, EnhancedButton, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import { OutboundLinkTextStyle } from "./OutboundLink"
+import { OUTBOUND_LINK_ICON_URL } from "./OutboundLink"
 import { useTranslator } from "/hooks/useTranslator"
 import RegisterCompletionTranslations from "/translations/register-completion"
 
@@ -34,7 +34,6 @@ const RegistrationLinkButton = styled(Button)`
   min-height: 48px;
   padding: 0.75rem 1.5rem;
   line-height: 1.3;
-  text-align: left;
 ` as EnhancedButton
 
 const TierBlock = styled("div")`
@@ -51,9 +50,25 @@ const TierName = styled(Typography)`
   color: #1a2333;
 ` as typeof Typography
 
-const OutboundLinkText = styled(Typography)`
-  ${OutboundLinkTextStyle}
-` as typeof Typography
+/* Painted through a mask rather than as a background image so the icon takes the label colour;
+   the flat SVG is black, which is unreadable on the filled button. */
+const ExternalLinkLabel = styled("span")`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-align: left;
+
+  ::before {
+    content: "";
+    flex: none;
+    width: 0.75rem;
+    height: 0.75rem;
+    background-color: currentColor;
+    mask-image: ${OUTBOUND_LINK_ICON_URL};
+    mask-repeat: no-repeat;
+    mask-size: contain;
+  }
+`
 
 interface LinkButtonProps {
   link: string
@@ -74,9 +89,7 @@ function LinkButton({ link, onRegistrationClick }: LinkButtonProps) {
       rel="noopener noreferrer"
       onClick={onRegistrationClick}
     >
-      <OutboundLinkText variant="h4" component="span">
-        {t("link")}
-      </OutboundLinkText>
+      <ExternalLinkLabel>{t("link")}</ExternalLinkLabel>
     </RegistrationLinkButton>
   )
 }
