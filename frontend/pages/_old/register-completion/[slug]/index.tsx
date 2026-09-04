@@ -143,13 +143,10 @@ const AnswerButtons = styled("div")`
   margin-top: 0.5rem;
 `
 
+// The theme paints buttons from the color prop, not the variant, so the unselected answer is
+// color="secondary" (its outlined treatment) rather than variant="outlined".
 const AnswerButton = styled(Button)`
   min-width: 7rem;
-
-  &.MuiButton-outlined {
-    border-color: #d8dbdd;
-    color: #313947;
-  }
 `
 
 const CallToActionButton = styled(Button)`
@@ -461,16 +458,14 @@ function RegisterCompletionPage() {
           <QuestionHint>{t("studentTypeQuestionHint")}</QuestionHint>
           <AnswerButtons>
             <AnswerButton
-              variant={studentTypeAnswer === "yes" ? "contained" : "outlined"}
-              color="primary"
+              color={studentTypeAnswer === "yes" ? "primary" : "secondary"}
               aria-pressed={studentTypeAnswer === "yes"}
               onClick={() => setStudentTypeAnswer("yes")}
             >
               {t("yes")}
             </AnswerButton>
             <AnswerButton
-              variant={studentTypeAnswer === "no" ? "contained" : "outlined"}
-              color="primary"
+              color={studentTypeAnswer === "no" ? "primary" : "secondary"}
               aria-pressed={studentTypeAnswer === "no"}
               onClick={() => setStudentTypeAnswer("no")}
             >
