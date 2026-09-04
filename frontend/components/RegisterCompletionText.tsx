@@ -1,54 +1,59 @@
-import {
-  Box,
-  Button,
-  EnhancedButton,
-  List,
-  ListItem,
-  Paper,
-  Typography,
-} from "@mui/material"
+import { useRouter } from "next/router"
+
+import { Button, EnhancedButton, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { OutboundLinkTextStyle } from "./OutboundLink"
 import { useTranslator } from "/hooks/useTranslator"
 import RegisterCompletionTranslations from "/translations/register-completion"
 
-const RegisterCompletionContainer = styled(Paper)`
-  padding: 1em;
-  margin: 1em;
+// The Open University only publishes this page in Finnish and English; other languages fall
+// back to the English version.
+const OPEN_UNIVERSITY_ENROLLMENT_INFO_URL_FI =
+  "https://www.helsinki.fi/fi/hakeminen-ja-opetus/avoin-yliopisto/ilmoittautuminen-ja-opintomaksut"
+const OPEN_UNIVERSITY_ENROLLMENT_INFO_URL_EN =
+  "https://www.helsinki.fi/en/admissions-and-education/open-university/enrollment-and-study-fees"
+
+const RegisterCompletionContainer = styled("div")`
   display: flex;
   flex-direction: column;
+  gap: 1rem;
 `
+
+const InstructionText = styled(Typography)`
+  margin: 0;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: #313947;
+` as typeof Typography
 
 const RegistrationLinkButton = styled(Button)`
-  width: 65%;
-  margin: auto;
-  margin-bottom: 1em;
+  align-self: flex-start;
+  /* Long labels have to wrap on narrow screens, so the fixed control height gives way. */
+  height: auto;
+  min-height: 48px;
+  padding: 0.75rem 1.5rem;
+  line-height: 1.3;
+  text-align: left;
 ` as EnhancedButton
 
-const RegistrationButtons = styled("div")`
+const TierBlock = styled("div")`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: 100%;
+  align-items: flex-start;
+  gap: 0.5rem;
 `
+
+const TierName = styled(Typography)`
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: #1a2333;
+` as typeof Typography
 
 const OutboundLinkText = styled(Typography)`
   ${OutboundLinkTextStyle}
 ` as typeof Typography
-
-const InstructionList = styled(List)`
-  list-style: decimal;
-` as typeof List
-
-const InstructionListItem = styled(ListItem)`
-  display: list-item;
-  margin-left: 1rem;
-
-  &::marker {
-    font-weight: 600;
-  }
-`
 
 interface LinkButtonProps {
   link: string
@@ -61,7 +66,7 @@ function LinkButton({ link, onRegistrationClick }: LinkButtonProps) {
   return (
     <RegistrationLinkButton
       variant="contained"
-      color="secondary"
+      color="primary"
       size="medium"
       title={t("linkAria")}
       href={link}
@@ -89,63 +94,32 @@ function RegisterCompletionText({
   onRegistrationClick,
 }: RegisterCompletionTextProps) {
   const t = useTranslator(RegisterCompletionTranslations)
+  const { locale } = useRouter()
+  const infoUrl =
+    locale === "fi"
+      ? OPEN_UNIVERSITY_ENROLLMENT_INFO_URL_FI
+      : OPEN_UNIVERSITY_ENROLLMENT_INFO_URL_EN
 
   return (
     <RegisterCompletionContainer>
-      <Typography paragraph>{t("credits_details")}</Typography>
-      <Typography paragraph>{t("donow")}</Typography>
-      <Box
-        padding={2}
-        bgcolor="rgba(0,0,0,0.05)"
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-      >
-        <Typography variant="h3" component="h2" gutterBottom>
-          {t("instructions-title")}
-        </Typography>
-        <InstructionList component="ol">
-          <InstructionListItem>
-            <Typography
-              dangerouslySetInnerHTML={{
-                __html: t("Instructions1"),
-              }}
+      <InstructionText>{t("credits_details")}</InstructionText>
+      <InstructionText
+        dangerouslySetInnerHTML={{ __html: t("donow", { email, infoUrl }) }}
+      />
+      <InstructionText>{t("grades")}</InstructionText>
+      {tiers.length > 0 ? (
+        tiers.map((tier: any) => (
+          <TierBlock key={tier.name}>
+            <TierName>{tier.name}</TierName>
+            <LinkButton
+              link={tier.link}
+              onRegistrationClick={onRegistrationClick}
             />
-          </InstructionListItem>
-          <InstructionListItem>
-            <Typography
-              dangerouslySetInnerHTML={{
-                __html: t("Instructions2", { email }),
-              }}
-            />
-          </InstructionListItem>
-          <InstructionListItem>
-            <Typography
-              dangerouslySetInnerHTML={{
-                __html: t("Instructions3"),
-              }}
-            />
-          </InstructionListItem>
-        </InstructionList>
-        <Typography paragraph alignSelf="flex-start">
-          {t("grades")}
-        </Typography>
-        {tiers.length > 0 ? (
-          tiers.map((tier: any) => (
-            <RegistrationButtons key={tier.name}>
-              <Typography paragraph align="center">
-                {tier.name}
-              </Typography>
-              <LinkButton
-                link={tier.link}
-                onRegistrationClick={onRegistrationClick}
-              />
-            </RegistrationButtons>
-          ))
-        ) : (
-          <LinkButton link={link} onRegistrationClick={onRegistrationClick} />
-        )}
-      </Box>
+          </TierBlock>
+        ))
+      ) : (
+        <LinkButton link={link} onRegistrationClick={onRegistrationClick} />
+      )}
     </RegisterCompletionContainer>
   )
 }

@@ -4,11 +4,23 @@ import fetch from "isomorphic-unfetch"
 import { useRouter } from "next/router"
 
 import { useMutation, useQuery } from "@apollo/client"
-import { Paper, SvgIcon, Typography } from "@mui/material"
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Button,
+  EnhancedButton,
+  Paper,
+  Typography,
+} from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import RegisterCompletion from "/components/Home/RegisterCompletion"
-import ImportantNotice from "/components/ImportantNotice"
+import ImportantNotice, {
+  Notice,
+  NoticeText,
+} from "/components/ImportantNotice"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import OutboundLink from "/components/OutboundLink"
 import RegisterCompletionText from "/components/RegisterCompletionText"
@@ -32,56 +44,169 @@ const BASE_URL =
     ? "https://www.mooc.fi"
     : "http://localhost:4000"
 
+const SISU_URL = "https://sisu.helsinki.fi/student/frontpage"
+
+type StudentTypeAnswer = "yes" | "no" | null
+
 const StyledPaper = styled(Paper)`
   padding: 1em;
   margin: 1em;
 `
 
-const StyledPaperRow = styled(Paper)`
-  padding: 1em;
-  margin: 1em;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+const Card = styled("div")`
+  max-width: 46rem;
+  margin: 2rem auto 4rem;
+  border: 1px solid #e2e4e6;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px rgba(10, 15, 23, 0.04);
+  overflow: hidden;
 `
 
-const Row = styled("span")`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+const Section = styled("div")`
+  padding: 1.75rem 2.25rem;
+
+  @media (max-width: 40rem) {
+    padding: 1.5rem 1.25rem;
+  }
 `
 
-const StyledPaperColumn = styled(Paper)`
-  padding: 1em;
-  margin: 1em;
+const DividedSection = styled(Section)`
+  border-top: 1px solid #ebedee;
+`
+
+const Header = styled(Section)`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: 0.5rem;
 `
 
-const StyledIcon = styled(SvgIcon)`
-  width: 30px;
-  height: 30px;
-  margin: 0.5em;
+const PageTitle = styled("h1")`
+  margin: 0;
+  font-family: var(--header-font);
+  font-size: 2.125rem;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: #1a2333;
 `
 
-const StyledText = styled(Typography)`
-  margin-top: 0px;
-  margin-left: 1em;
-` as typeof Typography
+const CourseName = styled("h2")`
+  margin: 0;
+  font-family: var(--header-font);
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #313947;
+`
 
-const CompletionLinkText = styled(Typography)`
+const Credits = styled("p")`
+  margin: 0;
+  font-size: 0.9375rem;
+  color: #535a66;
+`
+
+const InstructionsSection = styled(DividedSection)`
   display: flex;
-  flex-flow: wrap;
-  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+`
+
+const Prose = styled("p")`
+  margin: 0;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: #313947;
+`
+
+const QuestionText = styled("p")`
+  margin: 0;
+  font-family: var(--header-font);
+  font-size: 1.375rem;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+  color: #1a2333;
+`
+
+const QuestionHint = styled("p")`
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: #535a66;
+`
+
+const AnswerButtons = styled("div")`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+`
+
+const AnswerButton = styled(Button)`
+  min-width: 7rem;
+
+  &.MuiButton-outlined {
+    border-color: #d8dbdd;
+    color: #313947;
+  }
+`
+
+const CallToActionButton = styled(Button)`
+  align-self: flex-start;
+  height: auto;
+  min-height: 48px;
+  padding: 0.75rem 1.5rem;
+  line-height: 1.3;
+  text-align: left;
+` as EnhancedButton
+
+const Disclosure = styled(Accordion)`
+  border-top: 1px solid #ebedee;
+  background-color: transparent;
+  box-shadow: none;
+
+  &::before {
+    display: none;
+  }
+
+  & .MuiAccordionSummary-root {
+    padding: 0.5rem 2.25rem;
+  }
+
+  & .MuiAccordionDetails-root {
+    padding: 0 2.25rem 1.5rem;
+  }
+
+  @media (max-width: 40rem) {
+    & .MuiAccordionSummary-root {
+      padding: 0.5rem 1.25rem;
+    }
+
+    & .MuiAccordionDetails-root {
+      padding: 0 1.25rem 1.25rem;
+    }
+  }
+`
+
+const DisclosureTitle = styled("span")`
+  font-size: 1rem;
+  font-weight: 600;
+  color: #313947;
+`
+
+const CompletionLinkBlock = styled("div")`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 `
 
 function CompletionLinkColumn() {
   const t = useTranslator(RegisterCompletionTranslations)
 
   return (
-    <StyledPaperColumn>
-      <CompletionLinkText variant="body1">
+    <CompletionLinkBlock>
+      <Prose>
         {t("see_completion_link")}{" "}
         <OutboundLink
           href="https://opintopolku.fi/oma-opintopolku/"
@@ -90,18 +215,13 @@ function CompletionLinkColumn() {
         >
           opintopolku.fi/oma-opintopolku/
         </OutboundLink>
-      </CompletionLinkText>
-      <Row>
-        <StyledIcon color="primary">
-          <path d="M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20Z" />
-        </StyledIcon>
-
-        <Typography
-          variant="body2"
+      </Prose>
+      <Notice>
+        <NoticeText
           dangerouslySetInnerHTML={{ __html: t("see_completion_NB") }}
         />
-      </Row>
-    </StyledPaperColumn>
+      </Notice>
+    </CompletionLinkBlock>
   )
 }
 
@@ -110,6 +230,8 @@ function RegisterCompletionPage() {
   const { currentUser } = useLoginStateContext()
   const [instructions, setInstructions] = useState("")
   const [tiers, setTiers] = useState([])
+  const [studentTypeAnswer, setStudentTypeAnswer] =
+    useState<StudentTypeAnswer>(null)
 
   const courseSlug = encodeURIComponent(
     useQueryParameter("slug") ?? "",
@@ -290,7 +412,11 @@ function RegisterCompletionPage() {
         title={t("course_completion_already_registered_title")}
         message={t("course_completion_already_registered")}
       >
-        <CompletionLinkColumn />
+        <Card>
+          <Section>
+            <CompletionLinkColumn />
+          </Section>
+        </Card>
       </RegisterCompletion>
     )
   }
@@ -314,34 +440,90 @@ function RegisterCompletionPage() {
   }
 
   return (
-    <RegisterCompletion pageTitle={title} title={t("title")}>
-      <StyledText variant="h3">
-        {t("course", { course: completion.course?.name })}
-      </StyledText>
-      {completion.course?.ects && (
-        <StyledText variant="h6" paragraph gutterBottom>
-          {t("credits", { ects: completion.course?.ects })}
-        </StyledText>
-      )}
-      {instructions && (
-        <StyledPaper>
-          <Typography paragraph>{instructions}</Typography>
-        </StyledPaper>
-      )}
-      <ImportantNotice email={completion.email} />
-      <RegisterCompletionText
-        email={completion.email}
-        link={courseLinkWithLanguage}
-        tiers={tiers}
-        onRegistrationClick={onRegistrationClick}
-      />
-      <CompletionLinkColumn />
-      <StyledPaperRow>
-        <StyledIcon color="primary">
-          <path d="M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20Z" />
-        </StyledIcon>
-        <Typography dangerouslySetInnerHTML={{ __html: t("NB") }} />
-      </StyledPaperRow>
+    <RegisterCompletion pageTitle={title}>
+      <Card>
+        <Header>
+          <PageTitle>{t("title")}</PageTitle>
+          <CourseName>
+            {t("course", { course: completion.course?.name })}
+          </CourseName>
+          {completion.course?.ects && (
+            <Credits>{t("credits", { ects: completion.course?.ects })}</Credits>
+          )}
+        </Header>
+        {instructions && (
+          <DividedSection>
+            <Prose>{instructions}</Prose>
+          </DividedSection>
+        )}
+        <DividedSection>
+          <QuestionText>{t("studentTypeQuestion")}</QuestionText>
+          <QuestionHint>{t("studentTypeQuestionHint")}</QuestionHint>
+          <AnswerButtons>
+            <AnswerButton
+              variant={studentTypeAnswer === "yes" ? "contained" : "outlined"}
+              color="primary"
+              aria-pressed={studentTypeAnswer === "yes"}
+              onClick={() => setStudentTypeAnswer("yes")}
+            >
+              {t("yes")}
+            </AnswerButton>
+            <AnswerButton
+              variant={studentTypeAnswer === "no" ? "contained" : "outlined"}
+              color="primary"
+              aria-pressed={studentTypeAnswer === "no"}
+              onClick={() => setStudentTypeAnswer("no")}
+            >
+              {t("no")}
+            </AnswerButton>
+          </AnswerButtons>
+        </DividedSection>
+        {studentTypeAnswer === "yes" && (
+          <InstructionsSection>
+            <Prose>{t("sisuInstructions")}</Prose>
+            <ImportantNotice
+              email={completion.email}
+              translationKey="sisuEmailNotice"
+            />
+            <CallToActionButton
+              variant="contained"
+              color="primary"
+              size="medium"
+              href={SISU_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t("sisuLink")}
+            </CallToActionButton>
+          </InstructionsSection>
+        )}
+        {studentTypeAnswer === "no" && (
+          <InstructionsSection>
+            <ImportantNotice email={completion.email} />
+            <RegisterCompletionText
+              email={completion.email}
+              link={courseLinkWithLanguage}
+              tiers={tiers}
+              onRegistrationClick={onRegistrationClick}
+            />
+            <CompletionLinkColumn />
+          </InstructionsSection>
+        )}
+        {studentTypeAnswer !== null && (
+          <Disclosure square disableGutters>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <DisclosureTitle>{t("emailChangedTitle")}</DisclosureTitle>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Prose
+                dangerouslySetInnerHTML={{
+                  __html: t("emailChangedBody", { email: completion.email }),
+                }}
+              />
+            </AccordionDetails>
+          </Disclosure>
+        )}
+      </Card>
     </RegisterCompletion>
   )
 }
