@@ -3,8 +3,8 @@ import { useEffect, useState } from "react"
 import fetch from "isomorphic-unfetch"
 import { useRouter } from "next/router"
 
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import { useMutation, useQuery } from "@apollo/client"
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import {
   Accordion,
   AccordionDetails,

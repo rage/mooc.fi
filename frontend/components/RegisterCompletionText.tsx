@@ -1,7 +1,7 @@
+import { useRouter } from "next/router"
+
 import { Button, EnhancedButton, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
-
-import { useRouter } from "next/router"
 
 import { OutboundLinkTextStyle } from "./OutboundLink"
 import { useTranslator } from "/hooks/useTranslator"
