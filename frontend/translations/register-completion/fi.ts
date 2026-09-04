@@ -2,23 +2,31 @@ export default {
   title: "Opintopisteiden rekisteröinti",
   course: "Kurssi: {{course}}",
   credits: "Opintopisteet: {{ects}} (Vaatii suomalaisen henkilötunnuksen).",
+  studentTypeQuestion:
+    "Oletko Helsingin yliopiston opiskelija tai vaihto-opiskelija?",
+  studentTypeQuestionHint:
+    "Avoimen yliopiston opiskelijat ja kaikki muut: valitse Ei.",
+  yes: "Kyllä",
+  no: "Ei",
+  sisuInstructions:
+    "Ilmoittaudu suoraan Sisussa, jotta opintopisteesi voidaan kirjata.",
+  sisuEmailNotice:
+    "Opintopisteesi kohdistetaan sinulle sähköpostiosoitteesi perusteella, joten Sisu-profiilisi tulee sisältää osoite <strong>{{email}}</strong>, jota käytit tällä kurssilla. Jos se ei ole ensisijainen osoitteesi Sisussa, lisää se toissijaiseksi sähköpostiosoitteeksi Sisun asetuksissa.",
+  sisuLink: "Siirry Sisuun",
   credits_details:
-    "Helsingin yliopiston avoin yliopisto hoitaa suoritusten rekisteröinnin.",
+    "Tämän kurssin opintopisteet kirjataan Helsingin yliopiston avoimen yliopiston kautta.",
   donow:
-    "Sinun tulee ilmoittautua Helsingin yliopiston avoimeen yliopistoon, jotta voimme rekisteröidä suorituksesi.",
-  "instructions-title": "Toimi näin:",
+    'Täytä avoimen yliopiston ilmoittautumislomake. Käytä siinä sähköpostiosoitetta <strong>{{email}}</strong>. Ilmoittautuminen edellyttää vahvaa tunnistautumista. Katso lisätietoja <a href="{{infoUrl}}" target="_blank" rel="noopener noreferrer">avoimen yliopiston ilmoittautumissivulta</a>.',
   InstructionsEmail:
-    "Käytä rekisteröintilomakkeessa sähköpostiosoitetta <strong>{{email}}</strong>",
-  Instructions1: "Täytä rekisteröintilomake. ",
-  Instructions2:
-    "Täytä kohtaan <em>Käyttämäsi sähköpostiosoite MOOC-kurssilla</em> sähköpostiosoitteeksi <strong>{{email}}</strong>",
-  Instructions3:
-    "Jos haluat tiedon sähköpostiisi opintopisteidesi kirjautumisesta, rastita <em>Henkilötietojen käyttö</em> -laatikon alta kohta <em>Opintosuorituksista lähetetään ilmoitus sähköpostiini (sisältää arvosanan)</em>.",
-  NB: "<strong>HUOM!</strong> Jos olet Helsingin yliopiston perustutkinto-opiskelija, ilmoittatumisohjeet koskevat myös sinua!",
-  grades: "Opintopisteet kirjautuvat kuuden viikon kuluessa.",
+    "Käytä tätä sähköpostiosoitetta ilmoittautumislomakkeella: <strong>{{email}}</strong>. Jos käytät eri osoitetta, emme voi yhdistää ilmoittautumistasi suoritukseesi, eikä opintopisteitäsi voida kirjata.",
+  grades: "Opintopisteesi kirjataan muutaman päivän kuluessa.",
   link: "Rekisteröitymislomakkeeseen",
   linkAria:
     "Linkki rekisteröitymislomakkeeseen. Avoimen yliopiston palvelu avautuu uudessa välilehdessä.",
+  emailChangedTitle:
+    "Olen vaihtanut sähköpostiosoitteeni tämän kurssin suorittamisen jälkeen",
+  emailChangedBody:
+    "Tällä sivulla näkyvä sähköpostiosoite, <strong>{{email}}</strong>, on osoite, jota käytit alustalla suorittaessasi tämän kurssin. Kirjaamisessa käytetään vain tätä osoitetta. Vaikka olisit sittemmin vaihtanut sähköpostiosoitteesi tällä alustalla, sinun on käytettävä osoitetta <strong>{{email}}</strong> tätä kirjaamista varten. Jos käytät eri osoitetta, opintopisteitäsi ei voida kirjata.",
   course_completion_not_found_title: "Suoritusta ei löytynyt",
   course_completion_not_found:
     "Kurssisuoritusta ei löytynyt. Oletko kirjautunut sisään oikealla käyttäjätunnuksella?",

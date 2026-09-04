@@ -3,24 +3,32 @@ export default {
   course: "Kurs: The Elements of AI.",
   credits:
     "Studiepoäng som registreras i Helsingfors universitets studieregister: 2 (finländsk personbeteckning krävs).",
+  studentTypeQuestion:
+    "Är du studerande eller utbytesstuderande vid Helsingfors universitet?",
+  studentTypeQuestionHint:
+    "Studerande vid öppna universitetet och alla andra: välj Nej.",
+  yes: "Ja",
+  no: "Nej",
+  sisuInstructions:
+    "Anmäl dig direkt via ditt eget Sisu-konto (Sisu: Struktur för studier) för att registrera dina studiepoäng.",
+  sisuEmailNotice:
+    "Dina studiepoäng kopplas till dig via e-postadressen, så din Sisu-profil måste innehålla adressen <strong>{{email}}</strong>, den adress du använde på den här kursen. Om det inte är din primära adress i Sisu, lägg till den som en sekundär e-postadress i dina Sisu-inställningar.",
+  sisuLink: "Till Sisu",
   credits_details:
     "Öppna universitetet vid Helsingfors universitet sköter om registreringen av prestationer. Registreringen är gratis. ",
   donow:
-    "Anmäl dig till Öppna universitetet så att vi kan registrera din prestation.",
-  "instructions-title": "Gör så här: ",
+    'Fyll i öppna universitetets anmälningsblankett. Ange e-postadressen <strong>{{email}}</strong> där. Anmälan kräver stark autentisering, se <a href="{{infoUrl}}" target="_blank" rel="noopener noreferrer">öppna universitetets anmälningssida</a> för mer information.',
   InstructionsEmail:
     "I anmälningsblanketten ska du ange e-postadress <strong>{{email}}</strong>",
-  Instructions1: "Fyll i anmälningsblanketten.",
-  Instructions2:
-    "På anmälningsblanketten ska du ange e-postadressen som du använder på MOOC-kursen: <strong>{{email}}</strong>",
-  Instructions3:
-    "Om du vill bli meddelad per e-post då dina studiepoäng registrerats ska du kryssa för <em>Meddelanden om studieprestationer skickas till min e-post (innehåller vitsordet)</em>. ",
-  NB: "<strong>OBS!</strong> Denna anvisning gäller dig även om du är grundexamensstuderande vid Helsingfors universitet!",
   grades:
     "Studiepoängen registreras senast sex veckor efter att anmälan har lämnats in.",
   link: "Till anmälningsblanketten",
   linkAria:
     "Till anmälningsblanketten. Öppna universitetets tjänst öppnas i en ny flik.",
+  emailChangedTitle:
+    "Jag har bytt min e-postadress efter att jag avslutade den här kursen",
+  emailChangedBody:
+    "E-postadressen som visas på den här sidan, <strong>{{email}}</strong>, är den adress du använde på plattformen när du avslutade den här kursen. Registreringen känner endast igen den adressen. Även om du senare har bytt e-postadress här måste du använda <strong>{{email}}</strong> för den här registreringen. Om du använder en annan adress får du inte dina studiepoäng.",
   course_completion_not_found_title: "Prestation hittas ej",
   course_completion_not_found:
     "Prestation hittas ej. Är du inloggad med rätt inloggningsuppgifter?",

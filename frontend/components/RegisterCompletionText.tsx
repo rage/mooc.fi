@@ -1,17 +1,18 @@
-import {
-  Box,
-  Button,
-  EnhancedButton,
-  List,
-  ListItem,
-  Paper,
-  Typography,
-} from "@mui/material"
+import { Box, Button, EnhancedButton, Paper, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
+
+import { useRouter } from "next/router"
 
 import { OutboundLinkTextStyle } from "./OutboundLink"
 import { useTranslator } from "/hooks/useTranslator"
 import RegisterCompletionTranslations from "/translations/register-completion"
+
+// The Open University only publishes this page in Finnish and English; other languages fall
+// back to the English version.
+const OPEN_UNIVERSITY_ENROLLMENT_INFO_URL_FI =
+  "https://www.helsinki.fi/fi/hakeminen-ja-opetus/avoin-yliopisto/ilmoittautuminen-ja-opintomaksut"
+const OPEN_UNIVERSITY_ENROLLMENT_INFO_URL_EN =
+  "https://www.helsinki.fi/en/admissions-and-education/open-university/enrollment-and-study-fees"
 
 const RegisterCompletionContainer = styled(Paper)`
   padding: 1em;
@@ -36,19 +37,6 @@ const RegistrationButtons = styled("div")`
 const OutboundLinkText = styled(Typography)`
   ${OutboundLinkTextStyle}
 ` as typeof Typography
-
-const InstructionList = styled(List)`
-  list-style: decimal;
-` as typeof List
-
-const InstructionListItem = styled(ListItem)`
-  display: list-item;
-  margin-left: 1rem;
-
-  &::marker {
-    font-weight: 600;
-  }
-`
 
 interface LinkButtonProps {
   link: string
@@ -89,11 +77,19 @@ function RegisterCompletionText({
   onRegistrationClick,
 }: RegisterCompletionTextProps) {
   const t = useTranslator(RegisterCompletionTranslations)
+  const { locale } = useRouter()
+  const infoUrl =
+    locale === "fi"
+      ? OPEN_UNIVERSITY_ENROLLMENT_INFO_URL_FI
+      : OPEN_UNIVERSITY_ENROLLMENT_INFO_URL_EN
 
   return (
     <RegisterCompletionContainer>
       <Typography paragraph>{t("credits_details")}</Typography>
-      <Typography paragraph>{t("donow")}</Typography>
+      <Typography
+        paragraph
+        dangerouslySetInnerHTML={{ __html: t("donow", { email, infoUrl }) }}
+      />
       <Box
         padding={2}
         bgcolor="rgba(0,0,0,0.05)"
@@ -101,32 +97,6 @@ function RegisterCompletionText({
         flexDirection="column"
         alignItems="center"
       >
-        <Typography variant="h3" component="h2" gutterBottom>
-          {t("instructions-title")}
-        </Typography>
-        <InstructionList component="ol">
-          <InstructionListItem>
-            <Typography
-              dangerouslySetInnerHTML={{
-                __html: t("Instructions1"),
-              }}
-            />
-          </InstructionListItem>
-          <InstructionListItem>
-            <Typography
-              dangerouslySetInnerHTML={{
-                __html: t("Instructions2", { email }),
-              }}
-            />
-          </InstructionListItem>
-          <InstructionListItem>
-            <Typography
-              dangerouslySetInnerHTML={{
-                __html: t("Instructions3"),
-              }}
-            />
-          </InstructionListItem>
-        </InstructionList>
         <Typography paragraph alignSelf="flex-start">
           {t("grades")}
         </Typography>

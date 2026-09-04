@@ -3,8 +3,17 @@ import { useEffect, useState } from "react"
 import fetch from "isomorphic-unfetch"
 import { useRouter } from "next/router"
 
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import { useMutation, useQuery } from "@apollo/client"
-import { Paper, SvgIcon, Typography } from "@mui/material"
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Button,
+  Paper,
+  SvgIcon,
+  Typography,
+} from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import RegisterCompletion from "/components/Home/RegisterCompletion"
@@ -32,17 +41,20 @@ const BASE_URL =
     ? "https://www.mooc.fi"
     : "http://localhost:4000"
 
-const StyledPaper = styled(Paper)`
-  padding: 1em;
+const SISU_URL = "https://sisu.helsinki.fi/student/frontpage"
+
+type StudentTypeAnswer = "yes" | "no" | null
+
+const StudentTypeButtons = styled("div")`
+  display: flex;
+  justify-content: center;
+  gap: 1em;
   margin: 1em;
 `
 
-const StyledPaperRow = styled(Paper)`
+const StyledPaper = styled(Paper)`
   padding: 1em;
   margin: 1em;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
 `
 
 const Row = styled("span")`
@@ -110,6 +122,8 @@ function RegisterCompletionPage() {
   const { currentUser } = useLoginStateContext()
   const [instructions, setInstructions] = useState("")
   const [tiers, setTiers] = useState([])
+  const [studentTypeAnswer, setStudentTypeAnswer] =
+    useState<StudentTypeAnswer>(null)
 
   const courseSlug = encodeURIComponent(
     useQueryParameter("slug") ?? "",
@@ -328,20 +342,77 @@ function RegisterCompletionPage() {
           <Typography paragraph>{instructions}</Typography>
         </StyledPaper>
       )}
-      <ImportantNotice email={completion.email} />
-      <RegisterCompletionText
-        email={completion.email}
-        link={courseLinkWithLanguage}
-        tiers={tiers}
-        onRegistrationClick={onRegistrationClick}
-      />
-      <CompletionLinkColumn />
-      <StyledPaperRow>
-        <StyledIcon color="primary">
-          <path d="M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20Z" />
-        </StyledIcon>
-        <Typography dangerouslySetInnerHTML={{ __html: t("NB") }} />
-      </StyledPaperRow>
+      <StyledPaper>
+        <Typography align="center">{t("studentTypeQuestion")}</Typography>
+        <Typography align="center" color="textSecondary">
+          {t("studentTypeQuestionHint")}
+        </Typography>
+        <StudentTypeButtons>
+          <Button
+            variant={studentTypeAnswer === "yes" ? "contained" : "outlined"}
+            color="secondary"
+            onClick={() => setStudentTypeAnswer("yes")}
+          >
+            {t("yes")}
+          </Button>
+          <Button
+            variant={studentTypeAnswer === "no" ? "contained" : "outlined"}
+            color="secondary"
+            onClick={() => setStudentTypeAnswer("no")}
+          >
+            {t("no")}
+          </Button>
+        </StudentTypeButtons>
+      </StyledPaper>
+      {studentTypeAnswer === "yes" && (
+        <StyledPaper>
+          <Typography paragraph>{t("sisuInstructions")}</Typography>
+          <ImportantNotice
+            email={completion.email}
+            translationKey="sisuEmailNotice"
+          />
+          <StudentTypeButtons>
+            <Button
+              variant="contained"
+              color="secondary"
+              size="medium"
+              href={SISU_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t("sisuLink")}
+            </Button>
+          </StudentTypeButtons>
+        </StyledPaper>
+      )}
+      {studentTypeAnswer === "no" && (
+        <>
+          <ImportantNotice email={completion.email} />
+          <RegisterCompletionText
+            email={completion.email}
+            link={courseLinkWithLanguage}
+            tiers={tiers}
+            onRegistrationClick={onRegistrationClick}
+          />
+          <CompletionLinkColumn />
+        </>
+      )}
+      {studentTypeAnswer !== null && (
+        <StyledPaper>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>{t("emailChangedTitle")}</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography
+                dangerouslySetInnerHTML={{
+                  __html: t("emailChangedBody", { email: completion.email }),
+                }}
+              />
+            </AccordionDetails>
+          </Accordion>
+        </StyledPaper>
+      )}
     </RegisterCompletion>
   )
 }

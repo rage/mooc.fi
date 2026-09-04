@@ -31,9 +31,10 @@ function AlertIcon(props: SvgIconProps) {
 
 type RegProps = {
   email: string
+  translationKey?: "InstructionsEmail" | "sisuEmailNotice"
 }
 
-function ImportantNotice(props: RegProps) {
+function ImportantNotice({ email, translationKey = "InstructionsEmail" }: RegProps) {
   const t = useTranslator(RegisterCompletionTranslations)
 
   return (
@@ -41,7 +42,7 @@ function ImportantNotice(props: RegProps) {
       <AlertIcon />
       <Typography
         dangerouslySetInnerHTML={{
-          __html: t("InstructionsEmail", { email: props.email }),
+          __html: t(translationKey, { email }),
         }}
       />
     </ImportantNoticeContainer>
