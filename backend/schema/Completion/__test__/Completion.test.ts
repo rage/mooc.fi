@@ -28,6 +28,28 @@ const createRegistrationAttemptDateMutation = gql`
     }
   }
 `
+
+const setCreditRegistrationJustificationMutation = gql`
+  mutation SetCreditRegistrationJustification(
+    $id: ID!
+    $justification: String!
+    $identification_answer: String
+  ) {
+    setCreditRegistrationJustification(
+      id: $id
+      justification: $justification
+      identification_answer: $identification_answer
+    ) {
+      id
+      credit_registration_justification
+      credit_registration_identification_answer
+    }
+  }
+`
+
+const OWN_COMPLETION_ID = "30000000-0000-0000-0000-000000000102"
+const OTHER_USER_COMPLETION_ID = "12400000-0000-0000-0000-000000000001"
+
 const ctx = getTestContext()
 
 describe("Completion", () => {
@@ -239,6 +261,163 @@ describe("Completion", () => {
           expect(after?.completion_registration_attempt_date).toEqual(
             new Date("2021-01-01T08:00:00.000Z"),
           )
+        })
+      })
+    })
+
+    describe("setCreditRegistrationJustification", () => {
+      describe("user", () => {
+        it("errors on completion not owned", async () => {
+          return ctx.client
+            .request(
+              setCreditRegistrationJustificationMutation,
+              {
+                id: OTHER_USER_COMPLETION_ID,
+                justification: "I need the credits",
+              },
+              FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+            )
+            .then(() => fail())
+            .catch(({ response }) => {
+              expect(response.errors.length).toBe(1)
+              expect(response.errors[0].message).toContain(
+                "completion not found or not authorized to edit",
+              )
+            })
+        })
+
+        it("saves justification and identification answer on own completion", async () => {
+          const res = await ctx.client.request<any>(
+            setCreditRegistrationJustificationMutation,
+            {
+              id: OWN_COMPLETION_ID,
+              justification: "  My employer requires registry credits  ",
+              identification_answer: "none",
+            },
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+          )
+
+          expect(res.setCreditRegistrationJustification).toMatchObject({
+            id: OWN_COMPLETION_ID,
+            credit_registration_justification:
+              "My employer requires registry credits",
+            credit_registration_identification_answer: "none",
+          })
+
+          const after = await ctx.prisma.completion.findFirst({
+            where: { id: OWN_COMPLETION_ID },
+          })
+
+          expect(after?.credit_registration_justification).toEqual(
+            "My employer requires registry credits",
+          )
+          expect(after?.credit_registration_identification_answer).toEqual(
+            "none",
+          )
+        })
+
+        it("replaces an existing justification", async () => {
+          await ctx.client.request<any>(
+            setCreditRegistrationJustificationMutation,
+            {
+              id: OWN_COMPLETION_ID,
+              justification: "first",
+              identification_answer: "none",
+            },
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+          )
+
+          const res = await ctx.client.request<any>(
+            setCreditRegistrationJustificationMutation,
+            {
+              id: OWN_COMPLETION_ID,
+              justification: "second",
+            },
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+          )
+
+          expect(res.setCreditRegistrationJustification).toMatchObject({
+            credit_registration_justification: "second",
+            credit_registration_identification_answer: null,
+          })
+        })
+
+        it("errors on blank justification", async () => {
+          return ctx.client
+            .request(
+              setCreditRegistrationJustificationMutation,
+              {
+                id: OWN_COMPLETION_ID,
+                justification: "   ",
+              },
+              FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+            )
+            .then(() => fail())
+            .catch(({ response }) => {
+              expect(response.errors.length).toBe(1)
+              expect(response.errors[0].message).toContain(
+                "justification must not be empty",
+              )
+            })
+        })
+
+        it("errors on over-long justification", async () => {
+          return ctx.client
+            .request(
+              setCreditRegistrationJustificationMutation,
+              {
+                id: OWN_COMPLETION_ID,
+                justification: "a".repeat(4001),
+              },
+              FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+            )
+            .then(() => fail())
+            .catch(({ response }) => {
+              expect(response.errors.length).toBe(1)
+              expect(response.errors[0].message).toContain(
+                "justification must be at most 4000 characters",
+              )
+            })
+        })
+
+        it("errors on unknown identification answer", async () => {
+          return ctx.client
+            .request(
+              setCreditRegistrationJustificationMutation,
+              {
+                id: OWN_COMPLETION_ID,
+                justification: "I need the credits",
+                identification_answer: "bogus",
+              },
+              FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+            )
+            .then(() => fail())
+            .catch(({ response }) => {
+              expect(response.errors.length).toBe(1)
+              expect(response.errors[0].message).toContain(
+                "identification_answer must be one of",
+              )
+            })
+        })
+      })
+
+      describe("admin", () => {
+        it("can save justification on other completions", async () => {
+          const res = await ctx.client.request<any>(
+            setCreditRegistrationJustificationMutation,
+            {
+              id: OTHER_USER_COMPLETION_ID,
+              justification: "written by an admin",
+              identification_answer: "eidas",
+            },
+            FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+          )
+
+          expect(res.setCreditRegistrationJustification).toMatchObject({
+            id: OTHER_USER_COMPLETION_ID,
+            credit_registration_justification: "written by an admin",
+            credit_registration_identification_answer: "eidas",
+          })
         })
       })
     })

@@ -11,6 +11,22 @@ mutation CreateRegistrationAttemptDate(
   }
 }
 
+mutation SetCreditRegistrationJustification(
+  $id: ID!
+  $justification: String!
+  $identification_answer: String
+) {
+  setCreditRegistrationJustification(
+    id: $id
+    justification: $justification
+    identification_answer: $identification_answer
+  ) {
+    id
+    credit_registration_justification
+    credit_registration_identification_answer
+  }
+}
+
 mutation RecheckCompletions($slug: String) {
   recheckCompletions(slug: $slug)
 }

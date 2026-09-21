@@ -30,6 +30,8 @@ export const Completion = objectType({
     t.model.completion_date()
     t.model.tier()
     t.model.completion_registration_attempt_date()
+    t.model.credit_registration_justification()
+    t.model.credit_registration_identification_answer()
 
     t.field("user", {
       type: "User",

@@ -1,7 +1,7 @@
 export default {
   title: "Opintopisteiden rekisteröinti",
   course: "Kurssi: {{course}}",
-  credits: "Opintopisteet: {{ects}} (Vaatii suomalaisen henkilötunnuksen).",
+  credits: "Opintopisteet: {{ects}}",
   studentTypeQuestion:
     "Oletko Helsingin yliopiston opiskelija tai vaihto-opiskelija?",
   studentTypeQuestionHint:
@@ -13,6 +13,41 @@ export default {
   sisuEmailNotice:
     "Opintopisteesi kohdistetaan sinulle sähköpostiosoitteesi perusteella, joten Sisu-profiilisi tulee sisältää osoite <strong>{{email}}</strong>, jota käytit tällä kurssilla. Jos se ei ole ensisijainen osoitteesi Sisussa, lisää se toissijaiseksi sähköpostiosoitteeksi Sisun asetuksissa.",
   sisuLink: "Siirry Sisuun",
+  finnishIdQuestion:
+    "Oletko suomalainen tai onko sinulla suomalainen henkilötunnus?",
+  needQuestionTitle: "Kumman tarvitset?",
+  needQuestionBody:
+    "Helsingin yliopiston opintorekisteriin kirjattavista opintopisteistä on hyötyä lähinnä, jos opiskelet Suomessa. Jos haluat vain osoittaa suorittaneesi tämän kurssin esimerkiksi omalle oppilaitoksellesi tai työnantajallesi, todistus riittää.",
+  needCertificateOption: "Todistus kurssin suorittamisesta",
+  needCreditsOption: "Opintopisteet Helsingin yliopiston opintorekisteriin",
+  certificateHandoffBody:
+    "Tästä kurssista on saatavilla todistus. Voit luoda sen tässä ja näyttää sen heti.",
+  identificationQuestionTitle: "Miten tunnistaudut?",
+  identificationQuestionBody:
+    "Ilmoittautuminen edellyttää vahvaa tunnistautumista. Valitse, miten tunnistaudut kirjautuessasi Sisuun. Jos et ole varma, mikä vaihtoehdoista koskee sinua, valitse Ei.",
+  identificationEidasOption: "Kyllä, eIDAS-tunnistautumisella",
+  identificationOtherSuomiFiOption:
+    "Kyllä, jollakin muulla Suomi.fi-tunnistautumistavalla",
+  identificationNoneOption: "Ei",
+  identificationNoneHint:
+    "Valitse tämä, jos et ole varma, mikä vaihtoehdoista koskee sinua.",
+  identificationLinkHint:
+    '<a href="{{url}}" target="_blank" rel="noopener noreferrer">{{url}}</a>',
+  identificationEidasTip:
+    'Valitse Sisussa Suomi.fi-tunnistautuminen, kun sinua pyydetään tunnistautumaan. Valitse sen jälkeen eIDAS. <a href="{{url}}" target="_blank" rel="noopener noreferrer">{{url}}</a>',
+  identificationOtherSuomiFiTip:
+    'Valitse Sisussa Suomi.fi-tunnistautuminen, kun sinua pyydetään tunnistautumaan. Valitse sen jälkeen oma tunnistautumistapasi. <a href="{{url}}" target="_blank" rel="noopener noreferrer">{{url}}</a>',
+  reconsiderTitle: "Harkitse vielä",
+  reconsiderBody:
+    "Ilman Suomi.fi-tunnistautumistapaa ilmoittautuminen ohjaa sinut ottamaan yhteyttä tukeemme, ja tarkistamme henkilöllisyytesi käsin. Tämä voi kestää muutamasta päivästä useaan viikkoon, ja saatamme pyytää sinulta lisää asiakirjoja. Jos todistus riittää tarpeeseesi, saat sen heti.",
+  justificationTitle: "Kerro, miksi",
+  justificationBody:
+    "Tämä tapa vaatii sinulta enemmän kuin tavallinen ilmoittautuminen, ja se vie myös meidän työaikaamme. Kerro lyhyesti, miksi tarvitset opintopisteet Helsingin yliopiston opintorekisteriin todistuksen sijaan. Näin ymmärrämme näitä tilanteita paremmin ja voimme helpottaa niitä jatkossa.",
+  justificationLabel:
+    "Miksi tarvitset opintopisteet opintorekisteriin todistuksen sijaan?",
+  justificationContinue: "Jatka",
+  justificationSaveFailed:
+    "Vastauksesi tallentaminen epäonnistui. Tarkista yhteytesi ja yritä uudelleen.",
   credits_details:
     "Tämän kurssin opintopisteet kirjataan Helsingin yliopiston avoimen yliopiston kautta.",
   donow:

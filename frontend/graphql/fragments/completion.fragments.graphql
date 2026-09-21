@@ -23,6 +23,8 @@ fragment CompletionCourseFields on Course {
 
 fragment CompletionDetailedFields on Completion {
   ...CompletionCoreFields
+  credit_registration_justification
+  credit_registration_identification_answer
   completions_registered {
     ...CompletionRegisteredCoreFields
   }
