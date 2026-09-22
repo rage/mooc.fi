@@ -82,6 +82,7 @@ export { ProgressCoreFieldsFragmentDoc } from "./definitions/ProgressCoreFieldsF
 export { ProgressExtraFieldsFragmentDoc } from "./definitions/ProgressExtraFieldsFragmentDoc"
 export { RecheckCompletionsDocument } from "./definitions/RecheckCompletionsDocument"
 export { RequestNewUserOrganizationJoinConfirmationDocument } from "./definitions/RequestNewUserOrganizationJoinConfirmationDocument"
+export { SetCreditRegistrationJustificationDocument } from "./definitions/SetCreditRegistrationJustificationDocument"
 export { SponsorCoreFieldsFragmentDoc } from "./definitions/SponsorCoreFieldsFragmentDoc"
 export { SponsorFieldsFragmentDoc } from "./definitions/SponsorFieldsFragmentDoc"
 export { SponsorImageFieldsFragmentDoc } from "./definitions/SponsorImageFieldsFragmentDoc"

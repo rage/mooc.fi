@@ -37,24 +37,26 @@ model AbStudy {
 }
 
 model Completion {
-  id                                   String                 @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
-  course_id                            String?                @db.Uuid
-  user_id                              String?                @db.Uuid
-  certificate_id                       String?
-  completion_date                      DateTime?              @default(now()) @db.Timestamptz(6)
-  completion_language                  String?
-  completion_registration_attempt_date DateTime?
-  eligible_for_ects                    Boolean?               @default(true)
-  email                                String
-  grade                                String?
-  student_number                       String?
-  tier                                 Int?
-  user_upstream_id                     Int?
-  created_at                           DateTime               @default(now())
-  updated_at                           DateTime               @default(now()) @updatedAt
-  course                               Course?                @relation(fields: [course_id], references: [id], onUpdate: NoAction)
-  user                                 User?                  @relation(fields: [user_id], references: [id], onUpdate: NoAction)
-  completions_registered               CompletionRegistered[]
+  id                                        String                 @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  course_id                                 String?                @db.Uuid
+  user_id                                   String?                @db.Uuid
+  certificate_id                            String?
+  completion_date                           DateTime?              @default(now()) @db.Timestamptz(6)
+  completion_language                       String?
+  completion_registration_attempt_date      DateTime?
+  credit_registration_identification_answer String?
+  credit_registration_justification         String?
+  eligible_for_ects                         Boolean?               @default(true)
+  email                                     String
+  grade                                     String?
+  student_number                            String?
+  tier                                      Int?
+  user_upstream_id                          Int?
+  created_at                                DateTime               @default(now())
+  updated_at                                DateTime               @default(now()) @updatedAt
+  course                                    Course?                @relation(fields: [course_id], references: [id], onUpdate: NoAction)
+  user                                      User?                  @relation(fields: [user_id], references: [id], onUpdate: NoAction)
+  completions_registered                    CompletionRegistered[]
 
   @@index([completion_language])
   @@index([course_id, user_id, created_at])

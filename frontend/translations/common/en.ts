@@ -117,4 +117,5 @@ export default {
   learningEnvironment: "Learning environment",
   research: "Research",
   aboutUs: "About us",
+  opensInNewTab: "opens in a new tab",
 } as const

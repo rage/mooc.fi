@@ -9,8 +9,6 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Button,
-  EnhancedButton,
   Paper,
   Typography,
 } from "@mui/material"
@@ -23,6 +21,24 @@ import ImportantNotice, {
 } from "/components/ImportantNotice"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import OutboundLink from "/components/OutboundLink"
+import AnswerButtonGroup, {
+  AnswerOption,
+} from "/components/RegisterCompletion/AnswerButtonGroup"
+import OpenUniversityDetour from "/components/RegisterCompletion/OpenUniversityDetour"
+import {
+  CallToActionButton,
+  Card,
+  CourseName,
+  Credits,
+  DividedSection,
+  Header,
+  InstructionsSection,
+  PageTitle,
+  Prose,
+  QuestionHint,
+  QuestionText,
+  Section,
+} from "/components/RegisterCompletion/styles"
 import RegisterCompletionText from "/components/RegisterCompletionText"
 import Spinner from "/components/Spinner"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
@@ -52,112 +68,6 @@ const StyledPaper = styled(Paper)`
   padding: 1em;
   margin: 1em;
 `
-
-const Card = styled("div")`
-  max-width: 46rem;
-  margin: 2rem auto 4rem;
-  border: 1px solid #e2e4e6;
-  border-radius: 12px;
-  background-color: #ffffff;
-  box-shadow: 0 1px 3px rgba(10, 15, 23, 0.04);
-  overflow: hidden;
-`
-
-const Section = styled("div")`
-  padding: 1.75rem 2.25rem;
-
-  @media (max-width: 40rem) {
-    padding: 1.5rem 1.25rem;
-  }
-`
-
-const DividedSection = styled(Section)`
-  border-top: 1px solid #ebedee;
-`
-
-const Header = styled(Section)`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-`
-
-const PageTitle = styled("h1")`
-  margin: 0;
-  font-family: var(--header-font);
-  font-size: 2.125rem;
-  font-weight: 600;
-  line-height: 1.15;
-  letter-spacing: -0.01em;
-  color: #1a2333;
-`
-
-const CourseName = styled("h2")`
-  margin: 0;
-  font-family: var(--header-font);
-  font-size: 1.125rem;
-  font-weight: 600;
-  line-height: 1.35;
-  color: #313947;
-`
-
-const Credits = styled("p")`
-  margin: 0;
-  font-size: 0.9375rem;
-  color: #535a66;
-`
-
-const InstructionsSection = styled(DividedSection)`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-`
-
-const Prose = styled("p")`
-  margin: 0;
-  font-size: 1.0625rem;
-  line-height: 1.65;
-  color: #313947;
-`
-
-const QuestionText = styled("p")`
-  margin: 0;
-  font-family: var(--header-font);
-  font-size: 1.375rem;
-  font-weight: 600;
-  line-height: 1.35;
-  letter-spacing: -0.005em;
-  color: #1a2333;
-`
-
-const QuestionHint = styled("p")`
-  margin: 0;
-  font-size: 0.9375rem;
-  line-height: 1.5;
-  color: #535a66;
-`
-
-const AnswerButtons = styled("div")`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 0.5rem;
-`
-
-// The two themes disagree on what makes a button outlined: newTheme keys off the color prop
-// (secondary is its outlined treatment), the legacy theme behind /_old keys off the variant.
-// Both props are set so the unselected answer reads as outlined either way.
-const AnswerButton = styled(Button)`
-  min-width: 7rem;
-`
-
-const CallToActionButton = styled(Button)`
-  align-self: flex-start;
-  height: auto;
-  min-height: 48px;
-  padding: 0.75rem 1.5rem;
-  line-height: 1.3;
-  text-align: left;
-` as EnhancedButton
 
 const Disclosure = styled(Accordion)`
   border-top: 1px solid #ebedee;
@@ -245,11 +155,14 @@ function RegisterCompletionPage() {
       slug: courseSlug,
     },
   })
+  // The whole detour now depends on completion.course.has_certificate, queried alongside every
+  // other completion field here; errorPolicy "all" keeps a certificates.mooc.fi hiccup from
+  // taking down registration for every course instead of just degrading the certificate step.
   const {
     loading: userLoading,
     error: userError,
     data: userData,
-  } = useQuery(CurrentUserOverviewDocument)
+  } = useQuery(CurrentUserOverviewDocument, { errorPolicy: "all" })
   const [createRegistrationAttemptDate] = useMutation(
     CreateRegistrationAttemptDateDocument,
   )
@@ -360,7 +273,9 @@ function RegisterCompletionPage() {
     return <Spinner />
   }
 
-  if (userError || courseError) {
+  // With errorPolicy "all", a field-level error (e.g. certificate_availability) still comes back
+  // with currentUser populated; only bail out here when there's truly nothing to show.
+  if ((userError && !userData?.currentUser) || courseError) {
     return (
       <ModifiableErrorMessage
         errorMessage={JSON.stringify(userError ?? courseError, undefined, 2)}
@@ -437,9 +352,33 @@ function RegisterCompletionPage() {
     )
   }
 
+  const studentTypeOptions: AnswerOption<"yes" | "no">[] = [
+    { value: "yes", label: t("yes") },
+    { value: "no", label: t("no") },
+  ]
+
+  const renderOpenUniversityInstructions = () => (
+    <InstructionsSection>
+      <QuestionText as="h2">
+        {t("openUniversityInstructionsHeading")}
+      </QuestionText>
+      <ImportantNotice email={completion.email} />
+      <RegisterCompletionText
+        email={completion.email}
+        link={courseLinkWithLanguage}
+        tiers={tiers}
+        onRegistrationClick={onRegistrationClick}
+      />
+      <CompletionLinkColumn />
+    </InstructionsSection>
+  )
+
   return (
     <RegisterCompletion pageTitle={title}>
-      <Card>
+      {/* aria-live from first paint, before there's anything to reveal: a live region only
+          reliably announces content added *after* it's already in the DOM, not content that
+          arrives in the same paint as the region itself. */}
+      <Card aria-live="polite">
         <Header>
           <PageTitle>{t("title")}</PageTitle>
           <CourseName>
@@ -457,27 +396,15 @@ function RegisterCompletionPage() {
         <DividedSection>
           <QuestionText>{t("studentTypeQuestion")}</QuestionText>
           <QuestionHint>{t("studentTypeQuestionHint")}</QuestionHint>
-          <AnswerButtons>
-            <AnswerButton
-              variant={studentTypeAnswer === "yes" ? "contained" : "outlined"}
-              color={studentTypeAnswer === "yes" ? "primary" : "secondary"}
-              aria-pressed={studentTypeAnswer === "yes"}
-              onClick={() => setStudentTypeAnswer("yes")}
-            >
-              {t("yes")}
-            </AnswerButton>
-            <AnswerButton
-              variant={studentTypeAnswer === "no" ? "contained" : "outlined"}
-              color={studentTypeAnswer === "no" ? "primary" : "secondary"}
-              aria-pressed={studentTypeAnswer === "no"}
-              onClick={() => setStudentTypeAnswer("no")}
-            >
-              {t("no")}
-            </AnswerButton>
-          </AnswerButtons>
+          <AnswerButtonGroup
+            options={studentTypeOptions}
+            value={studentTypeAnswer}
+            onChange={setStudentTypeAnswer}
+          />
         </DividedSection>
         {studentTypeAnswer === "yes" && (
           <InstructionsSection>
+            <QuestionText as="h2">{t("sisuInstructionsHeading")}</QuestionText>
             <Prose>{t("sisuInstructions")}</Prose>
             <ImportantNotice
               email={completion.email}
@@ -495,18 +422,17 @@ function RegisterCompletionPage() {
             </CallToActionButton>
           </InstructionsSection>
         )}
-        {studentTypeAnswer === "no" && (
-          <InstructionsSection>
-            <ImportantNotice email={completion.email} />
-            <RegisterCompletionText
-              email={completion.email}
-              link={courseLinkWithLanguage}
-              tiers={tiers}
-              onRegistrationClick={onRegistrationClick}
+        {studentTypeAnswer === "no" &&
+          (completion.course ? (
+            <OpenUniversityDetour
+              key={completion.id}
+              completion={completion}
+              course={completion.course}
+              renderDestination={renderOpenUniversityInstructions}
             />
-            <CompletionLinkColumn />
-          </InstructionsSection>
-        )}
+          ) : (
+            renderOpenUniversityInstructions()
+          ))}
         {studentTypeAnswer !== null && (
           <Disclosure square disableGutters>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>

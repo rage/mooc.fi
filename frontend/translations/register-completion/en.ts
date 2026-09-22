@@ -13,6 +13,52 @@ export default {
   sisuEmailNotice:
     "Your credits are matched to you by email address, so your Sisu profile must include <strong>{{email}}</strong>, the address you used on this course. If it is not your primary address in Sisu, add it as a secondary email address in your Sisu settings.",
   sisuLink: "Go to Sisu",
+  sisuInstructionsHeading: "Enroll in Sisu",
+  finnishIdQuestion:
+    "Are you Finnish, or do you have a Finnish personal identity code (henkilötunnus)?",
+  needQuestionTitle: "Which do you need?",
+  needQuestionBody:
+    "Credits in the University of Helsinki study registry are useful mainly if you study in Finland. If you only want to show that you completed this course (to your own school, employer, or someone else), a certificate is enough.",
+  needCertificateOption: "A certificate of completion",
+  needCreditsOption: "Credits in the UH study registry",
+  certificateHandoffHeading: "Get your certificate",
+  certificateHandoffBody:
+    "You can get a certificate of completion for this course.",
+  goToCertificate: "Go to certificate",
+  certificatePageTitle: "Your certificate",
+  certificatePageIntroBody:
+    "A certificate of completion is available for this course.",
+  certificateFallbackBody:
+    "We can't generate a certificate for this course here. Please return to the course materials and get your certificate from there. If anything is unclear, contact the people in charge of your course, who are listed in the course materials.",
+  goToCourseMaterials: "Go to course materials",
+  identificationQuestionTitle:
+    "Are you able to identify yourself with one of the Suomi.fi e-identification methods?",
+  identificationQuestionBody:
+    "Enrollment requires strong authentication. Choose how you will identify yourself when you log in to Sisu.",
+  identificationEidasOption: "eIDAS",
+  identificationOtherSuomiFiOption: "Another Suomi.fi e-identification method",
+  identificationNoneOption: "No",
+  identificationEidasExplanation:
+    'eIDAS lets you identify yourself with an electronic ID issued by another EU or EEA country. <a href="{{url}}" target="_blank" rel="noopener noreferrer">Check which countries you can use it from<span style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;"> (opens in a new tab)</span></a>.',
+  identificationOtherSuomiFiExplanation:
+    'Suomi.fi also accepts other Finnish identification methods, such as online banking codes or a mobile certificate. <a href="{{url}}" target="_blank" rel="noopener noreferrer">See all accepted identification methods<span style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;"> (opens in a new tab)</span></a>.',
+  identificationEidasTip:
+    "In Sisu, choose Suomi.fi e-identification when prompted to authenticate. Then select Identification methods for foreigners.",
+  identificationOtherSuomiFiTip:
+    "In Sisu, choose Suomi.fi e-identification when prompted to authenticate. Then select your identification method.",
+  reconsiderTitle: "Reconsider",
+  reconsiderBody:
+    "Without a Suomi.fi e-identification method, enrollment asks you to contact our support team, and we verify your identity manually. This can take from a few days to several weeks, and we may ask you for extra documents. If a certificate meets your need, you can get it right away.",
+  justificationTitle: "Tell us why",
+  justificationBody:
+    "This process asks more of you than a normal enrollment, and it takes staff time on our side. Tell us briefly why you need the credits in the University of Helsinki study registry instead of the certificate. This helps us understand these situations and find ways to make this easier in the future.",
+  justificationLabel:
+    "Why do you need the credits in the study registry instead of a certificate?",
+  justificationContinue: "Continue",
+  updateReason: "Update reason",
+  justificationSaveFailed:
+    "Saving your answer failed. Check your connection and try again.",
+  openUniversityInstructionsHeading: "Enroll through Open University",
   credits_details:
     "Credits for this course are registered through the Open University of the University of Helsinki.",
   donow:

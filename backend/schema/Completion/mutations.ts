@@ -51,6 +51,16 @@ async function authorizeByCourseIdentifier(
   return await isAdminOrCourseOwner(course.id)(root, args, ctx, info)
 }
 
+const MAX_JUSTIFICATION_LENGTH = 4000
+
+// Kept in sync by hand with the Q3 answers in
+// frontend/components/RegisterCompletion/OpenUniversityDetour.tsx.
+const IDENTIFICATION_ANSWERS: readonly string[] = [
+  "eidas",
+  "other_suomi_fi",
+  "none",
+]
+
 export const CompletionMutations = extendType({
   type: "Mutation",
   definition(t) {
@@ -181,6 +191,8 @@ export const CompletionMutations = extendType({
             eligible_for_ects: true,
             tier: o.tier ?? null,
             completion_registration_attempt_date: null,
+            credit_registration_justification: null,
+            credit_registration_identification_answer: null,
           }
         })
 
@@ -356,6 +368,64 @@ export const CompletionMutations = extendType({
           },
           data: {
             completion_registration_attempt_date,
+          },
+        })
+      },
+    })
+
+    t.field("setCreditRegistrationJustification", {
+      type: "Completion",
+      args: {
+        id: nonNull(idArg()),
+        justification: nonNull(stringArg()),
+        identification_answer: stringArg(),
+      },
+      validate: (_, { justification, identification_answer }) => {
+        if (!justification.trim()) {
+          throw new GraphQLUserInputError(
+            "justification must not be empty",
+            "justification",
+          )
+        }
+        if (justification.length > MAX_JUSTIFICATION_LENGTH) {
+          throw new GraphQLUserInputError(
+            `justification must be at most ${MAX_JUSTIFICATION_LENGTH} characters`,
+            "justification",
+          )
+        }
+        if (
+          identification_answer != null &&
+          !IDENTIFICATION_ANSWERS.includes(identification_answer)
+        ) {
+          throw new GraphQLUserInputError(
+            `identification_answer must be one of ${IDENTIFICATION_ANSWERS.join(
+              ", ",
+            )}`,
+            "identification_answer",
+          )
+        }
+      },
+      authorize: or(isUser, isAdmin),
+      resolve: async (_, { id, justification, identification_answer }, ctx) => {
+        const existing = await ctx.prisma.completion.findFirst({
+          where: {
+            id,
+            ...(ctx.role !== Role.ADMIN ? { user_id: ctx.user?.id } : {}),
+          },
+        })
+
+        if (!existing) {
+          throw new Error("completion not found or not authorized to edit")
+        }
+
+        return ctx.prisma.completion.update({
+          where: {
+            id,
+          },
+          data: {
+            credit_registration_justification: justification.trim(),
+            credit_registration_identification_answer:
+              identification_answer ?? null,
           },
         })
       },

@@ -117,4 +117,5 @@ export default {
   learningEnvironment: "Oppimisympäristö",
   research: "Tutkimus",
   aboutUs: "Meistä",
+  opensInNewTab: "avautuu uudessa välilehdessä",
 } as const

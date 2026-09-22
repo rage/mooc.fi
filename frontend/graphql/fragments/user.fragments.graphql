@@ -28,6 +28,7 @@ fragment UserProgressesFields on User {
 fragment UserOverviewCourseFields on Course {
   ...CourseWithPhotoCoreFields
   has_certificate
+  link
 }
 
 fragment UserOverviewFields on User {

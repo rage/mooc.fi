@@ -1,4 +1,4 @@
-FROM node:18.16.1-bullseye
+FROM node:18.20.4-bookworm
 
 RUN apt-get update \
   && apt-get install -y build-essential libgl1-mesa-glx pigz \

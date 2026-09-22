@@ -1,6 +1,7 @@
 fragment UserCourseSummaryCourseFields on Course {
   ...CourseWithPhotoCoreFields
   has_certificate
+  link
   points_needed
   exercise_completions_needed
   tier
@@ -68,25 +69,25 @@ fragment UserCourseSummaryCourseListFields on UserCourseSummary {
   }
   tier_summaries {
     course {
-    ...UserCourseSummaryCourseListCourseFields
+      ...UserCourseSummaryCourseListCourseFields
     }
   }
 }
 
 fragment UserTierCourseSummaryCoreFields on UserCourseSummary {
-    course {
-      ...UserCourseSummaryCourseFields
-    }
-    exercise_completions {
-      ...ExerciseCompletionCoreFields
-    }
-    user_course_progress {
-      ...UserCourseProgressCoreFields
-    }
-    user_course_service_progresses {
-      ...UserCourseServiceProgressCoreFields
-    }
-    start_date
+  course {
+    ...UserCourseSummaryCourseFields
+  }
+  exercise_completions {
+    ...ExerciseCompletionCoreFields
+  }
+  user_course_progress {
+    ...UserCourseProgressCoreFields
+  }
+  user_course_service_progresses {
+    ...UserCourseServiceProgressCoreFields
+  }
+  start_date
 }
 
 fragment UserTierCourseSummaryCoreFieldsWithExerciseCompletions on UserCourseSummary {
