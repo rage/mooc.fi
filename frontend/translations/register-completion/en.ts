@@ -21,7 +21,7 @@ export default {
     "Credits in the University of Helsinki study registry are useful mainly if you study in Finland. If you only want to show that you completed this course (to your own school, employer, or someone else), a certificate is enough.",
   needCertificateOption: "A certificate of completion",
   needCreditsOption: "Credits in the UH study registry",
-  certificateHandoffHeading: "Your certificate is ready",
+  certificateHandoffHeading: "Get your certificate",
   certificateHandoffBody:
     "A certificate of completion is available for this course. Create it here and you can show it right away.",
   identificationQuestionTitle:

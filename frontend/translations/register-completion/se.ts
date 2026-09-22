@@ -21,7 +21,7 @@ export default {
     "Studiepoäng i Helsingfors universitets studieregister är till nytta främst om du studerar i Finland. Om du bara vill visa att du har avlagt den här kursen, till exempel för din egen läroanstalt eller din arbetsgivare, räcker ett intyg.",
   needCertificateOption: "Ett intyg över avlagd kurs",
   needCreditsOption: "Studiepoäng i Helsingfors universitets studieregister",
-  certificateHandoffHeading: "Ditt intyg är klart genast",
+  certificateHandoffHeading: "Skaffa ditt intyg",
   certificateHandoffBody:
     "Ett intyg finns tillgängligt för den här kursen. Du kan skapa det här och visa det genast.",
   identificationQuestionTitle:

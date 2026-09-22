@@ -21,7 +21,7 @@ export default {
     "Helsingin yliopiston opintorekisteriin kirjattavista opintopisteistä on hyötyä lähinnä, jos opiskelet Suomessa. Jos haluat vain osoittaa suorittaneesi tämän kurssin esimerkiksi omalle oppilaitoksellesi tai työnantajallesi, todistus riittää.",
   needCertificateOption: "Todistus kurssin suorittamisesta",
   needCreditsOption: "Opintopisteet Helsingin yliopiston opintorekisteriin",
-  certificateHandoffHeading: "Todistuksesi on valmiina heti",
+  certificateHandoffHeading: "Hanki todistuksesi",
   certificateHandoffBody:
     "Tästä kurssista on saatavilla todistus. Voit luoda sen tässä ja näyttää sen heti.",
   identificationQuestionTitle:
