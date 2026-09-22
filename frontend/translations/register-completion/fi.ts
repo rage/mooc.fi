@@ -23,7 +23,13 @@ export default {
   needCreditsOption: "Opintopisteet Helsingin yliopiston opintorekisteriin",
   certificateHandoffHeading: "Hanki todistuksesi",
   certificateHandoffBody:
-    "Tästä kurssista on saatavilla todistus. Voit luoda sen tässä ja näyttää sen heti.",
+    "Voit saada todistuksen tämän kurssin suorittamisesta.",
+  goToCertificate: "Siirry todistukseen",
+  certificatePageTitle: "Todistuksesi",
+  certificatePageIntroBody: "Tästä kurssista on saatavilla todistus.",
+  certificateFallbackBody:
+    "Emme voi luoda todistusta tälle kurssille täällä. Palaa kurssin materiaaleihin ja hae todistuksesi sieltä. Jos jokin jää epäselväksi, ota yhteyttä kurssin vastuuhenkilöihin, jotka löydät kurssin materiaaleista.",
+  goToCourseMaterials: "Kurssin materiaaleihin",
   identificationQuestionTitle:
     "Pystytkö tunnistautumaan jollakin Suomi.fi-tunnistautumistavoista?",
   identificationQuestionBody:

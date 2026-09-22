@@ -1,45 +1,35 @@
-import dynamic from "next/dynamic"
-
-import { Skeleton } from "@mui/material"
-import { styled } from "@mui/material/styles"
-
-import { InstructionsSection, Prose, QuestionText } from "./styles"
+import {
+  CallToActionButton,
+  InstructionsSection,
+  Prose,
+  QuestionText,
+} from "./styles"
 import { useTranslator } from "/hooks/useTranslator"
 import RegisterCompletionTranslations from "/translations/register-completion"
 
-import {
-  CompletionDetailedFieldsFragment,
-  CourseCoreFieldsFragment,
-} from "/graphql/generated"
-
-const CertificateButton = dynamic(() => import("../CertificateButton"), {
-  ssr: false,
-  loading: () => <Skeleton />,
-})
-
-const CertificateButtonRow = styled("div")`
-  /* CertificateButton caps itself at 20vw for the profile page's card, which is unreadable here. */
-  & .MuiButtonBase-root {
-    max-width: none;
-  }
-`
-
 interface CertificateHandoffProps {
-  course: CourseCoreFieldsFragment
-  completion: CompletionDetailedFieldsFragment
+  courseSlug: string
 }
 
-/** End of the road for students who only need to show that they completed the course. */
-function CertificateHandoff({ course, completion }: CertificateHandoffProps) {
+/**
+ * Hands the student off to the certificate page, which knows whether this course can actually
+ * produce one and falls back to pointing at the course materials when it can't.
+ */
+function CertificateHandoff({ courseSlug }: CertificateHandoffProps) {
   const t = useTranslator(RegisterCompletionTranslations)
 
   return (
     <InstructionsSection>
       <QuestionText as="h2">{t("certificateHandoffHeading")}</QuestionText>
       <Prose>{t("certificateHandoffBody")}</Prose>
-      <CertificateButtonRow>
-        <CertificateButton course={course} completion={completion} />
-      </CertificateButtonRow>
+      <CallToActionButton
+        variant="contained"
+        color="primary"
+        size="medium"
+        href={`/register-completion/${courseSlug}/certificate`}
+      >
+        {t("goToCertificate")}
+      </CallToActionButton>
     </InstructionsSection>
   )
 }

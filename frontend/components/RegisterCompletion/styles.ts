@@ -73,3 +73,46 @@ export const CallToActionButton = styled(Button)`
   line-height: 1.3;
   text-align: left;
 ` as EnhancedButton
+
+// Shared page shell for register-completion and its certificate hand-off page, so the two read
+// as one flow.
+export const Card = styled("div")`
+  max-width: 46rem;
+  margin: 2rem auto 4rem;
+  border: 1px solid #e2e4e6;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px rgba(10, 15, 23, 0.04);
+  overflow: hidden;
+`
+
+export const Header = styled(Section)`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+`
+
+export const PageTitle = styled("h1")`
+  margin: 0;
+  font-family: var(--header-font);
+  font-size: 2.125rem;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: #1a2333;
+`
+
+export const CourseName = styled("h2")`
+  margin: 0;
+  font-family: var(--header-font);
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #313947;
+`
+
+export const Credits = styled("p")`
+  margin: 0;
+  font-size: 0.9375rem;
+  color: #535a66;
+`

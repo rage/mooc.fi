@@ -23,7 +23,13 @@ export default {
   needCreditsOption: "Studiepoäng i Helsingfors universitets studieregister",
   certificateHandoffHeading: "Skaffa ditt intyg",
   certificateHandoffBody:
-    "Ett intyg finns tillgängligt för den här kursen. Du kan skapa det här och visa det genast.",
+    "Du kan få ett intyg över avlagd kurs för den här kursen.",
+  goToCertificate: "Till intyget",
+  certificatePageTitle: "Ditt intyg",
+  certificatePageIntroBody: "Ett intyg finns tillgängligt för den här kursen.",
+  certificateFallbackBody:
+    "Vi kan inte skapa ett intyg för den här kursen här. Återvänd till kursmaterialet och hämta ditt intyg därifrån. Om något är oklart, kontakta de ansvariga för kursen, som finns listade i kursmaterialet.",
+  goToCourseMaterials: "Till kursmaterialet",
   identificationQuestionTitle:
     "Kan du identifiera dig med någon av Suomi.fi-identifieringsmetoderna?",
   identificationQuestionBody:

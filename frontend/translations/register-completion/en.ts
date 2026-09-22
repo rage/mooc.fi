@@ -23,7 +23,14 @@ export default {
   needCreditsOption: "Credits in the UH study registry",
   certificateHandoffHeading: "Get your certificate",
   certificateHandoffBody:
-    "A certificate of completion is available for this course. Create it here and you can show it right away.",
+    "You can get a certificate of completion for this course.",
+  goToCertificate: "Go to certificate",
+  certificatePageTitle: "Your certificate",
+  certificatePageIntroBody:
+    "A certificate of completion is available for this course.",
+  certificateFallbackBody:
+    "We can't generate a certificate for this course here. Please return to the course materials and get your certificate from there. If anything is unclear, contact the people in charge of your course, who are listed in the course materials.",
+  goToCourseMaterials: "Go to course materials",
   identificationQuestionTitle:
     "Are you able to identify yourself with one of the Suomi.fi e-identification methods?",
   identificationQuestionBody:

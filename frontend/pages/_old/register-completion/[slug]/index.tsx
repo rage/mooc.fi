@@ -27,8 +27,13 @@ import AnswerButtonGroup, {
 import OpenUniversityDetour from "/components/RegisterCompletion/OpenUniversityDetour"
 import {
   CallToActionButton,
+  Card,
+  CourseName,
+  Credits,
   DividedSection,
+  Header,
   InstructionsSection,
+  PageTitle,
   Prose,
   QuestionHint,
   QuestionText,
@@ -62,47 +67,6 @@ type StudentTypeAnswer = "yes" | "no" | null
 const StyledPaper = styled(Paper)`
   padding: 1em;
   margin: 1em;
-`
-
-const Card = styled("div")`
-  max-width: 46rem;
-  margin: 2rem auto 4rem;
-  border: 1px solid #e2e4e6;
-  border-radius: 12px;
-  background-color: #ffffff;
-  box-shadow: 0 1px 3px rgba(10, 15, 23, 0.04);
-  overflow: hidden;
-`
-
-const Header = styled(Section)`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-`
-
-const PageTitle = styled("h1")`
-  margin: 0;
-  font-family: var(--header-font);
-  font-size: 2.125rem;
-  font-weight: 600;
-  line-height: 1.15;
-  letter-spacing: -0.01em;
-  color: #1a2333;
-`
-
-const CourseName = styled("h2")`
-  margin: 0;
-  font-family: var(--header-font);
-  font-size: 1.125rem;
-  font-weight: 600;
-  line-height: 1.35;
-  color: #313947;
-`
-
-const Credits = styled("p")`
-  margin: 0;
-  font-size: 0.9375rem;
-  color: #535a66;
 `
 
 const Disclosure = styled(Accordion)`
@@ -191,11 +155,14 @@ function RegisterCompletionPage() {
       slug: courseSlug,
     },
   })
+  // The whole detour now depends on completion.course.has_certificate, queried alongside every
+  // other completion field here; errorPolicy "all" keeps a certificates.mooc.fi hiccup from
+  // taking down registration for every course instead of just degrading the certificate step.
   const {
     loading: userLoading,
     error: userError,
     data: userData,
-  } = useQuery(CurrentUserOverviewDocument)
+  } = useQuery(CurrentUserOverviewDocument, { errorPolicy: "all" })
   const [createRegistrationAttemptDate] = useMutation(
     CreateRegistrationAttemptDateDocument,
   )
@@ -306,7 +273,9 @@ function RegisterCompletionPage() {
     return <Spinner />
   }
 
-  if (userError || courseError) {
+  // With errorPolicy "all", a field-level error (e.g. certificate_availability) still comes back
+  // with currentUser populated; only bail out here when there's truly nothing to show.
+  if ((userError && !userData?.currentUser) || courseError) {
     return (
       <ModifiableErrorMessage
         errorMessage={JSON.stringify(userError ?? courseError, undefined, 2)}
@@ -388,12 +357,6 @@ function RegisterCompletionPage() {
     { value: "no", label: t("no") },
   ]
 
-  // certificate_availability stays null unless the course has certificates, so this one flag
-  // answers both "does this course have a certificate" and "can this student get one".
-  const certificateAvailable = Boolean(
-    completion.certificate_availability?.completed_course,
-  )
-
   const renderOpenUniversityInstructions = () => (
     <InstructionsSection>
       <QuestionText as="h2">
@@ -460,7 +423,7 @@ function RegisterCompletionPage() {
           </InstructionsSection>
         )}
         {studentTypeAnswer === "no" &&
-          (certificateAvailable && completion.course ? (
+          (completion.course ? (
             <OpenUniversityDetour
               key={completion.id}
               completion={completion}

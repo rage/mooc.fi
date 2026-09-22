@@ -182,9 +182,7 @@ function OpenUniversityDetour({
         />
       )}
 
-      {certificateChosen && (
-        <CertificateHandoff course={course} completion={completion} />
-      )}
+      {certificateChosen && <CertificateHandoff courseSlug={course.slug} />}
 
       {showDestination && renderDestination()}
     </>
