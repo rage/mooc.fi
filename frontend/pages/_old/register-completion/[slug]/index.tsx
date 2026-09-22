@@ -396,6 +396,9 @@ function RegisterCompletionPage() {
 
   const renderOpenUniversityInstructions = () => (
     <InstructionsSection>
+      <QuestionText as="h2">
+        {t("openUniversityInstructionsHeading")}
+      </QuestionText>
       <ImportantNotice email={completion.email} />
       <RegisterCompletionText
         email={completion.email}
@@ -409,7 +412,10 @@ function RegisterCompletionPage() {
 
   return (
     <RegisterCompletion pageTitle={title}>
-      <Card>
+      {/* aria-live from first paint, before there's anything to reveal: a live region only
+          reliably announces content added *after* it's already in the DOM, not content that
+          arrives in the same paint as the region itself. */}
+      <Card aria-live="polite">
         <Header>
           <PageTitle>{t("title")}</PageTitle>
           <CourseName>
@@ -435,6 +441,7 @@ function RegisterCompletionPage() {
         </DividedSection>
         {studentTypeAnswer === "yes" && (
           <InstructionsSection>
+            <QuestionText as="h2">{t("sisuInstructionsHeading")}</QuestionText>
             <Prose>{t("sisuInstructions")}</Prose>
             <ImportantNotice
               email={completion.email}

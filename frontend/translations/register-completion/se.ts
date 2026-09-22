@@ -13,6 +13,7 @@ export default {
   sisuEmailNotice:
     "Dina studiepoäng kopplas till dig via e-postadressen, så din Sisu-profil måste innehålla adressen <strong>{{email}}</strong>, den adress du använde på den här kursen. Om det inte är din primära adress i Sisu, lägg till den som en sekundär e-postadress i dina Sisu-inställningar.",
   sisuLink: "Till Sisu",
+  sisuInstructionsHeading: "Anmäl dig i Sisu",
   finnishIdQuestion:
     "Är du finländare eller har du en finländsk personbeteckning?",
   needQuestionTitle: "Vilketdera behöver du?",
@@ -20,23 +21,24 @@ export default {
     "Studiepoäng i Helsingfors universitets studieregister är till nytta främst om du studerar i Finland. Om du bara vill visa att du har avlagt den här kursen, till exempel för din egen läroanstalt eller din arbetsgivare, räcker ett intyg.",
   needCertificateOption: "Ett intyg över avlagd kurs",
   needCreditsOption: "Studiepoäng i Helsingfors universitets studieregister",
+  certificateHandoffHeading: "Ditt intyg är klart genast",
   certificateHandoffBody:
     "Ett intyg finns tillgängligt för den här kursen. Du kan skapa det här och visa det genast.",
-  identificationQuestionTitle: "Hur identifierar du dig?",
+  identificationQuestionTitle:
+    "Kan du identifiera dig med någon av Suomi.fi-identifieringsmetoderna?",
   identificationQuestionBody:
-    "Anmälan kräver stark autentisering. Välj hur du identifierar dig när du loggar in i Sisu. Om du inte är säker på vilket alternativ som gäller dig, välj Nej.",
-  identificationEidasOption: "Ja, med eIDAS",
-  identificationOtherSuomiFiOption:
-    "Ja, med någon annan Suomi.fi-identifieringsmetod",
+    "Anmälan kräver stark autentisering när du loggar in i Sisu.",
+  identificationEidasOption: "eIDAS",
+  identificationOtherSuomiFiOption: "Någon annan Suomi.fi-identifieringsmetod",
   identificationNoneOption: "Nej",
-  identificationNoneHint:
-    "Välj det här om du inte är säker på vilket alternativ som gäller dig.",
-  identificationLinkHint:
-    '<a href="{{url}}" target="_blank" rel="noopener noreferrer">{{url}}</a>',
+  identificationEidasExplanation:
+    'Med eIDAS kan du identifiera dig med ett elektroniskt identitetsbevis utfärdat av ett annat EU- eller EES-land. <a href="{{url}}" target="_blank" rel="noopener noreferrer">Kontrollera från vilka länder du kan använda det<span style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;"> (öppnas i en ny flik)</span></a>.',
+  identificationOtherSuomiFiExplanation:
+    'Suomi.fi godkänner även andra finländska identifieringsmetoder, till exempel nätbankskoder eller mobilcertifikat. <a href="{{url}}" target="_blank" rel="noopener noreferrer">Se alla godkända identifieringsmetoder<span style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;"> (öppnas i en ny flik)</span></a>.',
   identificationEidasTip:
-    'Välj Suomi.fi-identifiering i Sisu när du ombeds identifiera dig. Välj sedan eIDAS. <a href="{{url}}" target="_blank" rel="noopener noreferrer">{{url}}</a>',
+    "Välj Suomi.fi-identifiering i Sisu när du ombeds identifiera dig. Välj sedan Identifieringsmetoder för utlänningar.",
   identificationOtherSuomiFiTip:
-    'Välj Suomi.fi-identifiering i Sisu när du ombeds identifiera dig. Välj sedan din egen identifieringsmetod. <a href="{{url}}" target="_blank" rel="noopener noreferrer">{{url}}</a>',
+    "Välj Suomi.fi-identifiering i Sisu när du ombeds identifiera dig. Välj sedan din egen identifieringsmetod.",
   reconsiderTitle: "Överväg en gång till",
   reconsiderBody:
     "Utan en Suomi.fi-identifieringsmetod ber anmälan dig kontakta vår support, och vi kontrollerar din identitet manuellt. Det kan ta från några dagar till flera veckor, och vi kan be dig om ytterligare dokument. Om ett intyg räcker för ditt behov får du det genast.",
@@ -46,8 +48,10 @@ export default {
   justificationLabel:
     "Varför behöver du studiepoängen i studieregistret i stället för ett intyg?",
   justificationContinue: "Fortsätt",
+  updateReason: "Uppdatera svaret",
   justificationSaveFailed:
     "Det gick inte att spara ditt svar. Kontrollera din anslutning och försök igen.",
+  openUniversityInstructionsHeading: "Anmäl dig via öppna universitetet",
   credits_details:
     "Öppna universitetet vid Helsingfors universitet sköter om registreringen av prestationer. Registreringen är gratis. ",
   donow:

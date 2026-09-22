@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react"
+import { ReactNode, useId, useState } from "react"
 
 import AnswerButtonGroup, { AnswerOption } from "./AnswerButtonGroup"
 import CertificateHandoff from "./CertificateHandoff"
@@ -45,6 +45,7 @@ function OpenUniversityDetour({
   renderDestination,
 }: OpenUniversityDetourProps) {
   const t = useTranslator(RegisterCompletionTranslations)
+  const identificationHeadingId = useId()
   const [hasFinnishIdentityCode, setHasFinnishIdentityCode] =
     useState<YesNoAnswer | null>(null)
   const [need, setNeed] = useState<RegistrationNeed | null>(null)
@@ -81,21 +82,12 @@ function OpenUniversityDetour({
     { value: "credits", label: t("needCreditsOption") },
   ]
   const identificationOptions: AnswerOption<IdentificationAnswer>[] = [
-    {
-      value: "eidas",
-      label: t("identificationEidasOption"),
-      hint: t("identificationLinkHint", { url: EIDAS_IDENTIFICATION_URL }),
-    },
+    { value: "eidas", label: t("identificationEidasOption") },
     {
       value: "other_suomi_fi",
       label: t("identificationOtherSuomiFiOption"),
-      hint: t("identificationLinkHint", { url: SUOMI_FI_IDENTIFICATION_URL }),
     },
-    {
-      value: "none",
-      label: t("identificationNoneOption"),
-      hint: t("identificationNoneHint"),
-    },
+    { value: "none", label: t("identificationNoneOption") },
   ]
 
   const suomiFiIdentification =
@@ -134,12 +126,29 @@ function OpenUniversityDetour({
 
       {need === "credits" && (
         <QuestionSection>
-          <QuestionText>{t("identificationQuestionTitle")}</QuestionText>
+          <QuestionText as="h2" id={identificationHeadingId}>
+            {t("identificationQuestionTitle")}
+          </QuestionText>
           <Prose>{t("identificationQuestionBody")}</Prose>
+          <Prose
+            dangerouslySetInnerHTML={{
+              __html: t("identificationEidasExplanation", {
+                url: EIDAS_IDENTIFICATION_URL,
+              }),
+            }}
+          />
+          <Prose
+            dangerouslySetInnerHTML={{
+              __html: t("identificationOtherSuomiFiExplanation", {
+                url: SUOMI_FI_IDENTIFICATION_URL,
+              }),
+            }}
+          />
           <AnswerButtonGroup
             options={identificationOptions}
             value={identification}
             onChange={onIdentificationAnswered}
+            ariaLabelledBy={identificationHeadingId}
           />
         </QuestionSection>
       )}

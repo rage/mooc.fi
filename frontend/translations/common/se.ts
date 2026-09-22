@@ -118,4 +118,5 @@ export default {
   learningEnvironment: "Learning environment",
   research: "Research",
   aboutUs: "About us",
+  opensInNewTab: "öppnas i en ny flik",
 } as const

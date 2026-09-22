@@ -3,7 +3,7 @@ import dynamic from "next/dynamic"
 import { Skeleton } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import { InstructionsSection, Prose } from "./styles"
+import { InstructionsSection, Prose, QuestionText } from "./styles"
 import { useTranslator } from "/hooks/useTranslator"
 import RegisterCompletionTranslations from "/translations/register-completion"
 
@@ -35,6 +35,7 @@ function CertificateHandoff({ course, completion }: CertificateHandoffProps) {
 
   return (
     <InstructionsSection>
+      <QuestionText as="h2">{t("certificateHandoffHeading")}</QuestionText>
       <Prose>{t("certificateHandoffBody")}</Prose>
       <CertificateButtonRow>
         <CertificateButton course={course} completion={completion} />

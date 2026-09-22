@@ -3,6 +3,10 @@ import React, { PropsWithChildren } from "react"
 import { EnhancedLink, EnhancedLinkProps, Link as MUILink } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
+import VisuallyHidden from "./VisuallyHidden"
+import { useTranslator } from "/hooks/useTranslator"
+import CommonTranslations from "/translations/common"
+
 const Link = MUILink as EnhancedLink
 
 // inlined svg from @fortawesome/fontawesome-free/svgs/solid/up-right-from-square.svg
@@ -39,17 +43,31 @@ function OutboundLink({
   children,
   ...props
 }: OutboundLinkProps) {
+  const t = useTranslator(CommonTranslations)
+  // Fixed here rather than at each call site: every OutboundLink opens in a new tab, so this
+  // covers all of them at once.
+  const newTabHint = `(${t("opensInNewTab")})`
+  const ariaLabel = label ? `${label} ${newTabHint}` : undefined
+  const content = label ? (
+    children
+  ) : (
+    <>
+      {children}
+      <VisuallyHidden> {newTabHint}</VisuallyHidden>
+    </>
+  )
+
   if (skipLinkStyling) {
     return (
-      <Link target="_blank" aria-label={label} {...props}>
-        {children}
+      <Link target="_blank" aria-label={ariaLabel} {...props}>
+        {content}
       </Link>
     )
   }
 
   return (
-    <StyledOutboundLink target="_blank" aria-label={label} {...props}>
-      {children}
+    <StyledOutboundLink target="_blank" aria-label={ariaLabel} {...props}>
+      {content}
     </StyledOutboundLink>
   )
 }

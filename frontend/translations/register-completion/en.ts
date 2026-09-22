@@ -13,6 +13,7 @@ export default {
   sisuEmailNotice:
     "Your credits are matched to you by email address, so your Sisu profile must include <strong>{{email}}</strong>, the address you used on this course. If it is not your primary address in Sisu, add it as a secondary email address in your Sisu settings.",
   sisuLink: "Go to Sisu",
+  sisuInstructionsHeading: "Enroll in Sisu",
   finnishIdQuestion:
     "Are you Finnish, or do you have a Finnish personal identity code (henkilötunnus)?",
   needQuestionTitle: "Which do you need?",
@@ -20,23 +21,24 @@ export default {
     "Credits in the University of Helsinki study registry are useful mainly if you study in Finland. If you only want to show that you completed this course (to your own school, employer, or someone else), a certificate is enough.",
   needCertificateOption: "A certificate of completion",
   needCreditsOption: "Credits in the UH study registry",
+  certificateHandoffHeading: "Your certificate is ready",
   certificateHandoffBody:
     "A certificate of completion is available for this course. Create it here and you can show it right away.",
-  identificationQuestionTitle: "How will you identify yourself?",
+  identificationQuestionTitle:
+    "Are you able to identify yourself with one of the Suomi.fi e-identification methods?",
   identificationQuestionBody:
-    "Enrollment requires strong authentication. Choose how you will identify yourself when you log in to Sisu. If you are not sure which option applies to you, choose No.",
-  identificationEidasOption: "Yes, with eIDAS",
-  identificationOtherSuomiFiOption:
-    "Yes, with another Suomi.fi e-identification method",
+    "Enrollment requires strong authentication. Choose how you will identify yourself when you log in to Sisu.",
+  identificationEidasOption: "eIDAS",
+  identificationOtherSuomiFiOption: "Another Suomi.fi e-identification method",
   identificationNoneOption: "No",
-  identificationNoneHint:
-    "Choose this if you are not sure which option applies to you.",
-  identificationLinkHint:
-    '<a href="{{url}}" target="_blank" rel="noopener noreferrer">{{url}}</a>',
+  identificationEidasExplanation:
+    'eIDAS lets you identify yourself with an electronic ID issued by another EU or EEA country. <a href="{{url}}" target="_blank" rel="noopener noreferrer">Check which countries you can use it from<span style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;"> (opens in a new tab)</span></a>.',
+  identificationOtherSuomiFiExplanation:
+    'Suomi.fi also accepts other Finnish identification methods, such as online banking codes or a mobile certificate. <a href="{{url}}" target="_blank" rel="noopener noreferrer">See all accepted identification methods<span style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;"> (opens in a new tab)</span></a>.',
   identificationEidasTip:
-    'In Sisu, choose Suomi.fi e-identification when prompted to authenticate. Then select eIDAS. <a href="{{url}}" target="_blank" rel="noopener noreferrer">{{url}}</a>',
+    "In Sisu, choose Suomi.fi e-identification when prompted to authenticate. Then select Identification methods for foreigners.",
   identificationOtherSuomiFiTip:
-    'In Sisu, choose Suomi.fi e-identification when prompted to authenticate. Then select your identification method. <a href="{{url}}" target="_blank" rel="noopener noreferrer">{{url}}</a>',
+    "In Sisu, choose Suomi.fi e-identification when prompted to authenticate. Then select your identification method.",
   reconsiderTitle: "Reconsider",
   reconsiderBody:
     "Without a Suomi.fi e-identification method, enrollment asks you to contact our support team, and we verify your identity manually. This can take from a few days to several weeks, and we may ask you for extra documents. If a certificate meets your need, you can get it right away.",
@@ -46,8 +48,10 @@ export default {
   justificationLabel:
     "Why do you need the credits in the study registry instead of a certificate?",
   justificationContinue: "Continue",
+  updateReason: "Update reason",
   justificationSaveFailed:
     "Saving your answer failed. Check your connection and try again.",
+  openUniversityInstructionsHeading: "Enroll through Open University",
   credits_details:
     "Credits for this course are registered through the Open University of the University of Helsinki.",
   donow:

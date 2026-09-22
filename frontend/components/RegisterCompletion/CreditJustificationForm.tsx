@@ -45,6 +45,8 @@ function CreditJustificationForm({
   )
   const fieldId = useId()
 
+  const [saved, setSaved] = useState(Boolean(initialJustification))
+
   const onSubmit = async () => {
     try {
       await saveJustification({
@@ -54,6 +56,7 @@ function CreditJustificationForm({
           identification_answer: identificationAnswer,
         },
       })
+      setSaved(true)
       onSaved()
     } catch {
       // The mutation's error state renders the alert below the field.
@@ -62,7 +65,7 @@ function CreditJustificationForm({
 
   return (
     <InstructionsSection>
-      <QuestionText>{t("justificationTitle")}</QuestionText>
+      <QuestionText as="h2">{t("justificationTitle")}</QuestionText>
       <Prose>{t("justificationBody")}</Prose>
       <JustificationField
         id={fieldId}
@@ -83,7 +86,7 @@ function CreditJustificationForm({
         disabled={loading || justification.trim() === ""}
         onClick={onSubmit}
       >
-        {t("justificationContinue")}
+        {saved ? t("updateReason") : t("justificationContinue")}
       </CallToActionButton>
     </InstructionsSection>
   )
