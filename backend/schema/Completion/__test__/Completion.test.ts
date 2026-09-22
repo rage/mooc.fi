@@ -399,6 +399,26 @@ describe("Completion", () => {
               )
             })
         })
+
+        it("errors on empty identification answer", async () => {
+          return ctx.client
+            .request(
+              setCreditRegistrationJustificationMutation,
+              {
+                id: OWN_COMPLETION_ID,
+                justification: "I need the credits",
+                identification_answer: "",
+              },
+              FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+            )
+            .then(() => fail())
+            .catch(({ response }) => {
+              expect(response.errors.length).toBe(1)
+              expect(response.errors[0].message).toContain(
+                "identification_answer must be one of",
+              )
+            })
+        })
       })
 
       describe("admin", () => {

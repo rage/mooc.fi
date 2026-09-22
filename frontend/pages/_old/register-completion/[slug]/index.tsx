@@ -455,6 +455,7 @@ function RegisterCompletionPage() {
         {studentTypeAnswer === "no" &&
           (certificateAvailable && completion.course ? (
             <OpenUniversityDetour
+              key={completion.id}
               completion={completion}
               course={completion.course}
               renderDestination={renderOpenUniversityInstructions}

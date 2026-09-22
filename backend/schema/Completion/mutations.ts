@@ -394,7 +394,7 @@ export const CompletionMutations = extendType({
           )
         }
         if (
-          identification_answer &&
+          identification_answer != null &&
           !IDENTIFICATION_ANSWERS.includes(identification_answer)
         ) {
           throw new GraphQLUserInputError(

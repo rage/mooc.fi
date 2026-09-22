@@ -69,6 +69,7 @@ function CreditJustificationForm({
         label={t("justificationLabel")}
         value={justification}
         onChange={(event) => setJustification(event.target.value)}
+        inputProps={{ maxLength: 4000 }}
         multiline
         minRows={4}
         required
