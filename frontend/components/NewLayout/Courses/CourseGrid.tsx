@@ -302,6 +302,13 @@ function CourseGrid() {
   const { locale = "fi" } = router
   const language = mapNextLanguageToLocaleCode(locale)
   const isNarrow = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"))
+  const initialEncodedSearchString = useQueryParameter("search", {
+    enforce: false,
+    array: false,
+  })
+  const initialSearchString = initialEncodedSearchString
+    ? decodeURIComponent(initialEncodedSearchString)
+    : ""
   const initialActiveTags = useQueryParameter("tag", {
     enforce: false,
     array: true,
@@ -351,12 +358,30 @@ function CourseGrid() {
     initialFilteredStatuses = initialStatuses
   }
 
-  const [searchString, setSearchString] = useState<string>("")
+  const [searchString, innerSetSearchString] =
+    useState<string>(initialSearchString)
   const [activeTags, setActiveTags] = useState<Array<TagCoreFieldsFragment>>([])
   const [filteredStatuses, setFilteredStatuses] = useState<CourseStatus[]>(
     initialFilteredStatuses,
   )
   const [courseSort, setCourseSort] = useState<CourseSort>("name")
+
+  const updateUrlSearchParam = (newSearch: string) => {
+    const newQuery = { ...router.query }
+    if (newSearch) {
+      newQuery.search = encodeURIComponent(newSearch)
+    } else {
+      delete newQuery.search
+    }
+    router.replace({ pathname: router.pathname, query: newQuery }, undefined, {
+      shallow: true,
+    })
+  }
+
+  const setSearchString = (newSearch: string) => {
+    updateUrlSearchParam(newSearch)
+    innerSetSearchString(newSearch)
+  }
 
   const tags = useMemo(() => {
     const res = (tagsData?.tags ?? []).reduce(
