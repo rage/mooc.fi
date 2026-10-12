@@ -25,6 +25,12 @@ export default {
   certificateHandoffBody:
     "Du kan få ett intyg över avlagd kurs för den här kursen.",
   goToCertificate: "Till intyget",
+  delegatedRegistrationBody:
+    "Studiepoängen för den här prestationen registreras på courses.mooc.fi.",
+  delegatedRegistrationButton: "Registrera på courses.mooc.fi",
+  delegatedRegistrationOpening: "Öppnar courses.mooc.fi…",
+  delegatedRegistrationError:
+    "Det gick inte att öppna courses.mooc.fi, försök igen.",
   certificatePageTitle: "Ditt intyg",
   certificatePageIntroBody: "Ett intyg finns tillgängligt för den här kursen.",
   certificateFallbackBody:

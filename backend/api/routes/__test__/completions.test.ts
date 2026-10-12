@@ -12,7 +12,40 @@ import {
 } from "../../../tests"
 import { seed } from "../../../tests/data"
 
+jest.mock("../../../config", () => ({
+  ...jest.requireActual("../../../config"),
+  CREDIT_REGISTRATION_DELEGATE_ORG_SLUG: "test",
+}))
+
 const ctx = getTestContext()
+
+const COURSE1_ID = "00000000-0000-0000-0000-000000000002"
+// Equal to the completion_date of every seeded course1 completion.
+const CUTOFF = new Date("1900-01-01T08:00:00.000Z")
+
+const delegateCourse = (id: string, cutoff = CUTOFF) =>
+  ctx.prisma.course.update({
+    where: { id },
+    data: { credit_registration_delegated_at: cutoff },
+  })
+
+const createCompletion = (
+  id: string,
+  completion_date: Date | null,
+  created_at: Date,
+) =>
+  ctx.prisma.completion.create({
+    data: {
+      id,
+      course: { connect: { id: COURSE1_ID } },
+      user: { connect: { id: "20000000000000000000000000000102" } },
+      user_upstream_id: 1,
+      email: "e@mail.com",
+      eligible_for_ects: true,
+      completion_date,
+      created_at,
+    },
+  })
 
 describe("API", () => {
   describe("/api/completions", () => {
@@ -133,6 +166,49 @@ describe("API", () => {
       ])
     })
 
+    it("returns only completions dated before the cutoff of a delegated course", async () => {
+      await delegateCourse(COURSE1_ID)
+      await createCompletion(
+        "30000000-0000-0000-0000-000000000201",
+        new Date("1899-12-31T00:00:00.000Z"),
+        new Date("1900-01-02T00:00:00.000Z"),
+      )
+      await createCompletion(
+        "30000000-0000-0000-0000-000000000202",
+        null,
+        new Date("1899-12-31T00:00:00.000Z"),
+      )
+      await createCompletion(
+        "30000000-0000-0000-0000-000000000203",
+        null,
+        new Date("1900-01-02T00:00:00.000Z"),
+      )
+
+      for (const registered of [false, true]) {
+        const res = await getCompletions(
+          "course1",
+          registered,
+        )({
+          headers: { Authorization: "Basic kissa" },
+        })
+
+        expect((res.data as any[]).map((c) => c.id).sort()).toEqual([
+          "30000000-0000-0000-0000-000000000201",
+          "30000000-0000-0000-0000-000000000202",
+        ])
+      }
+    })
+
+    it("reads the cutoff from the completion handler", async () => {
+      await delegateCourse("00000000-0000-0000-0000-000000000666")
+
+      const res = await getCompletions("handled")({
+        headers: { Authorization: "Basic kissa" },
+      })
+
+      expect(res.data).toEqual([])
+    })
+
     it("returns course instructions", async () => {
       const res = await getCompletionInstructions({})
 
@@ -145,6 +221,116 @@ describe("API", () => {
       })
 
       expect(res.status).toBe(200)
+    })
+  })
+
+  describe("/api/delegated-completions", () => {
+    let getDelegatedCompletions: (
+      courseId: string,
+      upstreamId: number | string,
+    ) => RequestGet
+
+    beforeEach(async () => {
+      await seed(ctx.prisma)
+      const { get } = createRequestHelpers(ctx.port)
+      getDelegatedCompletions = (courseId, upstreamId) =>
+        get(`/api/delegated-completions/${courseId}/users/${upstreamId}`, {
+          Authorization: "Basic kissa",
+        })
+    })
+
+    it("errors on no auth", async () => {
+      await delegateCourse(COURSE1_ID)
+      return getDelegatedCompletions(
+        COURSE1_ID,
+        1,
+      )({ headers: {} })
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(401)
+        })
+    })
+
+    it("errors on an organization other than the delegate", async () => {
+      await delegateCourse(COURSE1_ID)
+      return getDelegatedCompletions(
+        COURSE1_ID,
+        1,
+      )({ headers: { Authorization: "Basic koira" } })
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(403)
+        })
+    })
+
+    it("errors on a course that is not delegated", async () => {
+      return getDelegatedCompletions(
+        COURSE1_ID,
+        1,
+      )({})
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(404)
+        })
+    })
+
+    it("errors on a malformed course id", async () => {
+      return getDelegatedCompletions(
+        "course1",
+        1,
+      )({})
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(400)
+        })
+    })
+
+    it("returns the user's completions with every registration", async () => {
+      await delegateCourse(COURSE1_ID)
+      await ctx.prisma.completionRegistered.create({
+        data: {
+          completion: {
+            connect: { id: "30000000-0000-0000-0000-000000000102" },
+          },
+          course: { connect: { id: COURSE1_ID } },
+          user: { connect: { id: "20000000000000000000000000000102" } },
+          organization: { connect: { id: "10000000000000000000000000000102" } },
+          real_student_number: "12345",
+          registration_date: new Date("2026-10-01T00:00:00.000Z"),
+        },
+      })
+
+      const res = await getDelegatedCompletions(COURSE1_ID, 1)({})
+
+      expect(res.status).toBe(200)
+      expect(res.data).toEqual([
+        {
+          id: "30000000-0000-0000-0000-000000000102",
+          course_id: COURSE1_ID,
+          completion_date: "1900-01-01T08:00:00.000Z",
+          created_at: "1900-01-01T08:00:00.000Z",
+          updated_at: "1900-01-01T08:00:00.000Z",
+          completion_language: "en",
+          grade: null,
+          tier: 2,
+          eligible_for_ects: true,
+          registrations: [
+            {
+              organization_slug: "test",
+              registration_date: "2026-10-01T00:00:00.000Z",
+              created_at: expect.any(String),
+            },
+          ],
+        },
+      ])
+    })
+
+    it("returns an empty list for a user without completions", async () => {
+      await delegateCourse(COURSE1_ID)
+
+      const res = await getDelegatedCompletions(COURSE1_ID, 3)({})
+
+      expect(res.data).toEqual([])
     })
   })
 
@@ -247,6 +433,26 @@ describe("API", () => {
           },
         ],
       })
+    })
+
+    it("skips a completion the organization already registered", async () => {
+      const data = {
+        completions: [
+          {
+            completion_id: "30000000-0000-0000-0000-000000000102",
+            student_number: "12345",
+          },
+        ],
+      }
+
+      await postCompletions({ data })
+      await postCompletions({ data })
+
+      expect(
+        await ctx.prisma.completionRegistered.count({
+          where: { completion_id: "30000000-0000-0000-0000-000000000102" },
+        }),
+      ).toBe(1)
     })
   })
 })

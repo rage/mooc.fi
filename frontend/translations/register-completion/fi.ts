@@ -25,6 +25,12 @@ export default {
   certificateHandoffBody:
     "Voit saada todistuksen tämän kurssin suorittamisesta.",
   goToCertificate: "Siirry todistukseen",
+  delegatedRegistrationBody:
+    "Tämän suorituksen opintopisteet rekisteröidään courses.mooc.fi:ssä.",
+  delegatedRegistrationButton: "Rekisteröi courses.mooc.fi:ssä",
+  delegatedRegistrationOpening: "Avataan courses.mooc.fi…",
+  delegatedRegistrationError:
+    "courses.mooc.fi:n avaaminen epäonnistui, yritä uudelleen.",
   certificatePageTitle: "Todistuksesi",
   certificatePageIntroBody: "Tästä kurssista on saatavilla todistus.",
   certificateFallbackBody:
