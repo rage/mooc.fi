@@ -5,6 +5,9 @@
 backend:
   replicaCount: 2
   connectionLimit: 5
+  # COURSES_HANDOFF_SECRET goes in backend-secret
+  coursesBaseUrl: https://courses.mooc.fi
+  creditRegistrationDelegateOrgSlug: courses-mooc-fi
 
 frontend:
   replicaCount: 2

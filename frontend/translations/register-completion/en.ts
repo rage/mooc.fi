@@ -25,6 +25,11 @@ export default {
   certificateHandoffBody:
     "You can get a certificate of completion for this course.",
   goToCertificate: "Go to certificate",
+  delegatedRegistrationBody:
+    "Credits for this completion are registered on courses.mooc.fi.",
+  delegatedRegistrationButton: "Register on courses.mooc.fi",
+  delegatedRegistrationOpening: "Opening courses.mooc.fi…",
+  delegatedRegistrationError: "Could not open courses.mooc.fi, try again.",
   certificatePageTitle: "Your certificate",
   certificatePageIntroBody:
     "A certificate of completion is available for this course.",

@@ -3,16 +3,45 @@ import { merge } from "lodash"
 import { extendType, idArg, intArg, nonNull, stringArg } from "nexus"
 
 import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
-import { Prisma } from "@prisma/client"
+import { Course, Prisma } from "@prisma/client"
 
 import {
   isAdmin,
   isAdminOrCourseOwner,
   isOrganization,
   or,
+  Role,
 } from "../../accessControl"
+import { Context } from "../../context"
 import { GraphQLForbiddenError, GraphQLUserInputError } from "../../lib/errors"
 import { buildUserSearch } from "../../util"
+import { completedBeforeCutoffWhere } from "../../util/completedBeforeCutoff"
+
+/**
+ * Hides from registrars the completions that courses.mooc.fi registers: those on or after the
+ * handler course's `credit_registration_delegated_at`. Other callers see every completion.
+ */
+async function delegatedCompletionsFilter(
+  ctx: Context,
+  course: Pick<
+    Course,
+    "id" | "completions_handled_by_id" | "credit_registration_delegated_at"
+  >,
+): Promise<Prisma.CompletionWhereInput> {
+  if (ctx.role !== Role.ORGANIZATION) {
+    return {}
+  }
+
+  const handlerCourse = course.completions_handled_by_id
+    ? await ctx.prisma.course.findUnique({
+        where: { id: course.completions_handled_by_id },
+        select: { credit_registration_delegated_at: true },
+      })
+    : course
+  const cutoff = handlerCourse?.credit_registration_delegated_at
+
+  return cutoff ? completedBeforeCutoffWhere(cutoff) : {}
+}
 
 export const CompletionQueries = extendType({
   type: "Query",
@@ -63,15 +92,17 @@ export const CompletionQueries = extendType({
           throw new Error("Course not found")
         }
 
+        const handlerCourseId = course.completions_handled_by_id ?? course.id
         const completions = await ctx.prisma.course
           .findUnique({
             where: {
-              id: course.completions_handled_by_id ?? course.id,
+              id: handlerCourseId,
             },
           })
           .completions({
             where: {
               completion_language,
+              ...(await delegatedCompletionsFilter(ctx, course)),
             },
             distinct: ["user_id", "course_id"],
             orderBy: { created_at: "asc" },
@@ -113,6 +144,7 @@ export const CompletionQueries = extendType({
         const baseArgs: Prisma.CompletionFindManyArgs = {
           where: {
             completion_language,
+            ...(await delegatedCompletionsFilter(ctx, course)),
             ...(search
               ? {
                   user: {
