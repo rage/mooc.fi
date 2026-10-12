@@ -17,6 +17,7 @@ import {
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
 import { CREDIT_REGISTRATION_DELEGATE_ORG_SLUG } from "../../config"
 import { err, isDefined } from "../../util"
+import { COMPLETED_BEFORE_HANDLER_CUTOFF_SQL } from "../../util/completedBeforeCutoff"
 import { ApiContext, Controller } from "../types"
 import { requireAdminOrCourseOwner } from "../utils"
 
@@ -35,10 +36,6 @@ if (!JWT_SECRET) {
 
 const UUID_REGEX =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-
-// Same effective date as courses.mooc.fi; created_at is a UTC timestamp without time zone.
-const EFFECTIVE_COMPLETION_DATE_SQL =
-  "COALESCE(completion.completion_date, completion.created_at AT TIME ZONE 'UTC')"
 
 interface DownloadTokenPayload {
   courseId: string
@@ -110,9 +107,7 @@ export class CompletionController extends Controller {
       .andWhere((builder) =>
         builder
           .whereNull("handler_course.credit_registration_delegated_at")
-          .orWhereRaw(
-            `${EFFECTIVE_COMPLETION_DATE_SQL} < handler_course.credit_registration_delegated_at`,
-          ),
+          .orWhereRaw(COMPLETED_BEFORE_HANDLER_CUTOFF_SQL),
       )
 
     if (!registered) {
@@ -742,7 +737,10 @@ export class CompletionController extends Controller {
       return res.status(400).json({ message: "malformed data", error })
     }
 
-    const buildPromises = (data: RegisterCompletionInput[]) => {
+    const buildPromises = (
+      data: RegisterCompletionInput[],
+      alreadyRegistered: Set<string | null>,
+    ) => {
       return data.map(async (entry) => {
         const { course_id, user_id } =
           (await prisma.completion.findUnique({
@@ -755,16 +753,7 @@ export class CompletionController extends Controller {
           return Promise.resolve()
         }
 
-        const existingRegistration =
-          await prisma.completionRegistered.findFirst({
-            where: {
-              completion_id: entry.completion_id,
-              organization_id: org.id,
-            },
-            select: { id: true },
-          })
-
-        if (existingRegistration) {
+        if (alreadyRegistered.has(entry.completion_id)) {
           return Promise.resolve()
         }
 
@@ -787,7 +776,17 @@ export class CompletionController extends Controller {
 
     const queue = chunk(completions, 500)
     for (const completionChunk of queue) {
-      const promises = buildPromises(completionChunk)
+      const registered = await prisma.completionRegistered.findMany({
+        where: {
+          organization_id: org.id,
+          completion_id: { in: completionChunk.map((c) => c.completion_id) },
+        },
+        select: { completion_id: true },
+      })
+      const promises = buildPromises(
+        completionChunk,
+        new Set(registered.map((r) => r.completion_id)),
+      )
       await Promise.all(promises)
     }
 

@@ -13,20 +13,15 @@ interface DelegatedRegistrationButtonProps {
   handoffUrl: string
 }
 
-/**
- * Sends the student to courses.mooc.fi, which registers the credits of completions dated on or
- * after the course's `credit_registration_delegated_at`.
- */
+/** Sends the student to courses.mooc.fi to register their credits. */
 function DelegatedRegistrationButton({
   handoffUrl,
 }: DelegatedRegistrationButtonProps) {
   const t = useTranslator(RegisterCompletionTranslations)
-  const [isOpening, setIsOpening] = useState(false)
-  const [hasFailed, setHasFailed] = useState(false)
+  const [status, setStatus] = useState<"idle" | "opening" | "failed">("idle")
 
   const openCoursesMoocFi = async () => {
-    setIsOpening(true)
-    setHasFailed(false)
+    setStatus("opening")
     try {
       const res = await fetch(handoffUrl, {
         method: "POST",
@@ -39,8 +34,7 @@ function DelegatedRegistrationButton({
       // The URL expires within seconds, so navigate at once.
       window.location.assign(redirect_url)
     } catch {
-      setIsOpening(false)
-      setHasFailed(true)
+      setStatus("failed")
     }
   }
 
@@ -51,14 +45,14 @@ function DelegatedRegistrationButton({
         variant="contained"
         color="primary"
         size="medium"
-        disabled={isOpening}
+        disabled={status === "opening"}
         onClick={openCoursesMoocFi}
       >
-        {isOpening
+        {status === "opening"
           ? t("delegatedRegistrationOpening")
           : t("delegatedRegistrationButton")}
       </CallToActionButton>
-      {hasFailed && (
+      {status === "failed" && (
         <Alert severity="error">{t("delegatedRegistrationError")}</Alert>
       )}
     </InstructionsSection>
