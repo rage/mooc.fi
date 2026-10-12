@@ -15,6 +15,7 @@ import {
 } from "@prisma/client"
 
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
+import { CREDIT_REGISTRATION_DELEGATE_ORG_SLUG } from "../../config"
 import { err, isDefined } from "../../util"
 import { ApiContext, Controller } from "../types"
 import { requireAdminOrCourseOwner } from "../utils"
@@ -31,6 +32,13 @@ const JWT_SECRET = process.env.JWT_SECRET as Secret
 if (!JWT_SECRET) {
   throw new Error("JWT_SECRET environment variable is required")
 }
+
+const UUID_REGEX =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+// Same effective date as courses.mooc.fi; created_at is a UTC timestamp without time zone.
+const EFFECTIVE_COMPLETION_DATE_SQL =
+  "COALESCE(completion.completion_date, completion.created_at AT TIME ZONE 'UTC')"
 
 interface DownloadTokenPayload {
   courseId: string
@@ -89,11 +97,23 @@ export class CompletionController extends Controller {
         "completion.id",
         "completion_registered.completion_id",
       )
+      .join(
+        "course as handler_course",
+        "handler_course.id",
+        "completion.course_id",
+      )
       .where(
         "completion.course_id",
         course.completions_handled_by_id ?? course.id,
       )
       .andWhere("eligible_for_ects", true)
+      .andWhere((builder) =>
+        builder
+          .whereNull("handler_course.credit_registration_delegated_at")
+          .orWhereRaw(
+            `${EFFECTIVE_COMPLETION_DATE_SQL} < handler_course.credit_registration_delegated_at`,
+          ),
+      )
 
     if (!registered) {
       sql.whereNull("completion_registered.id")
@@ -111,6 +131,81 @@ export class CompletionController extends Controller {
     req.on("close", stream.end.bind(stream))
 
     return // NOSONAR
+  }
+
+  /**
+   * A user's completions on a delegated handler course, eligible or not, with every organization's
+   * registrations. Only for the organization courses.mooc.fi uses.
+   */
+  delegatedCompletions = async (
+    req: Request<{ course_id: string; upstream_id: string }>,
+    res: Response,
+  ) => {
+    const { prisma } = this.ctx
+    const organizationResult = await this.getOrganization(req, res)
+
+    if (organizationResult.isErr()) {
+      return organizationResult.error
+    }
+
+    if (
+      !CREDIT_REGISTRATION_DELEGATE_ORG_SLUG ||
+      organizationResult.value.slug !== CREDIT_REGISTRATION_DELEGATE_ORG_SLUG
+    ) {
+      return res.status(403).json({ message: "Access denied." })
+    }
+
+    const { course_id } = req.params
+    const upstream_id = Number(req.params.upstream_id)
+
+    if (!UUID_REGEX.test(course_id) || !Number.isInteger(upstream_id)) {
+      return res
+        .status(400)
+        .json({ message: "Malformed course_id or upstream_id" })
+    }
+
+    const course = await prisma.course.findFirst({
+      where: { id: course_id, credit_registration_delegated_at: { not: null } },
+      select: { id: true },
+    })
+
+    if (!course) {
+      return res.status(404).json({ message: "Delegated course not found" })
+    }
+
+    const completions = await prisma.completion.findMany({
+      where: { course_id: course.id, user: { upstream_id } },
+      select: {
+        id: true,
+        course_id: true,
+        completion_date: true,
+        created_at: true,
+        updated_at: true,
+        completion_language: true,
+        grade: true,
+        tier: true,
+        eligible_for_ects: true,
+        completions_registered: {
+          select: {
+            registration_date: true,
+            created_at: true,
+            organization: { select: { slug: true } },
+          },
+        },
+      },
+      orderBy: { created_at: "asc" },
+    })
+
+    return res.status(200).json(
+      completions.map(({ completions_registered, ...completion }) => ({
+        ...completion,
+        registrations: completions_registered.map((registration) => ({
+          organization_slug: registration.organization?.slug ?? null,
+          registration_date: registration.registration_date,
+          created_at: registration.created_at,
+        })),
+      })),
+    )
   }
 
   completionsCSVToken = async (
@@ -657,6 +752,19 @@ export class CompletionController extends Controller {
 
         if (!course_id || !user_id) {
           // TODO/FIXME: we now fail silently if course/user not found
+          return Promise.resolve()
+        }
+
+        const existingRegistration =
+          await prisma.completionRegistered.findFirst({
+            where: {
+              completion_id: entry.completion_id,
+              organization_id: org.id,
+            },
+            select: { id: true },
+          })
+
+        if (existingRegistration) {
           return Promise.resolve()
         }
 

@@ -17,6 +17,7 @@ export const Course = objectType({
     t.model.completions_handled_by()
     t.model.course_translations()
     t.model.created_at()
+    t.model.credit_registration_delegated_at()
     t.model.ects()
     t.model.end_date()
     t.model.exercise_completions_needed()

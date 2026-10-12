@@ -4,6 +4,7 @@ import {
   abEnrollmentRouter,
   abStudiesRouter,
   CompletionController,
+  CreditRegistrationHandoffController,
   ProgressController,
   StoredDataController,
   UserCourseSettingsController,
@@ -12,6 +13,8 @@ import { ApiContext } from "./types"
 
 export function apiRouter(ctx: ApiContext) {
   const completionController = new CompletionController(ctx)
+  const creditRegistrationHandoffController =
+    new CreditRegistrationHandoffController(ctx)
   const progressController = new ProgressController(ctx)
   const storedDataController = new StoredDataController(ctx)
   const userCourseSettingsController = new UserCourseSettingsController(ctx)
@@ -30,6 +33,14 @@ export function apiRouter(ctx: ApiContext) {
     )
     .post("/recheck-completion", completionController.recheckCompletion)
     .post("/register-completions", completionController.registerCompletions)
+    .get(
+      "/delegated-completions/:course_id/users/:upstream_id",
+      completionController.delegatedCompletions,
+    )
+    .post(
+      "/credit-registration-handoff/:slug",
+      creditRegistrationHandoffController.create,
+    )
     .post(
       "/completions/:slug/certificate",
       completionController.updateCertificateId,

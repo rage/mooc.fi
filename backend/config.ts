@@ -102,6 +102,10 @@ export const {
   TMC_PASSWORD,
   TMC_USERNAME,
   RATELIMIT_PROTECTION_SAFE_API_KEY = "",
+  // courses.mooc.fi credit registration delegation; unset turns the handoff and lookup routes off
+  COURSES_BASE_URL,
+  COURSES_HANDOFF_SECRET,
+  CREDIT_REGISTRATION_DELEGATE_ORG_SLUG,
   // keys
   PUBLIC_KEY,
   PRIVATE_KEY,

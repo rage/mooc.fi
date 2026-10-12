@@ -47,6 +47,21 @@ const setCreditRegistrationJustificationMutation = gql`
   }
 `
 
+const completionsQuery = gql`
+  query Completions($course: String!) {
+    completions(course: $course) {
+      id
+    }
+    completionsPaginated(course: $course, first: 50) {
+      edges {
+        node {
+          id
+        }
+      }
+    }
+  }
+`
+
 const OWN_COMPLETION_ID = "30000000-0000-0000-0000-000000000102"
 const OTHER_USER_COMPLETION_ID = "12400000-0000-0000-0000-000000000001"
 
@@ -56,6 +71,64 @@ describe("Completion", () => {
   beforeEach(async () => {
     await seed(ctx.prisma)
   })
+  describe("queries", () => {
+    setupTMCWithDefaultFakeUsers()
+
+    describe("completions on a delegated course", () => {
+      const EARLY_COMPLETION_ID = "30000000-0000-0000-0000-000000000201"
+
+      beforeEach(async () => {
+        const cutoff = new Date("1900-01-01T08:00:00.000Z")
+        await ctx.prisma.course.update({
+          where: { id: "00000000000000000000000000000002" },
+          data: { credit_registration_delegated_at: cutoff },
+        })
+        await ctx.prisma.completion.create({
+          data: {
+            id: EARLY_COMPLETION_ID,
+            course: { connect: { id: "00000000000000000000000000000002" } },
+            user: { connect: { id: "20000000000000000000000000000104" } },
+            email: "third@organization.fi",
+            completion_date: null,
+            created_at: new Date("1899-12-31T00:00:00.000Z"),
+          },
+        })
+      })
+
+      const ids = (res: any) => ({
+        completions: res.completions.map((c: any) => c.id).sort(),
+        completionsPaginated: res.completionsPaginated.edges
+          .map((e: any) => e.node.id)
+          .sort(),
+      })
+
+      it("hides completions on or after the cutoff from organizations", async () => {
+        const res = await ctx.client.request<any>(
+          completionsQuery,
+          { course: "course1" },
+          { Authorization: "Basic kissa" },
+        )
+
+        expect(ids(res)).toEqual({
+          completions: [EARLY_COMPLETION_ID],
+          completionsPaginated: [EARLY_COMPLETION_ID],
+        })
+      })
+
+      it("shows every completion to admins", async () => {
+        const res = await ctx.client.request<any>(
+          completionsQuery,
+          { course: "course1" },
+          FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+        )
+
+        expect(ids(res).completions.length).toBeGreaterThan(1)
+        expect(ids(res).completions).toContain(EARLY_COMPLETION_ID)
+        expect(ids(res).completionsPaginated).toEqual(ids(res).completions)
+      })
+    })
+  })
+
   describe("mutations", () => {
     setupTMCWithDefaultFakeUsers()
 

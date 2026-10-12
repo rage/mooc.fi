@@ -24,6 +24,7 @@ import OutboundLink from "/components/OutboundLink"
 import AnswerButtonGroup, {
   AnswerOption,
 } from "/components/RegisterCompletion/AnswerButtonGroup"
+import DelegatedRegistrationButton from "/components/RegisterCompletion/DelegatedRegistrationButton"
 import OpenUniversityDetour from "/components/RegisterCompletion/OpenUniversityDetour"
 import {
   CallToActionButton,
@@ -310,6 +311,27 @@ function RegisterCompletionPage() {
         title={t("course_completion_not_found_title")}
         message={t("course_completion_not_found")}
       />
+    )
+  }
+
+  const delegatedAt = completion.course?.credit_registration_delegated_at
+  const effectiveDate = completion.completion_date ?? completion.created_at
+  // Before the "already registered" check: courses.mooc.fi shows the authoritative status.
+  if (delegatedAt && new Date(effectiveDate) >= new Date(delegatedAt)) {
+    return (
+      <RegisterCompletion pageTitle={title}>
+        <Card>
+          <Header>
+            <PageTitle>{t("title")}</PageTitle>
+            <CourseName>
+              {t("course", { course: completion.course?.name })}
+            </CourseName>
+          </Header>
+          <DelegatedRegistrationButton
+            handoffUrl={`${BASE_URL}/api/credit-registration-handoff/${courseSlug}`}
+          />
+        </Card>
+      </RegisterCompletion>
     )
   }
 

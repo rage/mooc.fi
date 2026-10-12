@@ -10,9 +10,42 @@ import {
   isAdminOrCourseOwner,
   isOrganization,
   or,
+  Role,
 } from "../../accessControl"
+import { Context } from "../../context"
 import { GraphQLForbiddenError, GraphQLUserInputError } from "../../lib/errors"
 import { buildUserSearch } from "../../util"
+
+/**
+ * Hides from registrars the completions that courses.mooc.fi registers: those on or after the
+ * handler course's `credit_registration_delegated_at`. Other callers see every completion.
+ */
+async function delegatedCompletionsFilter(
+  ctx: Context,
+  handlerCourseId: string,
+): Promise<Prisma.CompletionWhereInput> {
+  if (ctx.role !== Role.ORGANIZATION) {
+    return {}
+  }
+
+  const cutoff = (
+    await ctx.prisma.course.findUnique({
+      where: { id: handlerCourseId },
+      select: { credit_registration_delegated_at: true },
+    })
+  )?.credit_registration_delegated_at
+
+  if (!cutoff) {
+    return {}
+  }
+
+  return {
+    OR: [
+      { completion_date: { lt: cutoff } },
+      { completion_date: null, created_at: { lt: cutoff } },
+    ],
+  }
+}
 
 export const CompletionQueries = extendType({
   type: "Query",
@@ -63,15 +96,17 @@ export const CompletionQueries = extendType({
           throw new Error("Course not found")
         }
 
+        const handlerCourseId = course.completions_handled_by_id ?? course.id
         const completions = await ctx.prisma.course
           .findUnique({
             where: {
-              id: course.completions_handled_by_id ?? course.id,
+              id: handlerCourseId,
             },
           })
           .completions({
             where: {
               completion_language,
+              ...(await delegatedCompletionsFilter(ctx, handlerCourseId)),
             },
             distinct: ["user_id", "course_id"],
             orderBy: { created_at: "asc" },
@@ -113,6 +148,10 @@ export const CompletionQueries = extendType({
         const baseArgs: Prisma.CompletionFindManyArgs = {
           where: {
             completion_language,
+            ...(await delegatedCompletionsFilter(
+              ctx,
+              course.completions_handled_by_id ?? course.id,
+            )),
             ...(search
               ? {
                   user: {
