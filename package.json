@@ -21,6 +21,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-styled-components-a11y": "^2.1.3",
     "husky": "^8.0.3",
+    "lint-staged": "^15.5.2",
     "prettier": "^3.0.0",
     "typescript": "^5.1.6"
   },
@@ -42,5 +43,13 @@
   "bugs": {
     "url": "https://github.com/rage/mooc.fi/issues"
   },
-  "homepage": "https://github.com/rage/mooc.fi#readme"
+  "homepage": "https://github.com/rage/mooc.fi#readme",
+  "lint-staged": {
+    "*.{js,ts,tsx}": [
+      "prettier --write"
+    ],
+    "*.d.ts": [
+      "prettier --write"
+    ]
+  }
 }

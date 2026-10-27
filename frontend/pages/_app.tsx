@@ -1,4 +1,4 @@
-import { useInsertionEffect, useMemo } from "react"
+import { useInsertionEffect, useMemo, useState } from "react"
 
 import { DefaultSeo } from "next-seo"
 import type { AppProps, NextWebVitalsMetric } from "next/app"
@@ -9,6 +9,7 @@ import { CssBaseline } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
 import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 import DynamicLayout from "/components/DynamicLayout"
 import AppContextProvider from "/contexts/AppContextProvider"
@@ -27,6 +28,18 @@ interface MyAppProps extends AppProps {
 
 export function MyApp({ Component, pageProps, deviceType }: MyAppProps) {
   const { signedIn, admin, currentUser } = useAuth()
+
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 5 * 60 * 1000,
+            refetchOnWindowFocus: false,
+          },
+        },
+      }),
+  )
 
   useInsertionEffect(() => {
     const jssStyles = document?.querySelector("#jss-server-side")
@@ -73,16 +86,18 @@ export function MyApp({ Component, pageProps, deviceType }: MyAppProps) {
       </Head>
       <ThemeProvider theme={themeWithLocale}>
         <CssBaseline />
-        <LocalizationProvider dateAdapter={AdapterLuxon}>
-          <LoginStateProvider value={loginStateContextValue}>
-            <AppContextProvider>
-              <DynamicLayout isOld={isOld}>
-                <DefaultSeo {...seoConfig} />
-                <Component {...pageProps} />
-              </DynamicLayout>
-            </AppContextProvider>
-          </LoginStateProvider>
-        </LocalizationProvider>
+        <QueryClientProvider client={queryClient}>
+          <LocalizationProvider dateAdapter={AdapterLuxon}>
+            <LoginStateProvider value={loginStateContextValue}>
+              <AppContextProvider>
+                <DynamicLayout isOld={isOld}>
+                  <DefaultSeo {...seoConfig} />
+                  <Component {...pageProps} />
+                </DynamicLayout>
+              </AppContextProvider>
+            </LoginStateProvider>
+          </LocalizationProvider>
+        </QueryClientProvider>
       </ThemeProvider>
     </>
   )
