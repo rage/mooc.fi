@@ -1,4 +1,4 @@
-import { useFieldArray } from "react-hook-form"
+import { FieldArrayWithId } from "react-hook-form"
 
 import { FormControl, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
@@ -8,7 +8,6 @@ import { CourseFormValues } from "./types"
 import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/courses"
-import { mapLangToLanguage } from "/util/dataFormatFunctions"
 
 const LanguageVersionTitle = styled(Typography)`
   margin-bottom: 1.5rem;
@@ -37,12 +36,17 @@ const CourseTranslationItem = styled("li")`
   margin: auto;
 `
 
-// require key to ensure re-render on selected language change
-function CourseTranslationForm(_: { key: React.Key }) {
+interface CourseTranslationFormProps {
+  fields: FieldArrayWithId<CourseFormValues, "course_translations">[]
+}
+
+function CourseTranslationForm({ fields }: CourseTranslationFormProps) {
   const t = useTranslator(CoursesTranslations)
-  const { fields } = useFieldArray<CourseFormValues, "course_translations">({
-    name: "course_translations",
-  })
+  const languageNames: Record<string, string> = {
+    fi_FI: t("courseFinnish"),
+    en_US: t("courseEnglish"),
+    sv_SE: t("courseSwedish"),
+  }
 
   return (
     <FormControl component="fieldset">
@@ -52,7 +56,7 @@ function CourseTranslationForm(_: { key: React.Key }) {
             <CourseTranslationItem key={item._id ?? item.language}>
               <LanguageVersionTitle component="h2" variant="h3" align="left">
                 {`${t("courseLanguageVersion")}: ${
-                  mapLangToLanguage[item.language ?? ""]
+                  languageNames[item.language ?? ""] ?? item.language
                 }`}
               </LanguageVersionTitle>
               <ControlledHiddenField

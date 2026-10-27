@@ -55,7 +55,10 @@ function useCourseSearch() {
     error: coursesError,
     data: coursesData,
   } = useQuery(EditorCoursesDocument, {
-    variables: searchVariables ?? initialSearchVariables,
+    variables: {
+      ...(searchVariables ?? initialSearchVariables),
+      language: router.locale === "fi" ? "fi_FI" : "en_US",
+    },
   })
   const {
     loading: handlerCoursesLoading,

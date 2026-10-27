@@ -2,7 +2,7 @@
 import { DateTime } from "luxon"
 import { omit } from "remeda"
 
-import { initialValues } from "./form-validation"
+import { initialTranslation, initialValues } from "./form-validation"
 import { CourseFormValues, CourseTranslationFormValues } from "./types"
 import { filterNullRecursive } from "/util/filterNull"
 import { isDefinedAndNotEmpty } from "/util/guards"
@@ -28,7 +28,10 @@ export const toCourseForm = ({
   course,
 }: ToCourseFormArgs): CourseFormValues => {
   if (!course) {
-    return initialValues
+    return {
+      ...initialValues,
+      course_translations: [{ ...initialTranslation, language: "fi_FI" }],
+    }
   }
 
   const study_modules =
