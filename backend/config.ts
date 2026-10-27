@@ -14,6 +14,8 @@ export const isStaging = () =>
 
 export const DEBUG = Boolean(process.env.DEBUG)
 
+export const BACKEND_PORT = Number(process.env.BACKEND_PORT) || 4000
+
 // database related
 export const CIRCLECI = process.env.CIRCLECI
 export const EXTENSION_PATH = "extensions"

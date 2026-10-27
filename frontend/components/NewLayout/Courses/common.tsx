@@ -4,12 +4,14 @@ import newTheme from "/src/newTheme"
 
 import { CourseStatus, TagCoreFieldsFragment } from "/graphql/generated"
 
+export type CourseTagFields = Pick<
+  TagCoreFieldsFragment,
+  "id" | "name" | "abbreviation" | "types"
+>
+
 export const allowedLanguages = ["fi", "en", "se", "other_language"]
 
-export const sortByLanguage = (
-  a: TagCoreFieldsFragment,
-  b: TagCoreFieldsFragment,
-) => {
+export const sortByLanguage = (a: CourseTagFields, b: CourseTagFields) => {
   if (allowedLanguages.indexOf(a.id) === -1) {
     return 1
   }
@@ -21,10 +23,8 @@ export const sortByLanguage = (
 
 const difficultyOrder = ["beginner", "intermediate", "advanced"]
 
-export const sortByDifficulty = (
-  a: TagCoreFieldsFragment,
-  b: TagCoreFieldsFragment,
-) => difficultyOrder.indexOf(a.id) - difficultyOrder.indexOf(b.id)
+export const sortByDifficulty = (a: CourseTagFields, b: CourseTagFields) =>
+  difficultyOrder.indexOf(a.id) - difficultyOrder.indexOf(b.id)
 
 export const courseStatuses: readonly CourseStatus[] = [
   CourseStatus.Active,

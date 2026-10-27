@@ -1,4 +1,5 @@
 import { Request, Response } from "express"
+import { ParamsDictionary } from "express-serve-static-core"
 
 import {
   Course,
@@ -6,10 +7,10 @@ import {
   Image,
   StudyModule,
   StudyModuleTranslation,
-  Tag,
 } from "@prisma/client"
 
 import { LoadedCourseSponsor } from "../../loaders/courseSponsorsLoader"
+import { LoadedCourseTag } from "../../loaders/courseTagsLoader"
 import { createLoaders } from "../../loaders/createLoaders"
 import { ExtendedPrismaClient } from "../../prisma"
 import { isDefined } from "../../util"
@@ -24,6 +25,7 @@ type FilteredCourse = Omit<
   Course,
   "course_translations" | "tags" | "handles_completions_for"
 > & {
+  photo?: Image | null
   description: string
   link: string
   name: string
@@ -31,14 +33,36 @@ type FilteredCourse = Omit<
 
 type Loaders = ReturnType<typeof createLoaders>
 
+type TagFields = {
+  id: string
+  hidden: boolean
+  types: Array<string>
+  name: string | null
+  abbreviation: string | null
+  tag_translations: Array<{
+    tag_id: string
+    name: string
+    description: string | null
+    language: string
+    abbreviation: string | null
+  }>
+}
+
 type EnrichedCourse = FilteredCourse & {
-  tags: Array<Tag & { language?: string }>
+  tags: Array<TagFields>
   sponsors: Array<LoadedCourseSponsor>
   study_modules?: Array<{ id: string; slug: string; name: string }>
   course_translations?: Array<{ id: string; language: string; name: string }>
 }
 
 const DEFAULT_LANGUAGE = "en"
+
+type LanguageRequest = Request<
+  ParamsDictionary,
+  unknown,
+  unknown,
+  { language?: string }
+>
 
 function filterCoursesWithTranslations(
   courses: Array<CourseWithTranslations>,
@@ -65,6 +89,34 @@ function filterCoursesWithTranslations(
       }
     })
     .filter(isDefined)
+}
+
+function toTagFields(
+  tag: LoadedCourseTag,
+  language?: string | null,
+): TagFields {
+  const translations = tag.tag_translations
+  const translation =
+    (language
+      ? translations.find((t) => t.language === language)
+      : undefined) ??
+    translations.find((t) => t.language === DEFAULT_LANGUAGE) ??
+    translations[0]
+
+  return {
+    id: tag.id,
+    hidden: tag.hidden,
+    types: tag.tag_types.map((tt) => tt.name),
+    name: translation?.name ?? null,
+    abbreviation: translation?.abbreviation ?? null,
+    tag_translations: translations.map((t) => ({
+      tag_id: t.tag_id,
+      name: t.name,
+      description: t.description,
+      language: t.language,
+      abbreviation: t.abbreviation,
+    })),
+  }
 }
 
 async function enrichCourses(
@@ -133,10 +185,7 @@ async function enrichCourses(
     const enriched: EnrichedCourse = {
       ...course,
       tags: Array.isArray(tags)
-        ? tags.map((t) => ({
-            ...t,
-            language: options.language ?? undefined,
-          }))
+        ? tags.map((t) => toTagFields(t, options.language))
         : [],
       sponsors: Array.isArray(sponsors) ? sponsors : [],
     }
@@ -194,20 +243,7 @@ interface FrontpageResponse {
 
 interface CoursesResponse {
   courses: Array<EnrichedCourse>
-  tags: Array<{
-    id: string
-    hidden: boolean
-    types: Array<string> | null
-    name: string | null
-    abbreviation: string | null
-    tag_translations: Array<{
-      tag_id: string
-      name: string
-      description: string | null
-      language: string
-      abbreviation: string | null
-    }>
-  }>
+  tags: Array<TagFields>
 }
 
 interface StudyModulesResponse {
@@ -258,12 +294,7 @@ export class PublicController extends Controller {
   }
 
   frontpage = async (
-    req: Request<
-      Record<string, never>,
-      Record<string, never>,
-      Record<string, never>,
-      { language?: string }
-    >,
+    req: LanguageRequest,
     res: Response<FrontpageResponse>,
   ): Promise<Response<FrontpageResponse>> => {
     const { language } = req.query
@@ -322,12 +353,7 @@ export class PublicController extends Controller {
   }
 
   courses = async (
-    req: Request<
-      Record<string, never>,
-      Record<string, never>,
-      Record<string, never>,
-      { language?: string }
-    >,
+    req: LanguageRequest,
     res: Response<CoursesResponse>,
   ): Promise<Response<CoursesResponse>> => {
     const { language } = req.query
@@ -363,30 +389,7 @@ export class PublicController extends Controller {
       },
     )
 
-    const filteredTags = tags.map((tag) => {
-      const translations = tag.tag_translations ?? []
-      const translation =
-        (language
-          ? translations.find((t) => t.language === language)
-          : undefined) ??
-        translations.find((t) => t.language === DEFAULT_LANGUAGE) ??
-        translations[0]
-
-      return {
-        id: tag.id,
-        hidden: tag.hidden,
-        types: tag.tag_types?.map((tt) => tt.name) ?? null,
-        name: translation?.name ?? null,
-        abbreviation: translation?.abbreviation ?? null,
-        tag_translations: tag.tag_translations?.map((t) => ({
-          tag_id: t.tag_id,
-          name: t.name,
-          description: t.description,
-          language: t.language,
-          abbreviation: t.abbreviation,
-        })),
-      }
-    })
+    const filteredTags = tags.map((tag) => toTagFields(tag, language))
 
     return res.status(200).json({
       courses: enrichedCourses,
@@ -395,12 +398,7 @@ export class PublicController extends Controller {
   }
 
   studyModules = async (
-    req: Request<
-      Record<string, never>,
-      Record<string, never>,
-      Record<string, never>,
-      { language?: string }
-    >,
+    req: LanguageRequest,
     res: Response<StudyModulesResponse>,
   ): Promise<Response<StudyModulesResponse>> => {
     const { language } = req.query

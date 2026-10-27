@@ -10,18 +10,32 @@ import { css, styled } from "@mui/material/styles"
 
 import CTALink from "../Common/CTALink"
 import FlipchartIcon from "../Icons/FlipChart"
-import { courseColorSchemes } from "./common"
-import Sponsors from "./Sponsors"
+import { courseColorSchemes, CourseTagFields } from "./common"
+import Sponsors, { SponsorFields } from "./Sponsors"
 import { DifficultyTags, LanguageTags, ModuleTags } from "./Tags"
 import Tooltip from "/components/Tooltip"
 import { useTranslator } from "/hooks/useTranslator"
-import { NewCourseFields } from "/lib/api-types"
 import { fontSize } from "/src/theme/util"
 import CommonTranslations from "/translations/common"
 import { useFormatDateTime } from "/util/dataFormatFunctions"
 import withNoSsr from "/util/withNoSsr"
 
 import { CourseStatus } from "/graphql/generated"
+
+export interface CourseCardFields {
+  id: string
+  name: string
+  description: string | null
+  link: string | null
+  status: CourseStatus | null
+  start_date: string | null
+  end_date: string | null
+  ects: string | null
+  upcoming_active_link: boolean | null
+  tags: Array<CourseTagFields>
+  sponsors: Array<SponsorFields>
+  study_modules?: Array<{ slug: string }>
+}
 
 const ContainerBase = css`
   list-style-type: none;
@@ -301,7 +315,7 @@ const CourseLink = styled(CTALink)(
 ) as typeof CTALink
 
 interface ScheduleProps {
-  course?: NewCourseFields
+  course?: CourseCardFields
 }
 
 const Schedule = React.memo(
@@ -408,7 +422,7 @@ function CourseCardLayout({
 }
 
 interface CourseCardProps {
-  course: NewCourseFields
+  course: CourseCardFields
   studyModule?: string
 }
 
@@ -420,7 +434,7 @@ const CourseCard = React.forwardRef<
   const abbreviate = useMediaQuery("(max-width: 800px)")
 
   const courseStudyModule =
-    studyModule ?? course.study_modules[0]?.slug ?? "other"
+    studyModule ?? course.study_modules?.[0]?.slug ?? "other"
 
   const linkActive =
     course?.status != "Upcoming" || course?.upcoming_active_link

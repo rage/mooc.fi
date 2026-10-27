@@ -6,10 +6,9 @@ import { styled } from "@mui/material/styles"
 
 import Button from "../Common/Button"
 import { useTranslator } from "/hooks/useTranslator"
+import { TagCoreFields } from "/lib/api-types"
 // import { fontSize } from "/src/theme/util"
 import CommonTranslations from "/translations/common"
-
-import { TagCoreFieldsFragment } from "/graphql/generated"
 
 const TagsContainer = styled("div")`
   display: grid;
@@ -140,12 +139,12 @@ const SelectAllButton = styled(Button)(
 
 interface TagSelectButtonsProps {
   loading?: boolean
-  tags: Record<string, Array<TagCoreFieldsFragment>>
-  activeTags: Array<TagCoreFieldsFragment>
+  tags: Record<string, Array<TagCoreFields>>
+  activeTags: Array<TagCoreFields>
   setActiveTags: (
     tags:
-      | Array<TagCoreFieldsFragment>
-      | ((tags: Array<TagCoreFieldsFragment>) => Array<TagCoreFieldsFragment>),
+      | Array<TagCoreFields>
+      | ((tags: Array<TagCoreFields>) => Array<TagCoreFields>),
   ) => void
   selectAllTags: () => void
 }
@@ -160,7 +159,7 @@ const TagSelectButtons = ({
   const t = useTranslator(CommonTranslations)
 
   const handleClick = useCallback(
-    (tag: TagCoreFieldsFragment) => () => {
+    (tag: TagCoreFields) => () => {
       if (activeTags.includes(tag)) {
         setActiveTags(activeTags.filter((t) => t !== tag))
       } else {

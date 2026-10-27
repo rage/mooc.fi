@@ -4,11 +4,10 @@ import { Autocomplete, TextField } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { useTranslator } from "/hooks/useTranslator"
+import { TagCoreFields } from "/lib/api-types"
 import { KeyOfTranslationDictionary } from "/translations"
 import CommonTranslations from "/translations/common"
 import { isDefinedAndNotEmpty } from "/util/guards"
-
-import { TagCoreFieldsFragment } from "/graphql/generated"
 
 const TagsContainer = styled("div")`
   display: flex;
@@ -21,12 +20,12 @@ const TagsContainer = styled("div")`
 `
 
 interface TagSelectDropdownProps {
-  tags: Record<string, Array<TagCoreFieldsFragment>>
-  activeTags: Array<TagCoreFieldsFragment>
+  tags: Record<string, Array<TagCoreFields>>
+  activeTags: Array<TagCoreFields>
   setActiveTags: (
     tags:
-      | Array<TagCoreFieldsFragment>
-      | ((tags: Array<TagCoreFieldsFragment>) => Array<TagCoreFieldsFragment>),
+      | Array<TagCoreFields>
+      | ((tags: Array<TagCoreFields>) => Array<TagCoreFields>),
   ) => void
   selectAllTags: () => void
 }
@@ -41,7 +40,7 @@ const TagSelectDropdowns = ({
 
   const onChange = useCallback(
     (category: string) =>
-      (_: any, value: Array<string> | Array<TagCoreFieldsFragment>) => {
+      (_: any, value: Array<string> | Array<TagCoreFields>) => {
         setActiveTags((prevValue) => [
           ...prevValue.filter(
             (tag) =>

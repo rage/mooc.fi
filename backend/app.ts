@@ -1,6 +1,11 @@
 import * as winston from "winston"
 
-import { isProduction, NEW_RELIC_LICENSE_KEY, NEXUS_REFLECTION } from "./config"
+import {
+  BACKEND_PORT,
+  isProduction,
+  NEW_RELIC_LICENSE_KEY,
+  NEXUS_REFLECTION,
+} from "./config"
 import { ServerContext } from "./context"
 import prisma from "./prisma"
 import server from "./server"
@@ -40,8 +45,8 @@ const startApp = async () => {
       logger.warn("Redis initialization failed, continuing without cache", err)
     })
     await ctx.prisma.$connect()
-    httpServer.listen(4000, () => {
-      console.log("server running on port 4000")
+    httpServer.listen(BACKEND_PORT, () => {
+      console.log(`server running on port ${BACKEND_PORT}`)
     })
   }
 }

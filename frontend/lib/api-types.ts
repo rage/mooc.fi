@@ -3,12 +3,12 @@ import { CourseStatus } from "/graphql/generated"
 export interface ImageCoreFields {
   id: string
   name: string | null
-  original: string | null
-  original_mimetype: string | null
+  original: string
+  original_mimetype: string
   compressed: string | null
   compressed_mimetype: string | null
-  uncompressed: string | null
-  uncompressed_mimetype: string | null
+  uncompressed: string
+  uncompressed_mimetype: string
   created_at: string
   updated_at: string
 }
@@ -36,7 +36,7 @@ export interface TagTranslationFields {
 export interface TagCoreFields {
   id: string
   hidden: boolean
-  types: Array<string> | null
+  types: Array<string>
   name: string | null
   abbreviation: string | null
   tag_translations: Array<TagTranslationFields>
@@ -53,10 +53,10 @@ export interface SponsorTranslationFields {
 
 export interface SponsorImageFields {
   sponsor_id: string
-  type: string | null
-  width: number | null
-  height: number | null
-  uri: string | null
+  type: string
+  width: number
+  height: number
+  uri: string
 }
 
 export interface CourseSponsorFields {
@@ -87,23 +87,23 @@ export interface NewFrontpageCourseFields {
   upcoming_active_link: boolean | null
   tier: number | null
   support_email: string | null
-  teacher_in_charge_email: string | null
-  teacher_in_charge_name: string | null
+  teacher_in_charge_email: string
+  teacher_in_charge_name: string
   start_date: string | null
   end_date: string | null
   has_certificate: boolean | null
   photo: ImageCoreFields | null
-  study_modules: Array<StudyModuleCoreFields>
 }
 
 export interface NewCourseFields extends NewFrontpageCourseFields {
+  study_modules: Array<StudyModuleCoreFields>
   course_translations: Array<CourseTranslationCoreFields>
   tags: Array<TagCoreFields>
   sponsors: Array<CourseSponsorFields>
 }
 
 export interface FrontpageCourseFields extends NewFrontpageCourseFields {
-  course_translations?: Array<CourseTranslationCoreFields>
+  study_modules: Array<StudyModuleCoreFields>
   tags: Array<TagCoreFields>
   sponsors: Array<CourseSponsorFields>
 }
@@ -120,7 +120,7 @@ export interface StudyModuleFields {
 }
 
 export interface StudyModuleFieldsWithCourses extends StudyModuleFields {
-  courses: Array<NewCourseFields>
+  courses: Array<Omit<NewCourseFields, "study_modules">>
 }
 
 export interface FrontpageResponse {

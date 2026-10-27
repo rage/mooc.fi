@@ -4,7 +4,12 @@ import { styled } from "@mui/material/styles"
 
 import ContainedImage from "/components/Images/ContainedImage"
 
-import { CourseSponsorFieldsFragment } from "/graphql/generated"
+export interface SponsorFields {
+  id: string
+  name: string
+  order: number | null
+  images: Array<{ type: string; uri: string }> | null
+}
 
 const ImageContainer = styled("div")`
   display: flex;
@@ -15,7 +20,7 @@ const ImageContainer = styled("div")`
 `
 
 interface SponsorProps {
-  data: CourseSponsorFieldsFragment
+  data: SponsorFields
   ContainerProps?: React.HTMLAttributes<HTMLDivElement>
 }
 
@@ -45,7 +50,7 @@ const SponsorsContainer = styled("div")`
 `
 
 interface SponsorsProps {
-  data: CourseSponsorFieldsFragment[]
+  data: SponsorFields[]
   ContainerProps?: React.HTMLAttributes<HTMLDivElement>
   ItemContainerProps?: React.HTMLAttributes<HTMLDivElement>
 }

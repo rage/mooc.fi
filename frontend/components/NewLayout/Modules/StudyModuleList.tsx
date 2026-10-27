@@ -56,7 +56,7 @@ export function StudyModuleList() {
   if (loading) {
     return (
       <>
-        <ModuleNaviList modules={data?.study_modules} loading={loading} />
+        <ModuleNaviList loading={loading} />
         <ModuleList>
           <ListItemSkeleton
             backgroundColor={moduleColorSchemes["cyber-security"]!}
