@@ -154,6 +154,24 @@ describe("API", () => {
           const course = courses[0]
           expect(course).toHaveProperty("course_translations")
           expect(Array.isArray(course.course_translations)).toBe(true)
+          course.course_translations.forEach((translation: any) => {
+            expect(translation).toHaveProperty("name")
+            expect(translation).toHaveProperty("description")
+          })
+        }
+      })
+
+      it("returns tag translations in every language", async () => {
+        const response = await getCourses("fi_FI")({})
+
+        expect(response.status).toBe(200)
+        const languages = new Set(
+          response.data.tags.flatMap((tag: any) =>
+            tag.tag_translations.map((t: any) => t.language),
+          ),
+        )
+        if (languages.size > 0) {
+          expect(languages.size).toBeGreaterThan(1)
         }
       })
 

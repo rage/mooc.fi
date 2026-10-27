@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import React, { useEffect, useMemo, useRef, useState } from "react"
 
 import dynamic from "next/dynamic"
 import { useRouter } from "next/router"
-import { difference, sort } from "remeda"
+import { sort } from "remeda"
 
 import ClearIcon from "@mui/icons-material/Clear"
 import {
@@ -27,9 +27,16 @@ import {
   sortByLanguage,
 } from "./common"
 import CourseCard, { CourseCardSkeleton } from "./CourseCard"
+import {
+  applyFilterState,
+  DEFAULT_STATUSES,
+  filterCourses,
+  FilterUrlState,
+  parseFilterQuery,
+  resolveActiveTagIds,
+} from "./courseFilters"
 import BorderedSection from "/components/BorderedSection"
 import { useCoursesData } from "/hooks/usePublicData"
-import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useTranslator } from "/hooks/useTranslator"
 import { NewCourseFields, TagCoreFields } from "/lib/api-types"
 import CourseTranslations from "/translations/_new/courses"
@@ -143,6 +150,8 @@ const SortSelect = styled(TextField)`
   min-width: 15rem;
 `
 
+const SEARCH_URL_DEBOUNCE_MS = 300
+
 const DynamicTagSelectButtons = dynamic(() => import("./TagSelectButtons"), {
   loading: () => <Skeleton variant="rectangular" width="100%" height={96} />,
 })
@@ -247,13 +256,6 @@ const SearchResultStatus = ({
   )
 }
 
-const courseHasTag = (course: NewCourseFields | null, tag: TagCoreFields) => {
-  if (!course) {
-    return false
-  }
-  return course.tags.some((courseTag) => courseTag.name === tag.name)
-}
-
 type CourseSort = "module" | "name"
 
 const compareCoursesByName =
@@ -280,101 +282,61 @@ const compareCoursesByModule = (locale?: string) => {
   }
 }
 
-function areEqual<T>(a: Array<T>, b: Array<T>) {
-  return a.length === b.length && !difference(a, b).length
-}
-
 function CourseGrid() {
   const t = useTranslator(CommonTranslations, CourseTranslations)
   const router = useRouter()
   const { locale = "fi" } = router
   const language = mapNextLanguageToLocaleCode(locale)
   const isNarrow = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"))
-  const initialEncodedSearchString = useQueryParameter("search", {
-    enforce: false,
-    array: false,
-  })
-  const initialSearchString = initialEncodedSearchString
-    ? decodeURIComponent(initialEncodedSearchString)
-    : ""
-  const initialActiveTags = useQueryParameter("tag", {
-    enforce: false,
-    array: true,
-  })
-  const initialStatuses = useQueryParameter("status", {
-    enforce: false,
-    array: true,
-  })
 
-  const typedInitialStatuses: CourseStatus[] = Array.isArray(initialStatuses)
-    ? initialStatuses.filter((s): s is CourseStatus => {
-        const statusValues: string[] = Object.values(CourseStatus)
-        return statusValues.includes(s)
-      })
-    : []
-  const moduleless = useQueryParameter("moduleless", {
-    enforce: false,
-    array: false,
-  })
+  const urlState = useMemo(
+    () => parseFilterQuery(router.query, courseStatuses),
+    [router.query],
+  )
+  const moduleless = router.query.moduleless === "true"
 
   const { isLoading: coursesLoading, data: coursesData } =
     useCoursesData(language)
 
-  const tagsData = coursesData
-
-  const tagsLoading = coursesLoading
-
-  React.useEffect(() => {
-    if (tagsData?.tags) {
-      if (initialActiveTags) {
-        setActiveTags(
-          tagsData.tags.filter((tag) => initialActiveTags.includes(tag.id)) ??
-            [],
-        )
-      } else {
-        const defaultLanguageTag = tagsData.tags.find(
-          (tag) => tag.id === locale && tag.types?.includes("language"),
-        )
-        if (defaultLanguageTag) {
-          setActiveTags([defaultLanguageTag])
-        }
-      }
-    }
-  }, [tagsData, initialActiveTags, locale])
-
-  let initialFilteredStatuses = [CourseStatus.Active, CourseStatus.Upcoming]
-  if (typedInitialStatuses.length > 0) {
-    initialFilteredStatuses = typedInitialStatuses
-  }
-
-  const [searchString, innerSetSearchString] =
-    useState<string>(initialSearchString)
-  const [activeTags, setActiveTags] = useState<Array<TagCoreFields>>([])
-  const [filteredStatuses, setFilteredStatuses] = useState<CourseStatus[]>(
-    initialFilteredStatuses,
-  )
+  const [searchString, setSearchString] = useState(urlState.search)
+  const lastWrittenSearch = useRef(urlState.search)
   const [courseSort, setCourseSort] = useState<CourseSort>("name")
 
-  const updateUrlSearchParam = (newSearch: string) => {
-    const newQuery = { ...router.query }
-    if (newSearch) {
-      newQuery.search = encodeURIComponent(newSearch)
-    } else {
-      delete newQuery.search
+  useEffect(() => {
+    if (urlState.search !== lastWrittenSearch.current) {
+      lastWrittenSearch.current = urlState.search
+      setSearchString(urlState.search)
     }
-    router.replace({ pathname: router.pathname, query: newQuery }, undefined, {
-      shallow: true,
-    })
-  }
+  }, [urlState.search])
 
-  const setSearchString = (newSearch: string) => {
-    updateUrlSearchParam(newSearch)
-    innerSetSearchString(newSearch)
-  }
+  const updateUrlState = useEventCallback((patch: Partial<FilterUrlState>) =>
+    router.replace(
+      {
+        pathname: router.pathname,
+        query: applyFilterState(router.query, patch),
+      },
+      undefined,
+      { shallow: true },
+    ),
+  )
+
+  useEffect(() => {
+    if (searchString === lastWrittenSearch.current) {
+      return
+    }
+    const timeout = setTimeout(() => {
+      lastWrittenSearch.current = searchString
+      updateUrlState({ search: searchString })
+    }, SEARCH_URL_DEBOUNCE_MS)
+    return () => clearTimeout(timeout)
+  }, [searchString, updateUrlState])
 
   const tags = useMemo(() => {
     const res: Record<string, Array<TagCoreFields>> = {}
-    for (const curr of tagsData?.tags ?? []) {
+    for (const curr of coursesData?.tags ?? []) {
+      if (curr.hidden) {
+        continue
+      }
       curr?.types?.forEach((t) => {
         if (
           t === "language" &&
@@ -398,24 +360,57 @@ function CourseGrid() {
     }
 
     return res
-  }, [tagsData])
+  }, [coursesData])
 
-  const handleStatusChange = useCallback(
-    (status: CourseStatus) => () => {
-      setFilteredStatuses((oldStatuses) => {
-        if (oldStatuses.includes(status)) {
-          return oldStatuses.filter((s) => s !== status)
-        }
-        return [...oldStatuses, status]
-      })
-    },
-    [filteredStatuses],
+  const activeTagIds = useMemo(() => {
+    const knownTagIds = new Set(
+      Object.values(tags).flatMap((categoryTags) =>
+        categoryTags.map((tag) => tag.id),
+      ),
+    )
+    return resolveActiveTagIds({
+      explicitTagIds:
+        urlState.tagIds?.filter((id) => knownTagIds.has(id)) ?? null,
+      defaultLanguageTagId: knownTagIds.has(locale) ? locale : undefined,
+      search: searchString,
+    })
+  }, [tags, urlState.tagIds, locale, searchString])
+
+  const activeTags = useMemo(
+    () =>
+      Object.values(tags)
+        .flat()
+        .filter(
+          (tag, index, all) =>
+            activeTagIds.includes(tag.id) &&
+            all.findIndex((other) => other.id === tag.id) === index,
+        ),
+    [tags, activeTagIds],
   )
 
+  const setActiveTags = useEventCallback(
+    (
+      value:
+        | Array<TagCoreFields>
+        | ((tags: Array<TagCoreFields>) => Array<TagCoreFields>),
+    ) => {
+      const newTags = typeof value === "function" ? value(activeTags) : value
+      updateUrlState({ tagIds: newTags.map((tag) => tag.id) })
+    },
+  )
+
+  const handleStatusChange = useEventCallback((status: CourseStatus) => () => {
+    updateUrlState({
+      statuses: urlState.statuses.includes(status)
+        ? urlState.statuses.filter((s) => s !== status)
+        : [...urlState.statuses, status],
+    })
+  })
+
   const handleResetButtonClick = () => {
+    lastWrittenSearch.current = ""
     setSearchString("")
-    setActiveTags([])
-    setFilteredStatuses([CourseStatus.Active, CourseStatus.Upcoming])
+    updateUrlState({ search: "", tagIds: null, statuses: DEFAULT_STATUSES })
   }
 
   const handleSearchChange = useEventCallback(
@@ -427,51 +422,23 @@ function CourseGrid() {
       setCourseSort(e.target.value as CourseSort),
   )
 
-  const handleSelectAllTags = useCallback(
-    () => setActiveTags([...(tagsData?.tags ?? [])]),
-    [tagsData],
-  )
-
   const filteredCourses = useMemo(
     () =>
-      (coursesData?.courses ?? []).filter((course) => {
-        if (
-          course.hidden ||
-          !course.course_translations ||
-          course.course_translations.length === 0
-        ) {
-          return false
-        }
-        if (moduleless === "true" && course.study_modules.length > 0) {
-          return false
-        }
-        if (
-          !course.name
-            .toLocaleLowerCase(locale)
-            .includes(searchString.toLocaleLowerCase(locale)) &&
-          !course.description
-            ?.toLocaleLowerCase(locale)
-            .includes(searchString.toLocaleLowerCase(locale)) &&
-          !moduleless
-        ) {
-          return false
-        }
-        if (
-          activeTags.length > 0 &&
-          !activeTags.every((tag) => courseHasTag(course, tag))
-        ) {
-          return false
-        }
-        if (
-          filteredStatuses.length > 0 &&
-          course.status &&
-          !filteredStatuses.includes(course.status as CourseStatus)
-        ) {
-          return false
-        }
-        return true
+      filterCourses(coursesData?.courses ?? [], {
+        search: searchString,
+        activeTagIds,
+        tagsByCategory: tags,
+        statuses: urlState.statuses,
+        moduleless,
       }),
-    [coursesData, searchString, activeTags, filteredStatuses],
+    [
+      coursesData,
+      searchString,
+      activeTagIds,
+      tags,
+      urlState.statuses,
+      moduleless,
+    ],
   )
 
   const sortedCourses = useMemo(
@@ -484,41 +451,6 @@ function CourseGrid() {
       ),
     [filteredCourses, courseSort, locale],
   )
-
-  useEffect(() => {
-    if (tagsLoading) {
-      return
-    }
-    if (
-      areEqual(
-        activeTags.map((t) => t.id),
-        initialActiveTags,
-      ) &&
-      areEqual(filteredStatuses, typedInitialStatuses)
-    ) {
-      return
-    }
-
-    const params = new URLSearchParams()
-    if (filteredStatuses.length > 0) {
-      for (const status of filteredStatuses) {
-        params.append("status", status)
-      }
-      if (
-        filteredStatuses.length === 2 &&
-        filteredStatuses.includes(CourseStatus.Active) &&
-        filteredStatuses.includes(CourseStatus.Upcoming)
-      ) {
-        params.delete("status")
-      }
-    }
-    if (activeTags.length > 0) {
-      for (const tag of activeTags) {
-        params.append("tag", tag.id)
-      }
-    }
-    router.replace({ query: params.toString() }, undefined, { shallow: true })
-  }, [tagsLoading, activeTags, filteredStatuses])
 
   const TagSelectComponent = useMemo(() => {
     if (isNarrow) {
@@ -545,8 +477,7 @@ function CourseGrid() {
                 tags={tags}
                 activeTags={activeTags}
                 setActiveTags={setActiveTags}
-                selectAllTags={handleSelectAllTags}
-                loading={tagsLoading}
+                loading={coursesLoading}
               />
               <Statuses>
                 {courseStatuses.map((status) => (
@@ -556,7 +487,7 @@ function CourseGrid() {
                     control={
                       <Checkbox
                         id={status}
-                        checked={filteredStatuses.includes(status)}
+                        checked={urlState.statuses.includes(status)}
                         onChange={handleStatusChange(status)}
                       />
                     }
@@ -588,7 +519,7 @@ function CourseGrid() {
             <ListHeader>
               <SearchResultStatus
                 tags={activeTags}
-                statuses={filteredStatuses}
+                statuses={urlState.statuses as Array<CourseStatus>}
                 count={filteredCourses.length}
               />
               <SortSelect
