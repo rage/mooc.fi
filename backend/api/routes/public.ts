@@ -52,7 +52,12 @@ type EnrichedCourse = FilteredCourse & {
   tags: Array<TagFields>
   sponsors: Array<LoadedCourseSponsor>
   study_modules?: Array<{ id: string; slug: string; name: string }>
-  course_translations?: Array<{ id: string; language: string; name: string }>
+  course_translations?: Array<{
+    id: string
+    language: string
+    name: string
+    description: string
+  }>
 }
 
 const DEFAULT_LANGUAGE = "en"
@@ -136,9 +141,14 @@ async function enrichCourses(
     courseId,
     language: options.language ?? null,
   }))
+  // A tag without a translation in the requested language must still be listed.
+  const tagLoaderKeys = courseIds.map((courseId) => ({
+    courseId,
+    language: null,
+  }))
 
   const [allCourseTags, allCourseSponsors] = await Promise.all([
-    loaders.courseTags.loadMany(loaderKeys),
+    loaders.courseTags.loadMany(tagLoaderKeys),
     loaders.courseSponsors.loadMany(loaderKeys),
   ])
 
@@ -201,6 +211,7 @@ async function enrichCourses(
           id: t.id,
           language: t.language,
           name: t.name,
+          description: t.description,
         }),
       )
     }
@@ -364,14 +375,9 @@ export class PublicController extends Controller {
 
     const tags = await prisma.tag.findMany({
       include: {
-        tag_translations: language
-          ? {
-              where: { language },
-              orderBy: { language: "asc" },
-            }
-          : {
-              orderBy: { language: "asc" },
-            },
+        tag_translations: {
+          orderBy: { language: "asc" },
+        },
         tag_types: true,
       },
     })

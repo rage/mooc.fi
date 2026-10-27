@@ -146,14 +146,12 @@ interface TagSelectButtonsProps {
       | Array<TagCoreFields>
       | ((tags: Array<TagCoreFields>) => Array<TagCoreFields>),
   ) => void
-  selectAllTags: () => void
 }
 
 const TagSelectButtons = ({
   tags,
   activeTags,
   setActiveTags,
-  selectAllTags,
   loading,
 }: TagSelectButtonsProps) => {
   const t = useTranslator(CommonTranslations)
@@ -171,20 +169,13 @@ const TagSelectButtons = ({
 
   const handleSelectAllClick = useCallback(
     (category: string) => () => {
-      if (category in tags) {
-        if (tags[category].every((tag) => activeTags.includes(tag))) {
-          setActiveTags(
-            activeTags.filter((tag) => !tags[category].includes(tag)),
-          )
-        } else {
-          const activeTagsWithAll = [...activeTags, ...tags[category]]
-          setActiveTags([...new Set(activeTagsWithAll)])
-        }
+      if (tags[category].every((tag) => activeTags.includes(tag))) {
+        setActiveTags(activeTags.filter((tag) => !tags[category].includes(tag)))
       } else {
-        selectAllTags()
+        setActiveTags([...new Set([...activeTags, ...tags[category]])])
       }
     },
-    [activeTags],
+    [tags, activeTags, setActiveTags],
   )
 
   if (loading) {

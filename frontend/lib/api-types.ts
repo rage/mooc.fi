@@ -17,6 +17,7 @@ export interface CourseTranslationCoreFields {
   id: string
   language: string
   name: string
+  description: string
 }
 
 export interface StudyModuleCoreFields {

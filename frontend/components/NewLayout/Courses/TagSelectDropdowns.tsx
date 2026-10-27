@@ -27,7 +27,6 @@ interface TagSelectDropdownProps {
       | Array<TagCoreFields>
       | ((tags: Array<TagCoreFields>) => Array<TagCoreFields>),
   ) => void
-  selectAllTags: () => void
 }
 
 const TagSelectDropdowns = ({
