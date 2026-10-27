@@ -38,7 +38,7 @@ export const Sponsor = ({ data, ContainerProps }: SponsorProps) => {
 
   return (
     <ImageContainer {...ContainerProps}>
-      <ContainedImage src={imageUri} alt={data.name} fill />
+      <ContainedImage src={imageUri} alt={data.name} fill sizes="9rem" />
     </ImageContainer>
   )
 }

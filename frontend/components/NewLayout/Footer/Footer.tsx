@@ -374,9 +374,7 @@ const Footer = () => {
             {t("privacyPolicy")}
             <ArrowRightIcon sx={{ fontSize: 16 }} />
           </FooterLink>
-          <FooterBaseCopy>
-            This site is maintained by the University of Helsinki's MOOC center
-          </FooterBaseCopy>
+          <FooterBaseCopy>{t("maintainedBy")}</FooterBaseCopy>
         </FooterBaseRight>
       </FooterBase>
     </FooterContainer>

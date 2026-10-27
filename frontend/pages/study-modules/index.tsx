@@ -1,6 +1,5 @@
 import { StudyModuleList } from "/components/NewLayout/Modules"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
-import withNoSsr from "/util/withNoSsr"
 
 function StudyModules() {
   useBreadcrumbs([
@@ -17,4 +16,4 @@ function StudyModules() {
   )
 }
 
-export default withNoSsr(StudyModules)
+export default StudyModules

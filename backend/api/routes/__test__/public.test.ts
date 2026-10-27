@@ -38,45 +38,13 @@ describe("API", () => {
     })
 
     describe("frontpage", () => {
-      it("returns courses and study modules without authentication", async () => {
+      it("returns study modules without authentication", async () => {
         const response = await getFrontpage()({})
 
         expect(response.status).toBe(200)
-        expect(response.data).toHaveProperty("courses")
         expect(response.data).toHaveProperty("study_modules")
-        expect(Array.isArray(response.data.courses)).toBe(true)
+        expect(response.data).not.toHaveProperty("courses")
         expect(Array.isArray(response.data.study_modules)).toBe(true)
-      })
-
-      it("only returns visible courses (hidden=false or null)", async () => {
-        const response = await getFrontpage()({})
-
-        expect(response.status).toBe(200)
-        const courses = response.data.courses
-        courses.forEach((course: any) => {
-          expect(course.hidden).not.toBe(true)
-        })
-      })
-
-      it("returns courses with required fields", async () => {
-        const response = await getFrontpage()({})
-
-        expect(response.status).toBe(200)
-        const courses = response.data.courses
-        if (courses.length > 0) {
-          const course = courses[0]
-          expect(course).toHaveProperty("id")
-          expect(course).toHaveProperty("slug")
-          expect(course).toHaveProperty("name")
-          expect(course).toHaveProperty("description")
-          expect(course).toHaveProperty("link")
-          expect(course).toHaveProperty("tags")
-          expect(course).toHaveProperty("sponsors")
-          expect(course).toHaveProperty("study_modules")
-          expect(Array.isArray(course.tags)).toBe(true)
-          expect(Array.isArray(course.sponsors)).toBe(true)
-          expect(Array.isArray(course.study_modules)).toBe(true)
-        }
       })
 
       it("returns study modules with required fields", async () => {
@@ -89,37 +57,6 @@ describe("API", () => {
           expect(studyModule).toHaveProperty("id")
           expect(studyModule).toHaveProperty("name")
           expect(studyModule).toHaveProperty("description")
-        }
-      })
-
-      it("filters courses by language when language parameter is provided", async () => {
-        const responseEn = await getFrontpage("en_US")({})
-        const responseFi = await getFrontpage("fi_FI")({})
-
-        expect(responseEn.status).toBe(200)
-        expect(responseFi.status).toBe(200)
-
-        if (responseEn.data.courses.length > 0) {
-          const course = responseEn.data.courses[0]
-          expect(course.name).toBeDefined()
-        }
-        if (responseFi.data.courses.length > 0) {
-          const course = responseFi.data.courses[0]
-          expect(course.name).toBeDefined()
-        }
-      })
-
-      it("returns courses ordered by order.sort", async () => {
-        const response = await getFrontpage()({})
-
-        expect(response.status).toBe(200)
-        const courses = response.data.courses
-        if (courses.length > 1) {
-          for (let i = 1; i < courses.length; i++) {
-            const prevOrder = courses[i - 1].order ?? Infinity
-            const currOrder = courses[i].order ?? Infinity
-            expect(currOrder).toBeGreaterThanOrEqual(prevOrder)
-          }
         }
       })
     })
@@ -226,6 +163,19 @@ describe("API", () => {
           expect(Array.isArray(course.tags)).toBe(true)
           expect(Array.isArray(course.sponsors)).toBe(true)
         }
+      })
+
+      it("is cacheable by browsers", async () => {
+        const response = await getCourses()({})
+
+        expect(response.status).toBe(200)
+        expect(response.headers["cache-control"]).toMatch(/^public, max-age=/)
+      })
+
+      it("rejects a malformed language", async () => {
+        await expect(
+          getCourses("fi_FI&language=en_US")({}),
+        ).rejects.toMatchObject({ response: { status: 400 } })
       })
     })
 

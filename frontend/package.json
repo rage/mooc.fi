@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "next dev",
-    "build": "NODE_ENV=production next build",
+    "build": "NODE_ENV=production next build && node bin/check-static-pages.js",
     "export": "next export",
     "start": "NODE_ENV=production PORT=3021 next start",
     "upgrade-interactive": "npm-check --update",

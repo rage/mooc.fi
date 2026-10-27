@@ -21,4 +21,6 @@ export default {
   sortBy: "Sort",
   sortByModule: "By module",
   sortByName: "Alphabetical",
+  noResults: "No courses match your search or filters.",
+  clearSearch: "Clear search",
 } as const

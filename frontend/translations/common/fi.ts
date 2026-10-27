@@ -64,6 +64,7 @@ export default {
   handledBy: "Handled by",
   search: "Etsi...",
   filter: "Suodata",
+  pageNotFound: "Hups. Tätä sivua ei ole olemassa.",
   reset: "Tyhjennä",
   showAll: "Näytä kaikki",
   hideAll: "Piilota kaikki",

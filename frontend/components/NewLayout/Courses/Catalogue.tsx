@@ -14,7 +14,7 @@ function Catalogue() {
 
   return (
     <Container>
-      <Introduction title={t("coursesHeader")} />
+      <Introduction title={t("coursesHeader")} isUnderBreadcrumbs />
       <CourseGrid />
     </Container>
   )

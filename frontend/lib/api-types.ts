@@ -43,17 +43,9 @@ export interface TagCoreFields {
   tag_translations: Array<TagTranslationFields>
 }
 
-export interface SponsorTranslationFields {
-  sponsor_id: string
-  language: string
-  name: string
-  description: string | null
-  link: string | null
-  link_text: string | null
-}
+export type CourseTagFields = Omit<TagCoreFields, "tag_translations">
 
 export interface SponsorImageFields {
-  sponsor_id: string
   type: string
   width: number
   height: number
@@ -64,7 +56,6 @@ export interface CourseSponsorFields {
   id: string
   name: string
   order: number
-  translations: Array<SponsorTranslationFields>
   images: Array<SponsorImageFields>
 }
 
@@ -99,13 +90,7 @@ export interface NewFrontpageCourseFields {
 export interface NewCourseFields extends NewFrontpageCourseFields {
   study_modules: Array<StudyModuleCoreFields>
   course_translations: Array<CourseTranslationCoreFields>
-  tags: Array<TagCoreFields>
-  sponsors: Array<CourseSponsorFields>
-}
-
-export interface FrontpageCourseFields extends NewFrontpageCourseFields {
-  study_modules: Array<StudyModuleCoreFields>
-  tags: Array<TagCoreFields>
+  tags: Array<CourseTagFields>
   sponsors: Array<CourseSponsorFields>
 }
 
@@ -125,7 +110,6 @@ export interface StudyModuleFieldsWithCourses extends StudyModuleFields {
 }
 
 export interface FrontpageResponse {
-  courses: Array<FrontpageCourseFields>
   study_modules: Array<StudyModuleFields>
 }
 
@@ -136,21 +120,4 @@ export interface CoursesResponse {
 
 export interface StudyModulesResponse {
   study_modules: Array<StudyModuleFieldsWithCourses>
-}
-
-export interface CurrentUserResponse {
-  currentUser: {
-    id: string
-    upstream_id: number
-    first_name: string | null
-    last_name: string | null
-    full_name: string | null
-    username: string
-    email: string
-    student_number: string | null
-    real_student_number: string | null
-    created_at: string
-    updated_at: string
-    administrator: boolean
-  } | null
 }

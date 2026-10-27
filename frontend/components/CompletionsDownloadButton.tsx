@@ -17,7 +17,9 @@ import {
   RadioGroup,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
+import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 
 import { useAlertContext } from "/contexts/AlertContext"
 import { useTranslator } from "/hooks/useTranslator"
@@ -149,16 +151,18 @@ const CompletionsDownloadButton = ({
           {t("downloadCompletionsDialogTitle")}
         </StyledDialogTitle>
         <StyledDialogContent>
-          <StyledDatePicker
-            label={t("downloadCompletionsDateLabel")}
-            value={selectedDate}
-            onChange={(date) => setSelectedDate(date as DateTime | null)}
-            slotProps={{
-              textField: {
-                fullWidth: true,
-              },
-            }}
-          />
+          <LocalizationProvider dateAdapter={AdapterLuxon}>
+            <StyledDatePicker
+              label={t("downloadCompletionsDateLabel")}
+              value={selectedDate}
+              onChange={(date) => setSelectedDate(date as DateTime | null)}
+              slotProps={{
+                textField: {
+                  fullWidth: true,
+                },
+              }}
+            />
+          </LocalizationProvider>
           <FormControl sx={{ marginTop: "1.5rem" }}>
             <FormLabel>{t("downloadCompletionsFileFormat")}</FormLabel>
             <RadioGroup

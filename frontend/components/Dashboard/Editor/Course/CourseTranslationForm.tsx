@@ -4,6 +4,7 @@ import { FormControl, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { ControlledHiddenField, ControlledTextField } from "../Common/Fields"
+import { useTranslationLanguageNames } from "./translationLanguages"
 import { CourseFormValues } from "./types"
 import { EntryContainer } from "/components/Surfaces/EntryContainer"
 import { useTranslator } from "/hooks/useTranslator"
@@ -42,11 +43,7 @@ interface CourseTranslationFormProps {
 
 function CourseTranslationForm({ fields }: CourseTranslationFormProps) {
   const t = useTranslator(CoursesTranslations)
-  const languageNames: Record<string, string> = {
-    fi_FI: t("courseFinnish"),
-    en_US: t("courseEnglish"),
-    sv_SE: t("courseSwedish"),
-  }
+  const languageNames = useTranslationLanguageNames()
 
   return (
     <FormControl component="fieldset">

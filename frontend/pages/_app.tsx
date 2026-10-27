@@ -1,14 +1,13 @@
-import { useInsertionEffect, useMemo, useState } from "react"
+import { useEffect, useInsertionEffect, useMemo, useState } from "react"
 
 import { DefaultSeo } from "next-seo"
 import type { AppProps, NextWebVitalsMetric } from "next/app"
 import Head from "next/head"
+import { useRouter } from "next/router"
 import Script from "next/script"
 
 import { CssBaseline } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
-import { LocalizationProvider } from "@mui/x-date-pickers"
-import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 import DynamicLayout from "/components/DynamicLayout"
@@ -87,16 +86,14 @@ export function MyApp({ Component, pageProps, deviceType }: MyAppProps) {
       <ThemeProvider theme={themeWithLocale}>
         <CssBaseline />
         <QueryClientProvider client={queryClient}>
-          <LocalizationProvider dateAdapter={AdapterLuxon}>
-            <LoginStateProvider value={loginStateContextValue}>
-              <AppContextProvider>
-                <DynamicLayout isOld={isOld}>
-                  <DefaultSeo {...seoConfig} />
-                  <Component {...pageProps} />
-                </DynamicLayout>
-              </AppContextProvider>
-            </LoginStateProvider>
-          </LocalizationProvider>
+          <LoginStateProvider value={loginStateContextValue}>
+            <AppContextProvider>
+              <DynamicLayout isOld={isOld}>
+                <DefaultSeo {...seoConfig} />
+                <Component {...pageProps} />
+              </DynamicLayout>
+            </AppContextProvider>
+          </LoginStateProvider>
         </QueryClientProvider>
       </ThemeProvider>
     </>
@@ -108,4 +105,17 @@ export function reportWebVitals(metric: NextWebVitalsMetric) {
   // console.log(metric)
 }
 
-export default withApolloClient(MyApp)
+const MyAppWithApollo = withApolloClient(MyApp)
+
+// Never server-render: it blocks responses. Waiting for isReady also gives
+// statically served pages their URL query on the first render.
+export default function App(props: MyAppProps) {
+  const { isReady } = useRouter()
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  return isMounted && isReady ? <MyAppWithApollo {...props} /> : null
+}

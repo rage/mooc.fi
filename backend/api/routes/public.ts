@@ -5,6 +5,8 @@ import {
   Course,
   CourseTranslation,
   Image,
+  Prisma,
+  SponsorImage,
   StudyModule,
   StudyModuleTranslation,
 } from "@prisma/client"
@@ -12,23 +14,21 @@ import {
 import { LoadedCourseSponsor } from "../../loaders/courseSponsorsLoader"
 import { LoadedCourseTag } from "../../loaders/courseTagsLoader"
 import { createLoaders } from "../../loaders/createLoaders"
-import { ExtendedPrismaClient } from "../../prisma"
 import { isDefined } from "../../util"
+import { sendCachedJson } from "../publicCache"
 import { ApiContext, Controller } from "../types"
 
-type CourseWithTranslations = Course & {
-  course_translations?: Array<CourseTranslation>
-  photo?: Image | null
+type CourseStudyModule = { id: string; slug: string; name: string }
+
+type CourseWithRelations = Course & {
+  course_translations: Array<CourseTranslation>
+  photo: Image | null
+  study_modules?: Array<CourseStudyModule>
 }
 
-type FilteredCourse = Omit<
-  Course,
-  "course_translations" | "tags" | "handles_completions_for"
-> & {
-  photo?: Image | null
+type FilteredCourse = CourseWithRelations & {
   description: string
   link: string
-  name: string
 }
 
 type Loaders = ReturnType<typeof createLoaders>
@@ -48,11 +48,23 @@ type TagFields = {
   }>
 }
 
-type EnrichedCourse = FilteredCourse & {
-  tags: Array<TagFields>
-  sponsors: Array<LoadedCourseSponsor>
-  study_modules?: Array<{ id: string; slug: string; name: string }>
-  course_translations?: Array<{
+type CourseTagFields = Omit<TagFields, "tag_translations">
+
+type CourseSponsorFields = Pick<
+  LoadedCourseSponsor,
+  "id" | "name" | "order"
+> & {
+  images: Array<Pick<SponsorImage, "type" | "uri" | "width" | "height">>
+}
+
+type EnrichedCourse = Omit<
+  FilteredCourse,
+  "course_translations" | "study_modules"
+> & {
+  tags: Array<CourseTagFields>
+  sponsors: Array<CourseSponsorFields>
+  study_modules?: Array<CourseStudyModule>
+  course_translations: Array<{
     id: string
     language: string
     name: string
@@ -66,34 +78,40 @@ type LanguageRequest = Request<
   ParamsDictionary,
   unknown,
   unknown,
-  { language?: string }
+  { language?: unknown }
 >
 
+const VISIBLE_COURSE_FILTER = {
+  OR: [{ hidden: false }, { hidden: null }],
+} satisfies Prisma.CourseWhereInput
+
+function pickTranslation<T extends { language: string }>(
+  translations: Array<T>,
+  language?: string | null,
+): T | undefined {
+  return (
+    (language
+      ? translations.find((t) => t.language === language)
+      : undefined) ??
+    translations.find((t) => t.language === DEFAULT_LANGUAGE) ??
+    translations[0]
+  )
+}
+
 function filterCoursesWithTranslations(
-  courses: Array<CourseWithTranslations>,
+  courses: Array<CourseWithRelations>,
   language?: string,
 ): Array<FilteredCourse> {
-  return courses
-    .map((course): FilteredCourse | null => {
-      const translations = course.course_translations ?? []
+  return courses.map((course) => {
+    const translation = pickTranslation(course.course_translations, language)
 
-      const translation =
-        (language
-          ? translations.find((t) => t.language === language)
-          : undefined) ??
-        translations.find((t) => t.language === DEFAULT_LANGUAGE) ??
-        translations[0]
-
-      const { course_translations: _course_translations, ...rest } = course
-
-      return {
-        ...rest,
-        description: translation?.description ?? "",
-        link: translation?.link ?? "",
-        name: translation?.name ?? course?.name ?? "",
-      }
-    })
-    .filter(isDefined)
+    return {
+      ...course,
+      description: translation?.description ?? "",
+      link: translation?.link ?? "",
+      name: translation?.name ?? course.name ?? "",
+    }
+  })
 }
 
 function toTagFields(
@@ -101,12 +119,7 @@ function toTagFields(
   language?: string | null,
 ): TagFields {
   const translations = tag.tag_translations
-  const translation =
-    (language
-      ? translations.find((t) => t.language === language)
-      : undefined) ??
-    translations.find((t) => t.language === DEFAULT_LANGUAGE) ??
-    translations[0]
+  const translation = pickTranslation(translations, language)
 
   return {
     id: tag.id,
@@ -126,20 +139,14 @@ function toTagFields(
 
 async function enrichCourses(
   courses: Array<FilteredCourse>,
-  originalCourses: Array<CourseWithTranslations>,
   loaders: Loaders,
-  prisma: ExtendedPrismaClient,
-  options: {
-    language?: string | null
-    includeStudyModules?: boolean
-    includeTranslations?: boolean
-  },
+  language?: string | null,
 ): Promise<Array<EnrichedCourse>> {
   const courseIds = courses.map((c) => c.id)
 
   const loaderKeys = courseIds.map((courseId) => ({
     courseId,
-    language: options.language ?? null,
+    language: language ?? null,
   }))
   // A tag without a translation in the requested language must still be listed.
   const tagLoaderKeys = courseIds.map((courseId) => ({
@@ -152,39 +159,11 @@ async function enrichCourses(
     loaders.courseSponsors.loadMany(loaderKeys),
   ])
 
-  // Fetch study modules using Prisma's fluent API instead of raw SQL
-  const studyModulesByCourseId = new Map<
-    string,
-    Array<{ id: string; slug: string; name: string }>
-  >()
-
-  if (options.includeStudyModules) {
-    const coursesWithModules = await prisma.course.findMany({
-      where: { id: { in: courseIds } },
-      select: {
-        id: true,
-        study_modules: {
-          select: {
-            id: true,
-            slug: true,
-            name: true,
-          },
-        },
-      },
-    })
-
-    coursesWithModules.forEach((course) => {
-      studyModulesByCourseId.set(course.id, course.study_modules)
-    })
-  }
-
-  const originalCoursesMap = new Map(originalCourses.map((c) => [c.id, c]))
-
   return courses.map((course, index): EnrichedCourse => {
     const tags = allCourseTags[index]
     const sponsors = allCourseSponsors[index]
+    const { course_translations, study_modules, ...rest } = course
 
-    // Handle DataLoader errors gracefully
     if (tags instanceof Error) {
       console.error(`Failed to load tags for course ${course.id}`, tags)
     }
@@ -192,31 +171,38 @@ async function enrichCourses(
       console.error(`Failed to load sponsors for course ${course.id}`, sponsors)
     }
 
-    const enriched: EnrichedCourse = {
-      ...course,
+    return {
+      ...rest,
       tags: Array.isArray(tags)
-        ? tags.map((t) => toTagFields(t, options.language))
+        ? tags.map((t) => {
+            const { tag_translations: _tag_translations, ...tag } = toTagFields(
+              t,
+              language,
+            )
+            return tag
+          })
         : [],
-      sponsors: Array.isArray(sponsors) ? sponsors : [],
+      sponsors: Array.isArray(sponsors)
+        ? sponsors.map(({ id, name, order, images }) => ({
+            id,
+            name,
+            order,
+            images: images.map(({ type, uri, width, height }) => ({
+              type,
+              uri,
+              width,
+              height,
+            })),
+          }))
+        : [],
+      ...(study_modules && { study_modules }),
+      course_translations: course_translations.map((t) => ({
+        id: t.id,
+        language: t.language,
+        name: t.name,
+        description: t.description,
+      })),
     }
-
-    if (options.includeStudyModules) {
-      enriched.study_modules = studyModulesByCourseId.get(course.id) ?? []
-    }
-
-    if (options.includeTranslations) {
-      const originalCourse = originalCoursesMap.get(course.id)
-      enriched.course_translations = originalCourse?.course_translations?.map(
-        (t: CourseTranslation) => ({
-          id: t.id,
-          language: t.language,
-          name: t.name,
-          description: t.description,
-        }),
-      )
-    }
-
-    return enriched
   })
 }
 
@@ -226,29 +212,20 @@ type FilteredStudyModule = StudyModule & {
   courses?: Array<EnrichedCourse>
 }
 
-function filterStudyModulesWithTranslations(
-  studyModules: Array<
-    StudyModule & {
-      study_module_translations?: Array<StudyModuleTranslation>
-    }
-  >,
-): Array<FilteredStudyModule> {
-  return studyModules.map((study_module) => {
-    const { study_module_translations: _study_module_translations, ...rest } =
-      study_module
-    return {
-      ...rest,
-      name:
-        study_module?.study_module_translations?.[0]?.name ??
-        study_module?.name,
-      description:
-        study_module?.study_module_translations?.[0]?.description ?? "",
-    }
-  })
+function toFilteredStudyModule(
+  studyModule: StudyModule & {
+    study_module_translations?: Array<StudyModuleTranslation>
+  },
+): FilteredStudyModule {
+  const { study_module_translations: translations, ...rest } = studyModule
+  return {
+    ...rest,
+    name: translations?.[0]?.name ?? studyModule.name,
+    description: translations?.[0]?.description ?? "",
+  }
 }
 
 interface FrontpageResponse {
-  courses: Array<EnrichedCourse>
   study_modules: Array<FilteredStudyModule>
 }
 
@@ -283,16 +260,14 @@ export class PublicController extends Controller {
     super(ctx)
   }
 
-  /**
-   * Helper method to fetch visible courses with translations and photo
-   * Extracted to avoid code duplication between frontpage and courses endpoints
-   */
-  private async getVisibleCourses(
-    prisma: ExtendedPrismaClient,
-  ): Promise<Array<CourseWithTranslations>> {
-    return prisma.course.findMany({
+  private getVisibleCourses(
+    courseIds?: Array<string>,
+    includeStudyModules = false,
+  ) {
+    return this.ctx.prisma.course.findMany({
       where: {
-        OR: [{ hidden: false }, { hidden: null }],
+        ...VISIBLE_COURSE_FILTER,
+        id: courseIds ? { in: courseIds } : undefined,
       },
       orderBy: [{ order: "asc" }],
       include: {
@@ -300,232 +275,117 @@ export class PublicController extends Controller {
           orderBy: { language: "asc" },
         },
         photo: true,
+        study_modules: includeStudyModules
+          ? { select: { id: true, slug: true, name: true } }
+          : false,
       },
     })
   }
 
-  frontpage = async (
-    req: LanguageRequest,
-    res: Response<FrontpageResponse>,
-  ): Promise<Response<FrontpageResponse>> => {
-    const { language } = req.query
-    const { prisma } = this.ctx
-    const loaders = createLoaders(prisma)
-
-    const courses = await this.getVisibleCourses(prisma)
-
-    const studyModules = await prisma.studyModule.findMany({
-      orderBy: [{ order: "asc" }],
-      ...(language
-        ? {
-            where: {
-              study_module_translations: {
-                some: {
-                  language,
-                },
-              },
-            },
-            include: {
-              study_module_translations: {
-                where: {
-                  language,
-                },
-                orderBy: { language: "asc" },
-              },
-            },
-          }
-        : {
-            include: {
-              study_module_translations: {
-                orderBy: { language: "asc" },
-              },
-            },
-          }),
-    })
-
-    const filteredCourses = filterCoursesWithTranslations(courses, language)
-    const enrichedCourses = await enrichCourses(
-      filteredCourses,
-      courses,
-      loaders,
-      prisma,
-      {
-        language: language ?? null,
-        includeStudyModules: true,
-      },
+  private async getEnrichedCourses(
+    language: string | undefined,
+    options: { courseIds?: Array<string>; includeStudyModules?: boolean } = {},
+  ): Promise<Array<EnrichedCourse>> {
+    const courses = await this.getVisibleCourses(
+      options.courseIds,
+      options.includeStudyModules,
     )
 
-    const filteredModules = filterStudyModulesWithTranslations(studyModules)
-
-    return res.status(200).json({
-      courses: enrichedCourses,
-      study_modules: filteredModules,
-    })
-  }
-
-  courses = async (
-    req: LanguageRequest,
-    res: Response<CoursesResponse>,
-  ): Promise<Response<CoursesResponse>> => {
-    const { language } = req.query
-    const { prisma } = this.ctx
-    const loaders = createLoaders(prisma)
-
-    const courses = await this.getVisibleCourses(prisma)
-
-    const tags = await prisma.tag.findMany({
-      include: {
-        tag_translations: {
-          orderBy: { language: "asc" },
-        },
-        tag_types: true,
-      },
-    })
-
-    const filteredCourses = filterCoursesWithTranslations(courses, language)
-    const enrichedCourses = await enrichCourses(
-      filteredCourses,
-      courses,
-      loaders,
-      prisma,
-      {
-        language: language ?? null,
-        includeStudyModules: true,
-        includeTranslations: true,
-      },
-    )
-
-    const filteredTags = tags.map((tag) => toTagFields(tag, language))
-
-    return res.status(200).json({
-      courses: enrichedCourses,
-      tags: filteredTags,
-    })
-  }
-
-  studyModules = async (
-    req: LanguageRequest,
-    res: Response<StudyModulesResponse>,
-  ): Promise<Response<StudyModulesResponse>> => {
-    const { language } = req.query
-    const { prisma } = this.ctx
-    const loaders = createLoaders(prisma)
-
-    const studyModules = await prisma.studyModule.findMany({
-      orderBy: [{ order: "asc" }],
-      ...(language
-        ? {
-            where: {
-              study_module_translations: {
-                some: {
-                  language,
-                },
-              },
-            },
-            include: {
-              study_module_translations: {
-                where: {
-                  language,
-                },
-                orderBy: { language: "asc" },
-              },
-            },
-          }
-        : {
-            include: {
-              study_module_translations: {
-                orderBy: { language: "asc" },
-              },
-            },
-          }),
-    })
-
-    const filteredModules = filterStudyModulesWithTranslations(studyModules)
-
-    const allModuleIds = filteredModules.map((m) => m.id)
-
-    // Fetch only course IDs to avoid double fetching
-    const modulesWithCourseIds = await prisma.studyModule.findMany({
-      where: { id: { in: allModuleIds } },
-      select: {
-        id: true,
-        courses: {
-          where: {
-            OR: [{ hidden: false }, { hidden: null }],
-          },
-          select: { id: true },
-        },
-      },
-    })
-
-    const courseIdsByModuleId = new Map<string, string[]>()
-    modulesWithCourseIds.forEach((m) => {
-      courseIdsByModuleId.set(
-        m.id,
-        m.courses.map((c) => c.id),
-      )
-    })
-
-    const uniqueCourseIds = [
-      ...new Set(
-        modulesWithCourseIds.flatMap((m) => m.courses.map((c) => c.id)),
-      ),
-    ]
-
-    const allCourses = await prisma.course.findMany({
-      where: {
-        id: { in: uniqueCourseIds },
-        OR: [{ hidden: false }, { hidden: null }],
-      },
-      include: {
-        course_translations: {
-          orderBy: { language: "asc" },
-        },
-        photo: true,
-      },
-    })
-
-    const allFilteredCourses = filterCoursesWithTranslations(
-      allCourses,
+    return enrichCourses(
+      filterCoursesWithTranslations(courses, language),
+      createLoaders(this.ctx.prisma),
       language,
     )
+  }
 
-    const allEnrichedCourses = await enrichCourses(
-      allFilteredCourses,
-      allCourses,
-      loaders,
-      prisma,
-      {
-        language: language ?? null,
-        includeTranslations: true,
+  private getStudyModules(language: string | undefined, withCourseIds = false) {
+    return this.ctx.prisma.studyModule.findMany({
+      where: language
+        ? { study_module_translations: { some: { language } } }
+        : undefined,
+      orderBy: [{ order: "asc" }],
+      include: {
+        study_module_translations: {
+          where: language ? { language } : undefined,
+          orderBy: { language: "asc" },
+        },
+        courses: withCourseIds
+          ? { where: VISIBLE_COURSE_FILTER, select: { id: true } }
+          : false,
       },
-    )
-
-    const enrichedCoursesMap = new Map(allEnrichedCourses.map((c) => [c.id, c]))
-
-    filteredModules.forEach((module) => {
-      const courseIds = courseIdsByModuleId.get(module.id) ?? []
-      module.courses = courseIds
-        .map((id) => enrichedCoursesMap.get(id))
-        .filter(isDefined)
-    })
-
-    return res.status(200).json({
-      study_modules: filteredModules,
     })
   }
+
+  private sendCached<T>(
+    endpoint: string,
+    build: (language: string | undefined) => Promise<T>,
+  ) {
+    return (req: LanguageRequest, res: Response) =>
+      sendCachedJson(res, endpoint, req.query.language, build, this.ctx.logger)
+  }
+
+  frontpage = this.sendCached(
+    "frontpage",
+    async (language): Promise<FrontpageResponse> => ({
+      study_modules: (await this.getStudyModules(language)).map(
+        toFilteredStudyModule,
+      ),
+    }),
+  )
+
+  courses = this.sendCached(
+    "courses",
+    async (language): Promise<CoursesResponse> => {
+      const [courses, tags] = await Promise.all([
+        this.getEnrichedCourses(language, { includeStudyModules: true }),
+        this.ctx.prisma.tag.findMany({
+          include: {
+            tag_translations: {
+              orderBy: { language: "asc" },
+            },
+            tag_types: true,
+          },
+        }),
+      ])
+
+      return { courses, tags: tags.map((tag) => toTagFields(tag, language)) }
+    },
+  )
+
+  studyModules = this.sendCached(
+    "study-modules",
+    async (language): Promise<StudyModulesResponse> => {
+      const studyModules = await this.getStudyModules(language, true)
+
+      const courses = await this.getEnrichedCourses(language, {
+        courseIds: [
+          ...new Set(studyModules.flatMap((m) => m.courses.map((c) => c.id))),
+        ],
+      })
+      const coursesById = new Map(courses.map((c) => [c.id, c]))
+
+      return {
+        study_modules: studyModules.map(({ courses: moduleCourses, ...m }) => ({
+          ...toFilteredStudyModule(m),
+          courses: moduleCourses
+            .map((c) => coursesById.get(c.id))
+            .filter(isDefined),
+        })),
+      }
+    },
+  )
 
   currentUser = async (
     req: Request,
     res: Response<CurrentUserResponse>,
   ): Promise<Response<CurrentUserResponse>> => {
-    const getUserResult = await this.getUser(req, res)
+    const findUserResult = await this.findUser(req)
 
-    if (getUserResult.isErr()) {
+    if (findUserResult.isErr()) {
       return res.status(200).json({ currentUser: null })
     }
 
-    const { user } = getUserResult.value
+    const { user } = findUserResult.value
 
     return res.status(200).json({
       currentUser: {

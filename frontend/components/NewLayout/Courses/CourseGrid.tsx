@@ -9,6 +9,7 @@ import {
   Checkbox,
   EnhancedButtonProps,
   FormControlLabel,
+  IconButton,
   MenuItem,
   Skeleton,
   TextField,
@@ -36,6 +37,8 @@ import {
   resolveActiveTagIds,
 } from "./courseFilters"
 import BorderedSection from "/components/BorderedSection"
+import ErrorMessage from "/components/ErrorMessage"
+import { useIncrementalList } from "/hooks/useIncrementalList"
 import { useCoursesData } from "/hooks/usePublicData"
 import { useTranslator } from "/hooks/useTranslator"
 import { NewCourseFields, TagCoreFields } from "/lib/api-types"
@@ -110,6 +113,16 @@ const FiltersContainer = styled("div")(
 
 const SearchBar = styled(TextField)`
   margin-bottom: 0.5rem 0;
+`
+
+const NoResults = styled("li")`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem 0;
+  list-style: none;
 `
 
 const Filters = styled("div")(
@@ -258,11 +271,15 @@ const SearchResultStatus = ({
 
 type CourseSort = "module" | "name"
 
-const compareCoursesByName =
-  (locale?: string) => (course1: NewCourseFields, course2: NewCourseFields) =>
-    course1.name.localeCompare(course2.name, locale)
+const compareCoursesByName = (locale?: string) => {
+  const collator = new Intl.Collator(locale)
+
+  return (course1: NewCourseFields, course2: NewCourseFields) =>
+    collator.compare(course1.name, course2.name)
+}
 
 const compareCoursesByModule = (locale?: string) => {
+  const collator = new Intl.Collator(locale)
   const byName = compareCoursesByName(locale)
 
   return (course1: NewCourseFields, course2: NewCourseFields) => {
@@ -274,9 +291,9 @@ const compareCoursesByModule = (locale?: string) => {
       return -1
     }
     return (
-      course1.study_modules[0].name.localeCompare(
+      collator.compare(
+        course1.study_modules[0].name,
         course2.study_modules[0].name,
-        locale,
       ) || byName(course1, course2)
     )
   }
@@ -295,8 +312,11 @@ function CourseGrid() {
   )
   const moduleless = router.query.moduleless === "true"
 
-  const { isLoading: coursesLoading, data: coursesData } =
-    useCoursesData(language)
+  const {
+    isLoading: coursesLoading,
+    data: coursesData,
+    error: coursesError,
+  } = useCoursesData(language)
 
   const [searchString, setSearchString] = useState(urlState.search)
   const lastWrittenSearch = useRef(urlState.search)
@@ -399,13 +419,15 @@ function CourseGrid() {
     },
   )
 
-  const handleStatusChange = useEventCallback((status: CourseStatus) => () => {
+  const handleStatusChange = useEventCallback((status: CourseStatus) => {
     updateUrlState({
       statuses: urlState.statuses.includes(status)
         ? urlState.statuses.filter((s) => s !== status)
         : [...urlState.statuses, status],
     })
   })
+
+  const handleClearSearch = () => setSearchString("")
 
   const handleResetButtonClick = () => {
     lastWrittenSearch.current = ""
@@ -451,6 +473,7 @@ function CourseGrid() {
       ),
     [filteredCourses, courseSort, locale],
   )
+  const renderedCourses = useIncrementalList(sortedCourses, 12)
 
   const TagSelectComponent = useMemo(() => {
     if (isNarrow) {
@@ -470,6 +493,17 @@ function CourseGrid() {
             autoComplete="off"
             variant="outlined"
             onChange={handleSearchChange}
+            InputProps={{
+              endAdornment: searchString ? (
+                <IconButton
+                  size="small"
+                  aria-label={t("clearSearch")}
+                  onClick={handleClearSearch}
+                >
+                  <ClearIcon fontSize="small" />
+                </IconButton>
+              ) : undefined,
+            }}
           />
           <StyledBorderedSection title={t("filter")}>
             <Filters>
@@ -488,7 +522,7 @@ function CourseGrid() {
                       <Checkbox
                         id={status}
                         checked={urlState.statuses.includes(status)}
-                        onChange={handleStatusChange(status)}
+                        onChange={() => handleStatusChange(status)}
                       />
                     }
                   />
@@ -505,7 +539,9 @@ function CourseGrid() {
             </Filters>
           </StyledBorderedSection>
         </FiltersContainer>
-        {coursesLoading ? (
+        {coursesError ? (
+          <ErrorMessage />
+        ) : coursesLoading ? (
           <>
             <CardsContainer>
               <CourseCardSkeleton />
@@ -536,11 +572,13 @@ function CourseGrid() {
               </SortSelect>
             </ListHeader>
             <CardsContainer>
-              {sortedCourses.map((course) => (
+              {renderedCourses.map((course) => (
                 <CourseCard key={course.id} course={course} />
               ))}
               {filteredCourses.length === 0 && (
-                <li style={{ width: "100%" }}>no courses</li>
+                <NoResults>
+                  <Typography>{t("noResults")}</Typography>
+                </NoResults>
               )}
             </CardsContainer>
           </>

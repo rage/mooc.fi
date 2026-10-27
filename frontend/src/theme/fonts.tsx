@@ -7,6 +7,7 @@ export const bodyFont = Roboto({
   fallback: ["Franklin Gothic Medium", "Tahoma", "Arial", "sans-serif"],
   variable: "--body-font",
   display: "block",
+  preload: false,
 })
 
 export const headerFont = Open_Sans({
@@ -16,4 +17,5 @@ export const headerFont = Open_Sans({
   fallback: ["Impact", "Franklin Gothic Bold", "sans-serif"],
   variable: "--header-font",
   display: "block",
+  preload: false,
 })

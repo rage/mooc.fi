@@ -134,6 +134,14 @@ describe("filterCourses", () => {
     )
   })
 
+  it("drops courses without translations", () => {
+    assert.equal(
+      filterCourses([makeCourse({ course_translations: [] })], filters())
+        .length,
+      0,
+    )
+  })
+
   it("finds a course by its name in another language", () => {
     const result = filterCourses(
       [fiCourse, enCourse],

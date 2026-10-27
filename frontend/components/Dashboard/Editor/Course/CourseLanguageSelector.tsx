@@ -10,12 +10,14 @@ import { useEventCallback } from "@mui/material/utils"
 import { FormSubtitle } from "../../EditorLegacy/common"
 import { useCourseEditorData } from "./CourseEditorDataContext"
 import { initialTranslation } from "./form-validation"
+import {
+  translationLanguages,
+  useTranslationLanguageNames,
+} from "./translationLanguages"
 import { CourseFormValues, TagFormValue } from "./types"
 import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
 import CoursesTranslations from "/translations/courses"
-
-export const translationLanguages = ["fi_FI", "en_US", "sv_SE"] as const
 
 const languageTagIds: Record<string, string> = {
   fi_FI: "fi",
@@ -56,7 +58,7 @@ export function useLanguageTagSync() {
       if (option) {
         setValue("tags", [...tags, option], { shouldDirty: true })
       }
-    } else if (!enabled && hasTag) {
+    } else if (!enabled && hasTag && getValues("language") !== tagId) {
       setValue(
         "tags",
         tags.filter((tag) => tag._id !== tagId),
@@ -82,13 +84,7 @@ function CourseLanguageSelector({ translations }: LanguageSelectorProps) {
     [fields],
   )
 
-  const labels: Record<string, string> = useMemo(
-    () => ({
-      fi_FI: t("courseFinnish"),
-      en_US: t("courseEnglish"),
-    }),
-    [t],
-  )
+  const languageNames = useTranslationLanguageNames()
 
   const onToggle = useCallback(
     async (language: string) => {
@@ -140,7 +136,7 @@ function CourseLanguageSelector({ translations }: LanguageSelectorProps) {
             selected={selected.includes(language)}
             onClick={() => onToggle(language)}
           >
-            {labels[language]}
+            {languageNames[language]}
           </ToggleButton>
         ))}
       </StyledToggleButtonGroup>

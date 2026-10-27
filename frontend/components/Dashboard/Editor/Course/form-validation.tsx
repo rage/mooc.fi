@@ -4,6 +4,7 @@ import * as Yup from "yup"
 import { ApolloClient } from "@apollo/client"
 
 import { testUnique } from "../Common"
+import { translationLanguages } from "./translationLanguages"
 import {
   CourseAliasFormValues,
   CourseFormValues,
@@ -155,7 +156,7 @@ const courseEditSchema = ({ client, initialSlug, t }: CourseEditSchemaArgs) => {
         name: Yup.string().required(t("validationRequired")),
         language: Yup.string()
           .required(t("validationRequired"))
-          .oneOf(["fi_FI", "en_US", "sv_SE"], t("validationValidLanguageCode"))
+          .oneOf([...translationLanguages], t("validationValidLanguageCode"))
           .test(
             "unique",
             t("validationOneTranslation"),

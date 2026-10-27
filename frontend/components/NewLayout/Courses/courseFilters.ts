@@ -1,3 +1,5 @@
+import { stripDiacritics } from "../../../util/stripDiacritics"
+
 export interface FilterableTag {
   id: string
   types?: Array<string>
@@ -30,34 +32,66 @@ export const DEFAULT_STATUSES = ["Active", "Upcoming"]
 
 /** Lowercases and strips diacritics so "Äidinkieli" matches "aidinkieli". */
 export const normalizeSearchText = (text: string) =>
-  text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase()
+  stripDiacritics(text).toLowerCase()
+
+const searchWordsOf = (search: string) =>
+  normalizeSearchText(search).split(/\s+/).filter(Boolean)
+
+// Keyed by course object: entries live as long as the fetched course list.
+const haystackCache = new WeakMap<FilterableCourse, string>()
+
+const searchHaystackOf = (course: FilterableCourse) => {
+  let haystack = haystackCache.get(course)
+  if (haystack === undefined) {
+    haystack = normalizeSearchText(
+      [
+        course.name,
+        course.description,
+        ...(course.course_translations ?? []).flatMap((translation) => [
+          translation.name,
+          translation.description,
+        ]),
+      ]
+        .filter(Boolean)
+        .join("\n"),
+    )
+    haystackCache.set(course, haystack)
+  }
+  return haystack
+}
+
+const matchesSearchWords = (course: FilterableCourse, words: string[]) => {
+  const haystack = searchHaystackOf(course)
+  return words.every((word) => haystack.includes(word))
+}
 
 /**
  * True when every whitespace-separated word of `search` occurs in the name or
  * description of the course in any of its translations.
  */
-export const courseMatchesSearch = (
-  course: FilterableCourse,
-  search: string,
+export const courseMatchesSearch = (course: FilterableCourse, search: string) =>
+  matchesSearchWords(course, searchWordsOf(search))
+
+/** Selected tag ids per category that actually restrict the result. */
+const restrictingTagIds = (
+  activeTagIds: Array<string>,
+  tagsByCategory: TagsByCategory,
 ) => {
-  const words = normalizeSearchText(search).split(/\s+/).filter(Boolean)
-  if (words.length === 0) {
-    return true
+  const active = new Set(activeTagIds)
+  const restricting: Array<Set<string>> = []
+  for (const tags of Object.values(tagsByCategory)) {
+    const ids = tags.filter((tag) => active.has(tag.id))
+    if (ids.length > 0 && ids.length < tags.length) {
+      restricting.push(new Set(ids.map((tag) => tag.id)))
+    }
   }
-  const haystack = normalizeSearchText(
-    [
-      course.name,
-      course.description,
-      ...(course.course_translations ?? []).flatMap((translation) => [
-        translation.name,
-        translation.description,
-      ]),
-    ]
-      .filter(Boolean)
-      .join("\n"),
-  )
-  return words.every((word) => haystack.includes(word))
+  return restricting
 }
+
+const matchesRestrictingTags = (
+  course: FilterableCourse,
+  restricting: Array<Set<string>>,
+) => restricting.every((ids) => course.tags.some((tag) => ids.has(tag.id)))
 
 /**
  * Tags are OR-ed within a category and AND-ed across categories. A category
@@ -68,35 +102,30 @@ export const courseMatchesTags = (
   course: FilterableCourse,
   activeTagIds: Array<string>,
   tagsByCategory: TagsByCategory,
-) => {
-  const activeIdsByCategory = new Map<string, Set<string>>()
-  for (const [category, tags] of Object.entries(tagsByCategory)) {
-    const ids = tags.filter((tag) => activeTagIds.includes(tag.id))
-    if (ids.length > 0 && ids.length < tags.length) {
-      activeIdsByCategory.set(category, new Set(ids.map((tag) => tag.id)))
-    }
-  }
-  const courseTagIds = new Set(course.tags.map((tag) => tag.id))
-  return [...activeIdsByCategory.values()].every((ids) =>
-    [...ids].some((id) => courseTagIds.has(id)),
+) =>
+  matchesRestrictingTags(
+    course,
+    restrictingTagIds(activeTagIds, tagsByCategory),
   )
-}
 
 export const filterCourses = <T extends FilterableCourse>(
   courses: Array<T>,
   { search, activeTagIds, tagsByCategory, statuses, moduleless }: CourseFilters,
-): Array<T> =>
-  courses.filter((course) => {
-    if (course.hidden) {
+): Array<T> => {
+  const words = searchWordsOf(search)
+  const restricting = restrictingTagIds(activeTagIds, tagsByCategory)
+
+  return courses.filter((course) => {
+    if (course.hidden || !course.course_translations?.length) {
       return false
     }
     if (moduleless && course.study_modules.length > 0) {
       return false
     }
-    if (!courseMatchesSearch(course, search)) {
+    if (!matchesSearchWords(course, words)) {
       return false
     }
-    if (!courseMatchesTags(course, activeTagIds, tagsByCategory)) {
+    if (!matchesRestrictingTags(course, restricting)) {
       return false
     }
     return (
@@ -105,6 +134,7 @@ export const filterCourses = <T extends FilterableCourse>(
       statuses.includes(course.status)
     )
   })
+}
 
 /**
  * Tag ids the filter applies. An untouched selection (`null`) falls back to the

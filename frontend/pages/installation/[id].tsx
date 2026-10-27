@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 
 import { MDXComponents } from "mdx/types"
+import { GetStaticPaths, GetStaticProps } from "next"
 import dynamic from "next/dynamic"
 import { useRouter } from "next/router"
 
@@ -216,6 +217,15 @@ const InstallationInstructions = () => {
 }
 
 export default InstallationInstructions
+
+export const getStaticPaths: GetStaticPaths = ({ locales = [] }) => ({
+  paths: allowedPaths.flatMap((id) =>
+    locales.map((locale) => ({ params: { id }, locale })),
+  ),
+  fallback: false,
+})
+
+export const getStaticProps: GetStaticProps = () => ({ props: {} })
 
 const allowedPaths = ["netbeans", "tmc-cli", "vscode"] as const
 const allowedOS: readonly UserOSType[] = [

@@ -25,4 +25,6 @@ export default {
   coursePageAvailable: "Course page available",
   privacyPolicy: "Privacy policy",
   privacyPolicyLink: "/faq/tietosuojaseloste",
+  maintainedBy:
+    "This site is maintained by the University of Helsinki's MOOC center",
 } as const

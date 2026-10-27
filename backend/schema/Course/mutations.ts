@@ -397,6 +397,13 @@ async function updatePossibleNewPhoto(
   return newImage.id
 }
 
+// Translation languages are locale codes, language tag ids are not ("sv_SE" is "se").
+const translationLanguageTagIds: Record<string, string> = {
+  fi_FI: "fi",
+  en_US: "en",
+  sv_SE: "se",
+}
+
 function getTagMutation<C extends Course>(
   course: NexusGenInputs["CourseCreateArg"] | NexusGenInputs["CourseUpsertArg"],
   existingCourse: C & { tags: Array<Tag> },
@@ -418,7 +425,15 @@ function getTagMutation<C extends Course>(
       ]
     }
   }
-  if (existingCourse.language !== course.language) {
+  const translatedLanguageTagIds = new Set(
+    (course.course_translations ?? []).map(
+      (translation) => translationLanguageTagIds[translation.language],
+    ),
+  )
+  if (
+    existingCourse.language !== course.language &&
+    !translatedLanguageTagIds.has(existingCourse.language ?? "")
+  ) {
     tags = tags?.filter((tag) => tag.id !== existingCourse.language)
   }
 

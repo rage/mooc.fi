@@ -131,16 +131,16 @@ const LanguageSwitchToggle = styled(ButtonBase)(
     display: none !important;
   }
 
-  &:focus {
+  &:focus-visible {
     outline: solid 2px ${theme.palette.common.additional.yellow.main};
     outline-offset: 2px;
   }
   ${theme.breakpoints.up("lg")} {
-    ${fontSize(12, 24)}
-    font-weight: 400;
+    ${fontSize(14, 24)}
+    font-weight: 600;
     letter-spacing: -0.5px;
     grid-template-columns: repeat(3, auto);
-    padding: 0;
+    padding: 0 8px;
 
     svg:first-of-type {
       display: inline-block !important;
@@ -151,10 +151,8 @@ const LanguageSwitchToggle = styled(ButtonBase)(
     border-bottom: 0;
   }
   &:hover {
-    color: ${theme.palette.common.grayscale.medium};
-    svg {
-      fill: ${theme.palette.common.grayscale.medium};
-    }
+    background-color: rgba(255, 255, 255, 0.24);
+    text-decoration: underline;
     cursor: pointer;
     border: 0;
   }

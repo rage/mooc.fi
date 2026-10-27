@@ -207,7 +207,7 @@ const nextConfiguration = (_phase) => ({
         __dirname,
         "node_modules/@mui/material/locale",
       ),
-      "react-dom$": "react-dom/profiling",
+      ...(!isProduction && { "react-dom$": "react-dom/profiling" }),
     }
 
     if (options.isServer && isProduction) {

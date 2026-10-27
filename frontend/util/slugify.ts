@@ -1,7 +1,7 @@
+import { stripDiacritics } from "./stripDiacritics"
+
 export const slugify = (text: string) =>
-  text
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
+  stripDiacritics(text)
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")

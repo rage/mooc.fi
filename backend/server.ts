@@ -1,6 +1,7 @@
 import http from "http"
 
 import bodyParser from "body-parser"
+import compression from "compression"
 import cors from "cors"
 import express, { Express } from "express"
 import { graphqlUploadExpress } from "graphql-upload"
@@ -18,10 +19,12 @@ import {
   ApolloServerPluginLandingPageProductionDefault,
 } from "@apollo/server/plugin/landingPage/default"
 
+import { Role } from "./accessControl"
 import { apiRouter } from "./api"
+import { invalidatePublicApiCache } from "./api/publicCache"
 import { DEBUG, isProduction, isTest } from "./config"
 import { createDefaultData } from "./config/defaultData"
-import { ServerContext } from "./context"
+import { Context, ServerContext } from "./context"
 import { createLoaders } from "./loaders/createLoaders"
 import createExpressGraphqlCacheMiddleware from "./middlewares/expressGraphqlCache"
 import { createSchema } from "./schema/common"
@@ -37,6 +40,7 @@ const createExpressAppWithContext = ({
   const app = express()
 
   app.use(
+    compression(),
     cors<cors.CorsRequest>(),
     bodyParser.json({ limit: "2mb" }),
     frameguard(),
@@ -95,6 +99,22 @@ const server = async (serverContext: ServerContext) => {
             embed: true,
           } as ApolloServerPluginEmbeddedLandingPageProductionDefaultOptions)
         : ApolloServerPluginLandingPageLocalDefault(),
+      {
+        async requestDidStart() {
+          return {
+            async willSendResponse({ operation, errors, contextValue }) {
+              // Only admins edit the data the public API serves.
+              if (
+                operation?.operation === "mutation" &&
+                !errors?.length &&
+                (contextValue as Partial<Context>).role === Role.ADMIN
+              ) {
+                void invalidatePublicApiCache(serverContext.logger)
+              }
+            },
+          }
+        },
+      },
       {
         async serverWillStart() {
           return {

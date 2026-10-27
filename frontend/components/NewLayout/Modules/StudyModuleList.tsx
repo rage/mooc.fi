@@ -76,7 +76,7 @@ export function StudyModuleList() {
 
   return (
     <section>
-      <Introduction title={t("modulesTitle")} />
+      <Introduction title={t("modulesTitle")} isUnderBreadcrumbs />
       <ModuleNaviList modules={data?.study_modules} loading={loading} />
       <ModulelessLinkContainer>
         <StyledCTALink href={`/courses/?moduleless=true`}>

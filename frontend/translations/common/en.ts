@@ -64,6 +64,7 @@ export default {
   handledBy: "Handled by",
   search: "Search...",
   filter: "Filter",
+  pageNotFound: "Uh oh. You've reached a non-existent page.",
   reset: "Reset",
   showAll: "Show all",
   hideAll: "Hide all",

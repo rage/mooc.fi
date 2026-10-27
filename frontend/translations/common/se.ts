@@ -65,6 +65,7 @@ export default {
   handledBy: "Handled by",
   search: "Search...",
   filter: "Filter",
+  pageNotFound: "Hoppsan. Sidan finns inte.",
   reset: "Reset",
   showAll: "Show all",
   hideAll: "Hide all",

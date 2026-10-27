@@ -31,6 +31,7 @@ function ModuleNaviList({ modules, loading }: ModuleNaviListProps) {
               src: `/images/modules/${image}`,
               alt: "",
               fill: true,
+              sizes: "(min-width: 768px) 50vw, 100vw",
             },
           })) ?? []
         }

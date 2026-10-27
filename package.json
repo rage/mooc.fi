@@ -47,9 +47,6 @@
   "lint-staged": {
     "*.{js,ts,tsx}": [
       "prettier --write"
-    ],
-    "*.d.ts": [
-      "prettier --write"
     ]
   }
 }

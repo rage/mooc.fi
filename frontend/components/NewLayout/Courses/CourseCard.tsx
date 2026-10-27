@@ -18,7 +18,6 @@ import { useTranslator } from "/hooks/useTranslator"
 import { fontSize } from "/src/theme/util"
 import CommonTranslations from "/translations/common"
 import { useFormatDateTime } from "/util/dataFormatFunctions"
-import withNoSsr from "/util/withNoSsr"
 
 import { CourseStatus } from "/graphql/generated"
 
@@ -234,6 +233,7 @@ const Actions = styled("div")(
   justify-content: space-between;
   position: relative;
   gap: 0.5rem;
+  margin-top: auto;
   ${theme.breakpoints.down("sm")} {
     width: calc(100% + 1rem);
   }
@@ -399,7 +399,7 @@ function CourseCardLayout({
       <ContentContainer>
         <TextContainer>
           <Title variant="h3">
-            {upcoming ? title : <Link href={href ?? "#"}>{title}</Link>}
+            {upcoming || !href ? title : <Link href={href}>{title}</Link>}
           </Title>
           {description && (
             <Description
@@ -538,4 +538,4 @@ export const CourseCardSkeleton = () => (
   </SkeletonRoot>
 )
 
-export default withNoSsr(CourseCard)
+export default CourseCard

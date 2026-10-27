@@ -6,12 +6,15 @@ import Spinner from "/components/Spinner"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 
 const TeachersPage = () => {
-  useBreadcrumbs([
-    {
-      translation: "teachers",
-      href: `/teachers`,
-    },
-  ])
+  useBreadcrumbs(
+    [
+      {
+        translation: "teachers",
+        href: `/teachers`,
+      },
+    ],
+    true,
+  )
 
   const { locale } = useRouter()
 

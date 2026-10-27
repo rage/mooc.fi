@@ -48,6 +48,12 @@ const TagChip = styled(Chip, {
       : theme.palette.background.default
   };
 
+  transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
   &:hover {
     border-radius: 2rem;
     margin: 0.05rem 0.2rem;
@@ -116,6 +122,7 @@ const TagsSkeleton = ({
 const SelectAllButton = styled(Button)(
   ({ theme }) => `
   max-height: 2.5rem;
+  white-space: nowrap;
   font-weight: 700 !important;
   background-color: transparent !important;
   color: ${theme.palette.common.brand.main} !important;
