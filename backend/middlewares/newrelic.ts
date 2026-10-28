@@ -1,27 +1,30 @@
 import { plugin } from "nexus"
 
+import { catchResolverError } from "./catchResolverError"
+import { isRootField } from "./rootField"
+
 const newrelic = require("newrelic")
 
 export const newRelicPlugin = () =>
   plugin({
     name: "NewRelicPlugin",
     onCreateFieldResolver(config) {
-      return async (root, args, ctx, info, next) => {
-        try {
-          if (!root) {
-            newrelic.setTransactionName(
-              `graphql/${config.parentTypeConfig.name}.${config.fieldConfig.name}`,
-            )
-          }
+      const transactionName = isRootField(config)
+        ? `graphql/${config.parentTypeConfig.name}.${config.fieldConfig.name}`
+        : undefined
 
-          const result = await next(root, args, ctx, info) // NOSONAR can be async, even if sonar doesn't pick it up
-
-          return result
-        } catch (error) {
-          newrelic.noticeError(error)
-
-          return next(root, args, ctx, info)
+      return (root, args, ctx, info, next) => {
+        if (transactionName) {
+          newrelic.setTransactionName(transactionName)
         }
+
+        return catchResolverError(
+          () => next(root, args, ctx, info),
+          (error) => {
+            newrelic.noticeError(error)
+            throw error
+          },
+        )
       }
     },
   })

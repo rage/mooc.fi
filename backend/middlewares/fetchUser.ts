@@ -1,31 +1,33 @@
 import { plugin } from "nexus"
 import { MiddlewareFn } from "nexus/dist/plugin"
 
+import { User } from "@prisma/client"
+
 import { Role } from "../accessControl"
 import { Context } from "../context"
-import { UserInfo } from "../domain/UserInfo"
 import { GraphQLAuthenticationError } from "../lib/errors"
-import { redisify } from "../services/redis"
 import TmcClient from "../services/tmc"
-import { hashUserToken } from "../util/hashUser"
+import { getUserDetailsForToken } from "../services/userDetails"
+import { isRootField } from "./rootField"
 
-const authMiddlewareFn: MiddlewareFn = async (
-  root,
-  args,
-  ctx: Context,
-  info,
-  next,
-) => {
-  if (ctx.userDetails || ctx.organization) {
-    return next(root, args, ctx, info)
+// Root query fields resolve concurrently, so they share one authentication.
+const authentications = new WeakMap<Context, Promise<void>>()
+
+const authenticate = (ctx: Context) => {
+  let authentication = authentications.get(ctx)
+  if (!authentication) {
+    authentication = setContextAuthentication(ctx)
+    authentications.set(ctx, authentication)
   }
+  return authentication
+}
 
+const setContextAuthentication = async (ctx: Context) => {
   const rawToken =
     ctx.req?.headers?.authorization ??
     (ctx.req?.headers?.["Authorization"] as string) ??
     ctx.connectionParams?.authorization ??
     ctx.connectionParams?.["Authorization"] // graphql websocket
-  // connection?
 
   if (!rawToken) {
     ctx.role = Role.VISITOR
@@ -34,15 +36,29 @@ const authMiddlewareFn: MiddlewareFn = async (
   } else {
     await setContextUser(ctx, rawToken)
   }
+}
 
+const authMiddlewareFn: MiddlewareFn = async (
+  root,
+  args,
+  ctx: Context,
+  info,
+  next,
+) => {
+  await authenticate(ctx)
   return next(root, args, ctx, info)
 }
 
+/**
+ * Sets `ctx.role` and `ctx.user`/`ctx.organization` from the request's
+ * credentials. Runs on root fields only; nested fields and their `authorize`
+ * checks see what their root field set.
+ */
 export const moocfiAuthPlugin = () =>
   plugin({
     name: "moocfiAuthPlugin",
-    onCreateFieldResolver() {
-      return authMiddlewareFn
+    onCreateFieldResolver(config) {
+      return isRootField(config) ? authMiddlewareFn : undefined
     },
     onCreateFieldSubscribe() {
       return authMiddlewareFn
@@ -66,44 +82,36 @@ const setContextOrganization = async (
   ctx.role = Role.ORGANIZATION
 }
 
-let prevToken: string | undefined
+type SyncedUserFields = Pick<
+  User,
+  | "upstream_id"
+  | "administrator"
+  | "email"
+  | "first_name"
+  | "last_name"
+  | "username"
+>
+
+const isUserInSync = (user: User, fields: SyncedUserFields) =>
+  user.administrator === fields.administrator &&
+  user.email === fields.email &&
+  user.first_name === fields.first_name &&
+  user.last_name === fields.last_name &&
+  user.username === fields.username
 
 const setContextUser = async (ctx: Context, rawToken: string) => {
-  // TODO: provide mock for tests
-  const client = new TmcClient(rawToken)
-  const hasTokenChanged = prevToken !== rawToken
+  const details = await getUserDetailsForToken(rawToken, {
+    logger: ctx.logger,
+  })
 
-  prevToken = rawToken
-
-  // TODO: Does this always make a request?
-  let details: UserInfo | undefined
-  let isCached = true
-
-  try {
-    details = await redisify<UserInfo>(
-      async () => {
-        isCached = false
-        return await client.getCurrentUserDetails()
-      },
-      {
-        prefix: "userdetails",
-        expireTime: 3600,
-        key: hashUserToken(rawToken),
-      },
-      ctx,
-    )
-  } catch (e) {
-    ctx.logger.warn("Error fetching user details", e)
-  }
-
-  ctx.tmcClient = client
+  ctx.tmcClient = new TmcClient(rawToken)
   ctx.userDetails = details
 
   if (!details) {
     return
   }
 
-  const prismaDetails = {
+  const syncedFields: SyncedUserFields = {
     upstream_id: details.id,
     administrator: details.administrator,
     email: details.email.trim(),
@@ -112,28 +120,18 @@ const setContextUser = async (ctx: Context, rawToken: string) => {
     username: details.username,
   }
 
-  if (!hasTokenChanged && ctx.user && ctx.role) {
-    if (
-      isCached ||
-      (ctx.user.id &&
-        ctx.user.administrator === prismaDetails.administrator &&
-        ctx.user.email === prismaDetails.email &&
-        ctx.user.first_name === prismaDetails.first_name &&
-        ctx.user.last_name === prismaDetails.last_name)
-    ) {
-      return
-    }
-  }
-
-  ctx.user = await ctx.prisma.user.upsert({
+  const existingUser = await ctx.prisma.user.findUnique({
     where: { upstream_id: details.id },
-    create: prismaDetails,
-    update: prismaDetails,
   })
 
-  if (ctx.user?.administrator) {
-    ctx.role = Role.ADMIN
-  } else {
-    ctx.role = Role.USER
-  }
+  ctx.user =
+    existingUser && isUserInSync(existingUser, syncedFields)
+      ? existingUser
+      : await ctx.prisma.user.upsert({
+          where: { upstream_id: details.id },
+          create: syncedFields,
+          update: syncedFields,
+        })
+
+  ctx.role = ctx.user.administrator ? Role.ADMIN : Role.USER
 }

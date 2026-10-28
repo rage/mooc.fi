@@ -4,9 +4,7 @@ import { CourseOwnership, Organization, User } from "@prisma/client"
 
 import { BaseContext } from "../context"
 import { UserInfo } from "../domain/UserInfo"
-import { redisify } from "../services/redis"
-import TmcClient from "../services/tmc"
-import { hashUserToken } from "../util/hashUser"
+import { getUserDetailsForToken } from "../services/userDetails"
 import { err, ok, Result } from "../util/result"
 
 interface GetUserReturn {
@@ -124,23 +122,7 @@ export function findUser({ knex, logger }: BaseContext) {
       return err({ status: 401, message: "not logged in" })
     }
 
-    let details: UserInfo | undefined
-    try {
-      const client = new TmcClient(rawToken)
-      details = await redisify<UserInfo>(
-        async () => await client.getCurrentUserDetails(),
-        {
-          prefix: "userdetails",
-          expireTime: 3600,
-          key: hashUserToken(rawToken),
-        },
-        {
-          logger,
-        },
-      )
-    } catch (e) {
-      logger.error("error", e)
-    }
+    const details = await getUserDetailsForToken(rawToken, { logger })
 
     if (!details) {
       return err({ status: 401, message: "invalid credentials" })

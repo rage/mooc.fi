@@ -14,7 +14,6 @@ import {
 } from "../../config"
 import {
   cachePlugin,
-  localePlugin,
   loggerPlugin,
   moocfiAuthPlugin,
   validateArgsPlugin,
@@ -40,7 +39,6 @@ const createPlugins = () => {
     loggerPlugin(),
     cachePlugin(),
     moocfiAuthPlugin(),
-    localePlugin(),
     fieldAuthorizePlugin(),
     validateArgsPlugin(),
   ]

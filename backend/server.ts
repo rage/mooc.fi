@@ -13,6 +13,7 @@ import { WebSocketServer } from "ws"
 import { ApolloServer } from "@apollo/server"
 import { ApolloServerPluginEmbeddedLandingPageProductionDefaultOptions } from "@apollo/server/dist/esm/plugin/landingPage/default/types"
 import { expressMiddleware } from "@apollo/server/express4"
+import { ApolloServerPluginCacheControlDisabled } from "@apollo/server/plugin/disabled"
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer"
 import {
   ApolloServerPluginLandingPageLocalDefault,
@@ -27,6 +28,7 @@ import { createDefaultData } from "./config/defaultData"
 import { Context, ServerContext } from "./context"
 import { createLoaders } from "./loaders/createLoaders"
 import createExpressGraphqlCacheMiddleware from "./middlewares/expressGraphqlCache"
+import { limitGraphqlBatchSize } from "./middlewares/graphqlBatchLimit"
 import { createSchema } from "./schema/common"
 
 export const GRAPHQL_ENDPOINT_PATH = isProduction ? "/api" : "/"
@@ -62,7 +64,7 @@ const addExpressMiddleware = async (
 ) => {
   const { prisma, logger, knex, extraContext } = serverContext
   await createDefaultData(prisma)
-  // cache middleware first so that it's the first to run
+  app.use(GRAPHQL_ENDPOINT_PATH, limitGraphqlBatchSize())
   app.use(createExpressGraphqlCacheMiddleware(logger))
   app.use(
     GRAPHQL_ENDPOINT_PATH,
@@ -94,6 +96,8 @@ const server = async (serverContext: ServerContext) => {
     schema,
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
+      // No cache hints are used, and the default plugin wraps every resolver.
+      ApolloServerPluginCacheControlDisabled(),
       isProduction
         ? ApolloServerPluginLandingPageProductionDefault({
             embed: true,
@@ -102,7 +106,13 @@ const server = async (serverContext: ServerContext) => {
       {
         async requestDidStart() {
           return {
-            async willSendResponse({ operation, errors, contextValue }) {
+            async willSendResponse({
+              operation,
+              errors,
+              contextValue,
+              response,
+            }) {
+              response.http.headers.set("cache-control", "no-store")
               // Only admins edit the data the public API serves.
               if (
                 operation?.operation === "mutation" &&

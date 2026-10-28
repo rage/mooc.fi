@@ -11,16 +11,12 @@ const isAsyncIterator = (i: unknown): i is AsyncIterable<any> => {
 export const cachePlugin = () =>
   plugin({
     name: "CachePlugin",
-    onCreateFieldResolver() {
+    onCreateFieldResolver(config) {
+      if (config.parentTypeConfig.name !== "Query") {
+        return
+      }
       return async (root, args, context, info, next) => {
-        let rawToken: string | undefined = undefined
-        if (context.req?.headers) {
-          rawToken = context?.req?.headers?.authorization
-        } /* else if (context.req?.connection) {
-        rawToken = context.req?.connection.context["Authorization"]
-      }*/
-        if (info.parentType.toString() !== "Query" || rawToken) {
-          // Not using the response cache for mutations or authenticated queries
+        if (context.req?.headers?.authorization) {
           return next(root, args, context, info)
         }
 
