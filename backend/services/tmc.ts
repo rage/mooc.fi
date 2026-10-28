@@ -11,6 +11,8 @@ import {
 } from "../config"
 import { OrganizationInfo, UserInfo } from "../domain/UserInfo"
 
+const TMC_TIMEOUT_MS = 5000
+
 export interface UserFieldValue {
   id: number
   user_id: number
@@ -30,12 +32,16 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
+const tmcAxios = axios.create({ timeout: TMC_TIMEOUT_MS })
+// Bulk exports for the background sync scripts can legitimately take minutes.
+const tmcBulkAxios = axios.create()
+
 let _accessToken: string | null = null
 
 async function fetchAccessToken(): Promise<string> {
   logger.info("Fetching tmc access token...")
   try {
-    const response = await axios.post(
+    const response = await tmcAxios.post(
       `${TMC_HOST}/oauth/token`,
       `client_secret=${TMC_CLIENT_SECRET}&client_id=${TMC_CLIENT_ID}&username=${encodeURIComponent(
         TMC_USERNAME ?? "",
@@ -67,7 +73,7 @@ export async function getAccessToken() {
 }
 
 export async function getBasicInfoByUsernames(usernames: string[]) {
-  const res = await axios.post(
+  const res = await tmcAxios.post(
     `${TMC_HOST}/api/v8/users/basic_info_by_usernames?extra_fields=elements-of-ai&user_fields=1`,
     {
       usernames: usernames,
@@ -87,7 +93,7 @@ export default class TmcClient {
   }
 
   async getCurrentUserDetails(): Promise<UserInfo> {
-    const res = await axios.get(
+    const res = await tmcAxios.get(
       `${TMC_HOST}/api/v8/users/current?show_user_fields=1&extra_fields=1`,
       {
         headers: { Authorization: this.accessToken ?? "" },
@@ -100,7 +106,7 @@ export default class TmcClient {
   }
 
   async getUserDetailsById(id: number): Promise<UserInfo> {
-    const res = await axios.get(
+    const res = await tmcAxios.get(
       `${TMC_HOST}/api/v8/users/${id}?show_user_fields=1&extra_fields=1`,
       {
         headers: { Authorization: `Bearer ${await getAccessToken()}` },
@@ -112,7 +118,7 @@ export default class TmcClient {
   }
 
   async getOrganizations(): Promise<OrganizationInfo[]> {
-    const res = await axios.get(`${TMC_HOST}/api/v8/org.json`, {
+    const res = await tmcAxios.get(`${TMC_HOST}/api/v8/org.json`, {
       headers: { Authorization: `Bearer ${await getAccessToken()}` },
     })
     return res.data
@@ -122,14 +128,14 @@ export default class TmcClient {
     let res
     if (after != null) {
       after = encodeURI(after)
-      res = await axios.get(
+      res = await tmcBulkAxios.get(
         `${TMC_HOST}/api/v8/user_app_datum?after=${after}`,
         {
           headers: { Authorization: `Bearer ${await getAccessToken()}` },
         },
       )
     } else {
-      res = await axios.get(`${TMC_HOST}/api/v8/user_app_datum`, {
+      res = await tmcBulkAxios.get(`${TMC_HOST}/api/v8/user_app_datum`, {
         headers: { Authorization: `Bearer ${await getAccessToken()}` },
       })
     }
@@ -140,14 +146,14 @@ export default class TmcClient {
     let res
     if (after != null) {
       after = encodeURI(after)
-      res = await axios.get(
+      res = await tmcBulkAxios.get(
         `${TMC_HOST}/api/v8/user_field_value?after=${after}`,
         {
           headers: { Authorization: `Bearer ${await getAccessToken()}` },
         },
       )
     } else {
-      res = await axios.get(`${TMC_HOST}/api/v8/user_field_value`, {
+      res = await tmcBulkAxios.get(`${TMC_HOST}/api/v8/user_field_value`, {
         headers: { Authorization: `Bearer ${await getAccessToken()}` },
       })
     }
@@ -158,7 +164,7 @@ export default class TmcClient {
 export const getCurrentUserDetails = async (
   accessToken: string,
 ): Promise<UserInfo> => {
-  const res = await axios.get(
+  const res = await tmcAxios.get(
     `${TMC_HOST}/api/v8/users/current?show_user_fields=true`,
     {
       headers: { Authorization: `Bearer ${accessToken}` },

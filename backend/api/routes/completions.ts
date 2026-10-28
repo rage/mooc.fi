@@ -364,7 +364,7 @@ export class CompletionController extends Controller {
         .select<"tiers", OpenUniversityRegistrationLink[]>("tiers")
         .from("open_university_registration_link")
         .where("course_id", course.id)
-    )?.[0].tiers as Array<Tier | null> | null
+    )?.[0]?.tiers as Array<Tier | null> | null
 
     const tierData: Array<TierData> = []
 
@@ -380,7 +380,9 @@ export class CompletionController extends Controller {
               .where("course_id", element.course_id)
           )?.[0]
 
-          tierData.push({ name: element.name, link: tierRegister.link })
+          if (tierRegister) {
+            tierData.push({ name: element.name, link: tierRegister.link })
+          }
 
           if (element.adjacent) {
             for (const adjacentElement of element.adjacent) {
@@ -391,10 +393,12 @@ export class CompletionController extends Controller {
                   .where("course_id", adjacentElement.course_id)
               )?.[0]
 
-              tierData.push({
-                name: adjacentElement.name,
-                link: adjRegister.link,
-              })
+              if (adjRegister) {
+                tierData.push({
+                  name: adjacentElement.name,
+                  link: adjRegister.link,
+                })
+              }
             }
           }
         }
