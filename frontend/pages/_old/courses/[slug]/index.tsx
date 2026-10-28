@@ -189,12 +189,12 @@ const Course = () => {
                 passHref
               >
                 <Button color="info">
-                  Completion email: {data.course.completion_email?.name}
+                  {t("completionEmail")}: {data.course.completion_email?.name}
                 </Button>
               </Link>
             ) : (
               <CreateEmailTemplateDialog
-                buttonText="Create completion email"
+                buttonText={t("createCompletionEmail")}
                 course={data.course}
                 type="completion"
               />
@@ -207,16 +207,17 @@ const Course = () => {
                   passHref
                 >
                   <Button color="info">
-                    Course stats email: {data.course.course_stats_email?.name}
+                    {t("courseStatsEmail")}:{" "}
+                    {data.course.course_stats_email?.name}
                   </Button>
                 </Link>
                 <Button onClick={handleSubscribe} disabled={subscribing}>
-                  {isSubscribed ? "Unsubscribe" : "Subscribe"}
+                  {isSubscribed ? t("unsubscribe") : t("subscribe")}
                 </Button>
               </>
             ) : (
               <CreateEmailTemplateDialog
-                buttonText="Create course stats email"
+                buttonText={t("createCourseStatsEmail")}
                 course={data.course}
                 type="course-stats"
               />
@@ -226,22 +227,21 @@ const Course = () => {
                 color="primary"
                 onClick={() => {
                   confirm({
-                    title: "Are you sure?",
-                    description:
-                      "Don't do this unless you really know what you're doing. This might mess things up!",
-                    confirmationText: "Yes, I'm sure",
-                    cancellationText: "Cancel",
+                    title: t("recheckConfirmTitle"),
+                    description: t("recheckConfirmDescription"),
+                    confirmationText: t("recheckConfirmYes"),
+                    cancellationText: t("recheckConfirmCancel"),
                   }).then(handleRecheck)
                 }}
                 disabled={checking}
               >
-                Re-check completions
+                {t("recheckCompletions")}
               </Button>
             </div>
             {checkMessage !== "" && <Typography>{checkMessage}</Typography>}
             <div>
               <Button href={`${baseUrl}/courses/${slug}/manual-completions`}>
-                Manual completions
+                {t("manualCompletions")}
               </Button>
             </div>
           </Row>

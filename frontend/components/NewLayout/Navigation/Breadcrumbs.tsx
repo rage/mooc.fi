@@ -60,7 +60,8 @@ const BreadcrumbItemComponent = styled("li")<BreadcrumbItemComponentProps>(
     margin-bottom: 1rem;
   }
 
-  a {
+  a,
+  > span {
     color: ${
       isCurrent
         ? theme.palette.common.grayscale.dark
@@ -95,7 +96,11 @@ const BreadcrumbItem = ({ isCurrent, ...item }: BreadcrumbItemProps) => {
 
   return (
     <BreadcrumbItemComponent isCurrent={isCurrent}>
-      <Link href={href ?? "#"}>{text ?? <Skeleton width="100px" />}</Link>
+      {href ? (
+        <Link href={href}>{text ?? <Skeleton width="100px" />}</Link>
+      ) : (
+        <span>{text ?? <Skeleton width="100px" />}</span>
+      )}
       {!isCurrent && <CaretRightIcon sx={{ fontSize: "12px" }} />}
     </BreadcrumbItemComponent>
   )

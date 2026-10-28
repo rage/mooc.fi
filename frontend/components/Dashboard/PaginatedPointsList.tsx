@@ -9,6 +9,8 @@ import { styled } from "@mui/material/styles"
 import PointsList from "./DashboardPointsList"
 import ErrorBoundary from "/components/ErrorBoundary"
 import useDebounce from "/hooks/useDebounce"
+import { useTranslator } from "/hooks/useTranslator"
+import CoursesTranslations from "/translations/courses"
 
 import { StudentProgressesDocument } from "/graphql/generated"
 
@@ -26,6 +28,7 @@ interface Props {
 
 function PaginatedPointsList(props: Props) {
   const { courseId } = props
+  const t = useTranslator(CoursesTranslations)
   const [searchString, setSearchString] = useState("")
   const [cutterValue, setCutterValue] = useState(0)
   const [search, setSearch] = useDebounce(searchString, 1000)
@@ -70,7 +73,7 @@ function PaginatedPointsList(props: Props) {
         <Grid item xs={6}>
           <TextField
             id="searchString"
-            label="Search"
+            label={t("search")}
             value={searchString}
             autoComplete="off"
             variant="outlined"
@@ -93,7 +96,7 @@ function PaginatedPointsList(props: Props) {
         <Grid item xs={2}>
           <TextField
             id="cutter"
-            label="Cutter"
+            label={t("pointsCutter")}
             value={cutterValue}
             autoComplete="off"
             variant="outlined"
@@ -112,7 +115,9 @@ function PaginatedPointsList(props: Props) {
       ) : (
         <>
           <div style={{ marginBottom: "1rem" }}>
-            {data?.userCourseSettings?.totalCount ?? 0} results
+            {t("pointsResults", {
+              count: data?.userCourseSettings?.totalCount ?? 0,
+            })}
           </div>
           <PointsList data={users} cutterValue={cutterValue} />
           <Button
@@ -129,7 +134,7 @@ function PaginatedPointsList(props: Props) {
             fullWidth
             style={{ marginTop: "1rem", fontSize: 22 }}
           >
-            Load more
+            {t("loadMore")}
           </Button>
         </>
       )}

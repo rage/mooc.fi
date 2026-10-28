@@ -60,6 +60,7 @@ export const ContentBox = styled("div")`
   margin-top: 1em;
   font-size: 18px;
   line-height: 37px;
+  overflow-wrap: anywhere;
   h2 {
     font-size: 37px;
     line-height: 64px;
@@ -78,6 +79,10 @@ export const ContentBox = styled("div")`
     font-size: 23px;
     line-height: 44px;
     font-family: var(--header-font), sans-serif !important;
+  }
+  pre {
+    overflow-x: auto;
+    max-width: 100%;
   }
   code {
     background-color: #e6f4f1;
@@ -236,8 +241,8 @@ const allowedOS: readonly UserOSType[] = [
 ] as const
 const languages = ["en", "fi"] as const
 const breadcrumbLabels: Record<(typeof allowedPaths)[number], string> = {
-  netbeans: "Netbeans",
-  "tmc-cli": "TMC Client",
+  netbeans: "NetBeans",
+  "tmc-cli": "TMC CLI",
   vscode: "VSCode",
 }
 

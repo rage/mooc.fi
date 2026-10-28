@@ -265,7 +265,10 @@ const SelectOrderList = ({
               </>
             }
           >
-            {renderOption({}, item)}
+            {renderOption(
+              { as: "div" } as React.HTMLAttributes<HTMLLIElement>,
+              item,
+            )}
           </ListItem>
         ))}
       </List>

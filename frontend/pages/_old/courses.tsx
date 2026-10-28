@@ -29,6 +29,9 @@ const Background = styled("section")`
   background-color: #61baad;
 `
 
+const firstQueryValue = (value?: string | string[]) =>
+  (Array.isArray(value) ? value[0] : value) ?? ""
+
 function useCourseSearch() {
   const router = useRouter()
 
@@ -40,9 +43,9 @@ function useCourseSearch() {
   ])
 
   const initialSearchVariables = createInitialSearchVariables({
-    search: useQueryParameter("search", { enforce: false }),
+    search: firstQueryValue(router.query.search),
     hidden: useQueryParameter("hidden", { enforce: false }),
-    handledBy: useQueryParameter("handledBy", { enforce: false }),
+    handledBy: firstQueryValue(router.query.handledBy),
     status: useQueryParameter("status", { enforce: false }),
   })
 
@@ -70,10 +73,10 @@ function useCourseSearch() {
     const params = new URLSearchParams()
 
     if (isDefinedAndNotEmpty(searchVariables.search)) {
-      params.set("search", encodeURIComponent(searchVariables.search))
+      params.set("search", searchVariables.search)
     }
     if (isDefinedAndNotEmpty(searchVariables.handledBy)) {
-      params.set("handledBy", encodeURIComponent(searchVariables.handledBy))
+      params.set("handledBy", searchVariables.handledBy)
     }
     if (!searchVariables.hidden) {
       params.set("hidden", "false")

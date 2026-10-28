@@ -2,6 +2,8 @@ import { Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { CardBody, CardWrapper } from "../Common/Card"
+import { useTranslator } from "/hooks/useTranslator"
+import ProfileTranslations from "/translations/profile"
 
 import { CurrentUserQuery } from "/graphql/generated"
 
@@ -77,6 +79,8 @@ function InfoRow({ title, content }: InfoRowProps) {
 }
 
 function ProfilePageHeader({ user }: ProfilePageHeaderProps) {
+  const t = useTranslator(ProfileTranslations)
+
   return (
     <header>
       <Title variant="h2" component="h1">
@@ -85,9 +89,9 @@ function ProfilePageHeader({ user }: ProfilePageHeaderProps) {
       <UserInfoWrapper>
         <ProfileCardWrapper>
           <CardBody>
-            <InfoRow title="Email" content={user?.email ?? "-"} />
+            <InfoRow title={t("email")} content={user?.email ?? "-"} />
             <InfoRow
-              title="Student number"
+              title={t("studentNumber")}
               content={user?.student_number ?? "-"}
             />
           </CardBody>

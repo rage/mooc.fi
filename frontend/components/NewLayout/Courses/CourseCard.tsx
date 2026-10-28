@@ -458,7 +458,7 @@ const CourseCard = React.forwardRef<
         details={
           course.ects && (
             <CourseDetailItem icon={Book}>
-              {course.ects}&nbsp;op&nbsp;(~
+              {course.ects}&nbsp;{t("cr")}&nbsp;(~
               {Math.round((parseInt(course.ects) * 27) / 5) * 5}h)
               <StyledTooltip
                 title={`${t("ectsHoursExplanation1")} ${course.ects} ${t(

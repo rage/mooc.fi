@@ -22,9 +22,11 @@ export default function useSeoConfig() {
 
   const seoConfig = useMemo(() => {
     const titleTemplates = t("titleTemplate")
+    const stripAdminPrefix = (path: string) =>
+      path.replace(/^\/(admin|_old)(?=\/)/, "")
     const titleTemplate =
-      titleTemplates?.[(pathname ?? "") as TitleTemplateKey] ??
-      titleTemplates?.[(asPath ?? "") as TitleTemplateKey]
+      titleTemplates?.[stripAdminPrefix(pathname ?? "") as TitleTemplateKey] ??
+      titleTemplates?.[stripAdminPrefix(asPath ?? "") as TitleTemplateKey]
 
     if (titleTemplate) {
       return {

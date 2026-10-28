@@ -16,20 +16,21 @@ function FAQTopic() {
   const { Component, meta, error, render } = useFAQPage(topic)
 
   const { title, breadcrumb } = meta ?? {}
+  const isIndex = topic === "toc_faq"
 
   useBreadcrumbs([
     {
       translation: "faq",
       href: `/faq`,
     },
-    ...(requestedTopic
+    ...(!isIndex
       ? [{ label: error ? topic : breadcrumb, href: `/faq/${topic}` }]
       : []),
   ])
 
   return (
     <>
-      <NextSeo title={title ?? "..."} />
+      <NextSeo title={isIndex ? undefined : title ?? "..."} />
       <FAQPage meta={meta} error={error}>
         {render && <Component />}
         {error ? (

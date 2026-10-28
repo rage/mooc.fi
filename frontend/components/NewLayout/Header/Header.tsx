@@ -121,8 +121,6 @@ const BrandingContainer = styled("div")(
 `,
 )
 
-const HeaderAppBar = styled(AppBar)`` as typeof AppBar
-
 function Header() {
   const t = useTranslator(CommonTranslations)
   const { locale } = useRouter()
@@ -139,7 +137,7 @@ function Header() {
 
   return (
     <HideOnScroll>
-      <HeaderAppBar
+      <AppBar
         position="sticky"
         role="banner"
         aria-label="toolbar"
@@ -158,7 +156,7 @@ function Header() {
           </BrandingContainer>
           <NavigationMenu />
         </GroupToolbar>
-      </HeaderAppBar>
+      </AppBar>
     </HideOnScroll>
   )
 }

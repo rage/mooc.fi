@@ -43,5 +43,7 @@ export default {
     "The confirmation email that was sent to the address",
   confirmationEmailExpired2:
     "has expired. You can send a new confirmation email by filling out the form above again.",
+  emailLabel: "Email address",
+  organizationalIdentifierLabel: "Organizational identifier",
   loading: "loading",
 } as const

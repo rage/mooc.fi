@@ -113,6 +113,12 @@ export default {
   openLanguageMenu: "Open language menu",
   shortcuts: "Shortcuts",
   createNewCourse: "Create a new course",
+  openMenu: "Open menu",
+  selectAllInCategory: "Select all: {{category}}",
+  pageNotFoundTitle: "Page not found",
+  organization: "Organization",
+  organizationPlaceholder:
+    "This page is a placeholder. Please use the menu to navigate.",
   toMainMenu: "To main menu",
   teachers: "For teachers",
   learningEnvironment: "Learning environment",

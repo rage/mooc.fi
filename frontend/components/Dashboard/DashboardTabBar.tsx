@@ -9,6 +9,9 @@ import ViewListIcon from "@mui/icons-material/ViewList"
 import { AppBar, Tab, Tabs } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import { useTranslator } from "/hooks/useTranslator"
+import CoursesTranslations from "/translations/courses"
+
 const TabBarContainer = styled("div")`
   flex-grow: 1;
   background-color: inherit;
@@ -38,29 +41,29 @@ interface DashboardTabsProps {
 }
 
 interface Route {
-  label: string
+  label: "tabCourseHome" | "completions" | "points" | "tabEdit"
   icon: React.JSX.Element
   path: string
 }
 
 const routes: Route[] = [
   {
-    label: "Course Home",
+    label: "tabCourseHome",
     icon: <DashboardIcon />,
     path: "/",
   },
   {
-    label: "Completions",
+    label: "completions",
     icon: <ViewListIcon />,
     path: "/completions",
   },
   {
-    label: "Points",
+    label: "points",
     icon: <ScatterplotIcon />,
     path: "/points",
   },
   {
-    label: "Edit",
+    label: "tabEdit",
     icon: <EditIcon />,
     path: "/edit",
   },
@@ -68,6 +71,7 @@ const routes: Route[] = [
 
 function DashboardTabBar(props: DashboardTabsProps) {
   const { slug, selectedValue } = props
+  const t = useTranslator(CoursesTranslations)
   const [value, setValue] = useState(selectedValue)
 
   const handleChange = useCallback(
@@ -94,7 +98,7 @@ function DashboardTabBar(props: DashboardTabsProps) {
               <StyledTab
                 key={label}
                 value={index}
-                label={label}
+                label={t(label)}
                 icon={icon}
                 id={`nav-tab-${index}`}
                 aria-controls={`nav-tabpanel-${index}`}

@@ -25,7 +25,9 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import useIsOld from "/hooks/useIsOld"
 import { useQueryParameter } from "/hooks/useQueryParameter"
+import { useTranslator } from "/hooks/useTranslator"
 import withAdminOrCourseOwner from "/lib/with-admin-or-course-owner"
+import CoursesTranslations from "/translations/courses"
 
 import {
   AddManualCompletionDocument,
@@ -51,6 +53,7 @@ const ManualCompletions = () => {
   const isOld = useIsOld()
   const baseUrl = isOld ? "/_old" : "/admin"
   const { locale } = useRouter()
+  const t = useTranslator(CoursesTranslations)
   const confirm = useConfirm()
   const [submitting, setSubmitting] = useState(false)
   const [input, setInput] = useState("")
@@ -60,15 +63,17 @@ const ManualCompletions = () => {
     "info" | "error" | "success" | "warning" | undefined
   >("info")
   const [completionDate, setCompletionDate] = useState<Date | null>(null)
-  const [addCompletions, { loading: mutationLoading, error: mutationError }] =
-    useMutation(AddManualCompletionDocument, {
-      onCompleted: () => {
-        setInput("")
-        setMessage("Completions added")
-        setMessageTitle("Success")
-        setMessageSeverity("success")
-      },
-    })
+  const [
+    addCompletions,
+    { loading: mutationLoading, error: mutationError, reset: resetMutation },
+  ] = useMutation(AddManualCompletionDocument, {
+    onCompleted: () => {
+      setInput("")
+      setMessage(t("manualCompletionsAdded"))
+      setMessageTitle(t("manualCompletionsSuccess"))
+      setMessageSeverity("success")
+    },
+  })
   const slug = useQueryParameter("slug") ?? ""
   const {
     data: courseData,
@@ -98,21 +103,33 @@ const ManualCompletions = () => {
     setSubmitting(true)
     setMessage(null)
     setMessageSeverity("info")
+    resetMutation()
     const parsed = parse<CompletionData>(input, {
       header: true,
+      delimiter: ",",
+      skipEmptyLines: true,
       transformHeader: (h) => h.trim(),
     })
-    if (parsed.errors.length > 0) {
-      setMessage(JSON.stringify(parsed.errors, undefined, 2))
+    const parseErrors = parsed.errors.filter((e) => e.code !== "TooFewFields")
+    if (parseErrors.length > 0) {
+      setMessage(
+        parseErrors
+          .map((e) =>
+            typeof e.row === "number"
+              ? `${t("manualCompletionsRow", { row: e.row + 1 })}: ${e.message}`
+              : e.message,
+          )
+          .join("\n"),
+      )
       setMessageSeverity("error")
-      setMessageTitle("Error while parsing csv")
+      setMessageTitle(t("manualCompletionsParseError"))
       setSubmitting(false)
       return
     }
 
     const data: CompletionData[] = parsed.data.map((d) => ({
       ...d,
-      user_id: d.user_id.trim(),
+      user_id: d.user_id?.trim(),
       grade: d.grade ? d.grade.trim() : undefined,
       completion_date:
         d.completion_date === "" || !d.completion_date
@@ -121,18 +138,35 @@ const ManualCompletions = () => {
             : undefined
           : DateTime.fromISO(d.completion_date).toString(),
     }))
-    console.log(data)
     if (data.length === 0) {
-      setMessage("Parsed 0 rows from csv. Did you only include the header row?")
+      setMessage(t("manualCompletionsNoRows"))
       setMessageSeverity("error")
-      setMessageTitle("No rows found")
+      setMessageTitle(t("manualCompletionsNoRowsTitle"))
       setSubmitting(false)
       return
     }
     if (!data.every((o) => o.user_id)) {
-      setMessage("Did not find column user_id for each row.")
+      setMessage(t("manualCompletionsMissingUserId"))
       setMessageSeverity("error")
-      setMessageTitle("Invalid csv")
+      setMessageTitle(t("manualCompletionsInvalidCsvTitle"))
+      setSubmitting(false)
+      return
+    }
+
+    const invalidUserIds = data
+      .map((o, row) => ({ row, userId: o.user_id }))
+      .filter(({ userId }) => !/^\d+$/.test(userId))
+    if (invalidUserIds.length > 0) {
+      setMessage(
+        invalidUserIds
+          .map(
+            ({ row, userId }) =>
+              `${t("manualCompletionsRow", { row: row + 1 })}: "${userId}"`,
+          )
+          .join("\n"),
+      )
+      setMessageSeverity("error")
+      setMessageTitle(t("manualCompletionsInvalidUserId"))
       setSubmitting(false)
       return
     }
@@ -146,15 +180,17 @@ const ManualCompletions = () => {
         .shiftTo("days")
         .toObject()
       const error = !days
-        ? `The date is erroneous ((${o.completion_date})`
+        ? t("manualCompletionsDateErroneous", { date: o.completion_date })
         : days > 0
-        ? `The date is ${Math.round(days)} days in the future (${
-            o.completion_date
-          })`
+        ? t("manualCompletionsDateFuture", {
+            days: Math.round(days),
+            date: o.completion_date,
+          })
         : days < -30 * 4
-        ? `The date is ${-Math.round(days)} days in the past (${
-            o.completion_date
-          })`
+        ? t("manualCompletionsDatePast", {
+            days: -Math.round(days),
+            date: o.completion_date,
+          })
         : undefined
 
       return {
@@ -176,25 +212,37 @@ const ManualCompletions = () => {
 
     if (!okDates) {
       confirm({
-        title: "There are errors",
+        title: t("manualCompletionsErrorsTitle"),
         description: (
-          <div
+          <span
             style={{
+              display: "block",
               maxHeight: "30rem",
-              overflow: "scroll",
+              overflow: "auto",
             }}
           >
-            There were errors in your data:
-            <pre>
+            {t("manualCompletionsErrorsIntro")}
+            <span
+              style={{
+                display: "block",
+                fontFamily: "monospace",
+                whiteSpace: "pre-wrap",
+              }}
+            >
               {checkedDates
                 .filter((c) => Boolean(c.error))
-                .map((c) => `Row ${c.row}: ${c.error}`)
+                .map(
+                  (c) =>
+                    `${t("manualCompletionsRow", { row: c.row + 1 })}: ${
+                      c.error
+                    }`,
+                )
                 .join("\n")}
-            </pre>
-          </div>
+            </span>
+          </span>
         ),
-        confirmationText: "Continue anyway",
-        cancellationText: "Cancel",
+        confirmationText: t("manualCompletionsContinue"),
+        cancellationText: t("manualCompletionsCancel"),
       })
         .then(() =>
           addCompletions({
@@ -204,24 +252,24 @@ const ManualCompletions = () => {
             },
           }),
         )
-        .catch(() => setSubmitting(false))
+        .catch(() => undefined)
         .finally(() => setSubmitting(false))
     } else {
-      addCompletions({
+      await addCompletions({
         variables: {
           course_slug: slug,
           completions: filteredData,
         },
-      })
+      }).catch(() => undefined)
       setSubmitting(false)
     }
   }
 
   if (courseError || (!courseLoading && !courseData?.course)) {
-    return <div>Could not find course</div>
+    return <div>{t("courseNotFound")}</div>
   }
   if (courseLoading) {
-    return <div>Loading</div>
+    return <div>{t("manualCompletionsLoading")}</div>
   }
 
   return (
@@ -229,26 +277,27 @@ const ManualCompletions = () => {
       <NextSeo title={title} />
       <Container>
         <Typography variant="h3" component="h1">
-          Manually add completions
+          {t("manualCompletionsTitle")}
         </Typography>
         {message && (
           <Alert severity={messageSeverity}>
             <AlertTitle>{messageTitle}</AlertTitle>
-            <pre>{message}</pre>
+            <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>{message}</pre>
           </Alert>
         )}
-        {mutationLoading && <p>Loading...</p>}
+        {mutationLoading && <p>{t("manualCompletionsLoading")}...</p>}
         {mutationError && (
           <Alert severity="error">
-            <AlertTitle>Error while adding completions:</AlertTitle>
-            <pre>{JSON.stringify(mutationError, undefined, 2)}</pre>
+            <AlertTitle>{t("manualCompletionsAddError")}</AlertTitle>
+            <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+              {mutationError.graphQLErrors.length > 0
+                ? mutationError.graphQLErrors.map((e) => e.message).join("\n")
+                : mutationError.message}
+            </pre>
           </Alert>
         )}
         <br />
-        <Typography>
-          Completion date (optional) - if provided, will be default for every
-          completion with no date set
-        </Typography>
+        <Typography>{t("manualCompletionsDateHelp")}</Typography>
         <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={locale}>
           <DynamicDatePicker
             onChange={setCompletionDate}
@@ -261,22 +310,21 @@ const ManualCompletions = () => {
           />
         </LocalizationProvider>
         <Typography>
-          Format: csv with header with fields:{" "}
-          <code>user_id[,grade][,completion_date]</code> - optional date in ISO
-          8601 format. At least one comma in header required, so if only user_id
-          is given, please give header as <code>user_id,</code>
+          {t("manualCompletionsFormatPre")}{" "}
+          <code>user_id[,grade][,completion_date]</code>
+          {t("manualCompletionsFormatPost")}
         </Typography>
         <br />
         <StyledTextField
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          label="csv"
+          label={t("manualCompletionsCsvLabel")}
           fullWidth
           rows={20}
           multiline
         />
         <Button disabled={submitting} onClick={onSubmit}>
-          Add completions
+          {t("manualCompletionsSubmit")}
         </Button>
       </Container>
     </>

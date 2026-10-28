@@ -1,3 +1,5 @@
+import { NextSeo } from "next-seo"
+
 import { Typography } from "@mui/material"
 
 import ContentWrapper from "/components/NewLayout/Common/ContentWrapper"
@@ -10,19 +12,22 @@ const NotFoundPage = () => {
   useBreadcrumbs([])
 
   return (
-    <ContentWrapper as="section" sx={{ textAlign: "center" }}>
-      <Typography
-        component="h1"
-        variant="h2"
-        gutterBottom
-        sx={{ justifyContent: "center" }}
-      >
-        404
-      </Typography>
-      <Typography variant="body1" gutterBottom>
-        {t("pageNotFound")}
-      </Typography>
-    </ContentWrapper>
+    <>
+      <NextSeo title={t("pageNotFoundTitle")} />
+      <ContentWrapper as="section" sx={{ textAlign: "center" }}>
+        <Typography
+          component="h1"
+          variant="h2"
+          gutterBottom
+          sx={{ justifyContent: "center" }}
+        >
+          404
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          {t("pageNotFound")}
+        </Typography>
+      </ContentWrapper>
+    </>
   )
 }
 

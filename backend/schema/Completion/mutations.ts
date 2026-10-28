@@ -110,7 +110,18 @@ export const CompletionMutations = extendType({
         course_id: idArg(),
         course_slug: stringArg(),
       },
-      validate: (_, { course_id, course_slug }) => {
+      validate: (_, { course_id, course_slug, completions }) => {
+        const invalidUserIds = (completions ?? [])
+          .map((c) => c?.user_id)
+          .filter((id) => id !== undefined && !/^\d+$/.test(id.trim()))
+        if (invalidUserIds.length > 0) {
+          throw new GraphQLUserInputError(
+            `user_id must be an integer (TMC user id), got: ${invalidUserIds.join(
+              ", ",
+            )}`,
+            ["completions"],
+          )
+        }
         if (!course_id && !course_slug) {
           throw new GraphQLUserInputError(
             "must provide course_id or course_slug",

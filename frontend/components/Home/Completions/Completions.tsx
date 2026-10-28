@@ -15,13 +15,12 @@ export interface CompletionsProps {
 
 const Title = styled(Typography)`
   font-family: var(--header-font), sans-serif !important;
-  margin-top: 7rem;
-  margin-left: 2rem;
-  margin-bottom: 1rem;
+  margin: 2rem 0 1rem;
   @media (min-width: 320px) {
     font-size: 46px;
   }
   @media (min-width: 600px) {
+    margin-top: 7rem;
     font-size: 56px;
   }
   @media (min-width: 960px) {
@@ -30,6 +29,7 @@ const Title = styled(Typography)`
 ` as typeof Typography
 
 const CompletionsContainer = styled(Container)`
+  width: 100%;
   max-width: 900px;
 `
 

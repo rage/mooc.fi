@@ -11,9 +11,10 @@ import { useEventCallback } from "@mui/material/utils"
 import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
 
-const ImageContainer = styled("div", {
+const ImageContainer = styled("span", {
   shouldForwardProp: (prop) => prop !== "width" && prop !== "height",
 })<{ width?: string; height?: string }>`
+  display: block;
   position: relative;
   width: ${(props) => props.width};
   height: ${(props) => props.height};
@@ -71,8 +72,8 @@ const StyledIconButton = styled(IconButton)`
 
 interface ModalImageProps
   extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
+    React.HTMLAttributes<HTMLSpanElement>,
+    HTMLSpanElement
   > {
   src: ImageProps["src"]
   alt: ImageProps["alt"]

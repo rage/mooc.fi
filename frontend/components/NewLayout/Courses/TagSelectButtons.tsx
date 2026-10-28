@@ -8,6 +8,7 @@ import Button from "../Common/Button"
 import { useTranslator } from "/hooks/useTranslator"
 import { TagCoreFields } from "/lib/api-types"
 // import { fontSize } from "/src/theme/util"
+import { KeyOfTranslationDictionary } from "/translations"
 import CommonTranslations from "/translations/common"
 
 const TagsContainer = styled("div")`
@@ -219,6 +220,13 @@ const TagSelectButtons = ({
                 ? "true"
                 : undefined
             }
+            aria-label={t("selectAllInCategory", {
+              category: t(
+                category as KeyOfTranslationDictionary<
+                  typeof CommonTranslations
+                >,
+              ),
+            })}
             variant="text"
             sx={{ gridArea: `${category}SelectAll` }}
             onClick={handleSelectAllClick(category)}

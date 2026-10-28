@@ -79,7 +79,17 @@ const UserSearch = () => {
     setResults({ ...emptyResults })
   }, [emptyResults])
 
-  const { rowsPerPage, page } = userSearch
+  const { rowsPerPage, page, setSearch, setPage, setRowsPerPage } = userSearch
+
+  useEffect(() => {
+    if (textParam !== searchVariables.search) {
+      setSearch(textParam)
+      setSearchVariables((prev) => ({ ...prev, search: textParam }))
+      resetResults()
+    }
+    setPage(pageParam)
+    setRowsPerPage(rowsParam)
+  }, [textParam, pageParam, rowsParam])
 
   useEffect(() => {
     if ((searchVariables.search ?? "").trim().length < 3) {

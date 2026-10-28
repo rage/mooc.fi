@@ -66,6 +66,7 @@ function ControlledTextFieldComponent<
     unit,
     Container = TextFieldContainer,
     containerProps,
+    defaultValue: _defaultValue,
     ...textFieldProps
   } = props
   const anchor = useAnchor(name)
@@ -105,7 +106,7 @@ function ControlledTextFieldComponent<
       <StyledTextField
         onChange={field.onChange}
         onBlur={field.onBlur}
-        value={field.value}
+        value={field.value ?? ""}
         name={field.name}
         label={label}
         required={required}

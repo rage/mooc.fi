@@ -269,6 +269,13 @@ const SearchResultStatus = ({
   )
 }
 
+// Matches the visual row order in TagSelectButtons so tab order follows it.
+const TAG_CATEGORY_ORDER = ["language", "difficulty", "module"]
+const tagCategoryRank = (category: string) => {
+  const rank = TAG_CATEGORY_ORDER.indexOf(category)
+  return rank === -1 ? TAG_CATEGORY_ORDER.length : rank
+}
+
 type CourseSort = "module" | "name"
 
 const compareCoursesByName = (locale?: string) => {
@@ -379,7 +386,11 @@ function CourseGrid() {
       res["difficulty"].sort(sortByDifficulty)
     }
 
-    return res
+    return Object.fromEntries(
+      Object.entries(res).sort(
+        ([a], [b]) => tagCategoryRank(a) - tagCategoryRank(b),
+      ),
+    )
   }, [coursesData])
 
   const activeTagIds = useMemo(() => {

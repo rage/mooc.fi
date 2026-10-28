@@ -217,7 +217,7 @@ const CourseCard = ({ course, loading, isNew }: CourseCardProps) => {
           {course && (
             <CourseInfoList>
               <CourseInfo style={{ marginBottom: "1rem" }}>
-                {formatDateTime(course?.start_date)} to{" "}
+                {formatDateTime(course?.start_date)} –{" "}
                 {formatDateTime(course?.end_date)}
               </CourseInfo>
 
@@ -247,7 +247,7 @@ const CourseCard = ({ course, loading, isNew }: CourseCardProps) => {
                   variant="text"
                   startIcon={<DashboardIcon />}
                 >
-                  Dashboard
+                  {t("dashboard")}
                 </StyledButton>
                 <StyledButton
                   href={`${baseUrl}/courses/new?clone=${course.slug}`}
@@ -257,7 +257,7 @@ const CourseCard = ({ course, loading, isNew }: CourseCardProps) => {
                   color="secondary"
                   startIcon={<AddIcon />}
                 >
-                  Clone...
+                  {t("clone")}
                 </StyledButton>
                 <StyledButton
                   href={`${baseUrl}/courses/${course.slug}/edit`}
@@ -266,7 +266,7 @@ const CourseCard = ({ course, loading, isNew }: CourseCardProps) => {
                   variant="text"
                   startIcon={<EditIcon />}
                 >
-                  Edit
+                  {t("courseCardEdit")}
                 </StyledButton>
               </>
             )}
@@ -279,7 +279,7 @@ const CourseCard = ({ course, loading, isNew }: CourseCardProps) => {
                 color="secondary"
               >
                 <AddIcon />
-                Create
+                {t("courseCardCreate")}
               </StyledButton>
             )}
           </CourseCardActions>

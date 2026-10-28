@@ -42,5 +42,7 @@ export default {
     "Vavhistussähköposti, joka lähetettiin osoitteeseen",
   confirmationEmailExpired2:
     ", on vanhentunut. Voit lähettää uuden vahvistussähköpostin täyttämällä ylläolevan lomakkeen uudelleen.",
+  emailLabel: "Sähköpostiosoite",
+  organizationalIdentifierLabel: "Organisaatiotunnus",
   loading: "ladataan",
 } as const

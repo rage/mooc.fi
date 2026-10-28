@@ -37,8 +37,6 @@ const StyledDialogTitle = styled(DialogTitle)`
   padding-top: 0 !important;
 `
 
-const StyledDialogContent = styled(DialogContent)``
-
 const StyledDialogActions = styled(DialogActions)`
   gap: 0.5rem;
 `
@@ -150,7 +148,7 @@ const CompletionsDownloadButton = ({
         <StyledDialogTitle id={dialogTitleId}>
           {t("downloadCompletionsDialogTitle")}
         </StyledDialogTitle>
-        <StyledDialogContent>
+        <DialogContent>
           <LocalizationProvider dateAdapter={AdapterLuxon}>
             <StyledDatePicker
               label={t("downloadCompletionsDateLabel")}
@@ -181,7 +179,7 @@ const CompletionsDownloadButton = ({
               />
             </RadioGroup>
           </FormControl>
-        </StyledDialogContent>
+        </DialogContent>
         <StyledDialogActions>
           <Button onClick={handleCloseDialog} disabled={isLoading}>
             {t("downloadCompletionsCancel")}

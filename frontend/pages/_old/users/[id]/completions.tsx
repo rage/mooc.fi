@@ -1,3 +1,5 @@
+import { NextSeo } from "next-seo"
+
 import { useQuery } from "@apollo/client"
 
 import Container from "/components/Container"
@@ -49,6 +51,7 @@ function CompletionsPage() {
 
   return (
     <>
+      <NextSeo title={data.user?.full_name ?? id} />
       <Container>
         <Completions completions={completions} />
       </Container>

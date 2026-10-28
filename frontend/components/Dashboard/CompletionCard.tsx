@@ -10,16 +10,17 @@ import {
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import { useTranslator } from "/hooks/useTranslator"
+import CoursesTranslations from "/translations/courses"
 import { formatDateTime } from "/util/dataFormatFunctions"
 
 import { CompletionsQueryNodeFieldsFragment } from "/graphql/generated"
 
-//map language code stored to database to human readable language
-const MapLangToLanguage: Record<string, string> = {
-  en_US: "English",
-  fi_FI: "Finnish",
-  sv_SE: "Swedish",
-}
+const LanguageNameKeys = {
+  en_US: "languageEnglish",
+  fi_FI: "languageFinnish",
+  sv_SE: "languageSwedish",
+} as const
 
 const StyledIcon = styled(Icon)`
   margin-top: 1rem;
@@ -38,16 +39,21 @@ interface CompletionCardProps {
 }
 
 function CompletionCard({ completer }: CompletionCardProps) {
-  const completionLanguage =
-    MapLangToLanguage[completer?.completion_language ?? ""] ??
-    "No language available"
+  const t = useTranslator(CoursesTranslations)
+  const languageKey =
+    LanguageNameKeys[
+      (completer?.completion_language ?? "") as keyof typeof LanguageNameKeys
+    ]
+  const completionLanguage = languageKey
+    ? t(languageKey)
+    : t("noLanguageAvailable")
   const completionsRegistered = completer?.completions_registered ?? []
   const studentId = completer?.user?.student_number
     ? `HY SID: ${completer.user.student_number}`
-    : "No student number"
+    : t("noStudentNumber")
   const completionDate = completionsRegistered.length
-    ? `Completion registered: ${formatDateTime(completer.created_at)}`
-    : "Completion has not been registered"
+    ? `${t("completionRegistered")}: ${formatDateTime(completer.created_at)}`
+    : t("completionNotRegistered")
 
   return (
     <ListItemArea>
@@ -71,7 +77,7 @@ function CompletionCard({ completer }: CompletionCardProps) {
                 {completer.email} {studentId}
               </CompletionInfoText>
               <CompletionInfoText component="span">
-                Completion language: {completionLanguage}
+                {t("completionLanguageLabel")}: {completionLanguage}
               </CompletionInfoText>
               <CompletionInfoText component="span">
                 {completionDate}
