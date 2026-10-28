@@ -1,6 +1,7 @@
-import { Request, Response, Router } from "express"
+import { Request, Response } from "express"
 
 import { isDefined } from "../../../util"
+import { asyncRouter } from "../../asyncRouter"
 import { ApiContext } from "../../types"
 import { requireAdmin } from "../../utils"
 
@@ -117,7 +118,7 @@ export function abStudiesRouter(ctx: ApiContext) {
     return res.status(200).json({ study_id: id, users: groupByUser })
   }
 
-  return Router()
+  return asyncRouter(ctx.logger)
     .get("/:id", abStudiesGet)
     .get("", abStudiesGet)
     .post("/:id/user-groups", abStudiesUsersPost)

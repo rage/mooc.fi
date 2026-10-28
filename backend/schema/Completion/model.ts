@@ -7,8 +7,8 @@ import { GraphQLForbiddenError } from "../../lib/errors"
 import {
   checkCertificate,
   checkCertificateForUser,
+  getCachedCertificateAvailability,
 } from "../../services/certificates"
-import { redisify } from "../../services/redis"
 
 export const Completion = objectType({
   name: "Completion",
@@ -143,33 +143,21 @@ export const Completion = objectType({
             return null
           }
 
-          certificate_availability = await redisify(
-            async () =>
+          certificate_availability = await getCachedCertificateAvailability(
+            `${course.slug}-${user_upstream_id}`,
+            () =>
               checkCertificateForUser(
                 course.slug,
                 user_upstream_id,
                 accessToken,
               ),
-            {
-              prefix: "certificateavailability",
-              expireTime: 300,
-              key: `${course.slug}-${user_upstream_id}`,
-            },
-            {
-              logger: ctx.logger,
-            },
+            ctx.logger,
           )
         } else {
-          certificate_availability = await redisify(
-            async () => checkCertificate(course.slug, accessToken),
-            {
-              prefix: "certificateavailability",
-              expireTime: 300,
-              key: `${course.slug}-${ctx.user?.upstream_id}`,
-            },
-            {
-              logger: ctx.logger,
-            },
+          certificate_availability = await getCachedCertificateAvailability(
+            `${course.slug}-${ctx.user?.upstream_id}`,
+            () => checkCertificate(course.slug, accessToken),
+            ctx.logger,
           )
         }
 

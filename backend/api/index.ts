@@ -1,5 +1,4 @@
-import { Router } from "express"
-
+import { asyncRouter } from "./asyncRouter"
 import {
   abEnrollmentRouter,
   abStudiesRouter,
@@ -18,7 +17,7 @@ export function apiRouter(ctx: ApiContext) {
   const userCourseSettingsController = new UserCourseSettingsController(ctx)
   const publicController = new PublicController(ctx)
 
-  return Router()
+  return asyncRouter(ctx.logger)
     .get("/public/frontpage", publicController.frontpage)
     .get("/public/courses", publicController.courses)
     .get("/public/study-modules", publicController.studyModules)
