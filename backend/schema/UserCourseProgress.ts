@@ -1,4 +1,4 @@
-import { groupBy } from "lodash"
+import { keyBy } from "lodash"
 import {
   arg,
   extendType,
@@ -130,34 +130,10 @@ export const UserCourseProgress = objectType({
           )
         }
 
-        const exercises = await ctx.prisma.$queryRaw<
-          Array<{
-            exercise_id: string
-            exercise_completion_id: string | null
-            completed: boolean | null
-            attempted: boolean | null
-          }>
-        >`
-          select e.id as exercise_id,
-                 ecs.id as exercise_completion_id,
-                 completed,
-                 attempted
-            from exercise e
-            full outer join (
-              select
-                ec.id, ec.exercise_id, completed, attempted,
-                row_number() over (
-                  partition by ec.exercise_id
-                  order by ec.timestamp desc, ec.updated_at desc
-                ) as row
-              from exercise_completion ec
-              join exercise e on ec.exercise_id = e.id
-              where ec.user_id = ${user_id}::uuid
-              and e.course_id = ${course_id}::uuid
-            ) ecs on ecs.exercise_id = e.id and row = 1
-          where e.course_id = ${course_id}::uuid
-          and e.deleted <> true
-        `
+        const exercises = await ctx.loaders.exerciseProgress.load({
+          courseId: course_id,
+          userId: user_id,
+        })
 
         const completedExerciseCount = exercises.filter(
           (e) => e.exercise_completion_id && e.completed,
@@ -185,17 +161,13 @@ export const UserCourseProgress = objectType({
     t.field("extra", {
       type: "ProgressExtra",
       resolve: async ({ id, user_id }, _, ctx) => {
-        const progress = await ctx.prisma.userCourseProgress.findUnique({
-          where: {
-            id,
-          },
-        })
+        const progressExtra = await ctx.loaders.userCourseProgressExtra.load(id)
 
-        if (!progress?.extra || !user_id) {
+        if (!progressExtra || !user_id) {
           return null
         }
 
-        const extra = progress.extra as unknown as ProgressExtra
+        const extra = progressExtra as unknown as ProgressExtra
         const tiers = Object.entries(extra.tiers ?? {}).map(
           ([tierKey, tierValue]) => {
             const tier = BAITierNameToNumber[tierKey] ?? 0
@@ -219,23 +191,23 @@ export const UserCourseProgress = objectType({
             }
           },
         )
-        const exercisesFromTiers = await ctx.prisma.exercise.findMany({
-          where: {
-            custom_id: {
-              in: Object.values(extra.exercises)
-                .map((e) => e.custom_id)
-                .filter(isDefined),
-            },
-          },
-        })
-        const exerciseMap = groupBy(exercisesFromTiers, "custom_id")
+        const exercisesFromTiers = await Promise.all(
+          Object.values(extra.exercises).map((e) =>
+            e.custom_id
+              ? ctx.loaders.exercisesByCustomId.load(e.custom_id)
+              : null,
+          ),
+        )
+        const exerciseMap = keyBy(
+          exercisesFromTiers.filter(isDefined),
+          "custom_id",
+        )
 
         const exercises = Object.keys(extra.exercises).map((key) => ({
           exercise_number: Number(key),
           user_id,
-          exercise_id:
-            exerciseMap[extra.exercises[key].custom_id ?? ""]?.[0]?.id,
-          exercise: exerciseMap[extra.exercises[key].custom_id ?? ""]?.[0],
+          exercise_id: exerciseMap[extra.exercises[key].custom_id ?? ""]?.id,
+          exercise: exerciseMap[extra.exercises[key].custom_id ?? ""],
           ...extra.exercises[key],
         }))
         const n_points = exercises.reduce((acc, curr) => acc + curr.n_points, 0)
