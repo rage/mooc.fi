@@ -103,16 +103,14 @@ export const courseFindUniqueFns = Prisma.defineExtension((client) =>
           const { slug } = where ?? {}
 
           const res = client.course
-            .findUniqueOrThrow({ where, select: { id: true } })
-            .then(() =>
-              client.course.findUnique(
-                // FIXME: temporary until Prisma extension typing fixed
-                args as Types.Utils.Exact<Args, Prisma.CourseFindUniqueArgs<A>>,
-              ),
+            .findUnique(
+              // FIXME: temporary until Prisma extension typing fixed
+              args as Types.Utils.Exact<Args, Prisma.CourseFindUniqueArgs<A>>,
             )
-            .catch(() => {
-              if (!slug) {
-                return null
+            .catch(() => null)
+            .then((course) => {
+              if (course || !slug) {
+                return course
               }
 
               return client.courseAlias
@@ -265,7 +263,7 @@ export const findUsercourseSettings = Prisma.defineExtension((client) =>
 
           if (course_slug) {
             res = await (
-              client.$extends({}) as ExtendedPrismaClient<PrismaClient>
+              client as ExtendedPrismaClient<PrismaClient>
             ).course.findUniqueOrAlias({
               where: {
                 slug: course_slug,

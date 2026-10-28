@@ -304,6 +304,7 @@ model ExerciseCompletionRequiredAction {
   exercise_completion_id String?             @db.Uuid
   exercise_completion    ExerciseCompletion? @relation(fields: [exercise_completion_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
+  @@index([exercise_completion_id], map: "exercise_completion_required_actions.completion_id_index")
   @@map("exercise_completion_required_actions")
 }
 
@@ -587,6 +588,7 @@ model UserOrganization {
   user                                 User?                              @relation(fields: [user_id], references: [id], onUpdate: NoAction)
   user_organization_join_confirmations UserOrganizationJoinConfirmation[]
 
+  @@index([user_id], map: "user_organization.user_id_index")
   @@map("user_organization")
 }
 
@@ -606,7 +608,8 @@ model VerifiedUser {
   user                          User?         @relation(fields: [user_id], references: [id], onUpdate: NoAction)
   organization                  Organization? @relation(fields: [organization_id], references: [id], onUpdate: NoAction)
 
-  @@unique([user_id, personal_unique_code, home_organization])
+  @@unique([organization_id, user_id, personal_unique_code], map: "verified_user_organization_user_puc_constraint")
+  @@index([user_id], map: "verified_user.user_id_index")
   @@map("verified_user")
 }
 

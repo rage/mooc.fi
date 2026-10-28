@@ -2,10 +2,13 @@ import { ExtendedPrismaClient } from "../prisma"
 import { createCompletionLinkLoader } from "./completionLinkLoader"
 import { createCourseSponsorsLoader } from "./courseSponsorsLoader"
 import { createCourseTagsLoader } from "./courseTagsLoader"
+import { createExerciseProgressLoader } from "./exerciseProgressLoader"
+import { createExercisesByCustomIdLoader } from "./exercisesByCustomIdLoader"
 import { createSponsorImagesLoader } from "./sponsorImagesLoader"
 import { createSponsorTranslationsLoader } from "./sponsorTranslationsLoader"
 import { createTagTranslationLoader } from "./tagTranslationLoader"
 import { createTagTypesLoader } from "./tagTypesLoader"
+import { createUserCourseProgressExtraLoader } from "./userCourseProgressExtraLoader"
 import { createUserCourseProgressLoader } from "./userCourseProgressLoader"
 import { createUserCourseServiceProgressesLoader } from "./userCourseServiceProgressesLoader"
 
@@ -19,6 +22,9 @@ export function createLoaders(prisma: ExtendedPrismaClient) {
     tagTypes: createTagTypesLoader(prisma),
     completionLink: createCompletionLinkLoader(prisma),
     userCourseProgress: createUserCourseProgressLoader(prisma),
+    userCourseProgressExtra: createUserCourseProgressExtraLoader(prisma),
+    exerciseProgress: createExerciseProgressLoader(prisma),
+    exercisesByCustomId: createExercisesByCustomIdLoader(prisma),
     userCourseServiceProgresses:
       createUserCourseServiceProgressesLoader(prisma),
   }
