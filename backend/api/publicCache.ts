@@ -1,8 +1,8 @@
 import { Response } from "express"
+import { Kind, OperationDefinitionNode } from "graphql"
 import { Logger } from "winston"
 
-import { withCacheTimeout } from "../services/cacheTimeout"
-import redisClient from "../services/redis"
+import { cacheGet, cacheIncr, cacheSet } from "../services/redis"
 
 const PUBLIC_CACHE_PREFIX = "public-api:"
 // Bumping the version orphans every cached response at once; in-flight builds
@@ -47,44 +47,20 @@ export async function sendCachedJson(
     return res.status(400).json({ message: "Invalid language" })
   }
 
-  const client = redisClient()
-  let key: string | undefined
-
-  if (client?.isReady) {
-    try {
-      const version =
-        (await withCacheTimeout(() => client.get(PUBLIC_CACHE_VERSION_KEY))) ??
-        "0"
-      const versionedKey = `${PUBLIC_CACHE_PREFIX}${version}:${endpoint}:${
-        language ?? ""
-      }`
-      const cached = await withCacheTimeout(() => client.get(versionedKey))
-      key = versionedKey
-      if (cached) {
-        return sendJson(res, cached)
-      }
-    } catch (e) {
-      logger.warn(`Public API cache read failed for ${endpoint}: ${e}`)
-    }
+  const version = (await cacheGet(PUBLIC_CACHE_VERSION_KEY, { logger })) ?? "0"
+  const key = `${PUBLIC_CACHE_PREFIX}${version}:${endpoint}:${language ?? ""}`
+  const cached = await cacheGet(key, { logger })
+  if (cached) {
+    return sendJson(res, cached)
   }
 
   let body: string
   try {
-    body = await singleFlight(
-      key ?? `${endpoint}:${language ?? ""}`,
-      async () => {
-        const built = JSON.stringify(await build(language))
-        if (client?.isReady && key) {
-          const cacheKey = key
-          withCacheTimeout(() =>
-            client.set(cacheKey, built, { EX: PUBLIC_CACHE_TTL_SECONDS }),
-          ).catch((e) =>
-            logger.warn(`Public API cache write failed for ${key}: ${e}`),
-          )
-        }
-        return built
-      },
-    )
+    body = await singleFlight(key, async () => {
+      const built = JSON.stringify(await build(language))
+      void cacheSet(key, built, PUBLIC_CACHE_TTL_SECONDS, { logger })
+      return built
+    })
   } catch (e) {
     logger.error(`Public API ${endpoint} failed: ${e}`)
     return res.status(500).json({ message: "Internal server error" })
@@ -106,14 +82,53 @@ function sendJson(res: Response, body: string) {
 
 /** Makes every cached public API response stale; call after any data change. */
 export async function invalidatePublicApiCache(logger?: Logger) {
-  const client = redisClient()
-  if (!client?.isReady) {
-    return
-  }
+  await cacheIncr(PUBLIC_CACHE_VERSION_KEY, { logger })
+}
 
-  try {
-    await withCacheTimeout(() => client.incr(PUBLIC_CACHE_VERSION_KEY))
-  } catch (e) {
-    logger?.warn(`Failed to invalidate public API cache: ${e}`)
-  }
+const PUBLIC_API_MUTATION_FIELDS = new Set([
+  "addCourse",
+  "updateCourse",
+  "deleteCourse",
+  "addCourseTranslation",
+  "updateCourseTranslation",
+  "deleteCourseTranslation",
+  "addCourseAlias",
+  "addCourseVariant",
+  "updateCourseVariant",
+  "deleteCourseVariant",
+  "addStudyModule",
+  "updateStudyModule",
+  "deleteStudyModule",
+  "addStudyModuleTranslation",
+  "updateStudyModuletranslation",
+  "deleteStudyModuleTranslation",
+  "createTag",
+  "updateTag",
+  "deleteTag",
+  "createTagTranslation",
+  "updateTagTranslation",
+  "deleteTagTranslation",
+  "createTagType",
+  "updateTagType",
+  "deleteTagType",
+  "createSponsor",
+  "updateSponsor",
+  "createSponsorImage",
+  "addImage",
+  "deleteImage",
+])
+
+/**
+ * Whether a mutation operation writes data the public API serves. Fragments
+ * can hide root fields, so they count as a match.
+ */
+export function mutatesPublicApiData(operation: OperationDefinitionNode) {
+  return (
+    operation.operation === "mutation" &&
+    operation.selectionSet.selections.some(
+      (selection) =>
+        selection.kind !== Kind.FIELD ||
+        PUBLIC_API_MUTATION_FIELDS.has(selection.name.value),
+    )
+  )
 }

@@ -17,6 +17,17 @@ jest.mock("../../services/redis", () => {
   return {
     __esModule: true,
     default: () => mockRedisClient,
+    isCacheReady: () => mockRedisClient.isReady,
+    cacheGet: async (key: string) => {
+      try {
+        return (await mockRedisClient.get(key)) ?? null
+      } catch {
+        return null
+      }
+    },
+    cacheSet: async (key: string, value: string, ttl: number) => {
+      await mockRedisClient.set(key, value, { EX: ttl })
+    },
   }
 })
 

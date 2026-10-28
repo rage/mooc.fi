@@ -2,9 +2,19 @@
 // blocks responses, so every page must be static or generated at build time.
 const pagesManifest = require("../.next/server/pages-manifest.json")
 const prerenderManifest = require("../.next/prerender-manifest.json")
+const { PHASE_PRODUCTION_BUILD } = require("next/constants")
+const { i18n } = require("../next.config")(PHASE_PRODUCTION_BUILD)
 
 const nextInternals = new Set(["/_app", "/_document", "/_error"])
-const buildTimeRoutes = new Set(Object.keys(prerenderManifest.dynamicRoutes))
+const localePrefix = new RegExp(`^/(${(i18n?.locales ?? []).join("|")})(?=/|$)`)
+
+const buildTimeRoutes = new Set([
+  ...Object.keys(prerenderManifest.dynamicRoutes),
+  ...Object.entries(prerenderManifest.routes).map(
+    ([route, { srcRoute }]) =>
+      srcRoute ?? (route.replace(localePrefix, "") || "/"),
+  ),
+])
 
 const serverRendered = Object.entries(pagesManifest)
   .filter(([, file]) => file.endsWith(".js"))

@@ -7,6 +7,7 @@ const getMock = jest.fn()
 const setMock = jest.fn()
 
 const redis = {
+  isReady: true,
   get: getMock,
   set: setMock,
 } as unknown as RedisClientType<RedisModules, any>

@@ -2,12 +2,14 @@ import axios from "axios"
 import { Logger } from "winston"
 
 import { CERTIFICATES_URL } from "../config"
-import getRedisClient, { redisify } from "./redis"
+import getRedisClient, { cacheGet, cacheSet } from "./redis"
 
 const certificatesAxios = axios.create({ timeout: 2000 })
 
 const AVAILABILITY_TTL_SECONDS = 300
 const FAILURE_TTL_SECONDS = 60
+
+const FAILED_SENTINEL = "failed"
 
 /**
  * Cached certificate availability; `null` when the certificates service fails.
@@ -18,30 +20,35 @@ export const getCachedCertificateAvailability = async (
   fetchAvailability: () => Promise<any>,
   logger: Logger,
 ) => {
-  const client = getRedisClient()
-  const failureKey = `certificateavailability-failed:${key}`
-  const redis = client?.isOpen ? client : undefined
+  const cacheKey = `certificateavailability:${key}`
+  const cacheOptions = { client: getRedisClient(), logger }
+
+  const cached = await cacheGet(cacheKey, cacheOptions)
+  if (cached === FAILED_SENTINEL) {
+    return null
+  }
+  if (cached) {
+    try {
+      return JSON.parse(cached)
+    } catch {
+      logger.warn(`Unparseable cached certificate availability for ${key}`)
+    }
+  }
 
   try {
-    if (await redis?.get(failureKey)) {
-      return null
+    const availability = await fetchAvailability()
+    if (typeof availability !== "undefined") {
+      await cacheSet(
+        cacheKey,
+        JSON.stringify(availability),
+        AVAILABILITY_TTL_SECONDS,
+        cacheOptions,
+      )
     }
-    return await redisify(
-      fetchAvailability,
-      {
-        prefix: "certificateavailability",
-        expireTime: AVAILABILITY_TTL_SECONDS,
-        key,
-        retry: false,
-        throwOnError: true,
-      },
-      { logger },
-    )
+    return availability
   } catch (error) {
     logger.warn(`Certificate availability failed for ${key}`, { error })
-    await redis
-      ?.set(failureKey, "1", { EX: FAILURE_TTL_SECONDS })
-      .catch(() => {})
+    await cacheSet(cacheKey, FAILED_SENTINEL, FAILURE_TTL_SECONDS, cacheOptions)
     return null
   }
 }

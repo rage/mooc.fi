@@ -1,4 +1,5 @@
 import DataLoader from "dataloader"
+import { groupBy } from "lodash"
 
 import { ExtendedPrismaClient } from "../prisma"
 
@@ -43,18 +44,13 @@ export function createExerciseProgressLoader(prisma: ExtendedPrismaClient) {
           ) ec on true
       `
 
-      const byPair = new Map<string, ExerciseProgressRow[]>()
-      for (const { course_id, user_id, ...row } of rows) {
-        const key = pairKey(course_id, user_id)
-        const group = byPair.get(key)
-        if (group) {
-          group.push(row)
-        } else {
-          byPair.set(key, [row])
-        }
-      }
+      const byPair = groupBy(rows, (row) => pairKey(row.course_id, row.user_id))
 
-      return keys.map((k) => byPair.get(pairKey(k.courseId, k.userId)) ?? [])
+      return keys.map((k) =>
+        (byPair[pairKey(k.courseId, k.userId)] ?? []).map(
+          ({ course_id, user_id, ...row }) => row,
+        ),
+      )
     },
     { cacheKeyFn: (k) => pairKey(k.courseId, k.userId) },
   )

@@ -9,6 +9,7 @@ export function createExercisesByCustomIdLoader(prisma: ExtendedPrismaClient) {
   return new DataLoader<string, Exercise | null>(async (customIds) => {
     const exercises = await prisma.exercise.findMany({
       where: { custom_id: { in: [...customIds] } },
+      orderBy: [{ course_id: "asc" }, { created_at: "asc" }],
     })
     const byCustomId = new Map<string, Exercise>()
     for (const exercise of exercises) {

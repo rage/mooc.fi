@@ -1,4 +1,3 @@
-import { keyBy } from "lodash"
 import {
   arg,
   extendType,
@@ -28,7 +27,7 @@ import {
   exerciseCompletionsNeeded,
 } from "../config/courseConfig"
 import { GraphQLUserInputError } from "../lib/errors"
-import { ensureDefinedArray, filterNullFields, isDefined } from "../util"
+import { ensureDefinedArray, filterNullFields } from "../util"
 import { OrphanedEntityError } from "./common"
 
 // progress seems not to be uniform, let's try to normalize it a bit
@@ -191,25 +190,21 @@ export const UserCourseProgress = objectType({
             }
           },
         )
-        const exercisesFromTiers = await Promise.all(
-          Object.values(extra.exercises).map((e) =>
-            e.custom_id
-              ? ctx.loaders.exercisesByCustomId.load(e.custom_id)
-              : null,
-          ),
-        )
-        const exerciseMap = keyBy(
-          exercisesFromTiers.filter(isDefined),
-          "custom_id",
-        )
+        const exercises = await Promise.all(
+          Object.entries(extra.exercises).map(async ([key, value]) => {
+            const exercise = value.custom_id
+              ? await ctx.loaders.exercisesByCustomId.load(value.custom_id)
+              : undefined
 
-        const exercises = Object.keys(extra.exercises).map((key) => ({
-          exercise_number: Number(key),
-          user_id,
-          exercise_id: exerciseMap[extra.exercises[key].custom_id ?? ""]?.id,
-          exercise: exerciseMap[extra.exercises[key].custom_id ?? ""],
-          ...extra.exercises[key],
-        }))
+            return {
+              exercise_number: Number(key),
+              user_id,
+              exercise_id: exercise?.id,
+              exercise: exercise ?? undefined,
+              ...value,
+            }
+          }),
+        )
         const n_points = exercises.reduce((acc, curr) => acc + curr.n_points, 0)
         const max_points = BAIExerciseCount
         const exercisePercentage = exercises.length / BAIExerciseCount

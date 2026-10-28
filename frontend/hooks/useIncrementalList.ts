@@ -1,9 +1,8 @@
 import { startTransition, useEffect, useState } from "react"
 
 /**
- * Returns only the first `initialCount` items at first and the full list right
- * after, rendered as an interruptible transition, so a long list paints its top
- * quickly instead of blocking on rendering every item.
+ * Returns the first `initialCount` items, then the full list as an
+ * interruptible transition, so a long list paints its top quickly.
  */
 export function useIncrementalList<T>(
   items: Array<T>,

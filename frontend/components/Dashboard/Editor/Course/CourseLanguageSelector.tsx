@@ -18,12 +18,7 @@ import { CourseFormValues, TagFormValue } from "./types"
 import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
 import CoursesTranslations from "/translations/courses"
-
-const languageTagIds: Record<string, string> = {
-  fi_FI: "fi",
-  en_US: "en",
-  sv_SE: "se",
-}
+import { mapLocaleCodeToNextLanguage } from "/util/moduleFunctions"
 
 const selectableLanguages = ["fi_FI", "en_US"] as const
 
@@ -48,7 +43,7 @@ export function useLanguageTagSync() {
   const { getValues, setValue } = useFormContext<CourseFormValues>()
 
   return useEventCallback((language: string, enabled: boolean) => {
-    const tagId = languageTagIds[language]
+    const tagId = mapLocaleCodeToNextLanguage(language)
     const tags: TagFormValue[] = getValues("tags") ?? []
     const hasTag = tags.some((tag) => tag._id === tagId)
 

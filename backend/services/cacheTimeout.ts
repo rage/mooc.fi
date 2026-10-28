@@ -3,7 +3,7 @@ const CIRCUIT_OPEN_MS = 5000
 
 let circuitOpenUntil = 0
 
-export class CacheTimeoutError extends Error {
+class CacheTimeoutError extends Error {
   constructor() {
     super(`Cache command timed out after ${CACHE_COMMAND_TIMEOUT_MS}ms`)
   }

@@ -4,7 +4,7 @@ interface ApiError {
 }
 
 export async function fetchApi<T>(endpoint: string): Promise<T> {
-  const response = await fetch(endpoint)
+  const response = await fetch(endpoint, { credentials: "omit" })
 
   if (!response.ok) {
     const error: ApiError = {
@@ -20,8 +20,8 @@ export async function fetchApi<T>(endpoint: string): Promise<T> {
 export type PublicEndpoint = "frontpage" | "courses" | "study-modules"
 
 /**
- * URL of a public data endpoint. Public data is the same for every viewer, so
- * it is fetched without credentials to keep it shareable from HTTP caches.
+ * URL of a public data endpoint, fetched without credentials so HTTP caches
+ * can share it across viewers.
  */
 export function publicEndpointUrl(endpoint: PublicEndpoint, language?: string) {
   const query = language ? `?${new URLSearchParams({ language })}` : ""

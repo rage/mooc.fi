@@ -6,3 +6,14 @@ const nextLanguageToLocale: { [key: string]: string } = {
 
 export const mapNextLanguageToLocaleCode = (language: string) =>
   nextLanguageToLocale[language] ?? "fi_FI"
+
+const localeToNextLanguage = Object.fromEntries(
+  Object.entries(nextLanguageToLocale).map(([language, locale]) => [
+    locale,
+    language,
+  ]),
+)
+
+/** Inverse of `mapNextLanguageToLocaleCode`: "sv_SE" → "se", also the language tag id. */
+export const mapLocaleCodeToNextLanguage = (locale: string) =>
+  localeToNextLanguage[locale]

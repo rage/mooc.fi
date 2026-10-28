@@ -20,12 +20,14 @@ import {
   ApolloServerPluginLandingPageProductionDefault,
 } from "@apollo/server/plugin/landingPage/default"
 
-import { Role } from "./accessControl"
 import { apiRouter } from "./api"
-import { invalidatePublicApiCache } from "./api/publicCache"
+import {
+  invalidatePublicApiCache,
+  mutatesPublicApiData,
+} from "./api/publicCache"
 import { DEBUG, isProduction, isTest } from "./config"
 import { createDefaultData } from "./config/defaultData"
-import { Context, ServerContext } from "./context"
+import { ServerContext } from "./context"
 import { createLoaders } from "./loaders/createLoaders"
 import createExpressGraphqlCacheMiddleware from "./middlewares/expressGraphqlCache"
 import { limitGraphqlBatchSize } from "./middlewares/graphqlBatchLimit"
@@ -106,19 +108,11 @@ const server = async (serverContext: ServerContext) => {
       {
         async requestDidStart() {
           return {
-            async willSendResponse({
-              operation,
-              errors,
-              contextValue,
-              response,
-            }) {
+            async willSendResponse({ operation, response }) {
               response.http.headers.set("cache-control", "no-store")
-              // Only admins edit the data the public API serves.
-              if (
-                operation?.operation === "mutation" &&
-                !errors?.length &&
-                (contextValue as Partial<Context>).role === Role.ADMIN
-              ) {
+              // Partly failed mutations may still have written, so errors don't
+              // skip this.
+              if (operation && mutatesPublicApiData(operation)) {
                 void invalidatePublicApiCache(serverContext.logger)
               }
             },

@@ -10,7 +10,7 @@ import { Logger } from "winston"
 const METHODS = ["get", "post", "put", "patch", "delete"] as const
 
 /** Express 4 ignores rejected handler promises; turn them into a logged 500. */
-export const catchAsync =
+const catchAsync =
   (handler: RequestHandler, logger: Logger): RequestHandler =>
   (req: Request, res: Response, next: NextFunction) => {
     Promise.resolve()

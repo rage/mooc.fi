@@ -37,8 +37,9 @@ const createPlugins = () => {
       },
     }),
     loggerPlugin(),
-    cachePlugin(),
+    // Before cachePlugin: nested fields of a cached root value still read ctx.role.
     moocfiAuthPlugin(),
+    cachePlugin(),
     fieldAuthorizePlugin(),
     validateArgsPlugin(),
   ]

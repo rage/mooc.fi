@@ -3,6 +3,7 @@ import { createHash } from "crypto"
 import { plugin } from "nexus"
 
 import { redisify } from "../services/redis"
+import { getLanguage } from "./expressGraphqlCache"
 
 const isAsyncIterator = (i: unknown): i is AsyncIterable<any> => {
   return Symbol.asyncIterator in (i as AsyncIterable<any>)
@@ -22,7 +23,9 @@ export const cachePlugin = () =>
 
         const key = `${info.fieldName}-${JSON.stringify(
           info.fieldNodes,
-        )}-${JSON.stringify(args)}-${context.req?.headers?.["accept-language"]}`
+        )}-${JSON.stringify(args)}-${
+          context.req ? getLanguage(context.req) : ""
+        }`
 
         const hash = createHash("sha512").update(key).digest("hex")
 

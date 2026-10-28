@@ -20,6 +20,7 @@ const createFakeRedis = () => {
     store,
     client: {
       isOpen: true,
+      isReady: true,
       get: jest.fn(async (key: string) => store.get(key) ?? null),
       set: jest.fn(async (key: string, value: string) => {
         store.set(key, value)
@@ -70,11 +71,15 @@ describe("getUserDetailsForToken", () => {
     ).toBeUndefined()
 
     expect(tmcCalls).toBe(1)
-    const rejectedKeys = [...store.keys()].filter((key) =>
-      key.startsWith("userdetails-rejected:"),
+    const rejectedKeys = [...store.entries()].filter(
+      ([, value]) => value === "rejected",
     )
     expect(rejectedKeys).toHaveLength(1)
-    expect(client.set).toHaveBeenCalledWith(rejectedKeys[0], "1", { EX: 60 })
+    expect(client.set).toHaveBeenCalledWith(rejectedKeys[0][0], "rejected", {
+      EX: 60,
+    })
+    expect(client.get).toHaveBeenCalledTimes(2)
+    expect(client.del).not.toHaveBeenCalled()
   })
 
   it("doesn't remember TMC errors other than 401", async () => {

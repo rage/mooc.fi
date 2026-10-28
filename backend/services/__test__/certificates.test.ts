@@ -5,6 +5,7 @@ import { getCachedCertificateAvailability } from "../certificates"
 const store = new Map<string, string>()
 const fakeClient = {
   isOpen: true,
+  isReady: true,
   get: jest.fn(async (key: string) => store.get(key) ?? null),
   set: jest.fn(async (key: string, value: string) => {
     store.set(key, value)
