@@ -11,6 +11,7 @@ import {
 } from "../config"
 import { BaseContext } from "../context"
 import { isDefined, isPromise } from "../util"
+import { withCacheTimeout } from "./cacheTimeout"
 
 const _logger = winston.createLogger({
   level: "info",
@@ -34,7 +35,7 @@ export const redisReconnectStrategy =
       process.exit(-1)
     }
     const retries = retriesOrError
-    const nextDelay = Math.min(2 ** retries * 20, 30000)
+    const nextDelay = Math.min(2 ** retries * 20, 3000)
     logger.info(
       `${redisName} connection attempt: ${retries}, next attempt in: ${nextDelay}ms`,
     )
@@ -61,6 +62,7 @@ const getRedisClient = (): RedisClient | undefined => {
     url,
     password: REDIS_PASSWORD,
     database: REDIS_DB,
+    disableOfflineQueue: true,
     socket: {
       reconnectStrategy: redisReconnectStrategy(),
     },
@@ -199,15 +201,21 @@ export async function redisify<T>(
   let value: T | undefined
   let resolveSuccess = false
 
-  // If Redis client is not connected, skip cache entirely (unless in test mode)
-  if (!isTest && (!client || !client.isOpen)) {
-    logger.info(`Redis not connected, skipping cache for: ${prefix}`)
+  if (!isTest && !client?.isReady) {
+    logger.debug(`Redis not ready, skipping cache for: ${prefix}`)
     value = await resolveValue()
     return value
   }
 
   try {
-    const res = client ? await client.get(prefixedKey) : undefined
+    let res: string | null | undefined
+    try {
+      res = client
+        ? await withCacheTimeout(() => client.get(prefixedKey))
+        : undefined
+    } catch (e) {
+      logger.warn(attachError(`Cache read failed: ${prefix}`, e))
+    }
 
     if (res) {
       logger.info(`Cache hit: ${prefix}`)
@@ -252,11 +260,11 @@ export async function redisify<T>(
   try {
     if (client) {
       if (typeof value === "undefined") {
-        await client.del(prefixedKey)
+        await withCacheTimeout(() => client.del(prefixedKey))
       } else {
-        await client.set(prefixedKey, JSON.stringify(value), {
-          EX: expireTime,
-        })
+        await withCacheTimeout(() =>
+          client.set(prefixedKey, JSON.stringify(value), { EX: expireTime }),
+        )
       }
     }
     return value
@@ -285,7 +293,10 @@ const attachError = (msg: string, err: unknown) => {
 }
 
 export const invalidate = async (prefix: string, key: string) => {
-  await redisClient?.del(`${prefix}:${key}`)
+  const client = redisClient
+  if (client?.isReady) {
+    await withCacheTimeout(() => client.del(`${prefix}:${key}`))
+  }
 }
 
 export default getRedisClient

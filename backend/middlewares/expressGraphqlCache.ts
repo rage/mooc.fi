@@ -4,6 +4,7 @@ import { NextFunction, Request, Response } from "express"
 import { Logger } from "winston"
 
 import { GRAPHQL_ENDPOINT_PATH } from "../server"
+import { withCacheTimeout } from "../services/cacheTimeout"
 import redisClient from "../services/redis"
 
 const CACHE_EXPIRE_TIME_SECONDS = 60 * 60 * 5 // 5 hours
@@ -43,13 +44,23 @@ function isGraphQLQuery(body: any): boolean {
   return q.startsWith("query") || q.startsWith("{")
 }
 
+function getLanguage(req: Request): string {
+  const header = req.headers["accept-language"]
+  return (Array.isArray(header) ? header.join(",") : header) ?? ""
+}
+
 function buildCacheKey(req: Request): string {
   const body = req.body ?? {}
   const query = typeof body.query === "string" ? normalizeQuery(body.query) : ""
   const variables = body.variables ? stableStringify(body.variables) : ""
   const operationName = body.operationName ?? ""
 
-  const payload = stableStringify({ query, variables, operationName })
+  const payload = stableStringify({
+    query,
+    variables,
+    operationName,
+    language: getLanguage(req),
+  })
   const hash = createHash("sha512").update(payload).digest("hex")
   return `${CACHE_PREFIX}${hash}`
 }
@@ -58,13 +69,13 @@ function isBatchedRequest(body: any): boolean {
   return Array.isArray(body) && body.length > 0
 }
 
-function buildBatchCacheKey(batch: any[]): string {
+function buildBatchCacheKey(batch: any[], language: string): string {
   const normalizedBatch = batch.map((op) => ({
     query: typeof op.query === "string" ? normalizeQuery(op.query) : "",
     variables: op.variables ? stableStringify(op.variables) : "",
     operationName: op.operationName ?? "",
   }))
-  const payload = stableStringify(normalizedBatch)
+  const payload = stableStringify({ batch: normalizedBatch, language })
   const hash = createHash("sha512").update(payload).digest("hex")
   return `${CACHE_PREFIX}batch:${hash}`
 }
@@ -99,7 +110,7 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
-    logger.info("GraphQL cache: middleware invoked", {
+    logger.debug("GraphQL cache: middleware invoked", {
       method: req.method,
       path: req.originalUrl || req.path,
       baseUrl: req.baseUrl,
@@ -112,7 +123,7 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
       `${req.baseUrl || ""}${req.path || ""}` === GRAPHQL_ENDPOINT_PATH
 
     if (!isGraphqlPath || req.method !== "POST") {
-      logger.info("GraphQL cache: skip (not GraphQL POST request)", {
+      logger.debug("GraphQL cache: skip (not GraphQL POST request)", {
         method: req.method,
         path: req.originalUrl || req.path,
         isGraphqlPath,
@@ -122,13 +133,13 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
 
     const client = redisClient()
     if (!client?.isReady) {
-      logger.warn("GraphQL cache: skip (Redis client not ready)")
+      logger.debug("GraphQL cache: skip (Redis client not ready)")
       return next()
     }
 
     // Skip if authenticated via Authorization header (per your setup)
     if (req.headers.authorization !== undefined) {
-      logger.info("GraphQL cache: skip (Authorization header present)")
+      logger.debug("GraphQL cache: skip (Authorization header present)")
       return next()
     }
 
@@ -149,7 +160,7 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
             : "unknown"
         })
 
-        logger.info(
+        logger.debug(
           "GraphQL cache: skip batched request (contains non-queries)",
           {
             path: req.originalUrl || req.path,
@@ -162,14 +173,14 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
       }
 
       try {
-        const key = buildBatchCacheKey(batch)
+        const key = buildBatchCacheKey(batch, getLanguage(req))
         const operationNames = batch
           .map((op) => op.operationName || "unnamed")
           .join(", ")
-        const cached = await client.get(key)
+        const cached = await withCacheTimeout(() => client.get(key))
 
         if (cached) {
-          logger.info("GraphQL cache: batch HIT", {
+          logger.debug("GraphQL cache: batch HIT", {
             key,
             batchSize: batch.length,
             operationNames,
@@ -182,7 +193,7 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
           return
         }
 
-        logger.info("GraphQL cache: batch MISS", {
+        logger.debug("GraphQL cache: batch MISS", {
           key,
           batchSize: batch.length,
           operationNames,
@@ -222,10 +233,11 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
                       ? body.toString("utf8")
                       : JSON.stringify(body)
 
-                  client
-                    .set(key, payload, { EX: CACHE_EXPIRE_TIME_SECONDS })
+                  withCacheTimeout(() =>
+                    client.set(key, payload, { EX: CACHE_EXPIRE_TIME_SECONDS }),
+                  )
                     .then(() => {
-                      logger.info("GraphQL cache: batch STORED", {
+                      logger.debug("GraphQL cache: batch STORED", {
                         key,
                         batchSize: batch.length,
                         operationNames,
@@ -244,7 +256,7 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
 
                   res.setHeader("X-Cache", "MISS")
                 } else {
-                  logger.info("GraphQL cache: batch not stored (has errors)", {
+                  logger.debug("GraphQL cache: batch not stored (has errors)", {
                     key,
                     batchSize: batch.length,
                     operationNames,
@@ -264,7 +276,7 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
                 : !isJson
                 ? "not JSON"
                 : "unknown"
-              logger.info("GraphQL cache: batch not stored", {
+              logger.debug("GraphQL cache: batch not stored", {
                 key,
                 operationNames,
                 reason,
@@ -315,7 +327,7 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
       const bodyKeys =
         typeof body === "object" && body !== null ? Object.keys(body) : []
 
-      logger.info("GraphQL cache: skip (not a GraphQL query)", {
+      logger.debug("GraphQL cache: skip (not a GraphQL query)", {
         path: req.originalUrl || req.path,
         bodyType: typeof req.body,
         hasQuery: !!body.query,
@@ -330,10 +342,10 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
     try {
       const key = buildCacheKey(req)
       const operationName = req.body?.operationName || "unnamed"
-      const cached = await client.get(key)
+      const cached = await withCacheTimeout(() => client.get(key))
 
       if (cached) {
-        logger.info("GraphQL cache: HIT", {
+        logger.debug("GraphQL cache: HIT", {
           key,
           operationName,
           cacheKey: key.substring(CACHE_PREFIX.length),
@@ -345,7 +357,7 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
         return
       }
 
-      logger.info("GraphQL cache: MISS", {
+      logger.debug("GraphQL cache: MISS", {
         key,
         operationName,
         cacheKey: key.substring(CACHE_PREFIX.length),
@@ -375,10 +387,11 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
                 ? body.toString("utf8")
                 : JSON.stringify(body)
 
-            client
-              .set(key, payload, { EX: CACHE_EXPIRE_TIME_SECONDS })
+            withCacheTimeout(() =>
+              client.set(key, payload, { EX: CACHE_EXPIRE_TIME_SECONDS }),
+            )
               .then(() => {
-                logger.info("GraphQL cache: STORED", {
+                logger.debug("GraphQL cache: STORED", {
                   key,
                   operationName,
                   cacheKey: key.substring(CACHE_PREFIX.length),
@@ -403,7 +416,7 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
               : hasErrors
               ? "GraphQL errors present"
               : "unknown"
-            logger.info("GraphQL cache: not stored", {
+            logger.debug("GraphQL cache: not stored", {
               key,
               operationName,
               reason,

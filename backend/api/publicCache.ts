@@ -1,6 +1,7 @@
 import { Response } from "express"
 import { Logger } from "winston"
 
+import { withCacheTimeout } from "../services/cacheTimeout"
 import redisClient from "../services/redis"
 
 const PUBLIC_CACHE_PREFIX = "public-api:"
@@ -51,9 +52,14 @@ export async function sendCachedJson(
 
   if (client?.isReady) {
     try {
-      const version = (await client.get(PUBLIC_CACHE_VERSION_KEY)) ?? "0"
-      key = `${PUBLIC_CACHE_PREFIX}${version}:${endpoint}:${language ?? ""}`
-      const cached = await client.get(key)
+      const version =
+        (await withCacheTimeout(() => client.get(PUBLIC_CACHE_VERSION_KEY))) ??
+        "0"
+      const versionedKey = `${PUBLIC_CACHE_PREFIX}${version}:${endpoint}:${
+        language ?? ""
+      }`
+      const cached = await withCacheTimeout(() => client.get(versionedKey))
+      key = versionedKey
       if (cached) {
         return sendJson(res, cached)
       }
@@ -68,12 +74,13 @@ export async function sendCachedJson(
       key ?? `${endpoint}:${language ?? ""}`,
       async () => {
         const built = JSON.stringify(await build(language))
-        if (client && key) {
-          client
-            .set(key, built, { EX: PUBLIC_CACHE_TTL_SECONDS })
-            .catch((e) =>
-              logger.warn(`Public API cache write failed for ${key}: ${e}`),
-            )
+        if (client?.isReady && key) {
+          const cacheKey = key
+          withCacheTimeout(() =>
+            client.set(cacheKey, built, { EX: PUBLIC_CACHE_TTL_SECONDS }),
+          ).catch((e) =>
+            logger.warn(`Public API cache write failed for ${key}: ${e}`),
+          )
         }
         return built
       },
@@ -105,7 +112,7 @@ export async function invalidatePublicApiCache(logger?: Logger) {
   }
 
   try {
-    await client.incr(PUBLIC_CACHE_VERSION_KEY)
+    await withCacheTimeout(() => client.incr(PUBLIC_CACHE_VERSION_KEY))
   } catch (e) {
     logger?.warn(`Failed to invalidate public API cache: ${e}`)
   }
