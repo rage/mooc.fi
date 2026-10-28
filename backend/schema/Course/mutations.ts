@@ -418,10 +418,13 @@ function getTagMutation<C extends Course>(
     (tag) => tag.types?.includes("language"),
   )
   if (course.language) {
-    if (languageTags.every((tag) => tag.id !== course.language)) {
+    // Older courses store a locale code as their language
+    const languageTagId =
+      translationLanguageTagIds[course.language] ?? course.language
+    if (languageTags.every((tag) => tag.id !== languageTagId)) {
       tags = [
         ...(tags ?? []),
-        { id: course.language, hidden: false, types: ["language"] },
+        { id: languageTagId, hidden: false, types: ["language"] },
       ]
     }
   }
@@ -430,11 +433,16 @@ function getTagMutation<C extends Course>(
       (translation) => translationLanguageTagIds[translation.language],
     ),
   )
+  const previousLanguageTagId = existingCourse.language
+    ? translationLanguageTagIds[existingCourse.language] ??
+      existingCourse.language
+    : undefined
   if (
+    previousLanguageTagId &&
     existingCourse.language !== course.language &&
-    !translatedLanguageTagIds.has(existingCourse.language ?? "")
+    !translatedLanguageTagIds.has(previousLanguageTagId)
   ) {
-    tags = tags?.filter((tag) => tag.id !== existingCourse.language)
+    tags = tags?.filter((tag) => tag.id !== previousLanguageTagId)
   }
 
   if (!tags) {

@@ -191,7 +191,7 @@ export const UserCourseProgress = objectType({
           },
         )
         const exercises = await Promise.all(
-          Object.entries(extra.exercises).map(async ([key, value]) => {
+          Object.entries(extra.exercises ?? {}).map(async ([key, value]) => {
             const exercise = value.custom_id
               ? await ctx.loaders.exercisesByCustomId.load(value.custom_id)
               : undefined

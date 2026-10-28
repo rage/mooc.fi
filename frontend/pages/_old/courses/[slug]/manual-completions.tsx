@@ -138,6 +138,9 @@ const ManualCompletions = () => {
     }
 
     const checkedDates = data.map((o, row) => {
+      if (!o.completion_date) {
+        return { row, error: undefined, age: 0 }
+      }
       const { days } = DateTime.fromISO(o.completion_date ?? "")
         .diff(DateTime.local())
         .shiftTo("days")
