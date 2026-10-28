@@ -22,7 +22,7 @@ export const cachePlugin = () =>
 
         const key = `${info.fieldName}-${JSON.stringify(
           info.fieldNodes,
-        )}-${JSON.stringify(args)}`
+        )}-${JSON.stringify(args)}-${context.req?.headers?.["accept-language"]}`
 
         const hash = createHash("sha512").update(key).digest("hex")
 
@@ -31,7 +31,7 @@ export const cachePlugin = () =>
         const res = await redisify<any>(
           async () => {
             usedGraphqlCache = false
-            context.logger.info(`Not using graphql response cache for ${key}`)
+            context.logger.debug(`Not using graphql response cache for ${key}`)
             return next(root, args, context, info)
           },
           {
@@ -44,7 +44,7 @@ export const cachePlugin = () =>
           },
         )
         if (usedGraphqlCache) {
-          context.logger.info(`Used graphql response cache for ${key}`)
+          context.logger.debug(`Used graphql response cache for ${key}`)
         }
         return res
       }
