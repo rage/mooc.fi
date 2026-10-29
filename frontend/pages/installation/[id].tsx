@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 
 import { MDXComponents } from "mdx/types"
 import { GetStaticPaths, GetStaticProps } from "next"
@@ -32,13 +32,31 @@ const Title = styled(Typography)`
   padding: 1rem;
 ` as typeof Typography
 
-const TitleBackground = styled("div")`
+const TitleBackground = styled("div")(
+  ({ theme }) => `
   background-color: white;
   max-width: 75%;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 1em;
-`
+
+  ${theme.breakpoints.down("sm")} {
+    max-width: 100%;
+  }
+`,
+)
+
+const SubtitleBackground = styled(TitleBackground)(
+  ({ theme }) => `
+  width: 45%;
+  margin-bottom: 8em;
+
+  ${theme.breakpoints.down("md")} {
+    width: auto;
+    margin-bottom: 5em;
+  }
+`,
+)
 
 const Content = styled("div")`
   position: relative;
@@ -48,7 +66,8 @@ export const SectionBox = styled("div")`
   margin-bottom: 6rem;
 `
 
-export const ContentBox = styled("div")`
+export const ContentBox = styled("div")(
+  ({ theme }) => `
   background-color: white;
   max-width: 39em;
   border: 3px solid black;
@@ -95,7 +114,13 @@ export const ContentBox = styled("div")`
     background-color: #c3fcf2;
     padding: 1.5rem;
   }
-`
+
+  ${theme.breakpoints.down("sm")} {
+    padding: 1em;
+    padding-top: 5em;
+  }
+`,
+)
 
 export const CodeBox = styled("div")`
   background-color: #e6f4f1;
@@ -137,7 +162,7 @@ const mdxComponents: MDXComponents = {
   ),
 }
 const InstallationInstructions = () => {
-  const [userOS, setUserOS] = useState<UserOSType>("OS")
+  const [userOS, setUserOS] = useState<UserOSType>(getUserOS)
   const router = useRouter()
   const id = router.query.id?.toString() as (typeof allowedPaths)[number]
   const language = router.locale ?? "en"
@@ -172,10 +197,6 @@ const InstallationInstructions = () => {
     setUserOS(OS)
   }
 
-  useEffect(() => {
-    setUserOS(getUserOS())
-  }, [])
-
   const excludeZip = !combinationOverrides[id]?.allowedOS?.includes("ZIP")
 
   const Component = dynamic(
@@ -200,19 +221,19 @@ const InstallationInstructions = () => {
               {t("title")}
             </Title>
           </TitleBackground>
-          <TitleBackground style={{ width: "45%", marginBottom: "8em" }}>
+          <SubtitleBackground>
             <Title component="p" variant="subtitle1" align="center">
               {t("subtitle")}
             </Title>
-          </TitleBackground>
+          </SubtitleBackground>
           <Content>
-            {userOS ? (
-              <>
-                <OSSelector excludeZip={excludeZip} />
-                <Component />
-              </>
+            <OSSelector excludeZip={excludeZip} />
+            {paths[userOS] ? (
+              <Component />
             ) : (
-              <Spinner />
+              <ContentBox>
+                <Typography align="center">{t("chooseOS")}</Typography>
+              </ContentBox>
             )}
           </Content>
         </Background>
