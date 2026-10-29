@@ -10,7 +10,9 @@ import { ClickableButtonBase } from "/components/Surfaces/ClickableCard"
 import { H1Background } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import useIsOld from "/hooks/useIsOld"
+import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
+import EmailTemplatesTranslations from "/translations/emailTemplates"
 
 import { EmailTemplatesDocument } from "/graphql/generated"
 
@@ -45,6 +47,7 @@ interface EmailTemplatesProps {
 const EmailTemplates = ({ admin = false }: EmailTemplatesProps) => {
   const isOld = useIsOld()
   const baseUrl = isOld ? "/_old" : "/admin"
+  const t = useTranslator(EmailTemplatesTranslations)
   const { loading, error, data } = useQuery(EmailTemplatesDocument)
 
   useBreadcrumbs([
@@ -74,9 +77,9 @@ const EmailTemplates = ({ admin = false }: EmailTemplatesProps) => {
     <Background>
       <WideContainer>
         <H1Background component="h1" variant="h1" align="center">
-          Email Templates
+          {t("title")}
         </H1Background>
-        <CreateEmailTemplateDialog buttonText="Create New" />
+        <CreateEmailTemplateDialog buttonText={t("createNew")} />
         <br></br>
         <br></br>
         <ul>
@@ -90,11 +93,10 @@ const EmailTemplates = ({ admin = false }: EmailTemplatesProps) => {
                 >
                   <TemplateCard>
                     <Typography variant="h6" component="h2">
-                      Name: {p.name}
+                      {t("name")}: {p.name}
                     </Typography>
                     <Typography component="p">
-                      {" "}
-                      Content: {p.txt_body}
+                      {t("content")}: {p.txt_body}
                     </Typography>
                   </TemplateCard>
                 </CardBackground>

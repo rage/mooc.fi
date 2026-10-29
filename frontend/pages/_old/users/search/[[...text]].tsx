@@ -79,7 +79,17 @@ const UserSearch = () => {
     setResults({ ...emptyResults })
   }, [emptyResults])
 
-  const { rowsPerPage, page } = userSearch
+  const { rowsPerPage, page, setSearch, setPage, setRowsPerPage } = userSearch
+
+  useEffect(() => {
+    if (textParam !== searchVariables.search) {
+      setSearch(textParam)
+      setSearchVariables((prev) => ({ ...prev, search: textParam }))
+      resetResults()
+    }
+    setPage(pageParam)
+    setRowsPerPage(rowsParam)
+  }, [textParam, pageParam, rowsParam])
 
   useEffect(() => {
     if ((searchVariables.search ?? "").trim().length < 3) {
@@ -189,6 +199,8 @@ const UserSearch = () => {
   useEffect(() => {
     return () => {
       subscription.current?.unsubscribe()
+      // A remount (strict mode) must resubscribe to the same search
+      prevSearch.current = ""
     }
   }, [])
 
@@ -200,17 +212,16 @@ const UserSearch = () => {
     if (page > 0) {
       params.append("page", page.toString())
     }
-    const href =
+    const pathname =
       searchVariables.search !== ""
         ? `${baseUrl}/users/search/${encodeURIComponent(
             searchVariables.search,
-          )}`
-        : `${baseUrl}/users/search`
+          )}/`
+        : `${baseUrl}/users/search/`
+    const query = params.toString()
+    const href = query ? `${pathname}?${query}` : pathname
     if (router?.asPath !== href) {
-      // the history is still a bit wonky - how should it work?
-      router.push({ href, query: params.toString() }, undefined, {
-        shallow: true,
-      })
+      router.push(href, undefined, { shallow: true })
     }
   }, [rowsPerPage, page, searchVariables])
 

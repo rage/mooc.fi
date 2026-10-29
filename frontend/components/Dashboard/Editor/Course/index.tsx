@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { useRouter } from "next/router"
 import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
@@ -15,11 +15,12 @@ import EditorContainer from "../EditorContainer"
 import CourseEditForm from "./CourseEditForm"
 import { useCourseEditorData } from "./CourseEditorDataContext"
 import courseEditSchema, { CourseEditSchemaType } from "./form-validation"
-import { fromCourseForm } from "./serialization"
+import { fromCourseForm, toCourseForm } from "./serialization"
 import { CourseFormValues } from "./types"
 import { EditorContextProvider } from "/components/Dashboard/Editor/EditorContext"
 import { useSnackbarMethods } from "/contexts/SnackbarContext"
 import { useAnchors } from "/hooks/useAnchors"
+import useIsOld from "/hooks/useIsOld"
 import { useTranslator } from "/hooks/useTranslator"
 import CommonTranslations from "/translations/common"
 import CoursesTranslations from "/translations/courses"
@@ -45,6 +46,9 @@ function CourseEditor() {
   const client = useApolloClient()
   const router = useRouter()
   const { locale } = router
+  const baseUrl = useIsOld() ? "/_old" : "/admin"
+  const [redirectSlug, setRedirectSlug] = useState<string>()
+  const savedValues = useRef(defaultValues)
 
   const { addSnackbar } = useSnackbarMethods()
 
@@ -65,21 +69,19 @@ function CourseEditor() {
     shouldFocusError: false,
     shouldUnregister: false,
   })
-  const { trigger } = methods
+  const { trigger, reset } = methods
 
   useEffect(() => {
-    // validate on load
-    trigger()
-    /*reset(
-      {},
-      {
-        keepValues: true,
-        keepErrors: true,
-        keepDirty: false,
-        keepDefaultValues: true,
-      },
-    )*/
+    if (course?.id && !isClone) {
+      trigger()
+    }
   }, [])
+
+  useEffect(() => {
+    if (redirectSlug) {
+      router.push(`${baseUrl}/courses/${redirectSlug}/edit`)
+    }
+  }, [redirectSlug])
 
   const [addCourse] = useMutation(AddCourseDocument)
   const [updateCourse] = useMutation(UpdateCourseDocument)
@@ -97,7 +99,7 @@ function CourseEditor() {
 
       const mutationVariables = fromCourseForm({
         values,
-        defaultValues,
+        defaultValues: savedValues.current,
       })
       // - if we create a new course, we refetch all courses so the new one is on the list
       // - if we update, we also need to refetch that course with a potentially updated slug
@@ -118,20 +120,36 @@ function CourseEditor() {
         addSnackbar({ message: t("statusSaving") })
 
         if (isNewCourse) {
-          await addCourse({
+          const { data } = await addCourse({
             variables: { course: mutationVariables },
             refetchQueries: () => refetchQueries,
           })
+
+          reset(values)
+          setRedirectSlug(data?.addCourse?.slug ?? values.new_slug)
         } else {
-          await updateCourse({
+          const { data } = await updateCourse({
             variables: { course: mutationVariables as CourseUpsertArg },
             refetchQueries: () => refetchQueries,
           })
+
+          if (data?.updateCourse) {
+            const saved = toCourseForm({ course: data.updateCourse })
+
+            savedValues.current = saved
+            reset(saved)
+          }
+          if (values.new_slug !== values.slug) {
+            setRedirectSlug(values.new_slug)
+          }
         }
         addSnackbar({ message: t("statusSavingSuccess"), severity: "success" })
       } catch (err: any) {
         console.error("error saving", JSON.stringify(err.message, null, 2))
-        addSnackbar({ message: t("statusSavingError"), severity: "error" })
+        addSnackbar({
+          message: `${t("statusSavingError")}: ${err.message}`,
+          severity: "error",
+        })
       }
     },
     [t],

@@ -11,6 +11,7 @@ import {
 } from "../config"
 import { BaseContext } from "../context"
 import { isDefined, isPromise } from "../util"
+import { withCacheTimeout } from "./cacheTimeout"
 
 const _logger = winston.createLogger({
   level: "info",
@@ -34,7 +35,7 @@ export const redisReconnectStrategy =
       process.exit(-1)
     }
     const retries = retriesOrError
-    const nextDelay = Math.min(2 ** retries * 20, 30000)
+    const nextDelay = Math.min(2 ** retries * 20, 3000)
     logger.info(
       `${redisName} connection attempt: ${retries}, next attempt in: ${nextDelay}ms`,
     )
@@ -61,6 +62,7 @@ const getRedisClient = (): RedisClient | undefined => {
     url,
     password: REDIS_PASSWORD,
     database: REDIS_DB,
+    disableOfflineQueue: true,
     socket: {
       reconnectStrategy: redisReconnectStrategy(),
     },
@@ -146,7 +148,6 @@ interface RedisifyOptions {
   expireTime: number
   key: string
   params?: any
-  disableResolveError?: boolean
   retry?: boolean
   throwOnError?: boolean
 }
@@ -199,15 +200,14 @@ export async function redisify<T>(
   let value: T | undefined
   let resolveSuccess = false
 
-  // If Redis client is not connected, skip cache entirely (unless in test mode)
-  if (!isTest && (!client || !client.isOpen)) {
-    logger.info(`Redis not connected, skipping cache for: ${prefix}`)
+  if (!isTest && !client?.isReady) {
+    logger.debug(`Redis not ready, skipping cache for: ${prefix}`)
     value = await resolveValue()
     return value
   }
 
   try {
-    const res = client ? await client.get(prefixedKey) : undefined
+    const res = await cacheGet(prefixedKey, { client, logger })
 
     if (res) {
       logger.info(`Cache hit: ${prefix}`)
@@ -249,23 +249,13 @@ export async function redisify<T>(
     }
   }
 
-  try {
-    if (client) {
-      if (typeof value === "undefined") {
-        await client.del(prefixedKey)
-      } else {
-        await client.set(prefixedKey, JSON.stringify(value), {
-          EX: expireTime,
-        })
-      }
-    }
-    return value
-  } catch (e) {
-    logger.warn(
-      attachError(`Resolved value but failed to set cache: ${prefix}`, e),
-    )
-    return value
+  if (typeof value !== "undefined") {
+    await cacheSet(prefixedKey, JSON.stringify(value), expireTime, {
+      client,
+      logger,
+    })
   }
+  return value
 }
 
 const convertError = (err: unknown) => {
@@ -284,8 +274,59 @@ const attachError = (msg: string, err: unknown) => {
   return msg
 }
 
-export const invalidate = async (prefix: string, key: string) => {
-  await redisClient?.del(`${prefix}:${key}`)
+interface CacheOptions {
+  client?: RedisClient
+  logger?: winston.Logger
 }
+
+/**
+ * Guarded Redis access for request paths: skips when Redis isn't ready, bounds
+ * each command with {@link withCacheTimeout}, and never throws. Failures are
+ * logged and read as a miss (`null`) or a no-op.
+ */
+const guarded = async <T>(
+  description: string,
+  run: (client: RedisClient) => Promise<T>,
+  { client = getRedisClient(), logger = _logger }: CacheOptions,
+): Promise<T | null> => {
+  if (!client?.isReady) {
+    return null
+  }
+  try {
+    return await withCacheTimeout(() => run(client))
+  } catch (e) {
+    logger.warn(attachError(`Cache ${description} failed`, e))
+    return null
+  }
+}
+
+export const isCacheReady = () => Boolean(getRedisClient()?.isReady)
+
+export const cacheGet = (key: string, options: CacheOptions = {}) =>
+  guarded(`read of ${key}`, (client) => client.get(key), options)
+
+export const cacheSet = async (
+  key: string,
+  value: string,
+  ttlSeconds: number,
+  options: CacheOptions = {},
+) => {
+  await guarded(
+    `write of ${key}`,
+    (client) => client.set(key, value, { EX: ttlSeconds }),
+    options,
+  )
+}
+
+export const cacheDel = async (key: string, options: CacheOptions = {}) => {
+  await guarded(`delete of ${key}`, (client) => client.del(key), options)
+}
+
+export const cacheIncr = (key: string, options: CacheOptions = {}) =>
+  guarded(`increment of ${key}`, (client) => client.incr(key), options)
+
+/** Deletes a cached value; never throws, so callers can await it mid-write. */
+export const invalidate = (prefix: string, key: string) =>
+  cacheDel(`${prefix}:${key}`)
 
 export default getRedisClient

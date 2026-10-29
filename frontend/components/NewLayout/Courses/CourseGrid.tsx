@@ -1,15 +1,15 @@
-import { useCallback, useEffect, useMemo, useState } from "react"
+import React, { useEffect, useMemo, useRef, useState } from "react"
 
 import dynamic from "next/dynamic"
 import { useRouter } from "next/router"
-import { difference, sort } from "remeda"
+import { sort } from "remeda"
 
-import { useQuery } from "@apollo/client"
 import ClearIcon from "@mui/icons-material/Clear"
 import {
   Checkbox,
   EnhancedButtonProps,
   FormControlLabel,
+  IconButton,
   MenuItem,
   Skeleton,
   TextField,
@@ -28,21 +28,26 @@ import {
   sortByLanguage,
 } from "./common"
 import CourseCard, { CourseCardSkeleton } from "./CourseCard"
+import {
+  applyFilterState,
+  DEFAULT_STATUSES,
+  filterCourses,
+  FilterUrlState,
+  parseFilterQuery,
+  resolveActiveTagIds,
+} from "./courseFilters"
 import BorderedSection from "/components/BorderedSection"
-import { useQueryParameter } from "/hooks/useQueryParameter"
+import ErrorMessage from "/components/ErrorMessage"
+import { useIncrementalList } from "/hooks/useIncrementalList"
+import { useCoursesData } from "/hooks/usePublicData"
 import { useTranslator } from "/hooks/useTranslator"
+import { NewCourseFields, TagCoreFields } from "/lib/api-types"
 import CourseTranslations from "/translations/_new/courses"
 import CommonTranslations from "/translations/common"
 import { isDefinedAndNotEmpty } from "/util/guards"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
 
-import {
-  CourseCatalogueTagsDocument,
-  CourseStatus,
-  NewCourseFieldsFragment,
-  NewCoursesDocument,
-  TagCoreFieldsFragment,
-} from "/graphql/generated"
+import { CourseStatus } from "/graphql/generated"
 
 /*  Coming in a later PR for better mobile view
   const Container = styled.div`
@@ -110,6 +115,16 @@ const SearchBar = styled(TextField)`
   margin-bottom: 0.5rem 0;
 `
 
+const NoResults = styled("li")`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem 0;
+  list-style: none;
+`
+
 const Filters = styled("div")(
   ({ theme }) => `
   margin: 1rem 0 1rem 0;
@@ -148,6 +163,8 @@ const SortSelect = styled(TextField)`
   min-width: 15rem;
 `
 
+const SEARCH_URL_DEBOUNCE_MS = 300
+
 const DynamicTagSelectButtons = dynamic(() => import("./TagSelectButtons"), {
   loading: () => <Skeleton variant="rectangular" width="100%" height={96} />,
 })
@@ -180,7 +197,7 @@ const joinWithCustomLastSeparator = (arr: Array<string>, separator = "or") => {
 }
 
 interface SearchResultStatusProps {
-  tags?: Array<TagCoreFieldsFragment>
+  tags?: Array<TagCoreFields>
   statuses?: Array<CourseStatus>
   count: number
 }
@@ -252,30 +269,27 @@ const SearchResultStatus = ({
   )
 }
 
-const courseHasTag = (
-  course: NewCourseFieldsFragment | null,
-  tag: TagCoreFieldsFragment,
-) => {
-  if (!course) {
-    return false
-  }
-  return course.tags.some((courseTag) => courseTag.name === tag.name)
+// Matches the visual row order in TagSelectButtons so tab order follows it.
+const TAG_CATEGORY_ORDER = ["language", "difficulty", "module"]
+const tagCategoryRank = (category: string) => {
+  const rank = TAG_CATEGORY_ORDER.indexOf(category)
+  return rank === -1 ? TAG_CATEGORY_ORDER.length : rank
 }
 
 type CourseSort = "module" | "name"
 
-const compareCoursesByName =
-  (locale?: string) =>
-  (course1: NewCourseFieldsFragment, course2: NewCourseFieldsFragment) =>
-    course1.name.localeCompare(course2.name, locale)
+const compareCoursesByName = (locale?: string) => {
+  const collator = new Intl.Collator(locale)
+
+  return (course1: NewCourseFields, course2: NewCourseFields) =>
+    collator.compare(course1.name, course2.name)
+}
 
 const compareCoursesByModule = (locale?: string) => {
+  const collator = new Intl.Collator(locale)
   const byName = compareCoursesByName(locale)
 
-  return (
-    course1: NewCourseFieldsFragment,
-    course2: NewCourseFieldsFragment,
-  ) => {
+  return (course1: NewCourseFields, course2: NewCourseFields) => {
     // courses without a module sort last
     if (course1.study_modules.length === 0) {
       return course2.study_modules.length === 0 ? byName(course1, course2) : 1
@@ -284,16 +298,12 @@ const compareCoursesByModule = (locale?: string) => {
       return -1
     }
     return (
-      course1.study_modules[0].name.localeCompare(
+      collator.compare(
+        course1.study_modules[0].name,
         course2.study_modules[0].name,
-        locale,
       ) || byName(course1, course2)
     )
   }
-}
-
-function areEqual<T>(a: Array<T>, b: Array<T>) {
-  return a.length === b.length && !difference(a, b).length
 }
 
 function CourseGrid() {
@@ -302,79 +312,72 @@ function CourseGrid() {
   const { locale = "fi" } = router
   const language = mapNextLanguageToLocaleCode(locale)
   const isNarrow = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"))
-  const initialActiveTags = useQueryParameter("tag", {
-    enforce: false,
-    array: true,
-  })
-  const initialStatuses = useQueryParameter("status", {
-    enforce: false,
-    array: true,
-  }) as CourseStatus[]
-  const moduleless = useQueryParameter("moduleless", {
-    enforce: false,
-    array: false,
-  })
 
-  const { loading: coursesLoading, data: coursesData } = useQuery(
-    NewCoursesDocument,
-    {
-      variables: { language },
-      ssr: false,
-    },
+  const urlState = useMemo(
+    () => parseFilterQuery(router.query, courseStatuses),
+    [router.query],
   )
+  const moduleless = router.query.moduleless === "true"
 
-  const { loading: tagsLoading, data: tagsData } = useQuery(
-    CourseCatalogueTagsDocument,
-    {
-      variables: { language },
-      ssr: false,
-      onCompleted(data) {
-        if (initialActiveTags) {
-          setActiveTags(
-            data.tags?.filter((tag) => initialActiveTags.includes(tag.id)) ??
-              [],
-          )
-        } else {
-          const defaultLanguageTag = data.tags?.find(
-            (tag) => tag.id === locale && tag.types?.includes("language"),
-          )
-          if (defaultLanguageTag) {
-            setActiveTags([defaultLanguageTag])
-          }
-        }
-      },
-    },
-  )
+  const {
+    isLoading: coursesLoading,
+    data: coursesData,
+    error: coursesError,
+  } = useCoursesData(language)
 
-  let initialFilteredStatuses = [CourseStatus.Active, CourseStatus.Upcoming]
-  if (initialStatuses && initialStatuses.length > 0) {
-    initialFilteredStatuses = initialStatuses
-  }
-
-  const [searchString, setSearchString] = useState<string>("")
-  const [activeTags, setActiveTags] = useState<Array<TagCoreFieldsFragment>>([])
-  const [filteredStatuses, setFilteredStatuses] = useState<CourseStatus[]>(
-    initialFilteredStatuses,
-  )
+  const [searchString, setSearchString] = useState(urlState.search)
+  const lastWrittenSearch = useRef(urlState.search)
   const [courseSort, setCourseSort] = useState<CourseSort>("name")
 
-  const tags = useMemo(() => {
-    const res = (tagsData?.tags ?? []).reduce(
-      (acc, curr) => {
-        curr?.types?.forEach((t) => {
-          if (
-            t === "language" &&
-            curr.id &&
-            !allowedLanguages.includes(curr.id)
-          ) {
-            return acc
-          }
-          acc[t] = (acc[t] ?? []).concat(curr)
-        })
-        return acc
+  useEffect(() => {
+    if (urlState.search !== lastWrittenSearch.current) {
+      lastWrittenSearch.current = urlState.search
+      setSearchString(urlState.search)
+    }
+  }, [urlState.search])
+
+  const updateUrlState = useEventCallback((patch: Partial<FilterUrlState>) =>
+    router.replace(
+      {
+        pathname: router.pathname,
+        query: applyFilterState(router.query, patch),
       },
-      {} as Record<string, Array<TagCoreFieldsFragment>>,
-    )
+      undefined,
+      { shallow: true },
+    ),
+  )
+
+  useEffect(() => {
+    if (searchString === lastWrittenSearch.current) {
+      return
+    }
+    const timeout = setTimeout(() => {
+      lastWrittenSearch.current = searchString
+      updateUrlState({ search: searchString })
+    }, SEARCH_URL_DEBOUNCE_MS)
+    return () => clearTimeout(timeout)
+  }, [searchString, updateUrlState])
+
+  const tags = useMemo(() => {
+    const res: Record<string, Array<TagCoreFields>> = {}
+    for (const curr of coursesData?.tags ?? []) {
+      if (curr.hidden) {
+        continue
+      }
+      curr?.types?.forEach((t) => {
+        if (
+          t === "language" &&
+          curr.id &&
+          !allowedLanguages.includes(curr.id)
+        ) {
+          return
+        }
+        if (!res[t]) {
+          res[t] = []
+        }
+        res[t].push(curr)
+      })
+    }
 
     if (res["language"]) {
       res["language"].sort(sortByLanguage)
@@ -383,25 +386,64 @@ function CourseGrid() {
       res["difficulty"].sort(sortByDifficulty)
     }
 
-    return res
-  }, [tagsData])
+    return Object.fromEntries(
+      Object.entries(res).sort(
+        ([a], [b]) => tagCategoryRank(a) - tagCategoryRank(b),
+      ),
+    )
+  }, [coursesData])
 
-  const handleStatusChange = useCallback(
-    (status: CourseStatus) => () => {
-      setFilteredStatuses((oldStatuses) => {
-        if (oldStatuses.includes(status)) {
-          return oldStatuses.filter((s) => s !== status)
-        }
-        return [...oldStatuses, status]
-      })
-    },
-    [filteredStatuses],
+  const activeTagIds = useMemo(() => {
+    const knownTagIds = new Set(
+      Object.values(tags).flatMap((categoryTags) =>
+        categoryTags.map((tag) => tag.id),
+      ),
+    )
+    return resolveActiveTagIds({
+      explicitTagIds:
+        urlState.tagIds?.filter((id) => knownTagIds.has(id)) ?? null,
+      defaultLanguageTagId: knownTagIds.has(locale) ? locale : undefined,
+      search: searchString,
+    })
+  }, [tags, urlState.tagIds, locale, searchString])
+
+  const activeTags = useMemo(
+    () =>
+      Object.values(tags)
+        .flat()
+        .filter(
+          (tag, index, all) =>
+            activeTagIds.includes(tag.id) &&
+            all.findIndex((other) => other.id === tag.id) === index,
+        ),
+    [tags, activeTagIds],
   )
 
+  const setActiveTags = useEventCallback(
+    (
+      value:
+        | Array<TagCoreFields>
+        | ((tags: Array<TagCoreFields>) => Array<TagCoreFields>),
+    ) => {
+      const newTags = typeof value === "function" ? value(activeTags) : value
+      updateUrlState({ tagIds: newTags.map((tag) => tag.id) })
+    },
+  )
+
+  const handleStatusChange = useEventCallback((status: CourseStatus) => {
+    updateUrlState({
+      statuses: urlState.statuses.includes(status)
+        ? urlState.statuses.filter((s) => s !== status)
+        : [...urlState.statuses, status],
+    })
+  })
+
+  const handleClearSearch = () => setSearchString("")
+
   const handleResetButtonClick = () => {
+    lastWrittenSearch.current = ""
     setSearchString("")
-    setActiveTags([])
-    setFilteredStatuses([CourseStatus.Active, CourseStatus.Upcoming])
+    updateUrlState({ search: "", tagIds: null, statuses: DEFAULT_STATUSES })
   }
 
   const handleSearchChange = useEventCallback(
@@ -413,51 +455,23 @@ function CourseGrid() {
       setCourseSort(e.target.value as CourseSort),
   )
 
-  const handleSelectAllTags = useCallback(
-    () => setActiveTags([...(tagsData?.tags ?? [])]),
-    [tagsData],
-  )
-
   const filteredCourses = useMemo(
     () =>
-      (coursesData?.courses ?? []).filter((course) => {
-        if (
-          course.hidden ||
-          !course.course_translations ||
-          course.course_translations.length === 0
-        ) {
-          return false
-        }
-        if (moduleless === "true" && course.study_modules.length > 0) {
-          return false
-        }
-        if (
-          !course.name
-            .toLocaleLowerCase(locale)
-            .includes(searchString.toLocaleLowerCase(locale)) &&
-          !course.description
-            ?.toLocaleLowerCase(locale)
-            .includes(searchString.toLocaleLowerCase(locale)) &&
-          !moduleless
-        ) {
-          return false
-        }
-        if (
-          activeTags.length > 0 &&
-          !activeTags.every((tag) => courseHasTag(course, tag))
-        ) {
-          return false
-        }
-        if (
-          filteredStatuses.length > 0 &&
-          course.status &&
-          !filteredStatuses.includes(CourseStatus[course.status])
-        ) {
-          return false
-        }
-        return true
+      filterCourses(coursesData?.courses ?? [], {
+        search: searchString,
+        activeTagIds,
+        tagsByCategory: tags,
+        statuses: urlState.statuses,
+        moduleless,
       }),
-    [coursesData, searchString, activeTags, filteredStatuses],
+    [
+      coursesData,
+      searchString,
+      activeTagIds,
+      tags,
+      urlState.statuses,
+      moduleless,
+    ],
   )
 
   const sortedCourses = useMemo(
@@ -470,41 +484,7 @@ function CourseGrid() {
       ),
     [filteredCourses, courseSort, locale],
   )
-
-  useEffect(() => {
-    if (tagsLoading) {
-      return
-    }
-    if (
-      areEqual(
-        activeTags.map((t) => t.id),
-        initialActiveTags,
-      ) &&
-      areEqual(filteredStatuses, initialStatuses)
-    ) {
-      return
-    }
-
-    const params = new URLSearchParams()
-    if (filteredStatuses.length > 0) {
-      for (const status of filteredStatuses) {
-        params.append("status", status)
-      }
-      if (
-        filteredStatuses.length === 2 &&
-        filteredStatuses.includes(CourseStatus.Active) &&
-        filteredStatuses.includes(CourseStatus.Upcoming)
-      ) {
-        params.delete("status")
-      }
-    }
-    if (activeTags.length > 0) {
-      for (const tag of activeTags) {
-        params.append("tag", tag.id)
-      }
-    }
-    router.replace({ query: params.toString() }, undefined, { shallow: true })
-  }, [tagsLoading, activeTags, filteredStatuses])
+  const renderedCourses = useIncrementalList(sortedCourses, 12)
 
   const TagSelectComponent = useMemo(() => {
     if (isNarrow) {
@@ -524,6 +504,17 @@ function CourseGrid() {
             autoComplete="off"
             variant="outlined"
             onChange={handleSearchChange}
+            InputProps={{
+              endAdornment: searchString ? (
+                <IconButton
+                  size="small"
+                  aria-label={t("clearSearch")}
+                  onClick={handleClearSearch}
+                >
+                  <ClearIcon fontSize="small" />
+                </IconButton>
+              ) : undefined,
+            }}
           />
           <StyledBorderedSection title={t("filter")}>
             <Filters>
@@ -531,8 +522,7 @@ function CourseGrid() {
                 tags={tags}
                 activeTags={activeTags}
                 setActiveTags={setActiveTags}
-                selectAllTags={handleSelectAllTags}
-                loading={tagsLoading}
+                loading={coursesLoading}
               />
               <Statuses>
                 {courseStatuses.map((status) => (
@@ -542,8 +532,8 @@ function CourseGrid() {
                     control={
                       <Checkbox
                         id={status}
-                        checked={filteredStatuses.includes(status)}
-                        onChange={handleStatusChange(status)}
+                        checked={urlState.statuses.includes(status)}
+                        onChange={() => handleStatusChange(status)}
                       />
                     }
                   />
@@ -560,7 +550,9 @@ function CourseGrid() {
             </Filters>
           </StyledBorderedSection>
         </FiltersContainer>
-        {coursesLoading ? (
+        {coursesError ? (
+          <ErrorMessage />
+        ) : coursesLoading ? (
           <>
             <CardsContainer>
               <CourseCardSkeleton />
@@ -574,7 +566,7 @@ function CourseGrid() {
             <ListHeader>
               <SearchResultStatus
                 tags={activeTags}
-                statuses={filteredStatuses}
+                statuses={urlState.statuses as Array<CourseStatus>}
                 count={filteredCourses.length}
               />
               <SortSelect
@@ -591,11 +583,13 @@ function CourseGrid() {
               </SortSelect>
             </ListHeader>
             <CardsContainer>
-              {sortedCourses.map((course) => (
+              {renderedCourses.map((course) => (
                 <CourseCard key={course.id} course={course} />
               ))}
               {filteredCourses.length === 0 && (
-                <li style={{ width: "100%" }}>no courses</li>
+                <NoResults>
+                  <Typography>{t("noResults")}</Typography>
+                </NoResults>
               )}
             </CardsContainer>
           </>

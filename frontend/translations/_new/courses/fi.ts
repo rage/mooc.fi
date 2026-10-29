@@ -21,4 +21,6 @@ export default {
   sortBy: "Järjestä",
   sortByModule: "Kokonaisuuden mukaan",
   sortByName: "Aakkosjärjestyksessä",
+  noResults: "Haullasi tai suodattimilla ei löytynyt kursseja.",
+  clearSearch: "Tyhjennä haku",
 } as const

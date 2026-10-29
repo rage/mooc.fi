@@ -10,6 +10,7 @@ import Header from "/components/NewLayout/Header"
 import Breadcrumbs from "/components/NewLayout/Navigation/Breadcrumbs"
 import PageLoadingIndicators from "/components/PageLoadingIndicators"
 import SkipLink from "/components/SkipLink"
+import Snackbars from "/components/Snackbars"
 
 const FooterDownPusherWrapper = styled("div")`
   display: flex;
@@ -68,6 +69,7 @@ const Layout: React.FunctionComponent<React.PropsWithChildren> = ({
               {children}
             </LayoutContent>
           </MainContainer>
+          <Snackbars />
         </div>
         <Footer />
       </FooterDownPusherWrapper>

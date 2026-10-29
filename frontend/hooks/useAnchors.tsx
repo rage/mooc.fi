@@ -29,6 +29,7 @@ const scrollAndSetError = (ref: HTMLElement) => {
   ref.scrollIntoView({
     block: "center",
   })
+  ref.focus({ preventScroll: true })
   ref.setAttribute("data-error-pulsate", "true")
   ref.parentElement?.setAttribute("data-error-pulsate", "true")
   const timeout = setTimeout(() => {

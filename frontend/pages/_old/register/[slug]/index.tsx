@@ -34,6 +34,7 @@ import {
 const Container = styled("div")`
   display: grid;
   justify-items: center;
+  padding: 0 1rem;
 `
 
 const FieldWrapper = styled("div")`
@@ -47,7 +48,6 @@ const StyledFormControl = styled(FormControl)`
 
 const StyledButton = styled(Button)`
   margin-left: 1rem !important;
-  max-width: 5rem;
   max-height: 3rem;
   svg {
     margin-left: 5px;
@@ -61,12 +61,14 @@ const Error = styled("div")`
 
 const TextBox = styled("div")`
   max-width: 710px;
-  margin: 1rem;
+  margin: 1rem 0;
 `
 
 const StyledForm = styled("form")`
   display: grid;
-  grid-template-columns: 80% 20%;
+  grid-template-columns: 1fr auto;
+  width: 100%;
+  max-width: 710px;
 `
 
 // @ts-ignore: not used for now
@@ -312,12 +314,7 @@ const RegisterToOrganization = () => {
         <FieldWrapper>
           <StyledFormControl>
             <Tooltip title="">
-              <TextField
-                id="email"
-                label="email"
-                name="EMAIL"
-                inputProps={{ "aria-label": "email" }}
-              />
+              <TextField id="email" label={t("emailLabel")} name="EMAIL" />
             </Tooltip>
           </StyledFormControl>
         </FieldWrapper>
@@ -402,9 +399,8 @@ const RegisterToOrganization = () => {
             <Tooltip title={!consented ? t("hoverHint") : ""}>
               <TextField
                 id="organizational-identifier"
-                label="organizational identifier"
+                label={t("organizationalIdentifierLabel")}
                 name="ORGANIZATIONAL-IDENTIFIER"
-                inputProps={{ "aria-label": "organizational-identifier" }}
                 disabled={!consented}
                 defaultValue={organizationalIdentifier}
               />
@@ -432,9 +428,8 @@ const RegisterToOrganization = () => {
                   <Tooltip title={!consented ? t("hoverHint") : ""}>
                     <TextField
                       id="email"
-                      label="email"
+                      label={t("emailLabel")}
                       name="EMAIL"
-                      inputProps={{ "aria-label": "email" }}
                       disabled={!consented}
                     />
                   </Tooltip>
@@ -451,7 +446,7 @@ const RegisterToOrganization = () => {
                   }
                 }}
               >
-                {t("emailButton")}
+                {t("join")}
                 <Send />
               </StyledButton>
             </StyledForm>
@@ -478,9 +473,8 @@ const RegisterToOrganization = () => {
             <Tooltip title={!consented ? t("hoverHint") : ""}>
               <TextField
                 id="organizational-identifier"
-                label="organizational identifier"
+                label={t("organizationalIdentifierLabel")}
                 name="ORGANIZATIONAL-IDENTIFIER"
-                inputProps={{ "aria-label": "organizational-identifier" }}
                 disabled={!consented}
                 defaultValue={organizationalIdentifier}
               />
@@ -493,7 +487,7 @@ const RegisterToOrganization = () => {
                 handleSubmitWithoutEmail()
               }}
             >
-              {t("emailButton")}
+              {t("join")}
             </StyledButton>
           </div>
         )}

@@ -7,16 +7,18 @@ import ArrowRightIcon from "../Icons/ArrowRight"
 import ContentWrapper from "./ContentWrapper"
 import { fontSize } from "/src/theme/util"
 
-const IntroductionContainer = styled("div")(
-  ({ theme }) => `
-  padding-top: 1.75rem;
+const IntroductionContainer = styled("div", {
+  shouldForwardProp: (prop) => prop !== "isUnderBreadcrumbs",
+})<{ isUnderBreadcrumbs?: boolean }>(
+  ({ theme, isUnderBreadcrumbs }) => `
+  padding-top: ${isUnderBreadcrumbs ? "0.5rem" : "1.75rem"};
   margin-bottom: 1.75rem;
   ${theme.breakpoints.up("md")} {
-    padding-top: 2rem;
+    padding-top: ${isUnderBreadcrumbs ? "0.5rem" : "2rem"};
     margin-bottom: 2rem;
   }
   ${theme.breakpoints.up("lg")} {
-    padding-top: 2.25rem;
+    padding-top: ${isUnderBreadcrumbs ? "0.5rem" : "2.25rem"};
     margin-bottom: 2.25rem;
   }
 `,
@@ -197,6 +199,7 @@ interface IntroductionProps {
   linkTitle?: string
   linkLabel?: string
   imageProps?: ImageProps
+  isUnderBreadcrumbs?: boolean
 }
 
 const Introduction = ({
@@ -207,9 +210,10 @@ const Introduction = ({
   linkTitle,
   linkLabel,
   imageProps,
+  isUnderBreadcrumbs,
 }: IntroductionProps) => {
   return (
-    <IntroductionContainer>
+    <IntroductionContainer isUnderBreadcrumbs={isUnderBreadcrumbs}>
       <ContentWrapper>
         <OuterContainer>
           <IntroductionContent
@@ -218,7 +222,9 @@ const Introduction = ({
             <IntroductionTitleContainer>
               <IntroductionTitle dangerouslySetInnerHTML={{ __html: title }} />
             </IntroductionTitleContainer>
-            <IntroductionDescription>{description}</IntroductionDescription>
+            {description && (
+              <IntroductionDescription>{description}</IntroductionDescription>
+            )}
             {href && (
               <div>
                 <IntroductionLink

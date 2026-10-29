@@ -5,6 +5,7 @@ import { styled } from "@mui/material/styles"
 
 import ContentWrapper from "../Common/ContentWrapper"
 import CaretRightIcon from "../Icons/CaretRight"
+import { INFORMATION_COLUMN_MAX_WIDTH } from "/components/Information/StyledComponents"
 import { Breadcrumb, useBreadcrumbContext } from "/contexts/BreadcrumbContext"
 import { useTranslator } from "/hooks/useTranslator"
 import { fontSize } from "/src/theme/util"
@@ -17,6 +18,11 @@ const BreadcrumbContainer = styled("nav")`
   display: inline-block;
   position: relative;
   width: auto;
+`
+
+const NarrowColumn = styled("div")`
+  max-width: ${INFORMATION_COLUMN_MAX_WIDTH};
+  margin: 0 auto;
 `
 
 const BreadcrumbList = styled("ol")(
@@ -54,7 +60,8 @@ const BreadcrumbItemComponent = styled("li")<BreadcrumbItemComponentProps>(
     margin-bottom: 1rem;
   }
 
-  a {
+  a,
+  > span {
     color: ${
       isCurrent
         ? theme.palette.common.grayscale.dark
@@ -89,7 +96,11 @@ const BreadcrumbItem = ({ isCurrent, ...item }: BreadcrumbItemProps) => {
 
   return (
     <BreadcrumbItemComponent isCurrent={isCurrent}>
-      <Link href={href ?? "#"}>{text ?? <Skeleton width="100px" />}</Link>
+      {href ? (
+        <Link href={href}>{text ?? <Skeleton width="100px" />}</Link>
+      ) : (
+        <span>{text ?? <Skeleton width="100px" />}</span>
+      )}
       {!isCurrent && <CaretRightIcon sx={{ fontSize: "12px" }} />}
     </BreadcrumbItemComponent>
   )
@@ -97,7 +108,7 @@ const BreadcrumbItem = ({ isCurrent, ...item }: BreadcrumbItemProps) => {
 
 const Breadcrumbs = () => {
   const { asPath } = useRouter()
-  const { breadcrumbs } = useBreadcrumbContext()
+  const { breadcrumbs, isNarrow } = useBreadcrumbContext()
 
   const isHomePage = !!RegExp(/^(?:\/_old)?\/?$/).exec(
     asPath?.replace(/#(.*)/, ""),
@@ -107,24 +118,33 @@ const Breadcrumbs = () => {
     return null
   }
 
+  const nav = (
+    <BreadcrumbContainer
+      role="navigation"
+      aria-labelledby="system-breadcrumb"
+      aria-label="breadcrumb"
+    >
+      <BreadcrumbList>
+        <BreadcrumbItem
+          translation="home"
+          href="/"
+          key="home"
+          isCurrent={breadcrumbs.length === 0}
+        />
+        {breadcrumbs.map((breadcrumb, index) => (
+          <BreadcrumbItem
+            key={breadcrumb.href ?? breadcrumb.label ?? `breadcrumb-${index}`}
+            isCurrent={index === breadcrumbs.length - 1}
+            {...breadcrumb}
+          />
+        ))}
+      </BreadcrumbList>
+    </BreadcrumbContainer>
+  )
+
   return (
     <ContentWrapper>
-      <BreadcrumbContainer
-        role="navigation"
-        aria-labelledby="system-breadcrumb"
-        aria-label="breadcrumb"
-      >
-        <BreadcrumbList>
-          <BreadcrumbItem translation="home" href="/" key="home" />
-          {breadcrumbs.map((breadcrumb, index) => (
-            <BreadcrumbItem
-              key={breadcrumb.href ?? breadcrumb.label ?? `breadcrumb-${index}`}
-              isCurrent={index === breadcrumbs.length - 1}
-              {...breadcrumb}
-            />
-          ))}
-        </BreadcrumbList>
-      </BreadcrumbContainer>
+      {isNarrow ? <NarrowColumn>{nav}</NarrowColumn> : nav}
     </ContentWrapper>
   )
 }

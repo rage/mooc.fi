@@ -1,6 +1,5 @@
 import { useRouter } from "next/router"
 
-import { useQuery } from "@apollo/client"
 import { styled } from "@mui/material/styles"
 
 import CTALink from "../Common/CTALink"
@@ -9,11 +8,10 @@ import { moduleColorSchemes } from "../Courses/common"
 import ModuleNaviList from "../Frontpage/Modules/ModuleNaviList"
 import { ListItem, ListItemSkeleton } from "./StudyModuleListItem"
 import ErrorMessage from "/components/ErrorMessage"
+import { useStudyModulesData } from "/hooks/usePublicData"
 import { useTranslator } from "/hooks/useTranslator"
 import StudyModulesTranslations from "/translations/study-modules"
 import { mapNextLanguageToLocaleCode } from "/util/moduleFunctions"
-
-import { NewStudyModulesWithCoursesDocument } from "/graphql/generated"
 
 const ModuleList = styled("ul")(
   ({ theme }) => `
@@ -48,12 +46,7 @@ export function StudyModuleList() {
   const { locale = "fi" } = useRouter()
   const language = mapNextLanguageToLocaleCode(locale)
 
-  const { data, loading, error } = useQuery(
-    NewStudyModulesWithCoursesDocument,
-    {
-      variables: { language },
-    },
-  )
+  const { data, isLoading: loading, error } = useStudyModulesData(language)
 
   if (error) {
     // TODO
@@ -63,7 +56,7 @@ export function StudyModuleList() {
   if (loading) {
     return (
       <>
-        <ModuleNaviList modules={data?.study_modules} loading={loading} />
+        <ModuleNaviList loading={loading} />
         <ModuleList>
           <ListItemSkeleton
             backgroundColor={moduleColorSchemes["cyber-security"]!}
@@ -83,7 +76,7 @@ export function StudyModuleList() {
 
   return (
     <section>
-      <Introduction title={t("modulesTitle")} />
+      <Introduction title={t("modulesTitle")} isUnderBreadcrumbs />
       <ModuleNaviList modules={data?.study_modules} loading={loading} />
       <ModulelessLinkContainer>
         <StyledCTALink href={`/courses/?moduleless=true`}>

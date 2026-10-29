@@ -4,9 +4,7 @@ import { CourseOwnership, Organization, User } from "@prisma/client"
 
 import { BaseContext } from "../context"
 import { UserInfo } from "../domain/UserInfo"
-import { redisify } from "../services/redis"
-import TmcClient from "../services/tmc"
-import { hashUserToken } from "../util/hashUser"
+import { getUserDetailsForToken } from "../services/userDetails"
 import { err, ok, Result } from "../util/result"
 
 interface GetUserReturn {
@@ -105,42 +103,34 @@ export function requireAdminOrCourseOwner(courseId: string, ctx: BaseContext) {
   }
 }
 
-export function getUser({ knex, logger }: BaseContext) {
+interface UserLookupError {
+  status: number
+  message: string
+}
+
+/**
+ * Resolves the user behind the request's bearer token, creating the local user
+ * row on first sight. Unlike `getUser`, never writes to the response.
+ */
+export function findUser({ knex, logger }: BaseContext) {
   return async function (
     req: Request,
-    res: Response,
-  ): Promise<Result<GetUserReturn, Response>> {
+  ): Promise<Result<GetUserReturn, UserLookupError>> {
     const rawToken = req.headers.authorization
 
     if (!rawToken?.startsWith("Bearer")) {
-      return err(res.status(401).json({ message: "not logged in" }))
+      return err({ status: 401, message: "not logged in" })
     }
 
-    let details: UserInfo | undefined
-    try {
-      const client = new TmcClient(rawToken)
-      details = await redisify<UserInfo>(
-        async () => await client.getCurrentUserDetails(),
-        {
-          prefix: "userdetails",
-          expireTime: 3600,
-          key: hashUserToken(rawToken),
-        },
-        {
-          logger,
-        },
-      )
-    } catch (e) {
-      logger.error("error", e)
-    }
+    const details = await getUserDetailsForToken(rawToken, { logger })
 
     if (!details) {
-      return err(res.status(401).json({ message: "invalid credentials" }))
+      return err({ status: 401, message: "invalid credentials" })
     }
 
     let user = (
       await knex
-        .select<any, User[]>("id")
+        .select<any, User[]>("*")
         .from("user")
         .where("upstream_id", details.id)
     )?.[0]
@@ -169,7 +159,7 @@ export function getUser({ knex, logger }: BaseContext) {
         )?.[0]
 
         if (!user) {
-          return err(res.status(500).json({ message: "error creating user" }))
+          return err({ status: 500, message: "error creating user" })
         }
       }
     }
@@ -178,6 +168,23 @@ export function getUser({ knex, logger }: BaseContext) {
       user,
       details,
     })
+  }
+}
+
+/** Like `findUser`, but responds with the error status when lookup fails. */
+export function getUser(ctx: BaseContext) {
+  return async function (
+    req: Request,
+    res: Response,
+  ): Promise<Result<GetUserReturn, Response>> {
+    const result = await findUser(ctx)(req)
+
+    if (result.isErr()) {
+      const { status, message } = result.error
+      return err(res.status(status).json({ message }))
+    }
+
+    return result
   }
 }
 

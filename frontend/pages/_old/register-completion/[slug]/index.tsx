@@ -58,7 +58,7 @@ import {
 const BASE_URL =
   process.env.NODE_ENV === "production"
     ? "https://www.mooc.fi"
-    : "http://localhost:4000"
+    : process.env.NEXT_PUBLIC_DEV_BACKEND_URL ?? "http://localhost:4000"
 
 const SISU_URL = "https://sisu.helsinki.fi/student/frontpage"
 

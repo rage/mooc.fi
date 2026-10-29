@@ -60,7 +60,7 @@ function PointsListItemTableChart(props: Props) {
     <>
       <ChartContainer>
         <CardSubtitle component="h3" variant="body1" marginRight="1rem">
-          {t(title as any)}
+          {title}
         </CardSubtitle>
         <CardSubtitle align="right">
           {round(points.courseProgress.n_points)} /{" "}

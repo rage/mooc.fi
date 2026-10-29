@@ -1,4 +1,6 @@
-import React, { useState } from "react"
+import React, { useEffect } from "react"
+
+import { useFieldArray } from "react-hook-form"
 
 import { styled } from "@mui/material/styles"
 
@@ -10,11 +12,14 @@ import { useCourseEditorData } from "./CourseEditorDataContext"
 import CourseEditorTabs from "./CourseEditorTabs"
 import CourseImageForm from "./CourseImageForm"
 import CourseInfoForm from "./CourseInfoForm"
-import CourseLanguageSelector from "./CourseLanguageSelector"
+import CourseLanguageSelector, {
+  useLanguageTagSync,
+} from "./CourseLanguageSelector"
 import CourseStatusForm from "./CourseStatusForm"
 import CourseTagsForm from "./CourseTagsForm"
 import CourseTranslationForm from "./CourseTranslationForm"
 import CourseVariantForm from "./CourseVariantForm"
+import { CourseFormValues } from "./types"
 import UserCourseSettingsVisibilityForm from "./UserCourseSettingsVisibilityForm"
 import DisableAutoComplete from "/components/DisableAutoComplete"
 
@@ -29,16 +34,18 @@ const StyledTabSection = styled(TabSection)`
 
 function CourseEditForm() {
   const { courses, defaultValues } = useCourseEditorData()
-
-  const [selectedLanguage, setSelectedLanguage] = useState(() => {
-    if (defaultValues?.course_translations.length === 0) {
-      return ""
-    }
-    if (defaultValues?.course_translations.length === 2) {
-      return "both"
-    }
-    return defaultValues?.course_translations[0].language
+  const translations = useFieldArray<CourseFormValues, "course_translations">({
+    name: "course_translations",
   })
+  const syncLanguageTag = useLanguageTagSync()
+
+  useEffect(() => {
+    if (!defaultValues.id) {
+      defaultValues.course_translations.forEach(({ language }) =>
+        syncLanguageTag(language, true),
+      )
+    }
+  }, [])
 
   return (
     <>
@@ -51,12 +58,9 @@ function CourseEditForm() {
       >
         <ControlledHiddenField name="id" />
         <ControlledHiddenField name="slug" />
-        <CourseLanguageSelector
-          selectedLanguage={selectedLanguage}
-          setSelectedLanguage={setSelectedLanguage}
-        />
-        <CourseTranslationForm key={selectedLanguage} />
-        <SelectLanguageFirstCover covered={selectedLanguage === ""}>
+        <CourseLanguageSelector translations={translations} />
+        <CourseTranslationForm fields={translations.fields} />
+        <SelectLanguageFirstCover covered={translations.fields.length === 0}>
           <CourseInfoForm />
           <CourseImageForm courses={courses} />
         </SelectLanguageFirstCover>

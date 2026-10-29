@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import Router from "next/router"
 import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
@@ -20,6 +20,7 @@ import StudyModuleEditForm from "./StudyModuleEditForm"
 import { StudyModuleFormValues } from "./types"
 import { useSnackbarMethods } from "/contexts/SnackbarContext"
 import { useAnchors } from "/hooks/useAnchors"
+import useIsOld from "/hooks/useIsOld"
 import { useTranslator } from "/hooks/useTranslator"
 import withEnumeratingAnchors from "/lib/with-enumerating-anchors"
 import CommonTranslations from "/translations/common"
@@ -47,6 +48,7 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
   const client = useApolloClient()
   const { addAnchor, scrollFirstErrorIntoView } = useAnchors(anchors)
   const { addSnackbar } = useSnackbarMethods()
+  const baseUrl = useIsOld() ? "/_old" : "/admin"
 
   const defaultValues = useRef(toStudyModuleForm({ module }))
   const validationSchema = useMemo(
@@ -67,8 +69,18 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
   const { trigger } = methods
 
   useEffect(() => {
-    trigger()
+    if (module?.id) {
+      trigger()
+    }
   }, [])
+
+  const [redirectSlug, setRedirectSlug] = useState<string>()
+
+  useEffect(() => {
+    if (redirectSlug) {
+      Router.push(`${baseUrl}/study-modules/${redirectSlug}/edit`)
+    }
+  }, [redirectSlug])
 
   const [addStudyModule] = useMutation(AddStudyModuleDocument)
   const [updateStudyModule] = useMutation(UpdateStudyModuleDocument)
@@ -97,26 +109,32 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
           : []),
       ] as PureQueryOptions[]
 
-      const moduleMutation = isNewStudyModule
-        ? addStudyModule
-        : updateStudyModule
-
       try {
         addSnackbar({ message: t("statusSaving") })
-        await moduleMutation({
+        if (isNewStudyModule) {
+          const { data } = await addStudyModule({
+            variables: { study_module: mutationVariables },
+            refetchQueries: () => refetchQueries,
+          })
+          addSnackbar({
+            message: t("statusSavingSuccess"),
+            severity: "success",
+          })
+          methods.reset(values)
+          setRedirectSlug(data?.addStudyModule?.slug ?? values.new_slug)
+          return
+        }
+        await updateStudyModule({
           variables: { study_module: mutationVariables },
           refetchQueries: () => refetchQueries,
         })
         addSnackbar({ message: t("statusSavingSuccess"), severity: "success" })
-        /*Router.push(`/study-modules`, undefined, {
-          shallow: true,
-        })*/
       } catch (err: any) {
         console.error("error saving", JSON.stringify(err.message, null, 2))
         addSnackbar({ message: t("statusSavingError"), severity: "error" })
       }
     },
-    [t],
+    [t, baseUrl],
   )
 
   const onError: SubmitErrorHandler<StudyModuleFormValues> = useCallback(

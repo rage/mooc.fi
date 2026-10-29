@@ -5,10 +5,11 @@ import { Knex } from "knex"
 import type { Logger } from "winston"
 
 import {
+  Exercise,
   Organization,
+  Prisma,
   SponsorImage,
   SponsorTranslation,
-  Tag,
   TagTranslation,
   TagType,
   User,
@@ -23,7 +24,11 @@ import {
   CourseSponsorsKey,
   LoadedCourseSponsor,
 } from "./loaders/courseSponsorsLoader"
-import { CourseTagsKey } from "./loaders/courseTagsLoader"
+import { CourseTagsKey, LoadedCourseTag } from "./loaders/courseTagsLoader"
+import {
+  ExerciseProgressKey,
+  ExerciseProgressRow,
+} from "./loaders/exerciseProgressLoader"
 import { SponsorImagesKey } from "./loaders/sponsorImagesLoader"
 import { SponsorTranslationsKey } from "./loaders/sponsorTranslationsLoader"
 import { TagTranslationKey } from "./loaders/tagTranslationLoader"
@@ -50,7 +55,7 @@ export interface Context extends BaseContext {
   req: IncomingMessage
   connectionParams?: Record<string, any>
   loaders: {
-    courseTags: DataLoader<CourseTagsKey, Tag[], string>
+    courseTags: DataLoader<CourseTagsKey, LoadedCourseTag[], string>
     courseSponsors: DataLoader<CourseSponsorsKey, LoadedCourseSponsor[], string>
     sponsorTranslations: DataLoader<
       SponsorTranslationsKey,
@@ -66,6 +71,13 @@ export interface Context extends BaseContext {
       UserCourseProgress | null,
       string
     >
+    userCourseProgressExtra: DataLoader<string, Prisma.JsonValue | null>
+    exerciseProgress: DataLoader<
+      ExerciseProgressKey,
+      ExerciseProgressRow[],
+      string
+    >
+    exercisesByCustomId: DataLoader<string, Exercise | null>
     userCourseServiceProgresses: DataLoader<
       UserCourseServiceProgressesKey,
       UserCourseServiceProgress[],

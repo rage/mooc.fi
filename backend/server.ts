@@ -1,6 +1,7 @@
 import http from "http"
 
 import bodyParser from "body-parser"
+import compression from "compression"
 import cors from "cors"
 import express, { Express } from "express"
 import { graphqlUploadExpress } from "graphql-upload"
@@ -12,6 +13,7 @@ import { WebSocketServer } from "ws"
 import { ApolloServer } from "@apollo/server"
 import { ApolloServerPluginEmbeddedLandingPageProductionDefaultOptions } from "@apollo/server/dist/esm/plugin/landingPage/default/types"
 import { expressMiddleware } from "@apollo/server/express4"
+import { ApolloServerPluginCacheControlDisabled } from "@apollo/server/plugin/disabled"
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer"
 import {
   ApolloServerPluginLandingPageLocalDefault,
@@ -19,11 +21,16 @@ import {
 } from "@apollo/server/plugin/landingPage/default"
 
 import { apiRouter } from "./api"
+import {
+  invalidatePublicApiCache,
+  mutatesPublicApiData,
+} from "./api/publicCache"
 import { DEBUG, isProduction, isTest } from "./config"
 import { createDefaultData } from "./config/defaultData"
 import { ServerContext } from "./context"
 import { createLoaders } from "./loaders/createLoaders"
 import createExpressGraphqlCacheMiddleware from "./middlewares/expressGraphqlCache"
+import { limitGraphqlBatchSize } from "./middlewares/graphqlBatchLimit"
 import { createSchema } from "./schema/common"
 
 export const GRAPHQL_ENDPOINT_PATH = isProduction ? "/api" : "/"
@@ -37,6 +44,7 @@ const createExpressAppWithContext = ({
   const app = express()
 
   app.use(
+    compression(),
     cors<cors.CorsRequest>(),
     bodyParser.json({ limit: "2mb" }),
     frameguard(),
@@ -58,7 +66,7 @@ const addExpressMiddleware = async (
 ) => {
   const { prisma, logger, knex, extraContext } = serverContext
   await createDefaultData(prisma)
-  // cache middleware first so that it's the first to run
+  app.use(GRAPHQL_ENDPOINT_PATH, limitGraphqlBatchSize())
   app.use(createExpressGraphqlCacheMiddleware(logger))
   app.use(
     GRAPHQL_ENDPOINT_PATH,
@@ -90,11 +98,27 @@ const server = async (serverContext: ServerContext) => {
     schema,
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
+      // No cache hints are used, and the default plugin wraps every resolver.
+      ApolloServerPluginCacheControlDisabled(),
       isProduction
         ? ApolloServerPluginLandingPageProductionDefault({
             embed: true,
           } as ApolloServerPluginEmbeddedLandingPageProductionDefaultOptions)
         : ApolloServerPluginLandingPageLocalDefault(),
+      {
+        async requestDidStart() {
+          return {
+            async willSendResponse({ operation, response }) {
+              response.http.headers.set("cache-control", "no-store")
+              // Partly failed mutations may still have written, so errors don't
+              // skip this.
+              if (operation && mutatesPublicApiData(operation)) {
+                void invalidatePublicApiCache(serverContext.logger)
+              }
+            },
+          }
+        },
+      },
       {
         async serverWillStart() {
           return {

@@ -397,6 +397,13 @@ async function updatePossibleNewPhoto(
   return newImage.id
 }
 
+// Translation languages are locale codes, language tag ids are not ("sv_SE" is "se").
+const translationLanguageTagIds: Record<string, string> = {
+  fi_FI: "fi",
+  en_US: "en",
+  sv_SE: "se",
+}
+
 function getTagMutation<C extends Course>(
   course: NexusGenInputs["CourseCreateArg"] | NexusGenInputs["CourseUpsertArg"],
   existingCourse: C & { tags: Array<Tag> },
@@ -411,15 +418,31 @@ function getTagMutation<C extends Course>(
     (tag) => tag.types?.includes("language"),
   )
   if (course.language) {
-    if (languageTags.every((tag) => tag.id !== course.language)) {
+    // Older courses store a locale code as their language
+    const languageTagId =
+      translationLanguageTagIds[course.language] ?? course.language
+    if (languageTags.every((tag) => tag.id !== languageTagId)) {
       tags = [
         ...(tags ?? []),
-        { id: course.language, hidden: false, types: ["language"] },
+        { id: languageTagId, hidden: false, types: ["language"] },
       ]
     }
   }
-  if (existingCourse.language !== course.language) {
-    tags = tags?.filter((tag) => tag.id !== existingCourse.language)
+  const translatedLanguageTagIds = new Set(
+    (course.course_translations ?? []).map(
+      (translation) => translationLanguageTagIds[translation.language],
+    ),
+  )
+  const previousLanguageTagId = existingCourse.language
+    ? translationLanguageTagIds[existingCourse.language] ??
+      existingCourse.language
+    : undefined
+  if (
+    previousLanguageTagId &&
+    existingCourse.language !== course.language &&
+    !translatedLanguageTagIds.has(previousLanguageTagId)
+  ) {
+    tags = tags?.filter((tag) => tag.id !== previousLanguageTagId)
   }
 
   if (!tags) {

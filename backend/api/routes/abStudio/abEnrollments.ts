@@ -1,7 +1,8 @@
-import { Request, Response, Router } from "express"
+import { Request, Response } from "express"
 
 import { AbEnrollment } from "@prisma/client"
 
+import { asyncRouter } from "../../asyncRouter"
 import { ApiContext } from "../../types"
 import { getUser } from "../../utils"
 
@@ -66,5 +67,5 @@ export function abEnrollmentRouter(ctx: ApiContext) {
     return res.status(500).json({ error: "unknown error" })
   }
 
-  return Router().get("/:ab_study_id", abEnrollmentGet)
+  return asyncRouter(ctx.logger).get("/:ab_study_id", abEnrollmentGet)
 }

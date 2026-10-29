@@ -13,11 +13,15 @@ export interface Breadcrumb {
 export interface BreadcrumbContextType {
   breadcrumbs: Breadcrumb[]
   setBreadcrumbs: React.Dispatch<React.SetStateAction<Array<Breadcrumb>>>
+  isNarrow: boolean
+  setIsNarrow: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export const BreadcrumbContext = createContext<BreadcrumbContextType>({
   breadcrumbs: [] as Breadcrumb[],
   setBreadcrumbs: () => void 0,
+  isNarrow: false,
+  setIsNarrow: () => void 0,
 })
 
 export const useBreadcrumbContext = () => {
@@ -31,9 +35,11 @@ export const BreadcrumbProvider = React.memo(function BreadcrumbProvider({
 }: React.PropsWithChildren) {
   const [breadcrumbs, setBreadcrumbs] = useState<Array<Breadcrumb>>([])
 
+  const [isNarrow, setIsNarrow] = useState(false)
+
   const breadcrumbContextValue = useMemo(
-    () => ({ breadcrumbs, setBreadcrumbs }),
-    [breadcrumbs],
+    () => ({ breadcrumbs, setBreadcrumbs, isNarrow, setIsNarrow }),
+    [breadcrumbs, isNarrow],
   )
 
   return (

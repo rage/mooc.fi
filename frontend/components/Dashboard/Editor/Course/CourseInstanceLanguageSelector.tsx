@@ -72,16 +72,25 @@ interface Option {
   name: string
 }
 
-const toOption = (value: string | undefined): Option => ({
+const toOption = (
+  value: string | undefined,
+  tagNames: Record<string, string | null | undefined>,
+): Option => ({
   value,
-  name: value ?? "",
+  name:
+    value && tagNames[value] ? `${tagNames[value]} (${value})` : value ?? "",
 })
 
 function CourseInstanceLanguageSelector(
   props: Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue">,
 ) {
   const t = useTranslator(CoursesTranslations, CommonTranslations)
-  const { defaultValues } = useCourseEditorData()
+  const { defaultValues, tagOptions } = useCourseEditorData()
+  const tagNames = useMemo(
+    () =>
+      Object.fromEntries((tagOptions ?? []).map((tag) => [tag._id, tag.name])),
+    [tagOptions],
+  )
 
   const { setValue, resetField } = useFormContext()
 
@@ -93,9 +102,9 @@ function CourseInstanceLanguageSelector(
   const options = useMemo(
     () => [
       { value: "", name: t("selectNoChoice") },
-      ...languages.map(toOption),
+      ...languages.map((language) => toOption(language, tagNames)),
     ],
-    [],
+    [tagNames, t],
   )
 
   const onChange = useEventCallback(
@@ -158,7 +167,10 @@ function CourseInstanceLanguageSelector(
     [t],
   )
 
-  const value = useMemo(() => toOption(field.value), [field.value])
+  const value = useMemo(
+    () => toOption(field.value, tagNames),
+    [field.value, tagNames],
+  )
 
   return (
     <Autocomplete

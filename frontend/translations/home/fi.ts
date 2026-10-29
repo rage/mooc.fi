@@ -26,4 +26,5 @@ export default {
   coursePageAvailable: "Kurssisivu jo nähtävillä",
   privacyPolicy: "Tietosuojaseloste",
   privacyPolicyLink: "/faq/tietosuojaseloste",
+  maintainedBy: "Tätä sivustoa ylläpitää Helsingin yliopiston MOOC-keskus",
 } as const

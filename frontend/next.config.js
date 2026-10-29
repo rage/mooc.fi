@@ -6,6 +6,8 @@ const path = require("path")
 dns.setDefaultResultOrder("ipv4first")*/
 
 const isProduction = process.env.NODE_ENV === "production"
+const devBackendUrl =
+  process.env.NEXT_PUBLIC_DEV_BACKEND_URL ?? "http://localhost:4000"
 
 /** @type {NextPlugin} */
 let withStatoscope
@@ -54,7 +56,7 @@ const nextConfiguration = (_phase) => ({
       return [
         {
           source: "/api/:path*",
-          destination: "http://localhost:4000/api/:path*",
+          destination: `${devBackendUrl}/api/:path*`,
         },
       ]
     }
@@ -205,7 +207,7 @@ const nextConfiguration = (_phase) => ({
         __dirname,
         "node_modules/@mui/material/locale",
       ),
-      "react-dom$": "react-dom/profiling",
+      ...(!isProduction && { "react-dom$": "react-dom/profiling" }),
     }
 
     if (options.isServer && isProduction) {

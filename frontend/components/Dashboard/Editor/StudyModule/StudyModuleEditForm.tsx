@@ -55,19 +55,19 @@ function StudyModuleEditForm() {
 
   const [imageLoading, setImageLoading] = useState(false)
 
-  useEffect(() => {
-    setImageLoading(true)
-
-    return () => {
-      setImageLoading(false)
-    }
-  }, [image, slug])
-
   const imageFilename = useMemo(() => {
     if (image) {
       return `/images/modules/${image}`
     }
-    return `/images/modules/${slug}.jpg`
+    return slug ? `/images/modules/${slug}.jpg` : ""
+  }, [image, slug])
+
+  useEffect(() => {
+    setImageLoading(Boolean(imageFilename))
+
+    return () => {
+      setImageLoading(false)
+    }
   }, [image, slug])
 
   const onImageError = useCallback(() => {
@@ -125,6 +125,7 @@ function StudyModuleEditForm() {
           isLoading={imageLoading}
           priority
           fill
+          sizes="(max-width: 900px) 100vw, 900px"
           onError={onImageError}
           onLoadingComplete={onImageLoadingComplete}
         />

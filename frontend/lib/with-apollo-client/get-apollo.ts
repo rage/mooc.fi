@@ -28,6 +28,8 @@ import { StrictTypedTypePolicies } from "/graphql/generated"
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
 
 const production = process.env.NODE_ENV === "production"
+const devBackendUrl =
+  process.env.NEXT_PUBLIC_DEV_BACKEND_URL ?? "http://localhost:4000"
 const development = !production && process.env.NODE_ENV !== "test"
 const isBrowser = typeof window !== "undefined"
 
@@ -106,7 +108,7 @@ function create(
 
   const httpLinkOptions: Parameters<typeof createUploadLink>[0] &
     BatchHttpLink.Options = {
-    uri: production ? "https://www.mooc.fi/api/" : "http://localhost:4000",
+    uri: production ? "https://www.mooc.fi/api/" : devBackendUrl,
     credentials: "same-origin",
     fetch,
     fetchOptions: {
@@ -139,7 +141,9 @@ function create(
   const wsLink = isBrowser
     ? new GraphQLWsLink(
         createClient({
-          url: production ? "wss://www.mooc.fi/api" : "ws://localhost:4000",
+          url: production
+            ? "wss://www.mooc.fi/api"
+            : devBackendUrl.replace(/^http/, "ws"),
           connectionParams: () => {
             const accessToken = nookies.get()["access_token"]
             if (accessToken) {

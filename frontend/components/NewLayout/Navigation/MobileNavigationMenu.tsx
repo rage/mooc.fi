@@ -564,7 +564,7 @@ const MobileNavigationMenu = ({
 
   return (
     <MobileMenuContainer>
-      <MobileMenuButton onClick={onMenuToggle}>
+      <MobileMenuButton onClick={onMenuToggle} aria-label={t("openMenu")}>
         <HamburgerIcon sx={{ fontSize: 24 }} aria-hidden />
       </MobileMenuButton>
       <MobileMenu

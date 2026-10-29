@@ -2,6 +2,8 @@ import { Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import LanguageSelectorForm from "./LanguageSelectorForm"
+import { useTranslator } from "/hooks/useTranslator"
+import CoursesTranslations from "/translations/courses"
 
 const StyledCard = styled("div")`
   margin: 5px;
@@ -23,11 +25,10 @@ interface LanguageSelectorProps {
 
 function LanguageSelector(props: LanguageSelectorProps) {
   const { handleLanguageChange, languageValue } = props
+  const t = useTranslator(CoursesTranslations)
   return (
     <StyledCard>
-      <StyledText component="h2">
-        Filter results by completion language
-      </StyledText>
+      <StyledText component="h2">{t("filterByCompletionLanguage")}</StyledText>
       <LanguageSelectorForm
         handleLanguageChange={handleLanguageChange}
         languageValue={languageValue}

@@ -6,6 +6,8 @@ import { Typography } from "@mui/material"
 import { css, styled } from "@mui/material/styles"
 
 import LoaderImage from "./LoaderImage"
+import { useTranslator } from "/hooks/useTranslator"
+import CoursesTranslations from "/translations/courses"
 
 import { ImageCoreFieldsFragment } from "/graphql/generated"
 
@@ -29,6 +31,7 @@ interface CourseImageProps extends Omit<ImageProps, "src"> {
 
 const CourseImage = React.memo((props: CourseImageProps) => {
   const { photo, ...rest } = props
+  const t = useTranslator(CoursesTranslations)
 
   return (
     <>
@@ -41,7 +44,7 @@ const CourseImage = React.memo((props: CourseImageProps) => {
         />
       ) : (
         <PlaceholderComponent>
-          <Typography variant="caption">no image</Typography>
+          <Typography variant="caption">{t("noImage")}</Typography>
         </PlaceholderComponent>
       )}
     </>

@@ -146,6 +146,19 @@ describe("API", () => {
 
       expect(res.status).toBe(200)
     })
+
+    it("returns empty tier data when the course has no registration link", async () => {
+      await ctx.prisma.openUniversityRegistrationLink.deleteMany({
+        where: { course: { slug: "course1" } },
+      })
+
+      const res = await getCompletionTiers({
+        headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+      })
+
+      expect(res.status).toBe(200)
+      expect(res.data).toEqual({ tierData: [] })
+    })
   })
 
   describe("/api/register-completions", () => {

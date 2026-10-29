@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 
 import { MDXComponents } from "mdx/types"
+import { GetStaticPaths, GetStaticProps } from "next"
 import dynamic from "next/dynamic"
 import { useRouter } from "next/router"
 
@@ -59,6 +60,7 @@ export const ContentBox = styled("div")`
   margin-top: 1em;
   font-size: 18px;
   line-height: 37px;
+  overflow-wrap: anywhere;
   h2 {
     font-size: 37px;
     line-height: 64px;
@@ -77,6 +79,10 @@ export const ContentBox = styled("div")`
     font-size: 23px;
     line-height: 44px;
     font-family: var(--header-font), sans-serif !important;
+  }
+  pre {
+    overflow-x: auto;
+    max-width: 100%;
   }
   code {
     background-color: #e6f4f1;
@@ -217,6 +223,15 @@ const InstallationInstructions = () => {
 
 export default InstallationInstructions
 
+export const getStaticPaths: GetStaticPaths = ({ locales = [] }) => ({
+  paths: allowedPaths.flatMap((id) =>
+    locales.map((locale) => ({ params: { id }, locale })),
+  ),
+  fallback: false,
+})
+
+export const getStaticProps: GetStaticProps = () => ({ props: {} })
+
 const allowedPaths = ["netbeans", "tmc-cli", "vscode"] as const
 const allowedOS: readonly UserOSType[] = [
   "Linux",
@@ -226,8 +241,8 @@ const allowedOS: readonly UserOSType[] = [
 ] as const
 const languages = ["en", "fi"] as const
 const breadcrumbLabels: Record<(typeof allowedPaths)[number], string> = {
-  netbeans: "Netbeans",
-  "tmc-cli": "TMC Client",
+  netbeans: "NetBeans",
+  "tmc-cli": "TMC CLI",
   vscode: "VSCode",
 }
 

@@ -17,6 +17,17 @@ jest.mock("../../services/redis", () => {
   return {
     __esModule: true,
     default: () => mockRedisClient,
+    isCacheReady: () => mockRedisClient.isReady,
+    cacheGet: async (key: string) => {
+      try {
+        return (await mockRedisClient.get(key)) ?? null
+      } catch {
+        return null
+      }
+    },
+    cacheSet: async (key: string, value: string, ttl: number) => {
+      await mockRedisClient.set(key, value, { EX: ttl })
+    },
   }
 })
 
@@ -102,6 +113,41 @@ describe("GraphQL response cache middleware", () => {
       JSON.stringify({ data: { me: { id: "1" } } }),
     )
     expect(next).not.toHaveBeenCalled()
+  })
+
+  test("cache key depends on Accept-Language", async () => {
+    const mw = createMiddleware(makeLogger())
+    ;(mockRedisClient.get as jest.Mock).mockResolvedValue(null)
+
+    await mw(
+      makeReq({ headers: { "accept-language": "fi" } }),
+      makeRes(),
+      makeNext(),
+    )
+    await mw(
+      makeReq({ headers: { "accept-language": "en" } }),
+      makeRes(),
+      makeNext(),
+    )
+    await mw(
+      makeReq({ headers: { "accept-language": "fi" } }),
+      makeRes(),
+      makeNext(),
+    )
+
+    const keys = (mockRedisClient.get as jest.Mock).mock.calls.map((c) => c[0])
+    expect(keys[0]).not.toEqual(keys[1])
+    expect(keys[0]).toEqual(keys[2])
+  })
+
+  test("treats a failing cache read as a miss", async () => {
+    const mw = createMiddleware(makeLogger())
+    ;(mockRedisClient.get as jest.Mock).mockRejectedValueOnce(new Error("boom"))
+    const next = makeNext()
+
+    await mw(makeReq(), makeRes(), next)
+
+    expect(next).toHaveBeenCalledTimes(1)
   })
 
   test("on MISS wraps res.send, stores only successful JSON and sets X-Cache=MISS", async () => {

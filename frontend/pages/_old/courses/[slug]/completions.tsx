@@ -163,7 +163,7 @@ const Completions = () => {
             />
             <TextField
               id="searchString"
-              label="Search"
+              label={t("search")}
               value={searchString}
               autoComplete="off"
               variant="outlined"

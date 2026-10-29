@@ -1,3 +1,34 @@
-import FourOhFour from "pages/_old/404"
+import { NextSeo } from "next-seo"
 
-export default FourOhFour
+import { Typography } from "@mui/material"
+
+import ContentWrapper from "/components/NewLayout/Common/ContentWrapper"
+import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { useTranslator } from "/hooks/useTranslator"
+import CommonTranslations from "/translations/common"
+
+const NotFoundPage = () => {
+  const t = useTranslator(CommonTranslations)
+  useBreadcrumbs([])
+
+  return (
+    <>
+      <NextSeo title={t("pageNotFoundTitle")} />
+      <ContentWrapper as="section" sx={{ textAlign: "center" }}>
+        <Typography
+          component="h1"
+          variant="h2"
+          gutterBottom
+          sx={{ justifyContent: "center" }}
+        >
+          404
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          {t("pageNotFound")}
+        </Typography>
+      </ContentWrapper>
+    </>
+  )
+}
+
+export default NotFoundPage

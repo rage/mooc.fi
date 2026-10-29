@@ -7,18 +7,25 @@ import { CorrectedAnchor } from "../Common"
 import { CardWrapper } from "../Common/Card"
 import ContentWrapper from "../Common/ContentWrapper"
 import CTALink from "../Common/CTALink"
-import CourseCard, { CourseCardSkeleton } from "../Courses/CourseCard"
+import CourseCard, {
+  CourseCardFields,
+  CourseCardSkeleton,
+} from "../Courses/CourseCard"
 import useIsomorphicLayoutEffect from "/hooks/useIsomorphicLayoutEffect"
 import { useTranslator } from "/hooks/useTranslator"
 import StudyModulesTranslations from "/translations/_new/study-modules"
 
-import {
-  CourseStatus,
-  NewStudyModuleFieldsWithCoursesFragment,
-} from "/graphql/generated"
+import { CourseStatus } from "/graphql/generated"
+
+interface StudyModuleListItemFields {
+  slug: string
+  name: string
+  description: string | null
+  courses: Array<CourseCardFields> | null
+}
 
 interface StudyModuleListItemProps {
-  studyModule: NewStudyModuleFieldsWithCoursesFragment
+  studyModule: StudyModuleListItemFields
   backgroundColor: string
 }
 
@@ -137,9 +144,7 @@ const StyledCTALink = styled(CTALink)`
   padding-left: 1rem;
 `
 
-const getCoursesByStatus = (
-  courses: NewStudyModuleFieldsWithCoursesFragment["courses"],
-) => {
+const getCoursesByStatus = (courses: StudyModuleListItemFields["courses"]) => {
   const filteredCourses = courses?.filter((course) => course.description) ?? []
   const active = filteredCourses.filter(
     (course) => course.status === CourseStatus.Active,

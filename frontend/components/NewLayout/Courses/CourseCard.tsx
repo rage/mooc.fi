@@ -10,17 +10,31 @@ import { css, styled } from "@mui/material/styles"
 
 import CTALink from "../Common/CTALink"
 import FlipchartIcon from "../Icons/FlipChart"
-import { courseColorSchemes } from "./common"
-import Sponsors from "./Sponsors"
+import { courseColorSchemes, CourseTagFields } from "./common"
+import Sponsors, { SponsorFields } from "./Sponsors"
 import { DifficultyTags, LanguageTags, ModuleTags } from "./Tags"
 import Tooltip from "/components/Tooltip"
 import { useTranslator } from "/hooks/useTranslator"
 import { fontSize } from "/src/theme/util"
 import CommonTranslations from "/translations/common"
 import { useFormatDateTime } from "/util/dataFormatFunctions"
-import withNoSsr from "/util/withNoSsr"
 
-import { CourseStatus, NewCourseFieldsFragment } from "/graphql/generated"
+import { CourseStatus } from "/graphql/generated"
+
+export interface CourseCardFields {
+  id: string
+  name: string
+  description: string | null
+  link: string | null
+  status: CourseStatus | null
+  start_date: string | null
+  end_date: string | null
+  ects: string | null
+  upcoming_active_link: boolean | null
+  tags: Array<CourseTagFields>
+  sponsors: Array<SponsorFields>
+  study_modules?: Array<{ slug: string }>
+}
 
 const ContainerBase = css`
   list-style-type: none;
@@ -36,7 +50,6 @@ const CourseCardRoot = styled("li")(
   container-type: inline-size;
   ${theme.breakpoints.up(768)} {
     min-width: 470px;
-    max-height: 500px;
   }
 `,
 )
@@ -89,6 +102,7 @@ const TextContainer = styled("div")`
   margin-bottom: auto;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 `
 
 const ContentContainer = styled("div")(
@@ -96,6 +110,7 @@ const ContentContainer = styled("div")(
   display: flex;
   flex-direction: column;
   width: 100%;
+  min-width: 0;
   height: 100%;
   padding: 1rem 0 1rem 2rem;
   ${theme.breakpoints.up(768)} {
@@ -117,6 +132,7 @@ const Title = styled(Typography)(
     margin-bottom: 0.5rem !important;
     margin-top: 0 !important;
     padding: 0;
+    overflow-wrap: anywhere;
       ${theme.breakpoints.down("sm")} {
       ${fontSize(18, 24)}
       letter-spacing: -0.36px;
@@ -143,14 +159,14 @@ const Description = styled(Typography)(
   letter-spacing: 0;
   text-align: left;
   overflow: hidden;
-  text-overflow: ellipsis;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 6;
+  line-clamp: 6;
 
-  ${theme.breakpoints.down(768)} {
-    max-height: 196px;
-  }
   ${theme.breakpoints.down("sm")} {
     ${fontSize(15, 22)};
-    max-height: 330px;
   }
 `,
 )
@@ -211,17 +227,15 @@ const CourseDetailItem = ({
 
 const Actions = styled("div")(
   ({ theme }) => `
-  width: calc(100% + 2rem);
+  width: 100%;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   position: relative;
   gap: 0.5rem;
-  ${theme.breakpoints.between("sm", 768)} {
-    width: calc(100% + 1rem);
-  }
+  margin-top: auto;
   ${theme.breakpoints.down("sm")} {
-    width: calc(100% + 2rem);
+    width: calc(100% + 1rem);
   }
 `,
 )
@@ -234,7 +248,9 @@ const Tags = styled("div")(
   gap: 4px;
   width: calc(100% - 2rem);
   ${theme.breakpoints.down("sm")} {
-    width: calc(50% - 2rem);
+    width: auto;
+    flex: 1 1 0;
+    min-width: 0;
   }
 `,
 )
@@ -300,7 +316,7 @@ const CourseLink = styled(CTALink)(
 ) as typeof CTALink
 
 interface ScheduleProps {
-  course?: NewCourseFieldsFragment
+  course?: CourseCardFields
 }
 
 const Schedule = React.memo(
@@ -383,9 +399,15 @@ function CourseCardLayout({
       <ContentContainer>
         <TextContainer>
           <Title variant="h3">
-            {upcoming ? title : <Link href={href ?? "#"}>{title}</Link>}
+            {upcoming || !href ? title : <Link href={href}>{title}</Link>}
           </Title>
-          {description && <Description>{description}</Description>}
+          {description && (
+            <Description
+              title={typeof description === "string" ? description : undefined}
+            >
+              {description}
+            </Description>
+          )}
         </TextContainer>
         <CourseDetails>
           {details}
@@ -407,7 +429,7 @@ function CourseCardLayout({
 }
 
 interface CourseCardProps {
-  course: NewCourseFieldsFragment
+  course: CourseCardFields
   studyModule?: string
 }
 
@@ -419,7 +441,7 @@ const CourseCard = React.forwardRef<
   const abbreviate = useMediaQuery("(max-width: 800px)")
 
   const courseStudyModule =
-    studyModule ?? course.study_modules[0]?.slug ?? "other"
+    studyModule ?? course.study_modules?.[0]?.slug ?? "other"
 
   const linkActive =
     course?.status != "Upcoming" || course?.upcoming_active_link
@@ -436,7 +458,7 @@ const CourseCard = React.forwardRef<
         details={
           course.ects && (
             <CourseDetailItem icon={Book}>
-              {course.ects}&nbsp;op&nbsp;(~
+              {course.ects}&nbsp;{t("cr")}&nbsp;(~
               {Math.round((parseInt(course.ects) * 27) / 5) * 5}h)
               <StyledTooltip
                 title={`${t("ectsHoursExplanation1")} ${course.ects} ${t(
@@ -469,7 +491,9 @@ const CourseCard = React.forwardRef<
         }
         href={course?.link}
         sponsors={
-          (course.sponsors ?? []).length > 0 && (
+          course.sponsors?.some(
+            (sponsor) => sponsor.images?.some((image) => image.type === "logo"),
+          ) && (
             <CourseDetailItem icon={Handshake}>
               <Sponsors data={course.sponsors} />
             </CourseDetailItem>
@@ -514,4 +538,4 @@ export const CourseCardSkeleton = () => (
   </SkeletonRoot>
 )
 
-export default withNoSsr(CourseCard)
+export default CourseCard

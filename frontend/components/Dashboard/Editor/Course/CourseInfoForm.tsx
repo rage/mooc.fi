@@ -1,12 +1,16 @@
-import React from "react"
+import React, { useEffect, useRef } from "react"
+
+import { useFormContext, useWatch } from "react-hook-form"
 
 import { styled } from "@mui/material/styles"
 
 import { FormFieldGroup, FormSubtitle } from "../Common"
 import { ControlledDatePicker, ControlledTextField } from "../Common/Fields"
 import CourseInstanceLanguageSelector from "./CourseInstanceLanguageSelector"
+import { CourseFormValues } from "./types"
 import { useTranslator } from "/hooks/useTranslator"
 import CoursesTranslations from "/translations/courses"
+import { slugify } from "/util/slugify"
 
 const validateOtherFields = ["start_date"] as const
 
@@ -18,8 +22,38 @@ const Row = styled("div")`
   grid-auto-flow: row;
   grid-auto-columns: minmax(200px, 1fr);
 `
+// Keeps name and slug following the translations until the user edits them.
+function useSuggestedNameAndSlug(isNewCourse: boolean) {
+  const { control, getValues, setValue, formState } =
+    useFormContext<CourseFormValues>()
+  const translations = useWatch({ control, name: "course_translations" })
+  const suggested = useRef({ name: "", slug: "" })
+  const { isSubmitted } = formState
+
+  useEffect(() => {
+    if (!isNewCourse) {
+      return
+    }
+    const source =
+      translations.find((translation) => translation.name)?.name ?? ""
+    const next = { name: source, slug: slugify(source) }
+    const { name, new_slug } = getValues()
+
+    if (name === suggested.current.name) {
+      setValue("name", next.name, { shouldValidate: isSubmitted })
+    }
+    if (new_slug === suggested.current.slug) {
+      setValue("new_slug", next.slug, { shouldValidate: isSubmitted })
+    }
+    suggested.current = next
+  }, [translations])
+}
+
 function CourseInfoForm() {
   const t = useTranslator(CoursesTranslations)
+  const isNewCourse = !useWatch<CourseFormValues, "id">({ name: "id" })
+
+  useSuggestedNameAndSlug(isNewCourse)
 
   return (
     <>

@@ -3,6 +3,7 @@ import { createHash } from "crypto"
 import { plugin } from "nexus"
 
 import { redisify } from "../services/redis"
+import { getLanguage } from "./expressGraphqlCache"
 
 const isAsyncIterator = (i: unknown): i is AsyncIterable<any> => {
   return Symbol.asyncIterator in (i as AsyncIterable<any>)
@@ -11,22 +12,20 @@ const isAsyncIterator = (i: unknown): i is AsyncIterable<any> => {
 export const cachePlugin = () =>
   plugin({
     name: "CachePlugin",
-    onCreateFieldResolver() {
+    onCreateFieldResolver(config) {
+      if (config.parentTypeConfig.name !== "Query") {
+        return
+      }
       return async (root, args, context, info, next) => {
-        let rawToken: string | undefined = undefined
-        if (context.req?.headers) {
-          rawToken = context?.req?.headers?.authorization
-        } /* else if (context.req?.connection) {
-        rawToken = context.req?.connection.context["Authorization"]
-      }*/
-        if (info.parentType.toString() !== "Query" || rawToken) {
-          // Not using the response cache for mutations or authenticated queries
+        if (context.req?.headers?.authorization) {
           return next(root, args, context, info)
         }
 
         const key = `${info.fieldName}-${JSON.stringify(
           info.fieldNodes,
-        )}-${JSON.stringify(args)}`
+        )}-${JSON.stringify(args)}-${
+          context.req ? getLanguage(context.req) : ""
+        }`
 
         const hash = createHash("sha512").update(key).digest("hex")
 
@@ -35,7 +34,7 @@ export const cachePlugin = () =>
         const res = await redisify<any>(
           async () => {
             usedGraphqlCache = false
-            context.logger.info(`Not using graphql response cache for ${key}`)
+            context.logger.debug(`Not using graphql response cache for ${key}`)
             return next(root, args, context, info)
           },
           {
@@ -48,7 +47,7 @@ export const cachePlugin = () =>
           },
         )
         if (usedGraphqlCache) {
-          context.logger.info(`Used graphql response cache for ${key}`)
+          context.logger.debug(`Used graphql response cache for ${key}`)
         }
         return res
       }

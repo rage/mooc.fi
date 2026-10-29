@@ -20,6 +20,8 @@ import ErrorMessage from "./ErrorMessage"
 import CustomSnackbar from "/components/CustomSnackbar"
 import Spinner from "/components/Spinner"
 import useIsOld from "/hooks/useIsOld"
+import { useTranslator } from "/hooks/useTranslator"
+import EmailTemplatesTranslations from "/translations/emailTemplates"
 import { EmailTemplateType } from "/types/emailTemplates"
 import { isDefinedAndNotEmpty } from "/util/guards"
 
@@ -49,6 +51,7 @@ const CreateEmailTemplateDialog = ({
     useState<CourseDashboardCourseFieldsFragment | null>(null)
   const [isErrorSnackbarOpen, setIsErrorSnackbarOpen] = useState(false)
   const { loading, error, data } = useQuery(EmailTemplateEditorCoursesDocument)
+  const t = useTranslator(EmailTemplatesTranslations)
   const dialogTitleId = useId()
 
   const [openDialog, setOpenDialog] = useState(false)
@@ -162,7 +165,7 @@ const CreateEmailTemplateDialog = ({
   }
 
   if (!data) {
-    return <div>Template not found</div>
+    return <div>{t("templateNotFound")}</div>
   }
 
   return (
@@ -175,16 +178,13 @@ const CreateEmailTemplateDialog = ({
         onClose={handleDialogClose}
         aria-labelledby={dialogTitleId}
       >
-        <DialogTitle id={dialogTitleId}>Create</DialogTitle>
+        <DialogTitle id={dialogTitleId}>{t("create")}</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Name your new Email Template. This will create new Email Template
-            and you will be redirected to editing page.
-          </DialogContentText>
+          <DialogContentText>{t("createDialogDescription")}</DialogContentText>
           <TextField
             margin="dense"
             id="name"
-            label="Name"
+            label={t("name")}
             type="text"
             fullWidth
             value={nameInput}
@@ -193,7 +193,7 @@ const CreateEmailTemplateDialog = ({
           {/* If we have a course, we are coming from the course dashboard */}
           {!course && !organization && (
             <>
-              <InputLabel htmlFor="select">Template type</InputLabel>
+              <InputLabel htmlFor="select">{t("templateType")}</InputLabel>
               <NativeSelect
                 onChange={(e) => {
                   e.preventDefault()
@@ -202,18 +202,20 @@ const CreateEmailTemplateDialog = ({
                 id="selectType"
                 value={templateType}
               >
-                <option value="completion">Completion e-mail</option>
-                <option value="threshold">Threshold e-mail</option>
-                <option value="course-stats">Course stats e-mail</option>
+                <option value="completion">{t("typeCompletion")}</option>
+                <option value="threshold">{t("typeThreshold")}</option>
+                <option value="course-stats">{t("typeCourseStats")}</option>
                 <option value="join-organization">
-                  Join organization e-mail
+                  {t("typeJoinOrganization")}
                 </option>
               </NativeSelect>
               {templateType !== "join-organization" && (
                 <>
                   <br />
                   <br />
-                  <InputLabel htmlFor="selectCourse">For course</InputLabel>
+                  <InputLabel htmlFor="selectCourse">
+                    {t("forCourse")}
+                  </InputLabel>
                   <NativeSelect
                     onChange={(e) => {
                       e.preventDefault()
@@ -226,7 +228,7 @@ const CreateEmailTemplateDialog = ({
                     id="selectCourse"
                     defaultValue="Select course"
                   >
-                    <option value="Select course">Select...</option>
+                    <option value="Select course">{t("selectCourse")}</option>
                     {courseOptions}
                   </NativeSelect>
                 </>
@@ -236,10 +238,10 @@ const CreateEmailTemplateDialog = ({
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDialogClose} color="primary">
-            Cancel
+            {t("cancel")}
           </Button>
           <Button onClick={() => handleCreate()} color="primary">
-            Create
+            {t("create")}
           </Button>
         </DialogActions>
       </Dialog>
@@ -247,7 +249,7 @@ const CreateEmailTemplateDialog = ({
         open={isErrorSnackbarOpen}
         setOpen={setIsErrorSnackbarOpen}
         type="error"
-        message="Error in creating a new EmailTemplate, see console"
+        message={t("createError")}
       />
     </div>
   )

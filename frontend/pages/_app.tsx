@@ -1,14 +1,14 @@
-import { useInsertionEffect, useMemo } from "react"
+import { useEffect, useInsertionEffect, useMemo, useState } from "react"
 
 import { DefaultSeo } from "next-seo"
 import type { AppProps, NextWebVitalsMetric } from "next/app"
 import Head from "next/head"
+import { useRouter } from "next/router"
 import Script from "next/script"
 
 import { CssBaseline } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
-import { LocalizationProvider } from "@mui/x-date-pickers"
-import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 import DynamicLayout from "/components/DynamicLayout"
 import AppContextProvider from "/contexts/AppContextProvider"
@@ -27,6 +27,18 @@ interface MyAppProps extends AppProps {
 
 export function MyApp({ Component, pageProps, deviceType }: MyAppProps) {
   const { signedIn, admin, currentUser } = useAuth()
+
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 5 * 60 * 1000,
+            refetchOnWindowFocus: false,
+          },
+        },
+      }),
+  )
 
   useInsertionEffect(() => {
     const jssStyles = document?.querySelector("#jss-server-side")
@@ -73,7 +85,7 @@ export function MyApp({ Component, pageProps, deviceType }: MyAppProps) {
       </Head>
       <ThemeProvider theme={themeWithLocale}>
         <CssBaseline />
-        <LocalizationProvider dateAdapter={AdapterLuxon}>
+        <QueryClientProvider client={queryClient}>
           <LoginStateProvider value={loginStateContextValue}>
             <AppContextProvider>
               <DynamicLayout isOld={isOld}>
@@ -82,7 +94,7 @@ export function MyApp({ Component, pageProps, deviceType }: MyAppProps) {
               </DynamicLayout>
             </AppContextProvider>
           </LoginStateProvider>
-        </LocalizationProvider>
+        </QueryClientProvider>
       </ThemeProvider>
     </>
   )
@@ -93,4 +105,17 @@ export function reportWebVitals(metric: NextWebVitalsMetric) {
   // console.log(metric)
 }
 
-export default withApolloClient(MyApp)
+const MyAppWithApollo = withApolloClient(MyApp)
+
+// Never server-render: it blocks responses. Waiting for isReady also gives
+// statically served pages their URL query on the first render.
+export default function App(props: MyAppProps) {
+  const { isReady } = useRouter()
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  return isMounted && isReady ? <MyAppWithApollo {...props} /> : null
+}

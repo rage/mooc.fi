@@ -3,6 +3,9 @@ import { styled } from "@mui/material/styles"
 
 import InfoRow, { InfoRowContainer } from "./InfoRow"
 import Container from "/components/Container"
+import { useTranslator } from "/hooks/useTranslator"
+import { Translator } from "/translations"
+import UsersTranslations from "/translations/users"
 import { isDefinedAndNotEmpty } from "/util/guards"
 
 import { UserDetailedFieldsFragment } from "/graphql/generated"
@@ -45,22 +48,28 @@ type FieldWithGetter = {
 const isFieldWithGetter = (field: any): field is FieldWithGetter =>
   typeof field === "object" && "getValue" in field
 
-const availableFields: Partial<
+const getAvailableFields = (
+  t: Translator<typeof UsersTranslations.en>,
+): Partial<
   Record<keyof UserDetailedFieldsFragment, string | FieldWithGetter>
-> = {
-  upstream_id: "TMC id",
-  email: "Email",
-  real_student_number: "Real student number",
-  student_number: "Student number",
-  id: "MOOC.fi internal id",
-  username: "Username",
+> => ({
+  upstream_id: t("upstream_id"),
+  email: t("email"),
+  real_student_number: t("real_student_number"),
+  student_number: t("student_number"),
+  id: t("id"),
+  username: t("username"),
   research_consent: {
-    title: "Research consent",
-    getValue: (data) => (data ? "Yes" : "No"),
+    title: t("researchConsent"),
+    getValue: (data) => (data ? t("yes") : t("no")),
   },
-}
+})
 
-const renderAvailableFields = (data: UserDetailedFieldsFragment) => {
+const renderAvailableFields = (
+  data: UserDetailedFieldsFragment,
+  t: Translator<typeof UsersTranslations.en>,
+) => {
+  const availableFields = getAvailableFields(t)
   return fields
     .filter(
       (field) => field in availableFields && isDefinedAndNotEmpty(data[field]),
@@ -83,6 +92,8 @@ const renderAvailableFields = (data: UserDetailedFieldsFragment) => {
 }
 
 function UserInfo({ data }: UserInfoProps) {
+  const t = useTranslator(UsersTranslations)
+
   if (!data?.full_name) {
     return <UserInfoSkeleton />
   }
@@ -90,7 +101,7 @@ function UserInfo({ data }: UserInfoProps) {
   return (
     <UserInfoContainer>
       <Title variant="h1">{data.full_name}</Title>
-      {renderAvailableFields(data)}
+      {renderAvailableFields(data, t)}
     </UserInfoContainer>
   )
 }

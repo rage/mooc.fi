@@ -1,6 +1,6 @@
 import DataLoader from "dataloader"
 
-import { Sponsor } from "@prisma/client"
+import { Sponsor, SponsorImage, SponsorTranslation } from "@prisma/client"
 
 import { ExtendedPrismaClient } from "../prisma"
 
@@ -9,7 +9,12 @@ export interface CourseSponsorsKey {
   language?: string | null
 }
 
-export type LoadedCourseSponsor = Sponsor & { order: number; language?: string }
+export type LoadedCourseSponsor = Sponsor & {
+  translations: SponsorTranslation[]
+  images: SponsorImage[]
+  order: number
+  language?: string
+}
 
 function serializeKey(key: CourseSponsorsKey): string {
   return JSON.stringify({
@@ -31,6 +36,7 @@ export function createCourseSponsorsLoader(prisma: ExtendedPrismaClient) {
           sponsor: {
             include: {
               translations: true,
+              images: true,
             },
           },
         },

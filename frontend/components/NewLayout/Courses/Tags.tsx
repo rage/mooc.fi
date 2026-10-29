@@ -8,6 +8,7 @@ import { styled } from "@mui/material/styles"
 
 import {
   allowedLanguages,
+  CourseTagFields,
   sortByDifficulty,
   sortByLanguage,
   tagColorSchemes,
@@ -17,11 +18,6 @@ import { useTranslator } from "/hooks/useTranslator"
 import { fontSize } from "/src/theme/util"
 import CommonTranslations from "/translations/common"
 import { isDefinedAndNotEmpty } from "/util/guards"
-
-import {
-  NewCourseFieldsFragment,
-  TagCoreFieldsFragment,
-} from "/graphql/generated"
 
 const Tag = styled(Chip)(
   ({ theme }) => `
@@ -58,7 +54,7 @@ const LanguageTagBase = styled(Tag)`
 export const LanguageTag = ({
   otherLanguages,
   ...props
-}: PropsOf<typeof Tag> & { otherLanguages?: Array<TagCoreFieldsFragment> }) => {
+}: PropsOf<typeof Tag> & { otherLanguages?: Array<CourseTagFields> }) => {
   const t = useTranslator(CommonTranslations)
 
   if (!otherLanguages) {
@@ -93,14 +89,13 @@ export const LanguageTag = ({
 }
 
 interface TagsProps {
-  course: NewCourseFieldsFragment
+  course: { tags: Array<CourseTagFields> }
   abbreviated?: boolean
 }
 
 const tagHasName = (
-  tag: TagCoreFieldsFragment,
-): tag is TagCoreFieldsFragment & { name: string } =>
-  typeof tag.name === "string"
+  tag: CourseTagFields,
+): tag is CourseTagFields & { name: string } => typeof tag.name === "string"
 
 export const LanguageTags = React.memo(({ course, abbreviated }: TagsProps) => {
   const langTags = course.tags?.filter((tag) => tag.types?.includes("language"))

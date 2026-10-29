@@ -4,6 +4,8 @@ import { ApolloClient, useApolloClient } from "@apollo/client"
 import { styled } from "@mui/material/styles"
 
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
+import { useTranslator } from "/hooks/useTranslator"
+import CoursesTranslations from "/translations/courses"
 
 import {
   ExportUserCourseProgressesDocument,
@@ -21,15 +23,16 @@ export interface PointsExportButtonProps {
 function PointsExportButton(props: PointsExportButtonProps) {
   const { slug } = props
   const client = useApolloClient()
+  const t = useTranslator(CoursesTranslations)
 
   const [infotext, setInfotext] = useState("")
 
   const onExportClick = useCallback(async () => {
     try {
       const { utils, writeFile } = await import("xlsx")
-      setInfotext("Downloading data")
+      setInfotext(t("pointsExportDownloading"))
       const data = await downloadInChunks(slug, client, setInfotext)
-      setInfotext("constructing csv")
+      setInfotext(t("pointsExportConstructing"))
       const objects = await flatten(data)
       const sheet = utils.json_to_sheet(objects)
       const workbook = {
@@ -45,7 +48,7 @@ function PointsExportButton(props: PointsExportButtonProps) {
     } catch (e) {
       setInfotext(`Error: ${e}`)
     }
-  }, [slug, client])
+  }, [slug, client, t])
 
   return (
     <PointsExportButtonContainer>
@@ -54,7 +57,7 @@ function PointsExportButton(props: PointsExportButtonProps) {
         disabled={!(!infotext || infotext == "ready")}
         onClick={onExportClick}
       >
-        Export
+        {t("pointsExport")}
       </StyledButton>
       {infotext}
     </PointsExportButtonContainer>

@@ -2,10 +2,12 @@
 import { DateTime } from "luxon"
 import { omit } from "remeda"
 
-import { initialValues } from "./form-validation"
+import { initialTranslation, initialValues } from "./form-validation"
+import { translationLanguages } from "./translationLanguages"
 import { CourseFormValues, CourseTranslationFormValues } from "./types"
 import { filterNullRecursive } from "/util/filterNull"
 import { isDefinedAndNotEmpty } from "/util/guards"
+import { mapLocaleCodeToNextLanguage } from "/util/moduleFunctions"
 
 import {
   CourseCreateArg,
@@ -15,6 +17,13 @@ import {
   StudyModuleDetailedFieldsFragment,
   TagCoreFieldsFragment,
 } from "/graphql/generated"
+
+const languageRank = (language?: string | null) => {
+  const rank = translationLanguages.indexOf(
+    language as (typeof translationLanguages)[number],
+  )
+  return rank === -1 ? translationLanguages.length : rank
+}
 
 const isProduction = process.env.NODE_ENV === "production"
 
@@ -28,7 +37,10 @@ export const toCourseForm = ({
   course,
 }: ToCourseFormArgs): CourseFormValues => {
   if (!course) {
-    return initialValues
+    return {
+      ...initialValues,
+      course_translations: [{ ...initialTranslation, language: "fi_FI" }],
+    }
   }
 
   const study_modules =
@@ -43,7 +55,10 @@ export const toCourseForm = ({
       "created_at",
       "updated_at",
     ]),
-    language: course.language ?? "",
+    language:
+      mapLocaleCodeToNextLanguage(course.language ?? "") ??
+      course.language ??
+      "",
     support_email: course.support_email ?? "",
     start_date: course.start_date ? DateTime.fromISO(course.start_date) : null,
     end_date: course.end_date ? DateTime.fromISO(course.end_date) : null,
@@ -55,8 +70,9 @@ export const toCourseForm = ({
     study_module_order: course.study_module_order ?? undefined,
     status: course.status ?? CourseStatus.Upcoming,
     // @ts-expect-error: language is expected to be invalid initially
-    course_translations: (course.course_translations ?? []).map(
-      (course_translation) => {
+    course_translations: [...(course.course_translations ?? [])]
+      .sort((a, b) => languageRank(a.language) - languageRank(b.language))
+      .map((course_translation) => {
         const open_university_course_link =
           course?.open_university_registration_links?.find(
             (link) => link.language === course_translation.language,
@@ -84,8 +100,7 @@ export const toCourseForm = ({
           description: course_translation.description ?? "",
           instructions: course_translation.instructions ?? "",
         }
-      },
-    ),
+      }),
     study_modules,
     course_variants:
       course?.course_variants?.map((course_variant) => ({

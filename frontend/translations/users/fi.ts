@@ -1,4 +1,13 @@
 export default {
+  courseSettings: "Kurssiasetukset",
+  courseSettingsCourse: "Kurssi",
+  courseSettingsLanguage: "Kieli",
+  courseSettingsCreated: "Luotu",
+  courseSettingsUpdated: "Päivitetty",
+  courseSettingsSettings: "Asetukset",
+  noCourseSettings: "Käyttäjällä ei ole kurssiasetuksia.",
+  courseSettingsTruncated: "Näytetään ensimmäiset {{count}} kurssiasetusta.",
+  userNotFound: "Käyttäjää ei löytynyt",
   userSearch: "Käyttäjähaku",
   search: "Hae",
   noResults: "Ei tuloksia",
@@ -41,4 +50,8 @@ export default {
   id: "MOOC.fi-tietokanta-id",
   upstream_id: "TMC id",
   total: "Yhteensä",
+  researchConsent: "Tutkimuslupa",
+  yes: "Kyllä",
+  no: "Ei",
+  rawView: "Raaka näkymä",
 } as const

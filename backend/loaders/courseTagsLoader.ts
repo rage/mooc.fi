@@ -13,6 +13,11 @@ export interface CourseTagsKey {
   includeHidden?: boolean | null
 }
 
+export type LoadedCourseTag = Tag & {
+  tag_translations: TagTranslation[]
+  tag_types: TagType[]
+}
+
 type TagWithRelations = Tag & {
   tag_translations?: TagTranslation[] | null
   tag_types?: TagType[] | null
@@ -93,7 +98,7 @@ export function createCourseTagsLoader(prisma: ExtendedPrismaClient) {
 
     const courseMap = new Map(courses.map((c) => [c.id, c]))
 
-    return keys.map((key) => {
+    return keys.map((key): LoadedCourseTag[] => {
       const course = courseMap.get(key.courseId)
       if (!course) {
         return []
@@ -114,7 +119,7 @@ export function createCourseTagsLoader(prisma: ExtendedPrismaClient) {
     })
   }
 
-  return new DataLoader<CourseTagsKey, Tag[], string>(batchLoadFn, {
+  return new DataLoader<CourseTagsKey, LoadedCourseTag[], string>(batchLoadFn, {
     cacheKeyFn: serializeKey,
   })
 }

@@ -1,5 +1,6 @@
 import React, { Reducer, useEffect, useReducer, useState } from "react"
 
+import { useConfirm } from "material-ui-confirm"
 import { NextSeo } from "next-seo"
 import Router, { useRouter } from "next/router"
 import { omit } from "remeda"
@@ -25,7 +26,9 @@ import { CardTitle } from "/components/Text/headers"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import useIsOld from "/hooks/useIsOld"
 import { useQueryParameter } from "/hooks/useQueryParameter"
+import { useTranslator } from "/hooks/useTranslator"
 import withAdmin from "/lib/with-admin"
+import EmailTemplatesTranslations from "/translations/emailTemplates"
 import {
   emailTemplateDescriptions,
   emailTemplateNames,
@@ -122,12 +125,13 @@ const EmailTemplateView = () => {
   const isOld = useIsOld()
   const baseUrl = isOld ? "/_old" : "/admin"
   const { locale } = useRouter()
+  const t = useTranslator(EmailTemplatesTranslations)
   const [isHelpOpen, setIsHelpOpen] = useState(false)
   const id = useQueryParameter("id")
 
   const [snackbarData, setSnackbarData] = useState<SnackbarData>({
     type: "error",
-    message: "Error: Could not save",
+    message: t("saveError"),
   })
 
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false)
@@ -141,11 +145,18 @@ const EmailTemplateView = () => {
     if (data?.email_template) {
       dispatch({
         type: "SET_TEMPLATE",
-        value: data.email_template as EmailTemplateState,
+        value: {
+          ...data.email_template,
+          name: data.email_template.name ?? "",
+          title: data.email_template.title ?? "",
+          txt_body: data.email_template.txt_body ?? "",
+          html_body: data.email_template.html_body ?? "",
+        } as EmailTemplateState,
       })
     }
   }, [data?.email_template])
 
+  const confirm = useConfirm()
   const [updateEmailTemplateMutation] = useMutation(UpdateEmailTemplateDocument)
   const [deleteEmailTemplateMutation] = useMutation(DeleteEmailTemplateDocument)
 
@@ -170,7 +181,7 @@ const EmailTemplateView = () => {
   }
 
   if (!data) {
-    return <div>No template found</div>
+    return <div>{t("noTemplateFound")}</div>
   }
 
   const filteredDescriptions = emailTemplateDescriptions.filter((value) => {
@@ -195,30 +206,30 @@ const EmailTemplateView = () => {
         <WideContainer>
           <Paper style={{ padding: "0.5rem" }}>
             <TemplateForm>
-              <TextField id="id" label="ID" value={state.id} disabled />
+              <TextField id="id" label={t("id")} value={state.id} disabled />
               <TextField
                 id="template_type"
-                label="Template type"
-                value={state.template_type}
+                label={t("templateType")}
+                value={state.template_type ?? ""}
                 disabled
               />
               <TextField
                 id="name"
-                label="Name"
+                label={t("name")}
                 variant="outlined"
                 value={state.name ?? ""}
                 onChange={setField}
               />
               <TextField
                 id="title"
-                label="Email Subject"
+                label={t("emailSubject")}
                 variant="outlined"
                 value={state.title ?? ""}
                 onChange={setField}
               />
               <TextField
                 id="txt_body"
-                label="Email text body"
+                label={t("emailTextBody")}
                 multiline
                 rows="4"
                 value={state.txt_body ?? ""}
@@ -227,7 +238,7 @@ const EmailTemplateView = () => {
               />
               <TextField
                 id="html_body"
-                label="Email HTML Body (disabled)"
+                label={t("emailHtmlBody")}
                 multiline
                 rows="4"
                 disabled
@@ -240,24 +251,24 @@ const EmailTemplateView = () => {
                   <TextField
                     type="number"
                     id="exercise_completions_threshold"
-                    label="Exercise Completions threshold (not supported)"
+                    label={t("exerciseCompletionsThreshold")}
                     fullWidth
                     autoComplete="off"
                     variant="outlined"
                     style={{ width: "60%" }}
-                    value={state.exercise_completions_threshold}
+                    value={state.exercise_completions_threshold ?? ""}
                     onChange={setField}
                     disabled
                   />
                   <TextField
                     id="points_threshold"
                     type="number"
-                    label="Points threshold"
+                    label={t("pointsThreshold")}
                     fullWidth
                     autoComplete="off"
                     variant="outlined"
                     style={{ width: "60%" }}
-                    value={state.points_threshold}
+                    value={state.points_threshold ?? ""}
                     onChange={setField}
                   />
                 </>
@@ -265,7 +276,7 @@ const EmailTemplateView = () => {
               {state.template_type === "course-stats" ? (
                 <>
                   <TextField
-                    label="Course instance language (used if course is handled by a parent course; short code like fi, sv, fr-be)"
+                    label={t("courseInstanceLanguage")}
                     fullWidth
                     autoComplete="off"
                     variant="outlined"
@@ -276,13 +287,13 @@ const EmailTemplateView = () => {
               ) : null}
               <Row>
                 <Typography variant="body2">
-                  Created at{" "}
+                  {t("createdAt")}{" "}
                   {new Date(
                     data.email_template?.created_at ?? "",
                   ).toLocaleString(locale)}
                 </Typography>
                 <Typography variant="body2">
-                  Updated at{" "}
+                  {t("updatedAt")}{" "}
                   {new Date(
                     data.email_template?.updated_at ?? "",
                   ).toLocaleString(locale)}
@@ -297,39 +308,49 @@ const EmailTemplateView = () => {
                       if (!state?.id) return
 
                       try {
-                        const { data } = await updateEmailTemplateMutation({
+                        await updateEmailTemplateMutation({
                           // FIXME: some weird typing thing
                           variables: omit(state, "__typename" as any) as any,
                         })
-                        console.log(data)
                         setSnackbarData({
                           type: "success",
-                          message: "Saved successfully",
+                          message: t("savedSuccessfully"),
                         })
                       } catch {
                         setSnackbarData({
                           type: "error",
-                          message: "Error: Could not save",
+                          message: t("saveError"),
                         })
                       }
                       setIsSnackbarOpen(true)
                     }}
                   >
-                    Update
+                    {t("update")}
                   </Button>
                   <Button
                     variant="contained"
                     color="primary"
                     onClick={async () => {
-                      if (!state?.id == null) return
+                      if (!state?.id) return
                       try {
-                        const { data } = await deleteEmailTemplateMutation({
+                        await confirm({
+                          title: t("deleteConfirmTitle"),
+                          description: t("deleteConfirmDescription", {
+                            name: state.name,
+                          }),
+                          confirmationText: t("delete"),
+                          cancellationText: t("cancel"),
+                        })
+                      } catch {
+                        return
+                      }
+                      try {
+                        await deleteEmailTemplateMutation({
                           variables: { id: state.id },
                         })
-                        console.log(data)
                         setSnackbarData({
                           type: "success",
-                          message: "Deleted successfully",
+                          message: t("deletedSuccessfully"),
                         })
 
                         const url = `${baseUrl}/email-templates/`
@@ -339,27 +360,25 @@ const EmailTemplateView = () => {
                       } catch {
                         setSnackbarData({
                           type: "error",
-                          message: "Error: Could not delete",
+                          message: t("deleteError"),
                         })
                       }
                       setIsSnackbarOpen(true)
                     }}
                   >
-                    Delete
+                    {t("delete")}
                   </Button>
                 </Row>
                 <Stretch />
                 <CollapseButton
                   open={isHelpOpen}
-                  label="Help"
+                  label={t("help")}
                   onClick={() => setIsHelpOpen((s) => !s)}
                 />
               </Row>
               <Collapse in={isHelpOpen}>
                 <div style={{ margin: "0.5rem", padding: "0.5rem" }}>
-                  <Typography variant="subtitle2">
-                    You can use these template values in the email:
-                  </Typography>
+                  <Typography variant="subtitle2">{t("helpIntro")}</Typography>
                   <TemplateList>
                     {filteredDescriptions.map((value) => (
                       <Card key={value.name} style={{ padding: "0.5rem" }}>
@@ -377,8 +396,9 @@ const EmailTemplateView = () => {
                             </Typography>
                             {value.types?.length && (
                               <p>
-                                Limited to template type
-                                {value.types.length > 1 ? "s" : ""}{" "}
+                                {value.types.length > 1
+                                  ? t("limitedToTypes")
+                                  : t("limitedToType")}{" "}
                                 {value.types
                                   .map<React.ReactNode>((type) => (
                                     <strong key={type}>

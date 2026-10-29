@@ -14,7 +14,6 @@ import {
 } from "../../config"
 import {
   cachePlugin,
-  localePlugin,
   loggerPlugin,
   moocfiAuthPlugin,
   validateArgsPlugin,
@@ -38,9 +37,9 @@ const createPlugins = () => {
       },
     }),
     loggerPlugin(),
-    cachePlugin(),
+    // Before cachePlugin: nested fields of a cached root value still read ctx.role.
     moocfiAuthPlugin(),
-    localePlugin(),
+    cachePlugin(),
     fieldAuthorizePlugin(),
     validateArgsPlugin(),
   ]

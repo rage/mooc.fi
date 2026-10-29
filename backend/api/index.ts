@@ -1,10 +1,10 @@
-import { Router } from "express"
-
+import { asyncRouter } from "./asyncRouter"
 import {
   abEnrollmentRouter,
   abStudiesRouter,
   CompletionController,
   ProgressController,
+  PublicController,
   StoredDataController,
   UserCourseSettingsController,
 } from "./routes"
@@ -15,8 +15,13 @@ export function apiRouter(ctx: ApiContext) {
   const progressController = new ProgressController(ctx)
   const storedDataController = new StoredDataController(ctx)
   const userCourseSettingsController = new UserCourseSettingsController(ctx)
+  const publicController = new PublicController(ctx)
 
-  return Router()
+  return asyncRouter(ctx.logger)
+    .get("/public/frontpage", publicController.frontpage)
+    .get("/public/courses", publicController.courses)
+    .get("/public/study-modules", publicController.studyModules)
+    .get("/public/current-user", publicController.currentUser)
     .get("/completions/:slug", completionController.completions)
     .get(
       "/completions/:courseId/csv/token",

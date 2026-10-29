@@ -110,7 +110,7 @@ const LinkBoxDescription = styled("p")(
 )
 
 const LinkBoxLink = styled(CTALink)`
-  margin: 0 -8px 24px 0;
+  margin: 0 0 24px;
   align-self: flex-end;
   padding-left: 2rem;
 

@@ -1,143 +1,140 @@
-import { useCallback } from "react"
+import { useCallback, useMemo } from "react"
 
-import { useFieldArray } from "react-hook-form"
+import { useConfirm } from "material-ui-confirm"
+import { UseFieldArrayReturn, useFormContext } from "react-hook-form"
 
-import { Button, ButtonGroup } from "@mui/material"
+import { ToggleButton, ToggleButtonGroup } from "@mui/material"
 import { styled } from "@mui/material/styles"
+import { useEventCallback } from "@mui/material/utils"
 
 import { FormSubtitle } from "../../EditorLegacy/common"
+import { useCourseEditorData } from "./CourseEditorDataContext"
 import { initialTranslation } from "./form-validation"
-import { CourseFormValues } from "./types"
+import {
+  translationLanguages,
+  useTranslationLanguageNames,
+} from "./translationLanguages"
+import { CourseFormValues, TagFormValue } from "./types"
 import { useTranslator } from "/hooks/useTranslator"
+import CommonTranslations from "/translations/common"
 import CoursesTranslations from "/translations/courses"
+import { mapLocaleCodeToNextLanguage } from "/util/moduleFunctions"
 
-const ButtonGroupContainer = styled(ButtonGroup)`
-  width: 90%;
-  margin: auto;
+const selectableLanguages = ["fi_FI", "en_US"] as const
+
+const languageRank = (language?: string) =>
+  translationLanguages.indexOf(
+    language as (typeof translationLanguages)[number],
+  )
+
+const StyledToggleButtonGroup = styled(ToggleButtonGroup)`
   display: flex;
+  justify-content: center;
   margin-bottom: 1rem;
-  margin-top: 1 rem;
-  justify-content: space-around;
 `
-const StyledLanguageButton = styled(Button)`
-  width: 33%;
-  background-color: #378170;
-  margin: 0.5rem;
-  color: white !important;
-  @media (max-width: 600px) {
-    font-size: 16px;
-    padding: 2rem;
-  }
-  @media (min-width: 600px) {
-    font-size: 21px;
-    padding: 3rem;
-  }
-  box-shadow:
-    0px 2px 3px rgba(0, 0, 0, 0.5),
-    inset 0px 0px 2px rgba(154, 147, 113, 0.95);
-  border: 1px solid #378170;
-  &:hover {
-    background-color: #83acda;
-    border: 1px solid #83acda;
-    color: black;
-  }
-  &:disabled {
-    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.5);
-    color: white;
-    border: 1px solid #354b45;
-  }
-  &:disabled[data-selected="true"] {
-    background-color: #519b8a;
-  }
-  &:disabled[data-selected="false"] {
-    background-color: #354b45;
-    color: gray;
-  }
-`
-interface LanguageSelectorProps {
-  selectedLanguage: string
-  setSelectedLanguage: React.Dispatch<React.SetStateAction<string>>
+
+type TranslationFieldArray = UseFieldArrayReturn<
+  CourseFormValues,
+  "course_translations"
+>
+
+export function useLanguageTagSync() {
+  const { tagOptions } = useCourseEditorData()
+  const { getValues, setValue } = useFormContext<CourseFormValues>()
+
+  return useEventCallback((language: string, enabled: boolean) => {
+    const tagId = mapLocaleCodeToNextLanguage(language)
+    const tags: TagFormValue[] = getValues("tags") ?? []
+    const hasTag = tags.some((tag) => tag._id === tagId)
+
+    if (enabled && !hasTag) {
+      const option = tagOptions?.find((tag) => tag._id === tagId)
+
+      if (option) {
+        setValue("tags", [...tags, option], { shouldDirty: true })
+      }
+    } else if (!enabled && hasTag && getValues("language") !== tagId) {
+      setValue(
+        "tags",
+        tags.filter((tag) => tag._id !== tagId),
+        { shouldDirty: true },
+      )
+    }
+  })
 }
 
-function CourseLanguageSelector(props: LanguageSelectorProps) {
-  const { selectedLanguage, setSelectedLanguage } = props
+interface LanguageSelectorProps {
+  translations: TranslationFieldArray
+}
 
-  const { append } = useFieldArray<CourseFormValues, "course_translations">({
-    name: "course_translations",
-  })
+function CourseLanguageSelector({ translations }: LanguageSelectorProps) {
+  const { fields, insert, remove } = translations
+  const { getValues } = useFormContext<CourseFormValues>()
+  const confirm = useConfirm()
+  const syncLanguageTag = useLanguageTagSync()
+  const t = useTranslator(CoursesTranslations, CommonTranslations)
 
-  const t = useTranslator(CoursesTranslations)
+  const selected = useMemo(
+    () => fields.map((field) => field.language as string),
+    [fields],
+  )
 
-  const onSelectFinnish = useCallback(() => {
-    setSelectedLanguage((prevSelectedLanguage) =>
-      prevSelectedLanguage === "en_US" ? "both" : "fi_FI",
-    )
-    append({ ...initialTranslation, language: "fi_FI" })
-  }, [selectedLanguage, setSelectedLanguage, append, initialTranslation])
-  const onSelectEnglish = useCallback(() => {
-    setSelectedLanguage((prevSelectedLanguage) =>
-      prevSelectedLanguage === "fi_FI" ? "both" : "en_US",
-    )
-    append({ ...initialTranslation, language: "en_US" })
-  }, [selectedLanguage, setSelectedLanguage, append, initialTranslation])
-  const onSelectBoth = useCallback(() => {
-    if (selectedLanguage === "") {
-      append({
-        ...initialTranslation,
-        language: "en_US",
-      })
-      append({
-        ...initialTranslation,
-        language: "fi_FI",
-      })
-    } else if (selectedLanguage === "fi") {
-      append({ ...initialTranslation, language: "en_US" })
-    } else {
-      append({
-        ...initialTranslation,
-        language: "fi_FI",
-      })
-    }
+  const languageNames = useTranslationLanguageNames()
 
-    setSelectedLanguage("both")
-  }, [selectedLanguage, setSelectedLanguage, append, initialTranslation])
+  const onToggle = useCallback(
+    async (language: string) => {
+      const index = selected.indexOf(language)
+
+      if (index === -1) {
+        const position = selected.filter(
+          (other) => languageRank(other) < languageRank(language),
+        ).length
+
+        insert(position, { ...initialTranslation, language } as any)
+        syncLanguageTag(language, true)
+        return
+      }
+
+      const { name, description } = getValues(`course_translations.${index}`)
+
+      if (name || description) {
+        try {
+          await confirm({
+            title: t("courseRemoveTranslation"),
+            description: t("confirmationRemoveTranslation"),
+            confirmationText: t("confirmationYes"),
+            cancellationText: t("confirmationNo"),
+          })
+        } catch {
+          return
+        }
+      }
+      remove(index)
+      syncLanguageTag(language, false)
+    },
+    [selected, insert, remove, getValues, confirm, t, syncLanguageTag],
+  )
 
   return (
     <>
       <FormSubtitle variant="h3" component="h3" align="center">
         {t("courseLanguageSelectTitle")}
       </FormSubtitle>
-      <ButtonGroupContainer
-        color="secondary"
-        aria-label="course language select button group"
-        id="course_translations"
-        disabled={selectedLanguage == "both"}
+      <StyledToggleButtonGroup
+        color="primary"
+        aria-label={t("courseLanguageSelectTitle")}
       >
-        <StyledLanguageButton
-          onClick={onSelectFinnish}
-          disabled={
-            selectedLanguage === "fi_FI" || selectedLanguage === "en_US"
-          }
-          data-selected={selectedLanguage === "fi_FI"}
-        >
-          {t("courseFinnish")}
-        </StyledLanguageButton>
-        <StyledLanguageButton
-          disabled={
-            selectedLanguage === "en_US" || selectedLanguage === "fi_FI"
-          }
-          data-selected={selectedLanguage === "en_US"}
-          onClick={onSelectEnglish}
-        >
-          {t("courseEnglish")}
-        </StyledLanguageButton>
-        <StyledLanguageButton
-          data-selected={selectedLanguage === "both"}
-          onClick={onSelectBoth}
-        >
-          {t("courseBoth")}
-        </StyledLanguageButton>
-      </ButtonGroupContainer>
+        {selectableLanguages.map((language) => (
+          <ToggleButton
+            key={language}
+            value={language}
+            selected={selected.includes(language)}
+            onClick={() => onToggle(language)}
+          >
+            {languageNames[language]}
+          </ToggleButton>
+        ))}
+      </StyledToggleButtonGroup>
     </>
   )
 }

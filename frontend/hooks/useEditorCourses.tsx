@@ -33,6 +33,7 @@ export function useEditorCourses({ slug, isClone }: UseEditorCoursesProps) {
     error: courseError,
   } = useQuery(CourseEditorDetailsDocument, {
     variables: { slug },
+    skip: !slug,
   })
   const {
     data: studyModulesData,

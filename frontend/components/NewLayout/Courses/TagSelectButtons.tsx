@@ -6,10 +6,10 @@ import { styled } from "@mui/material/styles"
 
 import Button from "../Common/Button"
 import { useTranslator } from "/hooks/useTranslator"
+import { TagCoreFields } from "/lib/api-types"
 // import { fontSize } from "/src/theme/util"
+import { KeyOfTranslationDictionary } from "/translations"
 import CommonTranslations from "/translations/common"
-
-import { TagCoreFieldsFragment } from "/graphql/generated"
 
 const TagsContainer = styled("div")`
   display: grid;
@@ -48,6 +48,12 @@ const TagChip = styled(Chip, {
       ? theme.palette.primary.main
       : theme.palette.background.default
   };
+
+  transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 
   &:hover {
     border-radius: 2rem;
@@ -117,6 +123,7 @@ const TagsSkeleton = ({
 const SelectAllButton = styled(Button)(
   ({ theme }) => `
   max-height: 2.5rem;
+  white-space: nowrap;
   font-weight: 700 !important;
   background-color: transparent !important;
   color: ${theme.palette.common.brand.main} !important;
@@ -140,27 +147,25 @@ const SelectAllButton = styled(Button)(
 
 interface TagSelectButtonsProps {
   loading?: boolean
-  tags: Record<string, Array<TagCoreFieldsFragment>>
-  activeTags: Array<TagCoreFieldsFragment>
+  tags: Record<string, Array<TagCoreFields>>
+  activeTags: Array<TagCoreFields>
   setActiveTags: (
     tags:
-      | Array<TagCoreFieldsFragment>
-      | ((tags: Array<TagCoreFieldsFragment>) => Array<TagCoreFieldsFragment>),
+      | Array<TagCoreFields>
+      | ((tags: Array<TagCoreFields>) => Array<TagCoreFields>),
   ) => void
-  selectAllTags: () => void
 }
 
 const TagSelectButtons = ({
   tags,
   activeTags,
   setActiveTags,
-  selectAllTags,
   loading,
 }: TagSelectButtonsProps) => {
   const t = useTranslator(CommonTranslations)
 
   const handleClick = useCallback(
-    (tag: TagCoreFieldsFragment) => () => {
+    (tag: TagCoreFields) => () => {
       if (activeTags.includes(tag)) {
         setActiveTags(activeTags.filter((t) => t !== tag))
       } else {
@@ -172,20 +177,13 @@ const TagSelectButtons = ({
 
   const handleSelectAllClick = useCallback(
     (category: string) => () => {
-      if (category in tags) {
-        if (tags[category].every((tag) => activeTags.includes(tag))) {
-          setActiveTags(
-            activeTags.filter((tag) => !tags[category].includes(tag)),
-          )
-        } else {
-          const activeTagsWithAll = [...activeTags, ...tags[category]]
-          setActiveTags([...new Set(activeTagsWithAll)])
-        }
+      if (tags[category].every((tag) => activeTags.includes(tag))) {
+        setActiveTags(activeTags.filter((tag) => !tags[category].includes(tag)))
       } else {
-        selectAllTags()
+        setActiveTags([...new Set([...activeTags, ...tags[category]])])
       }
     },
-    [activeTags],
+    [tags, activeTags, setActiveTags],
   )
 
   if (loading) {
@@ -222,6 +220,13 @@ const TagSelectButtons = ({
                 ? "true"
                 : undefined
             }
+            aria-label={t("selectAllInCategory", {
+              category: t(
+                category as KeyOfTranslationDictionary<
+                  typeof CommonTranslations
+                >,
+              ),
+            })}
             variant="text"
             sx={{ gridArea: `${category}SelectAll` }}
             onClick={handleSelectAllClick(category)}

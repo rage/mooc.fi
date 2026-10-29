@@ -33,33 +33,30 @@ const GroupItems = styled("ul")`
   padding: 0;
 `
 
-const hasNoLanguageTag = (tag: TagFormValue) =>
-  !(tag.types ?? []).includes("language")
-const filterLanguageTags = (tags: TagFormValue[]) =>
-  tags.filter(hasNoLanguageTag)
-
 const renderOption = (
   props: React.HTMLAttributes<HTMLLIElement>,
   option: TagFormValue,
 ) => <li {...props}>{option.name}</li>
 
-const renderGroup = (params: AutocompleteRenderGroupParams) => (
-  <li key={params.key}>
-    <GroupHeader>
-      {params.group
-        ?.split(", ")
-        .map((type) => (
-          <TagTypeChip
-            key={type}
-            variant="outlined"
-            label={type}
-            size="small"
-          />
-        ))}
-    </GroupHeader>
-    <GroupItems>{params.children}</GroupItems>
-  </li>
-)
+const renderGroup =
+  (typeLabel: (type: string) => string) =>
+  (params: AutocompleteRenderGroupParams) => (
+    <li key={params.key}>
+      <GroupHeader>
+        {params.group
+          ?.split(", ")
+          .map((type) => (
+            <TagTypeChip
+              key={type}
+              variant="outlined"
+              label={typeLabel(type)}
+              size="small"
+            />
+          ))}
+      </GroupHeader>
+      <GroupItems>{params.children}</GroupItems>
+    </li>
+  )
 
 function CourseTagsForm() {
   const { tagOptions } = useCourseEditorData()
@@ -69,11 +66,24 @@ function CourseTagsForm() {
   const anchor = useAnchor("tags")
 
   const options = useMemo(
-    () =>
-      sortBy(tagOptions ?? [], (tag) => tag.name?.toLocaleLowerCase()).filter(
-        hasNoLanguageTag,
-      ), // language tag should come from course instance language
+    () => sortBy(tagOptions ?? [], (tag) => tag.name?.toLocaleLowerCase()),
     [tagOptions],
+  )
+  const typeLabel = useCallback(
+    (type: string) =>
+      (
+        ({
+          language: t("tagTypeLanguage"),
+          difficulty: t("tagTypeDifficulty"),
+          module: t("tagTypeModule"),
+          none: t("tagTypeNone"),
+        }) as Record<string, string>
+      )[type] ?? type,
+    [t],
+  )
+  const renderGroupWithLabels = useMemo(
+    () => renderGroup(typeLabel),
+    [typeLabel],
   )
 
   const onChange = useEventCallback((_: any, newValue: Array<TagFormValue>) => {
@@ -92,19 +102,14 @@ function CourseTagsForm() {
 
   const renderTags = useCallback(
     (tags: Array<TagFormValue>, getTagProps: AutocompleteRenderGetTagProps) => {
-      return tags.map((tag, index) => {
-        if (!hasNoLanguageTag(tag)) {
-          return null
-        }
-        return (
-          <Chip
-            {...getTagProps({ index })}
-            variant="outlined"
-            label={tag.name ?? ""}
-            onDelete={onDelete(index)}
-          />
-        )
-      })
+      return tags.map((tag, index) => (
+        <Chip
+          {...getTagProps({ index })}
+          variant="outlined"
+          label={tag.name ?? ""}
+          onDelete={onDelete(index)}
+        />
+      ))
     },
     [setValue, getValues],
   )
@@ -121,21 +126,19 @@ function CourseTagsForm() {
     [t, field],
   )
 
-  const value = useMemo(() => filterLanguageTags(field.value ?? []), [field])
-
   return (
     <FormFieldGroup>
       <Autocomplete
         multiple
         ref={anchor.ref}
-        value={value}
+        value={field.value ?? []}
         options={options}
         onChange={onChange}
-        groupBy={(option) => option.types?.join(", ") ?? "(no type)"}
+        groupBy={(option) => option.types?.join(", ") || "none"}
         renderTags={renderTags}
         renderInput={renderInput}
         renderOption={renderOption}
-        renderGroup={renderGroup}
+        renderGroup={renderGroupWithLabels}
         getOptionLabel={(option) => option.name ?? ""}
         isOptionEqualToValue={(option, value) => option._id === value._id}
       />

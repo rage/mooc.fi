@@ -1,4 +1,13 @@
 export default {
+  courseSettings: "Course settings",
+  courseSettingsCourse: "Course",
+  courseSettingsLanguage: "Language",
+  courseSettingsCreated: "Created",
+  courseSettingsUpdated: "Updated",
+  courseSettingsSettings: "Settings",
+  noCourseSettings: "This user has no course settings.",
+  courseSettingsTruncated: "Showing the first {{count}} course settings.",
+  userNotFound: "User not found",
   userSearch: "User search",
   search: "Search",
   noResults: "No results",
@@ -41,4 +50,8 @@ export default {
   id: "MOOC.fi internal id",
   upstream_id: "TMC id",
   total: "Total",
+  researchConsent: "Research consent",
+  yes: "Yes",
+  no: "No",
+  rawView: "Raw view",
 } as const
