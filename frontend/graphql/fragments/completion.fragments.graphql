@@ -75,4 +75,5 @@ fragment CertificateAvailabilityFields on CertificateAvailability {
   completed_course
   existing_certificate
   honors
+  service_unavailable
 }

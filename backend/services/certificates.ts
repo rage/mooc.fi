@@ -14,16 +14,20 @@ const FAILED_SENTINEL = "failed"
 /**
  * Cached certificate availability; `null` when the certificates service fails.
  * Failures are cached briefly so a slow or down service is not hit per completion.
+ *
+ * `fresh` skips the cached value and replaces it, for when the student has just created a
+ * certificate or asks to try again.
  */
 export const getCachedCertificateAvailability = async (
   key: string,
   fetchAvailability: () => Promise<any>,
   logger: Logger,
+  { fresh = false }: { fresh?: boolean } = {},
 ) => {
   const cacheKey = `certificateavailability:${key}`
   const cacheOptions = { client: getRedisClient(), logger }
 
-  const cached = await cacheGet(cacheKey, cacheOptions)
+  const cached = fresh ? null : await cacheGet(cacheKey, cacheOptions)
   if (cached === FAILED_SENTINEL) {
     return null
   }

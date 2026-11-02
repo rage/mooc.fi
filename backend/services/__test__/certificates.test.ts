@@ -54,4 +54,22 @@ describe("getCachedCertificateAvailability", () => {
     expect(second).toMatchObject({ completed_course: true })
     expect(fetch).toHaveBeenCalledTimes(1)
   })
+
+  it("fetches again and replaces the cached value when fresh", async () => {
+    const fetch = jest
+      .fn()
+      .mockRejectedValueOnce(new Error("timeout"))
+      .mockResolvedValue({ existing_certificate: "c" })
+
+    await getCachedCertificateAvailability("c-1", fetch, logger)
+    expect(
+      await getCachedCertificateAvailability("c-1", fetch, logger, {
+        fresh: true,
+      }),
+    ).toMatchObject({ existing_certificate: "c" })
+    expect(
+      await getCachedCertificateAvailability("c-1", fetch, logger),
+    ).toMatchObject({ existing_certificate: "c" })
+    expect(fetch).toHaveBeenCalledTimes(2)
+  })
 })
