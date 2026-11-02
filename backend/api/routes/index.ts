@@ -1,4 +1,5 @@
 export * from "./completions"
+export * from "./coursesHandoff"
 export * from "./creditRegistrationHandoff"
 export * from "./progress"
 export * from "./storedData"

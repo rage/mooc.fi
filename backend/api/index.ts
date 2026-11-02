@@ -3,6 +3,7 @@ import {
   abEnrollmentRouter,
   abStudiesRouter,
   CompletionController,
+  CoursesHandoffController,
   CreditRegistrationHandoffController,
   ProgressController,
   PublicController,
@@ -13,6 +14,7 @@ import { ApiContext } from "./types"
 
 export function apiRouter(ctx: ApiContext) {
   const completionController = new CompletionController(ctx)
+  const coursesHandoffController = new CoursesHandoffController(ctx)
   const creditRegistrationHandoffController =
     new CreditRegistrationHandoffController(ctx)
   const progressController = new ProgressController(ctx)
@@ -42,6 +44,9 @@ export function apiRouter(ctx: ApiContext) {
       "/delegated-completions/:course_id/users/:upstream_id",
       completionController.delegatedCompletions,
     )
+    .get("/delegated-courses/:course_id", completionController.delegatedCourse)
+    .post("/courses-handoff/redeem", coursesHandoffController.redeem)
+    .post("/courses-handoff/continue", coursesHandoffController.continue)
     .post(
       "/credit-registration-handoff/:slug",
       creditRegistrationHandoffController.create,

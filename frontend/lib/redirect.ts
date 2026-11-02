@@ -3,7 +3,7 @@ import Router from "next/router"
 import nookies from "nookies"
 
 export interface RedirectType {
-  context: NextContext
+  context: Pick<NextContext, "pathname" | "asPath"> & Partial<NextContext>
   target: string
   savePage?: boolean
   shallow?: boolean

@@ -29,7 +29,51 @@ export default {
     "Credits for this completion are registered on courses.mooc.fi.",
   delegatedRegistrationButton: "Register on courses.mooc.fi",
   delegatedRegistrationOpening: "Opening courses.mooc.fi…",
-  delegatedRegistrationError: "Could not open courses.mooc.fi, try again.",
+  delegatedRegistrationError: "We could not open courses.mooc.fi.",
+  delegatedRegistrationFallbackLink: "Register your credits on courses.mooc.fi",
+  delegatedRegistrationSignedOut:
+    "Your sign-in has expired. Sign in again, then try again.",
+  delegatedRegistrationSignInAgain: "Sign in again",
+  delegatedRegistrationRateLimited:
+    "You tried many times in a short time. Wait a minute, then try again.",
+  delegatedRegistrationLaterCompletionBody:
+    "You completed this course again later. Register the credits for that later completion on courses.mooc.fi.",
+  certificateNeedCreditsBody:
+    "Do you need the credits after all? Register them on courses.mooc.fi.",
+  certificateServiceUnavailable:
+    "We cannot check your certificate right now. Try again in a moment.",
+  certificateTryAgain: "Try again",
+  certificateCheckAgain: "Check again",
+  certificateChecking: "Checking…",
+  certificateNotCompletedBody:
+    "The certificate service does not yet show that you have completed this course. If you completed it recently, check again later.",
+  certificateNameAddHeading: "Add your name",
+  certificateNameCheckHeading: "Check your name",
+  certificateNameBody:
+    "Your certificate shows this name. We also save the name to your mooc.fi profile.",
+  certificateFirstName: "First name",
+  certificateLastName: "Last name",
+  certificateCreate: "Create certificate",
+  certificateCreating: "Creating certificate…",
+  certificateCreateFailed: "We could not create your certificate. Try again.",
+  certificateReadyBody: "Your certificate is ready.",
+  certificateShow: "Show certificate",
+  handoffDifferentAccountTitle: "You are signed in with another account",
+  handoffDifferentAccountBody:
+    "You have created more than one mooc.fi account. You are now signed in as {{email}}, but you came here with your other account.",
+  handoffDifferentAccountBodyNoEmail:
+    "You have created more than one mooc.fi account. You are now signed in with one account, but you came here with your other account.",
+  handoffDifferentAccountAction:
+    "Log out and continue with the account you came with.",
+  handoffLogOutAndContinue: "Log out and continue",
+  handoffContinuing: "Continuing…",
+  handoffExpiredTitle: "This link no longer works",
+  handoffExpiredBody:
+    "The link works only once and only for a minute. Go back to courses.mooc.fi and try again. You can also find your completions in your profile.",
+  handoffFailedTitle: "Something went wrong",
+  handoffFailedBody:
+    "We could not sign you in. Try again later. You can also sign in yourself and find your completions in your profile.",
+  handoffGoToProfile: "Go to your profile",
   certificatePageTitle: "Your certificate",
   certificatePageIntroBody:
     "A certificate of completion is available for this course.",

@@ -24,6 +24,27 @@ export const isAdmin = (ctx?: NextContext): boolean => {
   return admin === "true"
 }
 
+/**
+ * Makes a TMC access token the browser's session, as a password sign-in does. Also for tokens
+ * issued on the user's behalf, such as by a courses.mooc.fi handoff.
+ */
+export const startSession = async (
+  accessToken: string,
+  apollo?: ApolloClient<object>,
+  expiresInSeconds?: number | null,
+) => {
+  const details = await userDetails(accessToken)
+  // Issued tokens expire, unlike password sign-ins; the session must not outlive its token.
+  const maxAge = expiresInSeconds ? `;max-age=${expiresInSeconds}` : ""
+
+  document.cookie = `access_token=${accessToken};path=/${maxAge}`
+  document.cookie = `admin=${details.administrator};path=/${maxAge}`
+
+  await apollo?.resetStore()
+
+  return details
+}
+
 interface SignInProps {
   email: string
   password: string
@@ -43,17 +64,13 @@ export const signIn = async (
     "2ddf92a15a31f87c1aabb712b7cfd1b88f3465465ec475811ccce6febb1bad28",
   )
   const res = await tmcClient.authenticate({ username: email, password })
-  const details = await userDetails(res.accessToken)
-
-  document.cookie = `access_token=${res.accessToken};path=/`
-
-  document.cookie = `admin=${details.administrator};path=/`
-
-  await apollo?.resetStore()
+  const details = await startSession(res.accessToken, apollo)
 
   cb?.()
 
   const rawRedirectLocation = nookies.get()["redirect-back"]
+  // Spent once used, so a later sign-in does not jump back to this page.
+  nookies.destroy(undefined, "redirect-back", { path: "/" })
 
   if (redirect && (!rawRedirectLocation || rawRedirectLocation === "")) {
     Router.back()
@@ -81,10 +98,15 @@ export const signIn = async (
   return details
 }
 
-export const signOut = async (apollo: ApolloClient<object>, cb: () => void) => {
+/** Drops the session cookies without telling anyone; see {@link signOut} for the UI. */
+export const clearSession = () => {
   document.cookie =
     "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
   document.cookie = "admin" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
+}
+
+export const signOut = async (apollo: ApolloClient<object>, cb: () => void) => {
+  clearSession()
   // Give browser a moment to react to the change
   setTimeout(() => {
     cb()
@@ -126,4 +148,16 @@ export async function userDetails(accessToken: string): Promise<UserInfo> {
     return res.json()
   }
   return {} as UserInfo
+}
+
+/** Whether TMC turns the token down, as it does once the token expires or is revoked. */
+export async function isAccessTokenRejected(accessToken: string) {
+  try {
+    const res = await fetch(`https://tmc.mooc.fi/api/v8/users/current`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
+    return res.status === 401
+  } catch {
+    return false
+  }
 }

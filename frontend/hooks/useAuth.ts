@@ -2,7 +2,13 @@ import { useEffect, useState } from "react"
 
 import { useApolloClient } from "@apollo/client"
 
-import { isAdmin, isSignedIn } from "/lib/authentication"
+import {
+  clearSession,
+  getAccessToken,
+  isAccessTokenRejected,
+  isAdmin,
+  isSignedIn,
+} from "/lib/authentication"
 
 import {
   CurrentUserDetailedDocument,
@@ -39,6 +45,18 @@ export function useAuth(): UseAuthResult {
             query: CurrentUserDetailedDocument,
             fetchPolicy: "network-only",
           })
+          const accessToken = getAccessToken()
+          // The backend answers no user both for a dead token and when TMC is down; only the
+          // former signs the student out.
+          if (
+            !data.currentUser &&
+            accessToken &&
+            (await isAccessTokenRejected(accessToken))
+          ) {
+            clearSession()
+            setSignedIn(false)
+            setAdmin(false)
+          }
           setCurrentUser(data.currentUser ?? null)
         } catch (error) {
           console.error("Failed to fetch current user:", error)

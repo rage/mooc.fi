@@ -29,8 +29,51 @@ export default {
     "Studiepoängen för den här prestationen registreras på courses.mooc.fi.",
   delegatedRegistrationButton: "Registrera på courses.mooc.fi",
   delegatedRegistrationOpening: "Öppnar courses.mooc.fi…",
-  delegatedRegistrationError:
-    "Det gick inte att öppna courses.mooc.fi, försök igen.",
+  delegatedRegistrationError: "Vi kunde inte öppna courses.mooc.fi.",
+  delegatedRegistrationFallbackLink:
+    "Registrera dina studiepoäng på courses.mooc.fi",
+  delegatedRegistrationSignedOut:
+    "Din inloggning har gått ut. Logga in igen och försök sedan igen.",
+  delegatedRegistrationSignInAgain: "Logga in igen",
+  delegatedRegistrationRateLimited:
+    "Du försökte många gånger på kort tid. Vänta en stund och försök sedan igen.",
+  delegatedRegistrationLaterCompletionBody:
+    "Du avlade den här kursen igen senare. Registrera studiepoängen för den senare prestationen på courses.mooc.fi.",
+  certificateNeedCreditsBody:
+    "Behöver du studiepoängen ändå? Registrera dem på courses.mooc.fi.",
+  certificateServiceUnavailable:
+    "Vi kan inte kontrollera ditt intyg just nu. Försök igen om en stund.",
+  certificateTryAgain: "Försök igen",
+  certificateCheckAgain: "Kontrollera igen",
+  certificateChecking: "Kontrollerar…",
+  certificateNotCompletedBody:
+    "Intygstjänsten visar ännu inte att du har avlagt den här kursen. Om du avlade den nyligen, kontrollera igen senare.",
+  certificateNameAddHeading: "Lägg till ditt namn",
+  certificateNameCheckHeading: "Kontrollera ditt namn",
+  certificateNameBody:
+    "Ditt intyg visar det här namnet. Vi sparar också namnet i din mooc.fi-profil.",
+  certificateFirstName: "Förnamn",
+  certificateLastName: "Efternamn",
+  certificateCreate: "Skapa intyg",
+  certificateCreating: "Skapar intyg…",
+  certificateCreateFailed: "Vi kunde inte skapa ditt intyg. Försök igen.",
+  certificateReadyBody: "Ditt intyg är klart.",
+  certificateShow: "Visa intyget",
+  handoffDifferentAccountTitle: "Du är inloggad med ett annat konto",
+  handoffDifferentAccountBody:
+    "Du har skapat mer än ett mooc.fi-konto. Du är nu inloggad som {{email}}, men du kom hit med ditt andra konto.",
+  handoffDifferentAccountBodyNoEmail:
+    "Du har skapat mer än ett mooc.fi-konto. Du är nu inloggad med ett konto, men du kom hit med ditt andra konto.",
+  handoffDifferentAccountAction: "Logga ut och fortsätt med kontot du kom med.",
+  handoffLogOutAndContinue: "Logga ut och fortsätt",
+  handoffContinuing: "Fortsätter…",
+  handoffExpiredTitle: "Länken fungerar inte längre",
+  handoffExpiredBody:
+    "Länken fungerar bara en gång och bara i en minut. Gå tillbaka till courses.mooc.fi och försök igen. Du hittar också dina prestationer i din profil.",
+  handoffFailedTitle: "Något gick fel",
+  handoffFailedBody:
+    "Vi kunde inte logga in dig. Försök igen senare. Du kan också logga in själv och hitta dina prestationer i din profil.",
+  handoffGoToProfile: "Gå till din profil",
   certificatePageTitle: "Ditt intyg",
   certificatePageIntroBody: "Ett intyg finns tillgängligt för den här kursen.",
   certificateFallbackBody:
