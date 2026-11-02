@@ -347,6 +347,75 @@ describe("API", () => {
     })
   })
 
+  describe("/api/delegated-courses", () => {
+    let getDelegatedCourse: (courseId: string) => RequestGet
+
+    beforeEach(async () => {
+      await seed(ctx.prisma)
+      const { get } = createRequestHelpers(ctx.port)
+      getDelegatedCourse = (courseId) =>
+        get(`/api/delegated-courses/${courseId}`, {
+          Authorization: "Basic kissa",
+        })
+    })
+
+    it("errors on no auth", async () => {
+      await delegateCourse(COURSE1_ID)
+      return getDelegatedCourse(COURSE1_ID)({ headers: {} })
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(401)
+        })
+    })
+
+    it("errors on an organization other than the delegate", async () => {
+      await delegateCourse(COURSE1_ID)
+      return getDelegatedCourse(COURSE1_ID)({
+        headers: { Authorization: "Basic koira" },
+      })
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(403)
+        })
+    })
+
+    it("errors on a course that is not delegated", async () => {
+      return getDelegatedCourse(COURSE1_ID)({})
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(404)
+        })
+    })
+
+    it("errors on a malformed course id", async () => {
+      return getDelegatedCourse("course1")({})
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(400)
+        })
+    })
+
+    it("returns the delegated handler course", async () => {
+      await delegateCourse(COURSE1_ID)
+      await ctx.prisma.course.update({
+        where: { id: COURSE1_ID },
+        data: { has_certificate: true },
+      })
+
+      const res = await getDelegatedCourse(COURSE1_ID)({})
+
+      expect(res.status).toBe(200)
+      expect(res.data).toEqual({
+        id: COURSE1_ID,
+        slug: "course1",
+        name: "course1",
+        has_certificate: true,
+        link: "http:/link.fi.com",
+        credit_registration_delegated_at: CUTOFF.toISOString(),
+      })
+    })
+  })
+
   describe("/api/register-completions", () => {
     const defaultHeaders = {
       Authorization: "Basic kissa",
@@ -464,6 +533,21 @@ describe("API", () => {
       expect(
         await ctx.prisma.completionRegistered.count({
           where: { completion_id: "30000000-0000-0000-0000-000000000102" },
+        }),
+      ).toBe(1)
+    })
+
+    it("registers a completion listed twice in one request once", async () => {
+      const entry = {
+        completion_id: "30000000-0000-0000-0000-000000000102",
+        student_number: "12345",
+      }
+
+      await postCompletions({ data: { completions: [entry, entry] } })
+
+      expect(
+        await ctx.prisma.completionRegistered.count({
+          where: { completion_id: entry.completion_id },
         }),
       ).toBe(1)
     })

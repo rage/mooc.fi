@@ -76,7 +76,6 @@ export default {
     "Emme saaneet kirjattua sinua sisään. Yritä myöhemmin uudelleen. Voit myös kirjautua itse ja löytää suorituksesi profiilistasi.",
   handoffGoToProfile: "Siirry profiiliisi",
   certificatePageTitle: "Todistuksesi",
-  certificatePageIntroBody: "Tästä kurssista on saatavilla todistus.",
   certificateFallbackBody:
     "Emme voi luoda todistusta tälle kurssille täällä. Palaa kurssin materiaaleihin ja hae todistuksesi sieltä. Jos jokin jää epäselväksi, ota yhteyttä kurssin vastuuhenkilöihin, jotka löydät kurssin materiaaleista.",
   goToCourseMaterials: "Kurssin materiaaleihin",

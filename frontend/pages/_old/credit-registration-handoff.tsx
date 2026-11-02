@@ -18,13 +18,9 @@ import Spinner from "/components/Spinner"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useTranslator } from "/hooks/useTranslator"
 import { clearSession, getAccessToken, startSession } from "/lib/authentication"
+import { BACKEND_URL } from "/lib/backendUrl"
 import redirect from "/lib/redirect"
 import RegisterCompletionTranslations from "/translations/register-completion"
-
-const BASE_URL =
-  process.env.NODE_ENV === "production"
-    ? "https://www.mooc.fi"
-    : process.env.NEXT_PUBLIC_DEV_BACKEND_URL ?? "http://localhost:4000"
 
 type HandoffState =
   | { status: "redeeming" }
@@ -128,7 +124,7 @@ function CreditRegistrationHandoffPage() {
     }
 
     const accessToken = getAccessToken()
-    fetch(`${BASE_URL}/api/courses-handoff/redeem`, {
+    fetch(`${BACKEND_URL}/api/courses-handoff/redeem`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -143,7 +139,7 @@ function CreditRegistrationHandoffPage() {
   // The other account stays signed in until the new session replaces it.
   const logOutAndContinue = (continuation: string) => {
     setState({ status: "continuing", continuation })
-    fetch(`${BASE_URL}/api/courses-handoff/continue`, {
+    fetch(`${BACKEND_URL}/api/courses-handoff/continue`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ continuation }),

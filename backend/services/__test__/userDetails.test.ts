@@ -65,10 +65,10 @@ describe("getUserDetailsForToken", () => {
 
     expect(
       await getUserDetailsForToken("Bearer expired", { logger, client }),
-    ).toBeUndefined()
+    ).toBe("rejected")
     expect(
       await getUserDetailsForToken("Bearer expired", { logger, client }),
-    ).toBeUndefined()
+    ).toBe("rejected")
 
     expect(tmcCalls).toBe(1)
     const rejectedKeys = [...store.entries()].filter(
@@ -93,7 +93,9 @@ describe("getUserDetailsForToken", () => {
         return [500, {}]
       })
 
-    await getUserDetailsForToken("Bearer flaky", { logger, client })
+    expect(
+      await getUserDetailsForToken("Bearer flaky", { logger, client }),
+    ).toBe("unavailable")
     await getUserDetailsForToken("Bearer flaky", { logger, client })
 
     expect(tmcCalls).toBe(2)

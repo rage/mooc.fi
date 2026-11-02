@@ -84,7 +84,10 @@ const expectError = (request: Promise<unknown>, status: number, data: object) =>
     })
 
 describe("API", () => {
-  setupTMCWithDefaultFakeUsers({ "Bearer stale": [401, {}] })
+  setupTMCWithDefaultFakeUsers({
+    "Bearer stale": [401, {}],
+    "Bearer unchecked": [500, {}],
+  })
 
   let post: (route: string) => RequestPost
 
@@ -138,6 +141,15 @@ describe("API", () => {
       const res = await redeem({ Authorization: "Bearer stale" })
 
       expect(res.data).toMatchObject({ result: "signed_in" })
+    })
+
+    it("does not replace a session TMC could not check", async () => {
+      redeemedHandoff(99)
+      issuedToken(99, [200, { access_token: "issued" }])
+
+      return expectError(redeem({ Authorization: "Bearer unchecked" }), 502, {
+        type: "unavailable",
+      })
     })
 
     it("offers a continuation when signed in as another account", async () => {

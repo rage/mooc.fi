@@ -7,21 +7,45 @@ import { Controller } from "../types"
 const MINT_PATH = "/api/v0/moocfi/credit-registration-handoffs"
 const MINT_TIMEOUT_MS = 10_000
 
+// Only forward a well-formed code, never free text from the other system.
+const readRefusalType = (body: any): string | undefined =>
+  typeof body?.type === "string" && /^[a-z_]{1,64}$/.test(body.type)
+    ? body.type
+    : undefined
+
+const isCoursesUrl = (url: unknown, coursesBaseUrl: string) => {
+  if (typeof url !== "string") {
+    return false
+  }
+  try {
+    return new URL(url).origin === new URL(coursesBaseUrl).origin
+  } catch {
+    return false
+  }
+}
+
 export class CreditRegistrationHandoffController extends Controller {
   /**
    * Sends the signed-in student to courses.mooc.fi's credit registration for a delegated course.
    *
-   * Answers `{ redirect_url }`, which is valid for seconds only, so the browser must navigate to it
-   * at once. 404 if the course is not delegated, 502 if courses.mooc.fi refuses, 503 if the handoff
-   * is not configured.
+   * Also called cross-origin by Elements of AI with a bearer from its own TMC application. Optional
+   * body `{ ui_language }` picks courses.mooc.fi's UI language. Answers `{ redirect_url }`, which
+   * is valid for seconds only, so the browser must navigate to it at once. Errors carry `{ type }`:
+   * 401 for a session TMC rejects (`tmc_rejected` when courses.mooc.fi found it out), 404 if the
+   * course is not delegated, 429 `rate_limited`, 502 with courses.mooc.fi's refusal type or
+   * `unavailable`, 503 `not_configured`.
    */
-  create = async (req: Request<{ slug: string }>, res: Response) => {
+  create = async (
+    req: Request<{ slug: string }, any, { ui_language?: unknown }>,
+    res: Response,
+  ) => {
     const { logger } = this.ctx
 
     if (!COURSES_BASE_URL || !COURSES_HANDOFF_SECRET) {
-      return res
-        .status(503)
-        .json({ message: "Credit registration handoff is not configured" })
+      return res.status(503).json({
+        type: "not_configured",
+        message: "Credit registration handoff is not configured",
+      })
     }
 
     const getUserResult = await this.getUser(req, res)
@@ -30,10 +54,9 @@ export class CreditRegistrationHandoffController extends Controller {
       return getUserResult.error
     }
 
-    const course = await this.getCourseKnex({ slug: req.params.slug })
-    const handlerCourse = course?.completions_handled_by_id
-      ? await this.getCourseKnex({ id: course.completions_handled_by_id })
-      : course
+    const handlerCourse = await this.getHandlerCourseKnex({
+      slug: req.params.slug,
+    })
 
     if (!handlerCourse?.credit_registration_delegated_at) {
       return res.status(404).json({ message: "Course not found" })
@@ -52,6 +75,7 @@ export class CreditRegistrationHandoffController extends Controller {
           moocfi_course_id: handlerCourse.id,
           delegated_at: handlerCourse.credit_registration_delegated_at,
           client_ip: req.ip,
+          ui_language: req.body?.ui_language === "fi" ? "fi" : "en",
         },
         {
           headers: { Authorization: `Bearer ${COURSES_HANDOFF_SECRET}` },
@@ -60,17 +84,33 @@ export class CreditRegistrationHandoffController extends Controller {
       )
       const { redirect_url } = response.data
 
-      if (typeof redirect_url !== "string") {
-        throw new Error("courses.mooc.fi answered without a redirect_url")
+      // The browser navigates to it, so it must not lead anywhere but courses.mooc.fi.
+      if (!isCoursesUrl(redirect_url, COURSES_BASE_URL)) {
+        throw new Error(
+          "courses.mooc.fi answered without a usable redirect_url",
+        )
       }
 
       return res.status(200).json({ redirect_url })
     } catch (error) {
+      const refusal = axios.isAxiosError(error) ? error.response : undefined
+      const type = readRefusalType(refusal?.data)
       // An axios error carries the request, including the TMC token, so log only the status.
       logger.warn("Credit registration handoff failed", {
-        status: axios.isAxiosError(error) ? error.response?.status : undefined,
+        status: refusal?.status,
+        type,
       })
-      return res.status(502).json({ message: "Could not open courses.mooc.fi" })
+      if (refusal?.status === 429) {
+        const retryAfter = refusal.headers["retry-after"]
+        if (typeof retryAfter === "string") {
+          res.set("Retry-After", retryAfter)
+        }
+        return res.status(429).json({ type: "rate_limited" })
+      }
+      return res.status(type === "tmc_rejected" ? 401 : 502).json({
+        type: type ?? "unavailable",
+        message: "Could not open courses.mooc.fi",
+      })
     }
   }
 }

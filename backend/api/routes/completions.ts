@@ -2,7 +2,7 @@ import { stringify } from "csv-stringify/sync"
 import { Request, Response } from "express"
 import JSONStream from "JSONStream"
 import jwt, { Secret } from "jsonwebtoken"
-import { chunk, omit } from "lodash"
+import { chunk, omit, uniqBy } from "lodash"
 import * as XLSX from "xlsx"
 import * as yup from "yup"
 
@@ -11,12 +11,14 @@ import {
   Course,
   CourseTranslation,
   OpenUniversityRegistrationLink,
+  Organization,
+  Prisma,
   User,
 } from "@prisma/client"
 
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
 import { CREDIT_REGISTRATION_DELEGATE_ORG_SLUG } from "../../config"
-import { err, isDefined } from "../../util"
+import { err, isDefined, isUuid, Result } from "../../util"
 import { COMPLETED_BEFORE_HANDLER_CUTOFF_SQL } from "../../util/completedBeforeCutoff"
 import { ApiContext, Controller } from "../types"
 import { requireAdminOrCourseOwner } from "../utils"
@@ -34,8 +36,18 @@ if (!JWT_SECRET) {
   throw new Error("JWT_SECRET environment variable is required")
 }
 
-const UUID_REGEX =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+const LINK_LANGUAGES = ["fi_FI", "en_US"]
+const linkLanguagePreference = (language: string) => {
+  const index = LINK_LANGUAGES.indexOf(language)
+  return index === -1 ? LINK_LANGUAGES.length : index
+}
+
+const delegatedHandlerCourseWhere = (id: string) =>
+  ({
+    id,
+    completions_handled_by_id: null,
+    credit_registration_delegated_at: { not: null },
+  }) satisfies Prisma.CourseWhereInput
 
 interface DownloadTokenPayload {
   courseId: string
@@ -137,30 +149,23 @@ export class CompletionController extends Controller {
     res: Response,
   ) => {
     const { prisma } = this.ctx
-    const organizationResult = await this.getOrganization(req, res)
+    const delegateResult = await this.requireDelegateOrganization(req, res)
 
-    if (organizationResult.isErr()) {
-      return organizationResult.error
-    }
-
-    if (
-      !CREDIT_REGISTRATION_DELEGATE_ORG_SLUG ||
-      organizationResult.value.slug !== CREDIT_REGISTRATION_DELEGATE_ORG_SLUG
-    ) {
-      return res.status(403).json({ message: "Access denied." })
+    if (delegateResult.isErr()) {
+      return delegateResult.error
     }
 
     const { course_id } = req.params
     const upstream_id = Number(req.params.upstream_id)
 
-    if (!UUID_REGEX.test(course_id) || !Number.isInteger(upstream_id)) {
+    if (!isUuid(course_id) || !Number.isInteger(upstream_id)) {
       return res
         .status(400)
         .json({ message: "Malformed course_id or upstream_id" })
     }
 
     const course = await prisma.course.findFirst({
-      where: { id: course_id, credit_registration_delegated_at: { not: null } },
+      where: delegatedHandlerCourseWhere(course_id),
       select: { id: true },
     })
 
@@ -201,6 +206,87 @@ export class CompletionController extends Controller {
         })),
       })),
     )
+  }
+
+  /**
+   * A delegated handler course as courses.mooc.fi needs it to link students to mooc.fi and to
+   * validate its own credit targets. Only for the organization courses.mooc.fi uses.
+   *
+   * `slug` is the handler course's own slug, `link` the course materials (Finnish first), and
+   * `has_certificate` is course level only. 404 if the course is not a delegated handler course.
+   */
+  delegatedCourse = async (
+    req: Request<{ course_id: string }>,
+    res: Response,
+  ) => {
+    const { prisma } = this.ctx
+    const delegateResult = await this.requireDelegateOrganization(req, res)
+
+    if (delegateResult.isErr()) {
+      return delegateResult.error
+    }
+
+    const { course_id } = req.params
+
+    if (!isUuid(course_id)) {
+      return res.status(400).json({ message: "Malformed course_id" })
+    }
+
+    const course = await prisma.course.findFirst({
+      where: delegatedHandlerCourseWhere(course_id),
+      select: {
+        id: true,
+        slug: true,
+        name: true,
+        has_certificate: true,
+        credit_registration_delegated_at: true,
+        course_translations: {
+          where: { link: { not: null } },
+          select: { language: true, link: true },
+        },
+      },
+    })
+
+    if (!course) {
+      return res.status(404).json({ message: "Delegated course not found" })
+    }
+
+    const links = course.course_translations
+      .filter((translation) => translation.link)
+      .sort(
+        (a, b) =>
+          linkLanguagePreference(a.language) -
+          linkLanguagePreference(b.language),
+      )
+
+    return res.status(200).json({
+      id: course.id,
+      slug: course.slug,
+      name: course.name,
+      has_certificate: course.has_certificate ?? false,
+      link: links[0]?.link ?? null,
+      credit_registration_delegated_at: course.credit_registration_delegated_at,
+    })
+  }
+
+  private requireDelegateOrganization = async (
+    req: Request,
+    res: Response,
+  ): Promise<Result<Organization, Response>> => {
+    const organizationResult = await this.getOrganization(req, res)
+
+    if (organizationResult.isErr()) {
+      return organizationResult
+    }
+
+    if (
+      !CREDIT_REGISTRATION_DELEGATE_ORG_SLUG ||
+      organizationResult.value.slug !== CREDIT_REGISTRATION_DELEGATE_ORG_SLUG
+    ) {
+      return err(res.status(403).json({ message: "Access denied." }))
+    }
+
+    return organizationResult
   }
 
   completionsCSVToken = async (
@@ -741,10 +827,7 @@ export class CompletionController extends Controller {
       return res.status(400).json({ message: "malformed data", error })
     }
 
-    const buildPromises = (
-      data: RegisterCompletionInput[],
-      alreadyRegistered: Set<string | null>,
-    ) => {
+    const buildPromises = (data: RegisterCompletionInput[]) => {
       return data.map(async (entry) => {
         const { course_id, user_id } =
           (await prisma.completion.findUnique({
@@ -754,10 +837,6 @@ export class CompletionController extends Controller {
 
         if (!course_id || !user_id) {
           // TODO/FIXME: we now fail silently if course/user not found
-          return Promise.resolve()
-        }
-
-        if (alreadyRegistered.has(entry.completion_id)) {
           return Promise.resolve()
         }
 
@@ -778,7 +857,7 @@ export class CompletionController extends Controller {
       })
     }
 
-    const queue = chunk(completions, 500)
+    const queue = chunk(uniqBy(completions, "completion_id"), 500)
     for (const completionChunk of queue) {
       const registered = await prisma.completionRegistered.findMany({
         where: {
@@ -787,9 +866,9 @@ export class CompletionController extends Controller {
         },
         select: { completion_id: true },
       })
+      const registeredIds = new Set(registered.map((r) => r.completion_id))
       const promises = buildPromises(
-        completionChunk,
-        new Set(registered.map((r) => r.completion_id)),
+        completionChunk.filter((c) => !registeredIds.has(c.completion_id)),
       )
       await Promise.all(promises)
     }

@@ -21,19 +21,19 @@ interface GetUserDetailsForTokenOptions {
 /**
  * Resolves the TMC user behind a bearer token, cached per token.
  *
- * Resolves to `undefined` when TMC rejects the token or can't be reached; never
- * rejects. A token TMC answers 401 for isn't sent to TMC again for a minute.
+ * Resolves to `"rejected"` when TMC rejects the token and `"unavailable"` when TMC can't be
+ * asked; never rejects. A rejected token isn't sent to TMC again for a minute.
  */
 export async function getUserDetailsForToken(
   rawToken: string,
   { logger, client = getRedisClient() }: GetUserDetailsForTokenOptions,
-): Promise<UserInfo | undefined> {
+): Promise<UserInfo | "rejected" | "unavailable"> {
   const key = `${USER_DETAILS_PREFIX}:${hashUserToken(rawToken)}`
   const cacheOptions = { client, logger }
 
   const cached = await cacheGet(key, cacheOptions)
   if (cached === REJECTED_SENTINEL) {
-    return undefined
+    return "rejected"
   }
   if (cached) {
     try {
@@ -61,7 +61,8 @@ export async function getUserDetailsForToken(
         REJECTED_TOKEN_EXPIRE_SECONDS,
         cacheOptions,
       )
+      return "rejected"
     }
-    return undefined
+    return "unavailable"
   }
 }

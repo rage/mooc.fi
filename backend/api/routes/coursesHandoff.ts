@@ -15,6 +15,7 @@ import {
   UserAccessToken,
   UserAccessTokenRefusedError,
 } from "../../services/tmc"
+import { isUuid } from "../../util"
 import { Controller } from "../types"
 
 const REDEEM_PATH = "/api/v0/moocfi/outbound-handoffs/redeem"
@@ -22,8 +23,6 @@ const REDEEM_TIMEOUT_MS = 10_000
 const MAX_TOKEN_LENGTH = 4096
 const CONTINUATION_AUDIENCE = "courses-handoff-continuation"
 const CONTINUATION_LIFETIME = "10m"
-const UUID_REGEX =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 /** Where courses.mooc.fi may send a student, as paths without the locale prefix. */
 const DESTINATION_PATHS = {
@@ -47,8 +46,7 @@ const parseHandoff = (value: any): Handoff | null => {
   const { upstream_id, moocfi_course_id, destination } = value ?? {}
   if (
     !Number.isSafeInteger(upstream_id) ||
-    typeof moocfi_course_id !== "string" ||
-    !UUID_REGEX.test(moocfi_course_id) ||
+    !isUuid(moocfi_course_id) ||
     !isDestination(destination)
   ) {
     return null
@@ -234,8 +232,10 @@ export class CoursesHandoffController extends Controller {
       issued = await issueUserAccessToken(upstreamId)
     } catch (error) {
       if (error instanceof UserAccessTokenRefusedError) {
-        logger.info("TMC refused to sign a handoff student in", {
+        // Warn: a misconfigured issuer gets the same refusal for every student.
+        logger.warn("TMC refused to sign a handoff student in", {
           upstream_id: upstreamId,
+          reason: error.message,
         })
         return res
           .status(403)
@@ -262,10 +262,9 @@ export class CoursesHandoffController extends Controller {
     moocfi_course_id,
     destination,
   }: Handoff) => {
-    const course = await this.getCourseKnex({ id: moocfi_course_id })
-    const handlerCourse = course?.completions_handled_by_id
-      ? await this.getCourseKnex({ id: course.completions_handled_by_id })
-      : course
+    const handlerCourse = await this.getHandlerCourseKnex({
+      id: moocfi_course_id,
+    })
 
     return handlerCourse
       ? DESTINATION_PATHS[destination](handlerCourse.slug)

@@ -55,7 +55,7 @@ describe("API", () => {
         .matchHeader("authorization", "Bearer handoff-secret")
         .reply(201, { redirect_url: "http://courses.test/redeem?token=t" })
 
-      const res = await postHandoff("handled")({})
+      const res = await postHandoff("handled")({ data: { ui_language: "fi" } })
 
       expect(res.status).toBe(200)
       expect(res.data).toEqual({
@@ -67,7 +67,22 @@ describe("API", () => {
         moocfi_course_id: HANDLER_COURSE_ID,
         delegated_at: CUTOFF,
         client_ip: expect.any(String),
+        ui_language: "fi",
       })
+    })
+
+    it("sends courses.mooc.fi English for any language it does not have", async () => {
+      let uiLanguage: string | undefined
+      nock(COURSES_BASE_URL)
+        .post(MINT_PATH, (body) => {
+          uiLanguage = body.ui_language
+          return true
+        })
+        .reply(201, { redirect_url: "http://courses.test/redeem?token=t" })
+
+      await postHandoff("handled")({ data: { ui_language: "de" } })
+
+      expect(uiLanguage).toBe("en")
     })
 
     it("takes the client IP from X-Forwarded-For set by the proxy", async () => {
@@ -105,18 +120,59 @@ describe("API", () => {
         })
     })
 
-    it("answers 502 when courses.mooc.fi refuses", async () => {
+    it("answers 502 with courses.mooc.fi's refusal type", async () => {
       nock(COURSES_BASE_URL)
         .post(MINT_PATH)
-        .reply(409, { type: "cutoff_mismatch" })
+        .reply(409, { type: "cutoff_mismatch", message: "Not set up." })
 
       return postHandoff("handled")({})
         .then(() => fail())
         .catch(({ response }) => {
           expect(response.status).toBe(502)
           expect(response.data).toEqual({
+            type: "cutoff_mismatch",
             message: "Could not open courses.mooc.fi",
           })
+        })
+    })
+
+    it("refuses a redirect_url outside courses.mooc.fi", async () => {
+      nock(COURSES_BASE_URL)
+        .post(MINT_PATH)
+        .reply(201, { redirect_url: "javascript:alert(1)//courses.test" })
+
+      return postHandoff("handled")({})
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(502)
+          expect(response.data.type).toBe("unavailable")
+        })
+    })
+
+    it("answers 401 when TMC rejected the student's session", async () => {
+      nock(COURSES_BASE_URL)
+        .post(MINT_PATH)
+        .reply(401, { type: "tmc_rejected" })
+
+      return postHandoff("handled")({})
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(401)
+          expect(response.data.type).toBe("tmc_rejected")
+        })
+    })
+
+    it("passes rate limiting on with its retry time", async () => {
+      nock(COURSES_BASE_URL)
+        .post(MINT_PATH)
+        .reply(429, { type: "rate_limited" }, { "Retry-After": "30" })
+
+      return postHandoff("handled")({})
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(429)
+          expect(response.headers["retry-after"]).toBe("30")
+          expect(response.data).toEqual({ type: "rate_limited" })
         })
     })
 
@@ -128,6 +184,47 @@ describe("API", () => {
         .catch(({ response }) => {
           expect(response.status).toBe(503)
         })
+    })
+
+    describe("CORS", () => {
+      const preflight = (route: string, origin: string) =>
+        createRequestHelpers(ctx.port).request("OPTIONS")(route)({
+          headers: {
+            Origin: origin,
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "authorization,content-type",
+          },
+        })
+
+      it.each(["https://course.elementsofai.com", "https://www.mooc.fi"])(
+        "lets %s call the mint",
+        async (origin) => {
+          const res = await preflight(
+            "/api/credit-registration-handoff/handled",
+            origin,
+          )
+
+          expect(res.headers["access-control-allow-origin"]).toBe(origin)
+        },
+      )
+
+      it.each([
+        "/api/credit-registration-handoff/handled",
+        "/API/Credit-Registration-Handoff/handled",
+      ])("keeps other sites from calling %s", async (route) => {
+        const res = await preflight(route, "https://evil.example")
+
+        expect(res.headers["access-control-allow-origin"]).toBeUndefined()
+      })
+
+      it("leaves other routes open", async () => {
+        const res = await preflight(
+          "/api/courses-handoff/redeem",
+          "https://evil.example",
+        )
+
+        expect(res.headers["access-control-allow-origin"]).toBe("*")
+      })
     })
   })
 })

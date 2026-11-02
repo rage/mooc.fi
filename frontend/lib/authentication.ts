@@ -149,15 +149,3 @@ export async function userDetails(accessToken: string): Promise<UserInfo> {
   }
   return {} as UserInfo
 }
-
-/** Whether TMC turns the token down, as it does once the token expires or is revoked. */
-export async function isAccessTokenRejected(accessToken: string) {
-  try {
-    const res = await fetch(`https://tmc.mooc.fi/api/v8/users/current`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    })
-    return res.status === 401
-  } catch {
-    return false
-  }
-}

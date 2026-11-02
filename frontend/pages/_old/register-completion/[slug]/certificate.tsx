@@ -24,6 +24,7 @@ import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useCertificate } from "/hooks/useCertificate"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useTranslator } from "/hooks/useTranslator"
+import { BACKEND_URL } from "/lib/backendUrl"
 import withSignedIn from "/lib/with-signed-in"
 import CommonTranslations from "/translations/common"
 import RegisterCompletionTranslations from "/translations/register-completion"
@@ -33,11 +34,6 @@ import {
   CourseFromSlugDocument,
   CurrentUserCertificateCompletionsDocument,
 } from "/graphql/generated"
-
-const BASE_URL =
-  process.env.NODE_ENV === "production"
-    ? "https://www.mooc.fi"
-    : process.env.NEXT_PUBLIC_DEV_BACKEND_URL ?? "http://localhost:4000"
 
 const CERTIFICATES_URL = "https://certificates.mooc.fi"
 
@@ -150,6 +146,7 @@ function CertificatePage() {
   ).replace(/\./g, "")
 
   const t = useTranslator(RegisterCompletionTranslations, CommonTranslations)
+  const { currentUser } = useLoginStateContext()
   const [createdCertificateId, setCreatedCertificateId] = useState<string>()
   const {
     loading: courseLoading,
@@ -168,13 +165,14 @@ function CertificatePage() {
     variables: { course_slug: courseSlug, fresh: false },
     skip: !course_exists,
     notifyOnNetworkStatusChange: true,
+    errorPolicy: "all",
   })
   const isRefetching = networkStatus === NetworkStatus.refetch
 
   // The server caches availability for minutes, so "unavailable" or "no certificate yet" would stick.
   const refetchFresh = useCallback(() => {
-    refetch({ course_slug: courseSlug, fresh: true })
-  }, [refetch, courseSlug])
+    refetch({ fresh: true })
+  }, [refetch])
 
   const onCreated = useCallback(
     (certificateId: string) => {
@@ -314,6 +312,10 @@ function CertificatePage() {
         </InstructionsSection>
       )
     }
+    // The form takes the saved name only when it mounts.
+    if (!currentUser) {
+      return <Spinner />
+    }
     return (
       <CertificateForm certificateSlug={course.slug} onCreated={onCreated} />
     )
@@ -329,7 +331,7 @@ function CertificatePage() {
         {renderCertificate()}
         {delegatedCompletion?.course && (
           <DelegatedRegistrationButton
-            handoffUrl={`${BASE_URL}/api/credit-registration-handoff/${courseSlug}`}
+            handoffUrl={`${BACKEND_URL}/api/credit-registration-handoff/${courseSlug}`}
             handlerCourseId={delegatedCompletion.course.id}
             description={t("certificateNeedCreditsBody")}
           />

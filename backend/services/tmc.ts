@@ -181,13 +181,17 @@ const ISSUE_USER_ACCESS_TOKENS_SCOPE = "issue_user_access_tokens"
 // Renew this long before TMC's expiry so an in-flight request never carries an expired token.
 const ISSUER_TOKEN_EXPIRY_MARGIN_MS = 60_000
 
-let issuerToken: { value: string; expiresAt: number } | null = null
+// expiresAt is null for a token TMC issued without expiry; a 401 still drops it.
+let issuerToken: { value: string; expiresAt: number | null } | null = null
 
 export const isUserAccessTokenIssuingConfigured = () =>
   Boolean(TMC_TOKEN_ISSUER_CLIENT_ID && TMC_TOKEN_ISSUER_CLIENT_SECRET)
 
 async function getIssuerAccessToken(): Promise<string> {
-  if (issuerToken && issuerToken.expiresAt > Date.now()) {
+  if (
+    issuerToken &&
+    (issuerToken.expiresAt === null || issuerToken.expiresAt > Date.now())
+  ) {
     return issuerToken.value
   }
   const res = await tmcAxios.post<{
@@ -208,16 +212,28 @@ async function getIssuerAccessToken(): Promise<string> {
       },
     },
   )
-  const lifetimeMs = (res.data.expires_in ?? 0) * 1000
+  const { access_token, expires_in } = res.data
   issuerToken = {
-    value: res.data.access_token,
-    expiresAt: Date.now() + lifetimeMs - ISSUER_TOKEN_EXPIRY_MARGIN_MS,
+    value: access_token,
+    expiresAt:
+      typeof expires_in === "number"
+        ? Date.now() + expires_in * 1000 - ISSUER_TOKEN_EXPIRY_MARGIN_MS
+        : null,
   }
   return issuerToken.value
 }
 
-/** TMC refuses to issue a token for this user, e.g. staff, who must sign in with a password. */
+/**
+ * TMC refuses to issue a token for this user, e.g. staff, who must sign in with a password.
+ *
+ * TMC answers a misconfigured issuer with the same 403, so `message` carries TMC's reason.
+ */
 export class UserAccessTokenRefusedError extends Error {}
+
+const readTmcErrors = (body: any): string =>
+  Array.isArray(body?.errors)
+    ? body.errors.filter((e: unknown) => typeof e === "string").join("; ")
+    : ""
 
 export interface UserAccessToken {
   access_token: string
@@ -252,28 +268,24 @@ export async function issueUserAccessToken(
         },
       },
     )
-  const statusOf = (error: unknown) =>
-    axios.isAxiosError(error) ? error.response?.status : undefined
+  const requestWithFreshIssuerToken = () =>
+    request().catch((error) => {
+      if (!axios.isAxiosError(error) || error.response?.status !== 401) {
+        throw error
+      }
+      // The cached issuer token was revoked or expired early.
+      issuerToken = null
+      return request()
+    })
 
   let res
   try {
-    res = await request()
+    res = await requestWithFreshIssuerToken()
   } catch (error) {
-    if (statusOf(error) === 403) {
-      throw new UserAccessTokenRefusedError()
+    if (axios.isAxiosError(error) && error.response?.status === 403) {
+      throw new UserAccessTokenRefusedError(readTmcErrors(error.response.data))
     }
-    if (statusOf(error) !== 401) {
-      throw error
-    }
-    // The cached issuer token was revoked or expired early.
-    issuerToken = null
-    try {
-      res = await request()
-    } catch (retryError) {
-      throw statusOf(retryError) === 403
-        ? new UserAccessTokenRefusedError()
-        : retryError
-    }
+    throw error
   }
   return parseUserAccessToken(res.data)
 }

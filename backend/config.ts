@@ -142,3 +142,17 @@ export const PRIVATE_KEY_TEST = "config/mooc-private-test.pem"
 export const PUBLIC_KEY_TEST = "config/mooc-public-test.pem"
 
 export const REDIS_DB = process.env.REDIS_DB ? Number(process.env.REDIS_DB) : 4
+
+/** Origins whose pages may call the credit registration handoff mint with a student's TMC bearer. */
+export const CREDIT_REGISTRATION_HANDOFF_ORIGINS = (
+  process.env.CREDIT_REGISTRATION_HANDOFF_ORIGINS ??
+  [
+    "https://www.mooc.fi",
+    "https://mooc.fi",
+    "https://course.elementsofai.com",
+    ...(isDev ? ["http://localhost:3000"] : []),
+  ].join(",")
+)
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean)

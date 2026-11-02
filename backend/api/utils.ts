@@ -124,8 +124,11 @@ export function findUser({ knex, logger }: BaseContext) {
 
     const details = await getUserDetailsForToken(rawToken, { logger })
 
-    if (!details) {
+    if (details === "rejected") {
       return err({ status: 401, message: "invalid credentials" })
+    }
+    if (details === "unavailable") {
+      return err({ status: 502, message: "could not check credentials" })
     }
 
     let user = (

@@ -46,20 +46,17 @@ import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useTranslator } from "/hooks/useTranslator"
+import { BACKEND_URL } from "/lib/backendUrl"
 import withSignedIn from "/lib/with-signed-in"
 import RegisterCompletionTranslations from "/translations/register-completion"
 import { getCookie } from "/util/cookie"
+import { isCompletedAfterCutoff } from "/util/creditRegistrationDelegation"
 
 import {
   CourseFromSlugDocument,
   CreateRegistrationAttemptDateDocument,
   CurrentUserOverviewDocument,
 } from "/graphql/generated"
-
-const BASE_URL =
-  process.env.NODE_ENV === "production"
-    ? "https://www.mooc.fi"
-    : process.env.NEXT_PUBLIC_DEV_BACKEND_URL ?? "http://localhost:4000"
 
 const SISU_URL = "https://sisu.helsinki.fi/student/frontpage"
 
@@ -171,10 +168,18 @@ function RegisterCompletionPage() {
 
   const course_exists = Boolean(courseData?.course?.id)
 
+  const courseCompletions =
+    userData?.currentUser?.completions?.filter(
+      (c) => c.course?.slug === courseSlug,
+    ) ?? []
+  // Decided per completion: one student can have completions on both sides of the cutoff.
+  const delegatedCompletion = courseCompletions.find(
+    (c) => c.eligible_for_ects && isCompletedAfterCutoff(c),
+  )
   const completion =
-    userData?.currentUser?.completions
-      ?.filter((c) => c.course?.slug === courseSlug)
-      ?.sort((a, b) => {
+    courseCompletions
+      .filter((c) => !isCompletedAfterCutoff(c))
+      .sort((a, b) => {
         // First prioritize completions with a completion_link
         if (a.completion_link && !b.completion_link) {
           return -1
@@ -207,7 +212,7 @@ function RegisterCompletionPage() {
       return
     }
     const controller = new AbortController()
-    fetch(`${BASE_URL}/api/completionInstructions/${courseSlug}/${locale}`, {
+    fetch(`${BACKEND_URL}/api/completionInstructions/${courseSlug}/${locale}`, {
       signal: controller?.signal,
     })
       .then((res) => {
@@ -232,7 +237,7 @@ function RegisterCompletionPage() {
   useEffect(() => {
     const controller = new AbortController()
 
-    fetch(`${BASE_URL}/api/completionTiers/${courseSlug}`, {
+    fetch(`${BACKEND_URL}/api/completionTiers/${courseSlug}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
@@ -304,34 +309,40 @@ function RegisterCompletionPage() {
     )
   }
 
+  const delegatedRegistration = delegatedCompletion?.course && (
+    <DelegatedRegistrationButton
+      handoffUrl={`${BACKEND_URL}/api/credit-registration-handoff/${courseSlug}`}
+      handlerCourseId={delegatedCompletion.course.id}
+      description={
+        completion?.eligible_for_ects
+          ? t("delegatedRegistrationLaterCompletionBody")
+          : undefined
+      }
+    />
+  )
+
   if (!completion?.eligible_for_ects) {
+    if (delegatedCompletion) {
+      return (
+        <RegisterCompletion pageTitle={title}>
+          <Card>
+            <Header>
+              <PageTitle>{t("title")}</PageTitle>
+              <CourseName>
+                {t("course", { course: delegatedCompletion.course?.name })}
+              </CourseName>
+            </Header>
+            {delegatedRegistration}
+          </Card>
+        </RegisterCompletion>
+      )
+    }
     return (
       <RegisterCompletion
         pageTitle={title}
         title={t("course_completion_not_found_title")}
         message={t("course_completion_not_found")}
       />
-    )
-  }
-
-  const delegatedAt = completion.course?.credit_registration_delegated_at
-  const effectiveDate = completion.completion_date ?? completion.created_at
-  // Before the "already registered" check: courses.mooc.fi shows the authoritative status.
-  if (delegatedAt && new Date(effectiveDate) >= new Date(delegatedAt)) {
-    return (
-      <RegisterCompletion pageTitle={title}>
-        <Card>
-          <Header>
-            <PageTitle>{t("title")}</PageTitle>
-            <CourseName>
-              {t("course", { course: completion.course?.name })}
-            </CourseName>
-          </Header>
-          <DelegatedRegistrationButton
-            handoffUrl={`${BASE_URL}/api/credit-registration-handoff/${courseSlug}`}
-          />
-        </Card>
-      </RegisterCompletion>
     )
   }
 
@@ -351,6 +362,7 @@ function RegisterCompletionPage() {
           <Section>
             <CompletionLinkColumn />
           </Section>
+          {delegatedRegistration}
         </Card>
       </RegisterCompletion>
     )
@@ -370,6 +382,7 @@ function RegisterCompletionPage() {
             {t(completion.completion_language as any)}).
           </Typography>
         </StyledPaper>
+        {delegatedRegistration && <Card>{delegatedRegistration}</Card>}
       </RegisterCompletion>
     )
   }
@@ -469,6 +482,7 @@ function RegisterCompletionPage() {
             </AccordionDetails>
           </Disclosure>
         )}
+        {delegatedRegistration}
       </Card>
     </RegisterCompletion>
   )

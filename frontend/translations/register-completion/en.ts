@@ -75,8 +75,6 @@ export default {
     "We could not sign you in. Try again later. You can also sign in yourself and find your completions in your profile.",
   handoffGoToProfile: "Go to your profile",
   certificatePageTitle: "Your certificate",
-  certificatePageIntroBody:
-    "A certificate of completion is available for this course.",
   certificateFallbackBody:
     "We can't generate a certificate for this course here. Please return to the course materials and get your certificate from there. If anything is unclear, contact the people in charge of your course, who are listed in the course materials.",
   goToCourseMaterials: "Go to course materials",

@@ -75,7 +75,6 @@ export default {
     "Vi kunde inte logga in dig. Försök igen senare. Du kan också logga in själv och hitta dina prestationer i din profil.",
   handoffGoToProfile: "Gå till din profil",
   certificatePageTitle: "Ditt intyg",
-  certificatePageIntroBody: "Ett intyg finns tillgängligt för den här kursen.",
   certificateFallbackBody:
     "Vi kan inte skapa ett intyg för den här kursen här. Återvänd till kursmaterialet och hämta ditt intyg därifrån. Om något är oklart, kontakta de ansvariga för kursen, som finns listade i kursmaterialet.",
   goToCourseMaterials: "Till kursmaterialet",

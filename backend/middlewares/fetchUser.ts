@@ -105,11 +105,12 @@ const setContextUser = async (ctx: Context, rawToken: string) => {
   })
 
   ctx.tmcClient = new TmcClient(rawToken)
-  ctx.userDetails = details
 
-  if (!details) {
+  if (typeof details === "string") {
+    ctx.isUserLookupUnavailable = details === "unavailable"
     return
   }
+  ctx.userDetails = details
 
   const syncedFields: SyncedUserFields = {
     upstream_id: details.id,
