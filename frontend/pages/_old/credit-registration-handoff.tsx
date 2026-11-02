@@ -18,16 +18,24 @@ import Spinner from "/components/Spinner"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useTranslator } from "/hooks/useTranslator"
 import { clearSession, getAccessToken, startSession } from "/lib/authentication"
-import { BACKEND_URL } from "/lib/backendUrl"
 import redirect from "/lib/redirect"
 import RegisterCompletionTranslations from "/translations/register-completion"
 
 type HandoffState =
   | { status: "redeeming" }
-  | { status: "differentAccount"; continuation: string }
-  | { status: "continuing"; continuation: string }
+  | {
+      status: "confirm"
+      /** Whether another account is signed in, rather than none. */
+      isDifferentAccount: boolean
+      continuation: string
+      maskedEmail: string | null
+    }
   | { status: "expired" }
   | { status: "failed" }
+
+// Same origin, not BACKEND_URL: the redeem must carry the cookie middleware.ts set on this page.
+const REDEEM_URL = "/api/courses-handoff/redeem"
+const CONTINUE_URL = "/api/courses-handoff/continue"
 
 // Paths come from our own backend; still, only follow one that stays on this site.
 const isSitePath = (path: unknown): path is string =>
@@ -35,7 +43,8 @@ const isSitePath = (path: unknown): path is string =>
 
 /**
  * Where courses.mooc.fi sends a student it hands back to mooc.fi. Signs them in as the account the
- * handoff names and continues to the destination the backend resolved.
+ * handoff names, after they confirm it unless they came straight from courses.mooc.fi, and
+ * continues to the destination the backend resolved.
  */
 function CreditRegistrationHandoffPage() {
   const t = useTranslator(RegisterCompletionTranslations)
@@ -43,6 +52,7 @@ function CreditRegistrationHandoffPage() {
   const apollo = useApolloClient()
   const { currentUser } = useLoginStateContext()
   const [state, setState] = useState<HandoffState>({ status: "redeeming" })
+  const [isContinuing, setIsContinuing] = useState(false)
   const hasStarted = useRef(false)
 
   const localePrefix =
@@ -68,12 +78,15 @@ function CreditRegistrationHandoffPage() {
         return
       }
       if (
-        body.result === "different_account" &&
+        (body.result === "confirm" || body.result === "different_account") &&
         typeof body.continuation === "string"
       ) {
         setState({
-          status: "differentAccount",
+          status: "confirm",
+          isDifferentAccount: body.result === "different_account",
           continuation: body.continuation,
+          maskedEmail:
+            typeof body.masked_email === "string" ? body.masked_email : null,
         })
         return
       }
@@ -124,7 +137,7 @@ function CreditRegistrationHandoffPage() {
     }
 
     const accessToken = getAccessToken()
-    fetch(`${BACKEND_URL}/api/courses-handoff/redeem`, {
+    fetch(REDEEM_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -136,10 +149,10 @@ function CreditRegistrationHandoffPage() {
       .catch(() => setState({ status: "failed" }))
   }, [])
 
-  // The other account stays signed in until the new session replaces it.
-  const logOutAndContinue = (continuation: string) => {
-    setState({ status: "continuing", continuation })
-    fetch(`${BACKEND_URL}/api/courses-handoff/continue`, {
+  // Any other account stays signed in until the new session replaces it.
+  const continueWithHandoffAccount = (continuation: string) => {
+    setIsContinuing(true)
+    fetch(CONTINUE_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ continuation }),
@@ -152,30 +165,45 @@ function CreditRegistrationHandoffPage() {
     return <Spinner />
   }
 
-  if (state.status === "differentAccount" || state.status === "continuing") {
+  if (state.status === "confirm") {
+    const { isDifferentAccount, continuation, maskedEmail } = state
+    const confirmTitle = isDifferentAccount
+      ? t("handoffDifferentAccountTitle")
+      : t("handoffConfirmTitle")
+    const explanation = isDifferentAccount
+      ? [
+          currentUser?.email
+            ? t("handoffDifferentAccountBody", { email: currentUser.email })
+            : t("handoffDifferentAccountBodyNoEmail"),
+          maskedEmail
+            ? t("handoffDifferentAccountActionWithEmail", { maskedEmail })
+            : t("handoffDifferentAccountAction"),
+        ]
+      : [maskedEmail ? t("handoffConfirmBody") : t("handoffConfirmBodyNoEmail")]
+    const actionLabel = isDifferentAccount
+      ? t("handoffLogOutAndContinue")
+      : maskedEmail
+      ? t("handoffContinueAs", { maskedEmail })
+      : t("handoffContinue")
+
     return (
-      <RegisterCompletion pageTitle={t("handoffDifferentAccountTitle")}>
+      <RegisterCompletion pageTitle={confirmTitle}>
         <Card>
           <Header>
-            <PageTitle>{t("handoffDifferentAccountTitle")}</PageTitle>
+            <PageTitle>{confirmTitle}</PageTitle>
           </Header>
           <InstructionsSection>
-            <Prose>
-              {currentUser?.email
-                ? t("handoffDifferentAccountBody", { email: currentUser.email })
-                : t("handoffDifferentAccountBodyNoEmail")}
-            </Prose>
-            <Prose>{t("handoffDifferentAccountAction")}</Prose>
+            {explanation.map((paragraph) => (
+              <Prose key={paragraph}>{paragraph}</Prose>
+            ))}
             <CallToActionButton
               variant="contained"
               color="primary"
               size="medium"
-              disabled={state.status === "continuing"}
-              onClick={() => logOutAndContinue(state.continuation)}
+              disabled={isContinuing}
+              onClick={() => continueWithHandoffAccount(continuation)}
             >
-              {state.status === "continuing"
-                ? t("handoffContinuing")
-                : t("handoffLogOutAndContinue")}
+              {isContinuing ? t("handoffContinuing") : actionLabel}
             </CallToActionButton>
           </InstructionsSection>
         </Card>

@@ -25,6 +25,7 @@ import { useCertificate } from "/hooks/useCertificate"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useTranslator } from "/hooks/useTranslator"
 import { BACKEND_URL } from "/lib/backendUrl"
+import { CERTIFICATES_URL } from "/lib/certificates"
 import withSignedIn from "/lib/with-signed-in"
 import CommonTranslations from "/translations/common"
 import RegisterCompletionTranslations from "/translations/register-completion"
@@ -34,8 +35,6 @@ import {
   CourseFromSlugDocument,
   CurrentUserCertificateCompletionsDocument,
 } from "/graphql/generated"
-
-const CERTIFICATES_URL = "https://certificates.mooc.fi"
 
 const NameFields = styled("div")`
   display: flex;

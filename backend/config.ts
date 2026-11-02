@@ -148,7 +148,6 @@ export const CREDIT_REGISTRATION_HANDOFF_ORIGINS = (
   process.env.CREDIT_REGISTRATION_HANDOFF_ORIGINS ??
   [
     "https://www.mooc.fi",
-    "https://mooc.fi",
     "https://course.elementsofai.com",
     ...(isDev ? ["http://localhost:3000"] : []),
   ].join(",")

@@ -66,6 +66,15 @@ export default {
     "Olet luonut useamman mooc.fi-tilin. Olet nyt kirjautunut yhdellä tilillä, mutta tulit tänne toisella tililläsi.",
   handoffDifferentAccountAction:
     "Kirjaudu ulos ja jatka sillä tilillä, jolla tulit.",
+  handoffDifferentAccountActionWithEmail:
+    "Kirjaudu ulos ja jatka sillä tilillä, jolla tulit: {{maskedEmail}}.",
+  handoffConfirmTitle: "Tarkista tilisi",
+  handoffConfirmBody:
+    "Tulit tänne toiselta sivustolta. Tarkista ennen jatkamista, että tämä on sinun tilisi.",
+  handoffConfirmBodyNoEmail:
+    "Tulit tänne toiselta sivustolta. Jatka vain, jos painoit itse painiketta courses.mooc.fi:ssä.",
+  handoffContinueAs: "Jatka tilillä {{maskedEmail}}",
+  handoffContinue: "Jatka",
   handoffLogOutAndContinue: "Kirjaudu ulos ja jatka",
   handoffContinuing: "Jatketaan…",
   handoffExpiredTitle: "Tämä linkki ei enää toimi",

@@ -217,6 +217,15 @@ describe("API", () => {
         expect(res.headers["access-control-allow-origin"]).toBeUndefined()
       })
 
+      it("keeps the bare mooc.fi domain from calling the mint", async () => {
+        const res = await preflight(
+          "/api/credit-registration-handoff/handled",
+          "https://mooc.fi",
+        )
+
+        expect(res.headers["access-control-allow-origin"]).toBeUndefined()
+      })
+
       it("leaves other routes open", async () => {
         const res = await preflight(
           "/api/courses-handoff/redeem",

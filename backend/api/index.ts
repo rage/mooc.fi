@@ -1,3 +1,4 @@
+import { limitRequestsPerIp } from "../middlewares/rateLimit"
 import { asyncRouter } from "./asyncRouter"
 import {
   abEnrollmentRouter,
@@ -21,6 +22,11 @@ export function apiRouter(ctx: ApiContext) {
   const storedDataController = new StoredDataController(ctx)
   const userCourseSettingsController = new UserCourseSettingsController(ctx)
   const publicController = new PublicController(ctx)
+  // Generous: a lecture hall behind one NAT may hand off all at once.
+  const coursesHandoffRateLimit = limitRequestsPerIp({
+    limit: 120,
+    windowMs: 60_000,
+  })
 
   return asyncRouter(ctx.logger)
     .get("/public/frontpage", publicController.frontpage)
@@ -45,8 +51,16 @@ export function apiRouter(ctx: ApiContext) {
       completionController.delegatedCompletions,
     )
     .get("/delegated-courses/:course_id", completionController.delegatedCourse)
-    .post("/courses-handoff/redeem", coursesHandoffController.redeem)
-    .post("/courses-handoff/continue", coursesHandoffController.continue)
+    .post(
+      "/courses-handoff/redeem",
+      coursesHandoffRateLimit,
+      coursesHandoffController.redeem,
+    )
+    .post(
+      "/courses-handoff/continue",
+      coursesHandoffRateLimit,
+      coursesHandoffController.continue,
+    )
     .post(
       "/credit-registration-handoff/:slug",
       creditRegistrationHandoffController.create,

@@ -1,4 +1,4 @@
-import { createHmac } from "crypto"
+import { createHmac, randomUUID } from "crypto"
 
 import jwt from "jsonwebtoken"
 import nock from "nock"
@@ -18,6 +18,9 @@ const REDEEM_PATH = "/api/v0/moocfi/outbound-handoffs/redeem"
 const ISSUE_PATH = "/api/v8/application/user_access_tokens"
 const JWT_SECRET = "test-jwt-secret"
 const CONTINUATION_AUDIENCE = "courses-handoff-continuation"
+const SAME_SITE_ARRIVAL = {
+  Cookie: "other=x; __Host-courses_handoff_same_site_arrival=1",
+}
 
 jest.mock("../../../config", () => ({
   ...jest.requireActual("../../../config"),
@@ -50,7 +53,8 @@ const signContinuation = (
       algorithm: "HS256",
       audience: CONTINUATION_AUDIENCE,
       subject: "3",
-      expiresIn: "10m",
+      expiresIn: "2m",
+      jwtid: randomUUID(),
       ...options,
     },
   )
@@ -116,14 +120,14 @@ describe("API", () => {
       expect(courses.isDone()).toBe(true)
     })
 
-    it("signs a signed-out student in, to the handler course's certificate", async () => {
+    it("signs in a signed-out student who came from courses.mooc.fi, to the handler course's certificate", async () => {
       redeemedHandoff(1, HANDLED_COURSE_ID)
       const tmc = issuedToken(1, [
         200,
         { access_token: "issued", token_type: "bearer", expires_in: 86400 },
       ])
 
-      const res = await redeem()
+      const res = await redeem(SAME_SITE_ARRIVAL)
 
       expect(res.data).toEqual({
         result: "signed_in",
@@ -132,13 +136,42 @@ describe("API", () => {
         destination_path: CERTIFICATE_PATH,
       })
       expect(tmc.isDone()).toBe(true)
+      expect(res.headers["set-cookie"]).toEqual([
+        expect.stringMatching(
+          /^__Host-courses_handoff_same_site_arrival=;.*Path=\/;.*Expires=Thu, 01 Jan 1970.*Secure/,
+        ),
+      ])
+    })
+
+    it("asks a signed-out student who came from elsewhere to confirm the account", async () => {
+      redeemedHandoff(3)
+
+      const res = await redeem()
+
+      expect(res.data).toEqual({
+        result: "confirm",
+        continuation: expect.any(String),
+        masked_email: "t…@organization.fi",
+        destination_path: CERTIFICATE_PATH,
+      })
+    })
+
+    it("confirms with no email for an account mooc.fi does not have", async () => {
+      redeemedHandoff(99)
+
+      const res = await redeem()
+
+      expect(res.data).toMatchObject({ result: "confirm", masked_email: null })
     })
 
     it("treats a session TMC rejects as signed out", async () => {
       redeemedHandoff(1)
       issuedToken(1, [200, { access_token: "issued", expires_in: 86400 }])
 
-      const res = await redeem({ Authorization: "Bearer stale" })
+      const res = await redeem({
+        Authorization: "Bearer stale",
+        ...SAME_SITE_ARRIVAL,
+      })
 
       expect(res.data).toMatchObject({ result: "signed_in" })
     })
@@ -152,29 +185,37 @@ describe("API", () => {
       })
     })
 
-    it("offers a continuation when signed in as another account", async () => {
+    it("offers a two-minute continuation when signed in as another account, even from courses.mooc.fi", async () => {
       redeemedHandoff(3)
 
-      const res = await redeem(FAKE_NORMAL_USER_AUTHORIZATION_HEADERS)
+      const res = await redeem({
+        ...FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+        ...SAME_SITE_ARRIVAL,
+      })
 
       expect(res.data).toEqual({
         result: "different_account",
         continuation: expect.any(String),
+        masked_email: "t…@organization.fi",
         destination_path: CERTIFICATE_PATH,
       })
-      expect(
-        jwt.verify(res.data.continuation, continuationKey, {
-          algorithms: ["HS256"],
-          audience: CONTINUATION_AUDIENCE,
-        }),
-      ).toMatchObject({ sub: "3", destination: "certificate" })
+      const claims = jwt.verify(res.data.continuation, continuationKey, {
+        algorithms: ["HS256"],
+        audience: CONTINUATION_AUDIENCE,
+      }) as jwt.JwtPayload
+      expect(claims).toMatchObject({
+        sub: "3",
+        destination: "certificate",
+        jti: expect.any(String),
+      })
+      expect((claims.exp ?? 0) - (claims.iat ?? 0)).toBe(120)
     })
 
     it("asks for a password sign-in when TMC will not issue a token", async () => {
       redeemedHandoff(1)
       issuedToken(1, [403, {}])
 
-      return expectError(redeem(), 403, {
+      return expectError(redeem(SAME_SITE_ARRIVAL), 403, {
         type: "sign_in_required",
         destination_path: CERTIFICATE_PATH,
       })
@@ -216,6 +257,25 @@ describe("API", () => {
       })
     })
 
+    it("works only once", async () => {
+      issuedToken(3, [200, { access_token: "issued", expires_in: 86400 }])
+      const continuation = signContinuation()
+
+      await continueWith(continuation)
+
+      return expectError(continueWith(continuation), 410, { type: "expired" })
+    })
+
+    it("refuses a continuation without an id", async () => {
+      const withoutId = jwt.sign(
+        { moocfi_course_id: HANDLER_COURSE_ID, destination: "certificate" },
+        continuationKey,
+        { audience: CONTINUATION_AUDIENCE, subject: "3", expiresIn: "2m" },
+      )
+
+      return expectError(continueWith(withoutId), 400, { type: "invalid" })
+    })
+
     it("answers 410 for an expired continuation", async () => {
       return expectError(
         continueWith(signContinuation({ expiresIn: -10 })),
@@ -236,6 +296,31 @@ describe("API", () => {
       return expectError(continueWith(signContinuation({}, JWT_SECRET)), 400, {
         type: "invalid",
       })
+    })
+  })
+
+  describe("rate limit", () => {
+    it("limits redeem and continue together per IP", async () => {
+      const fromIp = (ip: string, route: string) =>
+        post(route)({ data: {}, headers: { "X-Forwarded-For": ip } })
+          .then((res) => res.status)
+          .catch(({ response }) => response.status)
+
+      for (let i = 0; i < 60; i++) {
+        expect(await fromIp("203.0.113.1", "/api/courses-handoff/redeem")).toBe(
+          400,
+        )
+        expect(
+          await fromIp("203.0.113.1", "/api/courses-handoff/continue"),
+        ).toBe(400)
+      }
+
+      expect(await fromIp("203.0.113.1", "/api/courses-handoff/redeem")).toBe(
+        429,
+      )
+      expect(await fromIp("203.0.113.2", "/api/courses-handoff/redeem")).toBe(
+        400,
+      )
     })
   })
 })

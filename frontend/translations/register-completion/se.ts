@@ -65,6 +65,15 @@ export default {
   handoffDifferentAccountBodyNoEmail:
     "Du har skapat mer än ett mooc.fi-konto. Du är nu inloggad med ett konto, men du kom hit med ditt andra konto.",
   handoffDifferentAccountAction: "Logga ut och fortsätt med kontot du kom med.",
+  handoffDifferentAccountActionWithEmail:
+    "Logga ut och fortsätt med kontot du kom med: {{maskedEmail}}.",
+  handoffConfirmTitle: "Kontrollera ditt konto",
+  handoffConfirmBody:
+    "Du kom hit från en annan webbplats. Kontrollera att det här är ditt konto innan du fortsätter.",
+  handoffConfirmBodyNoEmail:
+    "Du kom hit från en annan webbplats. Fortsätt bara om du själv tryckte på knappen på courses.mooc.fi.",
+  handoffContinueAs: "Fortsätt som {{maskedEmail}}",
+  handoffContinue: "Fortsätt",
   handoffLogOutAndContinue: "Logga ut och fortsätt",
   handoffContinuing: "Fortsätter…",
   handoffExpiredTitle: "Länken fungerar inte längre",

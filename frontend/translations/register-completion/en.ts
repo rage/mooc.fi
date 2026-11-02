@@ -65,6 +65,15 @@ export default {
     "You have created more than one mooc.fi account. You are now signed in with one account, but you came here with your other account.",
   handoffDifferentAccountAction:
     "Log out and continue with the account you came with.",
+  handoffDifferentAccountActionWithEmail:
+    "Log out and continue with the account you came with: {{maskedEmail}}.",
+  handoffConfirmTitle: "Check your account",
+  handoffConfirmBody:
+    "You came here from another site. Check that this is your account before you continue.",
+  handoffConfirmBodyNoEmail:
+    "You came here from another site. Continue only if you pressed the button on courses.mooc.fi yourself.",
+  handoffContinueAs: "Continue as {{maskedEmail}}",
+  handoffContinue: "Continue",
   handoffLogOutAndContinue: "Log out and continue",
   handoffContinuing: "Continuing…",
   handoffExpiredTitle: "This link no longer works",

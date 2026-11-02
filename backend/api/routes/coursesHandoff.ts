@@ -1,4 +1,4 @@
-import { createHmac } from "crypto"
+import { createHmac, randomUUID } from "crypto"
 
 import axios from "axios"
 import { Request, Response } from "express"
@@ -22,7 +22,9 @@ const REDEEM_PATH = "/api/v0/moocfi/outbound-handoffs/redeem"
 const REDEEM_TIMEOUT_MS = 10_000
 const MAX_TOKEN_LENGTH = 4096
 const CONTINUATION_AUDIENCE = "courses-handoff-continuation"
-const CONTINUATION_LIFETIME = "10m"
+const CONTINUATION_LIFETIME_SECONDS = 120
+/** Must match the cookie frontend/middleware.ts sets when the landing page was reached from courses. */
+const SAME_SITE_ARRIVAL_COOKIE = "__Host-courses_handoff_same_site_arrival"
 
 /** Where courses.mooc.fi may send a student, as paths without the locale prefix. */
 const DESTINATION_PATHS = {
@@ -69,8 +71,21 @@ const signContinuation = ({
     algorithm: "HS256",
     audience: CONTINUATION_AUDIENCE,
     subject: String(upstream_id),
-    expiresIn: CONTINUATION_LIFETIME,
+    expiresIn: CONTINUATION_LIFETIME_SECONDS,
+    jwtid: randomUUID(),
   })
+
+// HttpOnly, __Host- and set only by www.mooc.fi, so no page can fake it.
+const carriesSameSiteArrival = (req: Request) =>
+  (req.headers.cookie ?? "")
+    .split(";")
+    .some((pair) => pair.trim() === `${SAME_SITE_ARRIVAL_COOKIE}=1`)
+
+/** The first letter of the address and its domain, such as `m…@example.com`. */
+const maskEmail = (email: string) => {
+  const at = email.lastIndexOf("@")
+  return at > 0 ? `${email[0]}…${email.slice(at)}` : "…"
+}
 
 const isConfigured = () =>
   Boolean(
@@ -86,20 +101,30 @@ const readToken = (value: unknown) =>
     : null
 
 export class CoursesHandoffController extends Controller {
+  private lastSpentPurgeAt = 0
+
   /**
    * Redeems a courses.mooc.fi handoff token for the student whose browser brought it.
    *
    * Body `{ token }`, with the student's mooc.fi bearer when they are signed in. Answers 200 with
    * `{ result, destination_path }`, where `result` is `continue` (already signed in as the
    * student), `signed_in` (adds `access_token` and `expires_in` seconds or null, to be stored as
-   * the session) or `different_account` (adds `continuation`, for {@link continue}). Errors carry
-   * `{ type }`: 400 `invalid`, 410 `expired`, 404 `course_not_found`, 403 `sign_in_required`
-   * (TMC will not sign this student in; adds `destination_path`, to return to after a password
-   * sign-in), 502 `unavailable`, 503 `not_configured`.
+   * the session), `confirm` (signed out, but the landing page was not reached from
+   * courses.mooc.fi) or `different_account`. The last two add `continuation`, for
+   * {@link continue}, and `masked_email` (or null) of the account it signs in, for the student to
+   * check first. Errors carry `{ type }`: 400 `invalid`, 410 `expired`, 404 `course_not_found`,
+   * 403 `sign_in_required` (TMC will not sign this student in; adds `destination_path`, to return
+   * to after a password sign-in), 429 `rate_limited`, 502 `unavailable`, 503 `not_configured`.
    * The token is spent once courses.mooc.fi has seen it, whatever the outcome.
    */
   redeem = async (req: Request, res: Response) => {
     const { logger } = this.ctx
+
+    // One arrival vouches for one redeem only.
+    const hasArrivedSameSite = carriesSameSiteArrival(req)
+    if (hasArrivedSameSite) {
+      res.clearCookie(SAME_SITE_ARRIVAL_COOKIE, { path: "/", secure: true })
+    }
 
     if (!isConfigured()) {
       return res.status(503).json({ type: "not_configured" })
@@ -155,14 +180,12 @@ export class CoursesHandoffController extends Controller {
             .status(200)
             .json({ result: "continue", destination_path: destinationPath })
         }
-        return res
-          .set("Cache-Control", "no-store")
-          .status(200)
-          .json({
-            result: "different_account",
-            continuation: signContinuation(handoff),
-            destination_path: destinationPath,
-          })
+        return this.askToConfirm(
+          res,
+          "different_account",
+          handoff,
+          destinationPath,
+        )
       }
       // A stale session is the same as none; anything else is our failure, not the student's.
       if (currentUser.error.status !== 401) {
@@ -170,15 +193,21 @@ export class CoursesHandoffController extends Controller {
       }
     }
 
+    // Login CSRF: anyone can mint a handoff for their own account and send someone else here.
+    if (!hasArrivedSameSite) {
+      return this.askToConfirm(res, "confirm", handoff, destinationPath)
+    }
+
     return this.signIn(res, handoff.upstream_id, destinationPath)
   }
 
   /**
-   * Signs in the student of a `different_account` redemption, in place of the account the browser
-   * was signed in with.
+   * Signs in the student of a `confirm` or `different_account` redemption once they have
+   * confirmed, in place of any account the browser was signed in with.
    *
-   * Body `{ continuation }`. Answers like {@link redeem} with `result: "signed_in"`; errors 400
-   * `invalid`, 410 `expired` (after 10 minutes), 403, 404, 502 and 503 as there.
+   * Body `{ continuation }`, which works once. Answers like {@link redeem} with
+   * `result: "signed_in"`; errors 400 `invalid`, 410 `expired` (used, or after two minutes), 403,
+   * 404, 429, 502 and 503 as there.
    */
   continue = async (req: Request, res: Response) => {
     if (!isConfigured()) {
@@ -208,8 +237,12 @@ export class CoursesHandoffController extends Controller {
       ...claims,
       upstream_id: /^\d+$/.test(claims.sub ?? "") ? Number(claims.sub) : null,
     })
-    if (!handoff) {
+    if (!handoff || !isUuid(claims.jti) || typeof claims.exp !== "number") {
       return res.status(400).json({ type: "invalid" })
+    }
+
+    if (!(await this.spendContinuation(claims.jti, claims.exp))) {
+      return res.status(410).json({ type: "expired" })
     }
 
     const destinationPath = await this.resolveDestinationPath(handoff)
@@ -218,6 +251,45 @@ export class CoursesHandoffController extends Controller {
     }
 
     return this.signIn(res, handoff.upstream_id, destinationPath)
+  }
+
+  private askToConfirm = async (
+    res: Response,
+    result: "confirm" | "different_account",
+    handoff: Handoff,
+    destinationPath: string,
+  ) => {
+    const user = await this.ctx.prisma.user.findUnique({
+      where: { upstream_id: handoff.upstream_id },
+      select: { email: true },
+    })
+
+    return res
+      .set("Cache-Control", "no-store")
+      .status(200)
+      .json({
+        result,
+        continuation: signContinuation(handoff),
+        masked_email: user ? maskEmail(user.email) : null,
+        destination_path: destinationPath,
+      })
+  }
+
+  /** Whether this was the continuation's first use; the primary key makes it atomic. */
+  private spendContinuation = async (jti: string, expiresAt: number) => {
+    const { prisma } = this.ctx
+    const { count } = await prisma.spentCoursesHandoffContinuation.createMany({
+      data: [{ jti, expires_at: new Date(expiresAt * 1000) }],
+      skipDuplicates: true,
+    })
+    const now = Date.now()
+    if (now - this.lastSpentPurgeAt >= CONTINUATION_LIFETIME_SECONDS * 1000) {
+      this.lastSpentPurgeAt = now
+      await prisma.spentCoursesHandoffContinuation.deleteMany({
+        where: { expires_at: { lt: new Date(now) } },
+      })
+    }
+    return count === 1
   }
 
   private signIn = async (
