@@ -517,7 +517,7 @@ describe("API", () => {
       })
     })
 
-    it("skips a completion the organization already registered", async () => {
+    it("keeps every registration of a completion as history", async () => {
       const data = {
         completions: [
           {
@@ -534,22 +534,7 @@ describe("API", () => {
         await ctx.prisma.completionRegistered.count({
           where: { completion_id: "30000000-0000-0000-0000-000000000102" },
         }),
-      ).toBe(1)
-    })
-
-    it("registers a completion listed twice in one request once", async () => {
-      const entry = {
-        completion_id: "30000000-0000-0000-0000-000000000102",
-        student_number: "12345",
-      }
-
-      await postCompletions({ data: { completions: [entry, entry] } })
-
-      expect(
-        await ctx.prisma.completionRegistered.count({
-          where: { completion_id: entry.completion_id },
-        }),
-      ).toBe(1)
+      ).toBe(2)
     })
   })
 })

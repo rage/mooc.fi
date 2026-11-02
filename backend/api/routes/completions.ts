@@ -2,7 +2,7 @@ import { stringify } from "csv-stringify/sync"
 import { Request, Response } from "express"
 import JSONStream from "JSONStream"
 import jwt, { Secret } from "jsonwebtoken"
-import { chunk, omit, uniqBy } from "lodash"
+import { chunk, omit } from "lodash"
 import * as XLSX from "xlsx"
 import * as yup from "yup"
 
@@ -857,19 +857,9 @@ export class CompletionController extends Controller {
       })
     }
 
-    const queue = chunk(uniqBy(completions, "completion_id"), 500)
+    const queue = chunk(completions, 500)
     for (const completionChunk of queue) {
-      const registered = await prisma.completionRegistered.findMany({
-        where: {
-          organization_id: org.id,
-          completion_id: { in: completionChunk.map((c) => c.completion_id) },
-        },
-        select: { completion_id: true },
-      })
-      const registeredIds = new Set(registered.map((r) => r.completion_id))
-      const promises = buildPromises(
-        completionChunk.filter((c) => !registeredIds.has(c.completion_id)),
-      )
+      const promises = buildPromises(completionChunk)
       await Promise.all(promises)
     }
 
