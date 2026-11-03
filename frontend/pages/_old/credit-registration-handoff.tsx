@@ -29,6 +29,7 @@ type HandoffState =
       isDifferentAccount: boolean
       continuation: string
       maskedEmail: string | null
+      continuing: "idle" | "pending" | "failed"
     }
   | { status: "expired" }
   | { status: "failed" }
@@ -52,7 +53,6 @@ function CreditRegistrationHandoffPage() {
   const apollo = useApolloClient()
   const { currentUser } = useLoginStateContext()
   const [state, setState] = useState<HandoffState>({ status: "redeeming" })
-  const [isContinuing, setIsContinuing] = useState(false)
   const hasStarted = useRef(false)
 
   const localePrefix =
@@ -87,6 +87,7 @@ function CreditRegistrationHandoffPage() {
           continuation: body.continuation,
           maskedEmail:
             typeof body.masked_email === "string" ? body.masked_email : null,
+          continuing: "idle",
         })
         return
       }
@@ -150,15 +151,23 @@ function CreditRegistrationHandoffPage() {
   }, [])
 
   // Any other account stays signed in until the new session replaces it.
-  const continueWithHandoffAccount = (continuation: string) => {
-    setIsContinuing(true)
+  const continueWithHandoffAccount = (
+    confirmState: Extract<HandoffState, { status: "confirm" }>,
+  ) => {
+    const { continuation } = confirmState
+    setState({ ...confirmState, continuing: "pending" })
     fetch(CONTINUE_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ continuation }),
     })
-      .then(handleAnswer)
-      .catch(() => setState({ status: "failed" }))
+      .then((res) =>
+        // The backend leaves the continuation unused on these, so the student can retry.
+        res.status === 429 || res.status === 502
+          ? Promise.reject()
+          : handleAnswer(res),
+      )
+      .catch(() => setState({ ...confirmState, continuing: "failed" }))
   }
 
   if (state.status === "redeeming") {
@@ -166,7 +175,7 @@ function CreditRegistrationHandoffPage() {
   }
 
   if (state.status === "confirm") {
-    const { isDifferentAccount, continuation, maskedEmail } = state
+    const { isDifferentAccount, maskedEmail, continuing } = state
     const confirmTitle = isDifferentAccount
       ? t("handoffDifferentAccountTitle")
       : t("handoffConfirmTitle")
@@ -196,14 +205,17 @@ function CreditRegistrationHandoffPage() {
             {explanation.map((paragraph) => (
               <Prose key={paragraph}>{paragraph}</Prose>
             ))}
+            {continuing === "failed" && (
+              <Prose role="alert">{t("handoffContinueFailed")}</Prose>
+            )}
             <CallToActionButton
               variant="contained"
               color="primary"
               size="medium"
-              disabled={isContinuing}
-              onClick={() => continueWithHandoffAccount(continuation)}
+              disabled={continuing === "pending"}
+              onClick={() => continueWithHandoffAccount(state)}
             >
-              {isContinuing ? t("handoffContinuing") : actionLabel}
+              {continuing === "pending" ? t("handoffContinuing") : actionLabel}
             </CallToActionButton>
           </InstructionsSection>
         </Card>

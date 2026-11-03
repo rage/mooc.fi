@@ -424,13 +424,3 @@ export const getCourseOrAliasKnex =
 
     return slugCourse ?? courses?.[0]
   }
-
-/** Like {@link getCourseOrAliasKnex}, but the course that holds the found course's completions. */
-export const getHandlerCourseKnex =
-  (ctx: BaseContext) => async (input: GetCourseInput) => {
-    const getCourse = getCourseOrAliasKnex(ctx)
-    const course = await getCourse(input)
-    return course?.completions_handled_by_id
-      ? getCourse({ id: course.completions_handled_by_id })
-      : course
-  }

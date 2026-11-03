@@ -10,11 +10,9 @@ import { CallToActionButton, InstructionsSection, Prose } from "./styles"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useTranslator } from "/hooks/useTranslator"
 import { signOut } from "/lib/authentication"
+import { COURSES_BASE_URL } from "/lib/coursesBaseUrl"
 import RegisterCompletionTranslations from "/translations/register-completion"
 import { getCookie } from "/util/cookie"
-
-const COURSES_BASE_URL =
-  process.env.NEXT_PUBLIC_COURSES_BASE_URL ?? "https://courses.mooc.fi"
 
 type Status = "idle" | "opening" | "signedOut" | "rateLimited" | "failed"
 

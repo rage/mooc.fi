@@ -76,9 +76,10 @@ export default {
   handoffContinue: "Continue",
   handoffLogOutAndContinue: "Log out and continue",
   handoffContinuing: "Continuing…",
+  handoffContinueFailed: "We could not sign you in. Try again.",
   handoffExpiredTitle: "This link no longer works",
   handoffExpiredBody:
-    "The link works only once and only for a minute. Go back to courses.mooc.fi and try again. You can also find your completions in your profile.",
+    "The link works only once and only for a short time. Go back to courses.mooc.fi and try again. You can also find your completions in your profile.",
   handoffFailedTitle: "Something went wrong",
   handoffFailedBody:
     "We could not sign you in. Try again later. You can also sign in yourself and find your completions in your profile.",

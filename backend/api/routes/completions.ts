@@ -251,13 +251,10 @@ export class CompletionController extends Controller {
       return res.status(404).json({ message: "Delegated course not found" })
     }
 
-    const links = course.course_translations
-      .filter((translation) => translation.link)
-      .sort(
-        (a, b) =>
-          linkLanguagePreference(a.language) -
-          linkLanguagePreference(b.language),
-      )
+    const links = course.course_translations.sort(
+      (a, b) =>
+        linkLanguagePreference(a.language) - linkLanguagePreference(b.language),
+    )
 
     return res.status(200).json({
       id: course.id,

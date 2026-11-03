@@ -77,9 +77,11 @@ export default {
   handoffContinue: "Jatka",
   handoffLogOutAndContinue: "Kirjaudu ulos ja jatka",
   handoffContinuing: "Jatketaan…",
+  handoffContinueFailed:
+    "Emme saaneet kirjattua sinua sisään. Yritä uudelleen.",
   handoffExpiredTitle: "Tämä linkki ei enää toimi",
   handoffExpiredBody:
-    "Linkki toimii vain kerran ja vain minuutin ajan. Palaa courses.mooc.fi:hin ja yritä uudelleen. Löydät suorituksesi myös profiilistasi.",
+    "Linkki toimii vain kerran ja vain hetken ajan. Palaa courses.mooc.fi:hin ja yritä uudelleen. Löydät suorituksesi myös profiilistasi.",
   handoffFailedTitle: "Jokin meni vikaan",
   handoffFailedBody:
     "Emme saaneet kirjattua sinua sisään. Yritä myöhemmin uudelleen. Voit myös kirjautua itse ja löytää suorituksesi profiilistasi.",

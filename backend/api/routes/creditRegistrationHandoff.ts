@@ -54,9 +54,10 @@ export class CreditRegistrationHandoffController extends Controller {
       return getUserResult.error
     }
 
-    const handlerCourse = await this.getHandlerCourseKnex({
-      slug: req.params.slug,
-    })
+    const handlerCourse =
+      await this.ctx.prisma.course.findUniqueCompletionHandler({
+        where: { slug: req.params.slug },
+      })
 
     if (!handlerCourse?.credit_registration_delegated_at) {
       return res.status(404).json({ message: "Course not found" })

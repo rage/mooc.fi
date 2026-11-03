@@ -1,3 +1,4 @@
+import axios from "axios"
 import {
   NextFunction,
   Request,
@@ -16,9 +17,13 @@ const catchAsync =
     Promise.resolve()
       .then(() => handler(req, res, next))
       .catch((error) => {
-        logger.error(`Unhandled error in ${req.method} ${req.originalUrl}`, {
-          error,
-        })
+        // An axios error carries its request, Authorization included.
+        logger.error(
+          `Unhandled error in ${req.method} ${req.originalUrl}`,
+          axios.isAxiosError(error)
+            ? { status: error.response?.status, code: error.code }
+            : { error },
+        )
         if (res.headersSent) {
           res.end()
           return

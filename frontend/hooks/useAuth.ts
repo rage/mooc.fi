@@ -38,6 +38,7 @@ export function useAuth(): UseAuthResult {
           const { data } = await apolloClient.query<CurrentUserDetailedQuery>({
             query: CurrentUserDetailedDocument,
             fetchPolicy: "network-only",
+            errorPolicy: "none",
           })
           // Null only when TMC rejects the token; the query errors when TMC is down.
           if (!data.currentUser) {

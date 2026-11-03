@@ -12,6 +12,7 @@ import {
   TMC_USERNAME,
 } from "../config"
 import { OrganizationInfo, UserInfo } from "../domain/UserInfo"
+import { singleFlight } from "../util/singleFlight"
 
 const TMC_TIMEOUT_MS = 5000
 
@@ -187,13 +188,18 @@ let issuerToken: { value: string; expiresAt: number | null } | null = null
 export const isUserAccessTokenIssuingConfigured = () =>
   Boolean(TMC_TOKEN_ISSUER_CLIENT_ID && TMC_TOKEN_ISSUER_CLIENT_SECRET)
 
-async function getIssuerAccessToken(): Promise<string> {
+function getIssuerAccessToken(): Promise<string> {
   if (
     issuerToken &&
     (issuerToken.expiresAt === null || issuerToken.expiresAt > Date.now())
   ) {
-    return issuerToken.value
+    return Promise.resolve(issuerToken.value)
   }
+  // Shared, so a burst of handoffs fetches one issuer token, not one each.
+  return singleFlight("tmc:issuer-access-token", fetchIssuerAccessToken)
+}
+
+async function fetchIssuerAccessToken(): Promise<string> {
   const res = await tmcAxios.post<{
     access_token: string
     expires_in?: number
@@ -256,27 +262,31 @@ export async function issueUserAccessToken(
   if (!isUserAccessTokenIssuingConfigured()) {
     throw new Error("TMC user access token issuing is not configured")
   }
-  const request = async () =>
+  const request = (issuerAccessToken: string) =>
     tmcAxios.post<{ access_token?: unknown; expires_in?: unknown }>(
       `${TMC_HOST}/api/v8/application/user_access_tokens`,
       { user_id: upstreamId },
       {
         headers: {
-          Authorization: `Bearer ${await getIssuerAccessToken()}`,
+          Authorization: `Bearer ${issuerAccessToken}`,
           "RATELIMIT-PROTECTION-SAFE-API-KEY":
             RATELIMIT_PROTECTION_SAFE_API_KEY,
         },
       },
     )
-  const requestWithFreshIssuerToken = () =>
-    request().catch((error) => {
+  const requestWithFreshIssuerToken = async () => {
+    const issuerAccessToken = await getIssuerAccessToken()
+    return request(issuerAccessToken).catch(async (error) => {
       if (!axios.isAxiosError(error) || error.response?.status !== 401) {
         throw error
       }
-      // The cached issuer token was revoked or expired early.
-      issuerToken = null
-      return request()
+      // The issuer token was revoked or expired early; another request may have renewed it already.
+      if (issuerToken?.value === issuerAccessToken) {
+        issuerToken = null
+      }
+      return request(await getIssuerAccessToken())
     })
+  }
 
   let res
   try {

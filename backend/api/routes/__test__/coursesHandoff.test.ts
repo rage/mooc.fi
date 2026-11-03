@@ -266,6 +266,19 @@ describe("API", () => {
       return expectError(continueWith(continuation), 410, { type: "expired" })
     })
 
+    it("stays usable after TMC fails to issue a token", async () => {
+      issuedToken(3, [500, {}])
+      const continuation = signContinuation()
+
+      await expectError(continueWith(continuation), 502, {
+        type: "unavailable",
+      })
+
+      issuedToken(3, [200, { access_token: "issued", expires_in: 86400 }])
+      const res = await continueWith(continuation)
+      expect(res.data).toMatchObject({ result: "signed_in" })
+    })
+
     it("refuses a continuation without an id", async () => {
       const withoutId = jwt.sign(
         { moocfi_course_id: HANDLER_COURSE_ID, destination: "certificate" },

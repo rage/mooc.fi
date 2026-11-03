@@ -1,6 +1,7 @@
 // import styles, { ForegroundColor } from "ansi-styles"
 import { NextRequest, NextResponse } from "next/server"
 
+import { COURSES_BASE_URL } from "./lib/coursesBaseUrl"
 import { redirects_list } from "./Redirects"
 
 /*const responseStatus = [
@@ -102,9 +103,7 @@ const HANDOFF_LANDING_PATH = /^(\/(en|fi))?\/credit-registration-handoff\/?$/
  * mooc.fi subdomains from setting it.
  */
 const SAME_SITE_ARRIVAL_COOKIE = "__Host-courses_handoff_same_site_arrival"
-const COURSES_ORIGIN = new URL(
-  process.env.NEXT_PUBLIC_COURSES_BASE_URL ?? "https://courses.mooc.fi",
-).origin
+const COURSES_ORIGIN = new URL(COURSES_BASE_URL).origin
 
 const isFromCourses = (referer: string | null) => {
   try {

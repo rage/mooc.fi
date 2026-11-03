@@ -76,9 +76,10 @@ export default {
   handoffContinue: "Fortsätt",
   handoffLogOutAndContinue: "Logga ut och fortsätt",
   handoffContinuing: "Fortsätter…",
+  handoffContinueFailed: "Vi kunde inte logga in dig. Försök igen.",
   handoffExpiredTitle: "Länken fungerar inte längre",
   handoffExpiredBody:
-    "Länken fungerar bara en gång och bara i en minut. Gå tillbaka till courses.mooc.fi och försök igen. Du hittar också dina prestationer i din profil.",
+    "Länken fungerar bara en gång och bara en kort stund. Gå tillbaka till courses.mooc.fi och försök igen. Du hittar också dina prestationer i din profil.",
   handoffFailedTitle: "Något gick fel",
   handoffFailedBody:
     "Vi kunde inte logga in dig. Försök igen senare. Du kan också logga in själv och hitta dina prestationer i din profil.",

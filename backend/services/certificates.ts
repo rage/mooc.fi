@@ -2,6 +2,7 @@ import axios from "axios"
 import { Logger } from "winston"
 
 import { CERTIFICATES_URL } from "../config"
+import { singleFlight } from "../util/singleFlight"
 import getRedisClient, { cacheGet, cacheSet } from "./redis"
 
 const certificatesAxios = axios.create({ timeout: 2000 })
@@ -39,22 +40,34 @@ export const getCachedCertificateAvailability = async (
     }
   }
 
-  try {
-    const availability = await fetchAvailability()
-    if (typeof availability !== "undefined") {
+  // A student's completions on one course share a key, so they share one fetch, even when `fresh`.
+  return singleFlight(cacheKey, async () => {
+    try {
+      const availability = await fetchAvailability()
+      if (typeof availability !== "undefined") {
+        await cacheSet(
+          cacheKey,
+          JSON.stringify(availability),
+          AVAILABILITY_TTL_SECONDS,
+          cacheOptions,
+        )
+      }
+      return availability
+    } catch (error) {
+      // Not the whole error: its request carries the student's bearer token.
+      logger.warn(`Certificate availability failed for ${key}`, {
+        status: axios.isAxiosError(error) ? error.response?.status : undefined,
+        code: axios.isAxiosError(error) ? error.code : undefined,
+      })
       await cacheSet(
         cacheKey,
-        JSON.stringify(availability),
-        AVAILABILITY_TTL_SECONDS,
+        FAILED_SENTINEL,
+        FAILURE_TTL_SECONDS,
         cacheOptions,
       )
+      return null
     }
-    return availability
-  } catch (error) {
-    logger.warn(`Certificate availability failed for ${key}`, { error })
-    await cacheSet(cacheKey, FAILED_SENTINEL, FAILURE_TTL_SECONDS, cacheOptions)
-    return null
-  }
+  })
 }
 
 export const checkCertificate = async (slug: string, accessToken: string) => {
@@ -103,7 +116,10 @@ export const createCertificate = async (slug: string, accessToken: string) => {
     )
     return res?.data
   } catch (e) {
-    console.log(e)
+    console.log("Creating a certificate failed", {
+      status: axios.isAxiosError(e) ? e.response?.status : undefined,
+      code: axios.isAxiosError(e) ? e.code : undefined,
+    })
     return null
   }
 }

@@ -3,6 +3,7 @@ import { Kind, OperationDefinitionNode } from "graphql"
 import { Logger } from "winston"
 
 import { cacheGet, cacheIncr, cacheSet } from "../services/redis"
+import { singleFlight } from "../util/singleFlight"
 
 const PUBLIC_CACHE_PREFIX = "public-api:"
 // Bumping the version orphans every cached response at once; in-flight builds
@@ -11,22 +12,6 @@ const PUBLIC_CACHE_VERSION_KEY = `${PUBLIC_CACHE_PREFIX}version`
 const PUBLIC_CACHE_TTL_SECONDS = 5 * 60
 const BROWSER_MAX_AGE_SECONDS = 60
 const LANGUAGE_PATTERN = /^[a-z]{2}(_[A-Z]{2})?$/
-
-const inFlightBuilds = new Map<string, Promise<string>>()
-
-/** Concurrent cache misses for one key share a single build. */
-function singleFlight(
-  key: string,
-  run: () => Promise<string>,
-): Promise<string> {
-  const pending = inFlightBuilds.get(key)
-  if (pending) {
-    return pending
-  }
-  const promise = run().finally(() => inFlightBuilds.delete(key))
-  inFlightBuilds.set(key, promise)
-  return promise
-}
 
 /**
  * Sends the JSON built by `build`, serving it from Redis when a fresh copy

@@ -205,9 +205,9 @@ export class CoursesHandoffController extends Controller {
    * Signs in the student of a `confirm` or `different_account` redemption once they have
    * confirmed, in place of any account the browser was signed in with.
    *
-   * Body `{ continuation }`, which works once. Answers like {@link redeem} with
-   * `result: "signed_in"`; errors 400 `invalid`, 410 `expired` (used, or after two minutes), 403,
-   * 404, 429, 502 and 503 as there.
+   * Body `{ continuation }`, which works once, though a 502 leaves it unused for a retry. Answers
+   * like {@link redeem} with `result: "signed_in"`; errors 400 `invalid`, 410 `expired` (used, or
+   * after two minutes), 403, 404, 429, 502 and 503 as there.
    */
   continue = async (req: Request, res: Response) => {
     if (!isConfigured()) {
@@ -241,16 +241,21 @@ export class CoursesHandoffController extends Controller {
       return res.status(400).json({ type: "invalid" })
     }
 
-    if (!(await this.spendContinuation(claims.jti, claims.exp))) {
-      return res.status(410).json({ type: "expired" })
-    }
-
     const destinationPath = await this.resolveDestinationPath(handoff)
     if (!destinationPath) {
       return res.status(404).json({ type: "course_not_found" })
     }
 
-    return this.signIn(res, handoff.upstream_id, destinationPath)
+    const { jti } = claims
+    if (!(await this.spendContinuation(jti, claims.exp))) {
+      return res.status(410).json({ type: "expired" })
+    }
+
+    return this.signIn(res, handoff.upstream_id, destinationPath, () =>
+      this.ctx.prisma.spentCoursesHandoffContinuation.deleteMany({
+        where: { jti },
+      }),
+    )
   }
 
   private askToConfirm = async (
@@ -292,10 +297,12 @@ export class CoursesHandoffController extends Controller {
     return count === 1
   }
 
+  /** `onUnavailable` runs before answering 502, which the student may retry. */
   private signIn = async (
     res: Response,
     upstreamId: number,
     destinationPath: string,
+    onUnavailable?: () => Promise<unknown>,
   ) => {
     const { logger } = this.ctx
 
@@ -316,6 +323,7 @@ export class CoursesHandoffController extends Controller {
       logger.warn("Issuing a TMC access token for a handoff failed", {
         status: axios.isAxiosError(error) ? error.response?.status : undefined,
       })
+      await onUnavailable?.()
       return res.status(502).json({ type: "unavailable" })
     }
 
@@ -334,9 +342,10 @@ export class CoursesHandoffController extends Controller {
     moocfi_course_id,
     destination,
   }: Handoff) => {
-    const handlerCourse = await this.getHandlerCourseKnex({
-      id: moocfi_course_id,
-    })
+    const handlerCourse =
+      await this.ctx.prisma.course.findUniqueCompletionHandler({
+        where: { id: moocfi_course_id },
+      })
 
     return handlerCourse
       ? DESTINATION_PATHS[destination](handlerCourse.slug)

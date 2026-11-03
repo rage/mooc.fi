@@ -53,7 +53,10 @@ export async function getUserDetailsForToken(
     )
     return userDetails
   } catch (e) {
-    logger.warn("Error fetching user details", e)
+    // Not the whole error: it carries the request, bearer token included.
+    logger.warn("Error fetching user details", {
+      status: isAxiosError(e) ? e.response?.status : undefined,
+    })
     if (isAxiosError(e) && e.response?.status === 401) {
       await cacheSet(
         key,
