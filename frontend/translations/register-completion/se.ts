@@ -60,19 +60,14 @@ export default {
   certificateReadyBody: "Ditt intyg är klart.",
   certificateShow: "Visa intyget",
   handoffDifferentAccountTitle: "Du är inloggad med ett annat konto",
-  handoffDifferentAccountBody:
-    "Du har skapat mer än ett mooc.fi-konto. Du är nu inloggad som {{email}}, men du kom hit med ditt andra konto.",
-  handoffDifferentAccountBodyNoEmail:
-    "Du har skapat mer än ett mooc.fi-konto. Du är nu inloggad med ett konto, men du kom hit med ditt andra konto.",
-  handoffDifferentAccountAction: "Logga ut och fortsätt med kontot du kom med.",
-  handoffDifferentAccountActionWithEmail:
-    "Logga ut och fortsätt med kontot du kom med: {{maskedEmail}}.",
+  handoffDifferentAccountBody: "Du är nu inloggad som {{email}}.",
+  handoffDifferentAccountBodyNoEmail: "Du är nu inloggad med ett annat konto.",
   handoffConfirmTitle: "Kontrollera ditt konto",
-  handoffConfirmBody:
-    "Du kom hit från en annan webbplats. Kontrollera att det här är ditt konto innan du fortsätter.",
-  handoffConfirmBodyNoEmail:
-    "Du kom hit från en annan webbplats. Fortsätt bara om du själv tryckte på knappen på courses.mooc.fi.",
-  handoffContinueAs: "Fortsätt som {{maskedEmail}}",
+  handoffSignsInAs:
+    "Den här länken loggar in dig som {{email}}. Fortsätt bara om du nyss tryckte på knappen på courses.mooc.fi.",
+  handoffSignsIn:
+    "Den här länken loggar in dig på mooc.fi. Fortsätt bara om du nyss tryckte på knappen på courses.mooc.fi.",
+  handoffContinueAs: "Fortsätt som {{email}}",
   handoffContinue: "Fortsätt",
   handoffLogOutAndContinue: "Logga ut och fortsätt",
   handoffContinuing: "Fortsätter…",
@@ -80,6 +75,9 @@ export default {
   handoffExpiredTitle: "Länken fungerar inte längre",
   handoffExpiredBody:
     "Länken fungerar bara en gång och bara en kort stund. Gå tillbaka till courses.mooc.fi och försök igen. Du hittar också dina prestationer i din profil.",
+  handoffIpMismatchTitle: "Börja om i samma nätverk",
+  handoffIpMismatchBody:
+    "För din säkerhet fungerar länken bara i det nätverk där du tryckte på knappen. Gå tillbaka till courses.mooc.fi och tryck på knappen igen. Byt inte nätverk och slå inte på eller av VPN emellan.",
   handoffFailedTitle: "Något gick fel",
   handoffFailedBody:
     "Vi kunde inte logga in dig. Försök igen senare. Du kan också logga in själv och hitta dina prestationer i din profil.",

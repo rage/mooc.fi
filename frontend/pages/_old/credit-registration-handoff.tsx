@@ -17,8 +17,9 @@ import {
 import Spinner from "/components/Spinner"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useTranslator } from "/hooks/useTranslator"
-import { clearSession, getAccessToken, startSession } from "/lib/authentication"
+import { endSession, getAccessToken, startSession } from "/lib/authentication"
 import redirect from "/lib/redirect"
+import { toSitePath } from "/lib/sitePath"
 import RegisterCompletionTranslations from "/translations/register-completion"
 
 type HandoffState =
@@ -28,19 +29,17 @@ type HandoffState =
       /** Whether another account is signed in, rather than none. */
       isDifferentAccount: boolean
       continuation: string
-      maskedEmail: string | null
+      /** Of the account the handoff signs in. */
+      email: string | null
       continuing: "idle" | "pending" | "failed"
     }
   | { status: "expired" }
+  | { status: "ip_mismatch" }
   | { status: "failed" }
 
 // Same origin, not BACKEND_URL: the redeem must carry the cookie middleware.ts set on this page.
 const REDEEM_URL = "/api/courses-handoff/redeem"
 const CONTINUE_URL = "/api/courses-handoff/continue"
-
-// Paths come from our own backend; still, only follow one that stays on this site.
-const isSitePath = (path: unknown): path is string =>
-  typeof path === "string" && /^\/(?![/\\])/.test(path)
 
 /**
  * Where courses.mooc.fi sends a student it hands back to mooc.fi. Signs them in as the account the
@@ -62,9 +61,11 @@ function CreditRegistrationHandoffPage() {
 
   const handleAnswer = async (res: Response) => {
     const body = await res.json().catch(() => ({}))
+    // Paths come from our own backend; still, only follow one that stays on this site.
+    const destinationPath = toSitePath(body.destination_path)
 
-    if (res.ok && isSitePath(body.destination_path)) {
-      const destination = `${localePrefix}${body.destination_path}`
+    if (res.ok && destinationPath) {
+      const destination = `${localePrefix}${destinationPath}`
       if (body.result === "continue") {
         window.location.replace(destination)
         return
@@ -73,8 +74,11 @@ function CreditRegistrationHandoffPage() {
         body.result === "signed_in" &&
         typeof body.access_token === "string"
       ) {
-        await startSession(body.access_token, apollo, body.expires_in)
-        window.location.replace(destination)
+        // Not a retryable failure: the redeem or continuation is already spent.
+        await startSession(body.access_token, apollo).then(
+          () => window.location.replace(destination),
+          () => setState({ status: "failed" }),
+        )
         return
       }
       if (
@@ -85,8 +89,7 @@ function CreditRegistrationHandoffPage() {
           status: "confirm",
           isDifferentAccount: body.result === "different_account",
           continuation: body.continuation,
-          maskedEmail:
-            typeof body.masked_email === "string" ? body.masked_email : null,
+          email: typeof body.email === "string" ? body.email : null,
           continuing: "idle",
         })
         return
@@ -97,19 +100,23 @@ function CreditRegistrationHandoffPage() {
     if (
       res.status === 403 &&
       body.type === "sign_in_required" &&
-      isSitePath(body.destination_path)
+      destinationPath
     ) {
-      clearSession()
+      endSession()
       redirect({
         context: {
-          pathname: body.destination_path,
-          asPath: body.destination_path,
+          pathname: destinationPath,
+          asPath: destinationPath,
         },
         target: "/sign-in",
       })
       return
     }
 
+    if (res.status === 410 && body.type === "ip_mismatch") {
+      setState({ status: "ip_mismatch" })
+      return
+    }
     if (res.status === 400 || res.status === 410) {
       setState({ status: "expired" })
       return
@@ -175,24 +182,25 @@ function CreditRegistrationHandoffPage() {
   }
 
   if (state.status === "confirm") {
-    const { isDifferentAccount, maskedEmail, continuing } = state
+    const { isDifferentAccount, email, continuing } = state
     const confirmTitle = isDifferentAccount
       ? t("handoffDifferentAccountTitle")
       : t("handoffConfirmTitle")
+    const signsInAs = email
+      ? t("handoffSignsInAs", { email })
+      : t("handoffSignsIn")
     const explanation = isDifferentAccount
       ? [
           currentUser?.email
             ? t("handoffDifferentAccountBody", { email: currentUser.email })
             : t("handoffDifferentAccountBodyNoEmail"),
-          maskedEmail
-            ? t("handoffDifferentAccountActionWithEmail", { maskedEmail })
-            : t("handoffDifferentAccountAction"),
+          signsInAs,
         ]
-      : [maskedEmail ? t("handoffConfirmBody") : t("handoffConfirmBodyNoEmail")]
+      : [signsInAs]
     const actionLabel = isDifferentAccount
       ? t("handoffLogOutAndContinue")
-      : maskedEmail
-      ? t("handoffContinueAs", { maskedEmail })
+      : email
+      ? t("handoffContinueAs", { email })
       : t("handoffContinue")
 
     return (
@@ -223,10 +231,14 @@ function CreditRegistrationHandoffPage() {
     )
   }
 
-  const title =
-    state.status === "expired"
-      ? t("handoffExpiredTitle")
-      : t("handoffFailedTitle")
+  const { title, body } = {
+    expired: { title: t("handoffExpiredTitle"), body: t("handoffExpiredBody") },
+    ip_mismatch: {
+      title: t("handoffIpMismatchTitle"),
+      body: t("handoffIpMismatchBody"),
+    },
+    failed: { title: t("handoffFailedTitle"), body: t("handoffFailedBody") },
+  }[state.status]
 
   return (
     <RegisterCompletion pageTitle={title}>
@@ -235,11 +247,7 @@ function CreditRegistrationHandoffPage() {
           <PageTitle>{title}</PageTitle>
         </Header>
         <InstructionsSection>
-          <Prose>
-            {state.status === "expired"
-              ? t("handoffExpiredBody")
-              : t("handoffFailedBody")}
-          </Prose>
+          <Prose>{body}</Prose>
           <CallToActionButton
             variant="contained"
             color="primary"

@@ -3,7 +3,11 @@ import type { Logger } from "winston"
 
 import { TMC_HOST } from "../../config"
 import { normalUserDetails } from "../../tests/data"
-import { getUserDetailsForToken } from "../userDetails"
+import {
+  forgetUserDetailsForToken,
+  getUserDetailsForToken,
+  rejectSignedOutToken,
+} from "../userDetails"
 
 const CURRENT_USER_PATH =
   "/api/v8/users/current?show_user_fields=1&extra_fields=1"
@@ -22,9 +26,15 @@ const createFakeRedis = () => {
       isOpen: true,
       isReady: true,
       get: jest.fn(async (key: string) => store.get(key) ?? null),
-      set: jest.fn(async (key: string, value: string) => {
-        store.set(key, value)
-      }),
+      set: jest.fn(
+        async (key: string, value: string, options?: { NX?: boolean }) => {
+          if (options?.NX && store.has(key)) {
+            return null
+          }
+          store.set(key, value)
+          return "OK"
+        },
+      ),
       del: jest.fn(async (key: string) => {
         store.delete(key)
       }),
@@ -99,5 +109,42 @@ describe("getUserDetailsForToken", () => {
     await getUserDetailsForToken("Bearer flaky", { logger, client })
 
     expect(tmcCalls).toBe(2)
+  })
+
+  it("asks TMC again once a token is forgotten", async () => {
+    const { client } = createFakeRedis()
+    const tmc = nock(TMC_HOST ?? "")
+      .get(CURRENT_USER_PATH)
+      .twice()
+      .reply(200, normalUserDetails)
+
+    await getUserDetailsForToken("Bearer revoked", { logger, client })
+    await forgetUserDetailsForToken("Bearer revoked", { logger, client })
+    await getUserDetailsForToken("Bearer revoked", { logger, client })
+
+    expect(tmc.isDone()).toBe(true)
+  })
+
+  it("rejects a signed-out token even if a request in flight resolves it", async () => {
+    const { client } = createFakeRedis()
+    let answer: () => void = () => undefined
+    nock(TMC_HOST ?? "")
+      .get(CURRENT_USER_PATH)
+      .reply(
+        () =>
+          new Promise<[number, object]>((resolve) => {
+            answer = () => resolve([200, normalUserDetails])
+          }) as any,
+      )
+
+    const inFlight = getUserDetailsForToken("Bearer out", { logger, client })
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    await rejectSignedOutToken("Bearer out", { logger, client })
+    answer()
+    await inFlight
+
+    expect(await getUserDetailsForToken("Bearer out", { logger, client })).toBe(
+      "rejected",
+    )
   })
 })

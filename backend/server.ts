@@ -52,8 +52,7 @@ const createExpressAppWithContext = ({
   logger,
 }: ServerContext) => {
   const app = express()
-  // One hop: ingress-nginx, which sets X-Forwarded-For. req.ip is then the address nginx saw, not a
-  // client-supplied header value.
+  // One hop (ingress-nginx), so req.ip is never a client-supplied X-Forwarded-For value.
   app.set("trust proxy", 1)
 
   app.use(

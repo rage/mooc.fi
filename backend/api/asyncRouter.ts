@@ -8,6 +8,8 @@ import {
 } from "express"
 import { Logger } from "winston"
 
+import { requestErrorLogFields } from "../util/requestErrorLogFields"
+
 const METHODS = ["get", "post", "put", "patch", "delete"] as const
 
 /** Express 4 ignores rejected handler promises; turn them into a logged 500. */
@@ -17,12 +19,9 @@ const catchAsync =
     Promise.resolve()
       .then(() => handler(req, res, next))
       .catch((error) => {
-        // An axios error carries its request, Authorization included.
         logger.error(
           `Unhandled error in ${req.method} ${req.originalUrl}`,
-          axios.isAxiosError(error)
-            ? { status: error.response?.status, code: error.code }
-            : { error },
+          axios.isAxiosError(error) ? requestErrorLogFields(error) : { error },
         )
         if (res.headersSent) {
           res.end()

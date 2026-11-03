@@ -9,10 +9,9 @@ import { Alert, Button, Link } from "@mui/material"
 import { CallToActionButton, InstructionsSection, Prose } from "./styles"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useTranslator } from "/hooks/useTranslator"
-import { signOut } from "/lib/authentication"
+import { getAccessToken, signOut } from "/lib/authentication"
 import { COURSES_BASE_URL } from "/lib/coursesBaseUrl"
 import RegisterCompletionTranslations from "/translations/register-completion"
-import { getCookie } from "/util/cookie"
 
 type Status = "idle" | "opening" | "signedOut" | "rateLimited" | "failed"
 
@@ -52,7 +51,7 @@ function DelegatedRegistrationButton({
       const res = await fetch(handoffUrl, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${getCookie("access_token")}`,
+          Authorization: `Bearer ${getAccessToken()}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ ui_language: locale }),

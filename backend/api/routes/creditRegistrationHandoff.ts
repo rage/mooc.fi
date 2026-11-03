@@ -2,7 +2,12 @@ import axios from "axios"
 import { Request, Response } from "express"
 
 import { COURSES_BASE_URL, COURSES_HANDOFF_SECRET } from "../../config"
+import {
+  createRateLimiter,
+  refuseRateLimited,
+} from "../../middlewares/rateLimit"
 import { Controller } from "../types"
+import { readBearerToken } from "../utils"
 
 const MINT_PATH = "/api/v0/moocfi/credit-registration-handoffs"
 const MINT_TIMEOUT_MS = 10_000
@@ -13,18 +18,21 @@ const readRefusalType = (body: any): string | undefined =>
     ? body.type
     : undefined
 
-const isCoursesUrl = (url: unknown, coursesBaseUrl: string) => {
+const isCoursesUrl = (url: unknown) => {
   if (typeof url !== "string") {
     return false
   }
   try {
-    return new URL(url).origin === new URL(coursesBaseUrl).origin
+    return new URL(url).origin === new URL(COURSES_BASE_URL ?? "").origin
   } catch {
     return false
   }
 }
 
+/** Hands students off from mooc.fi to courses.mooc.fi's credit registration. */
 export class CreditRegistrationHandoffController extends Controller {
+  private hitPerUserLimit = createRateLimiter({ limit: 10, windowMs: 60_000 })
+
   /**
    * Sends the signed-in student to courses.mooc.fi's credit registration for a delegated course.
    *
@@ -54,6 +62,11 @@ export class CreditRegistrationHandoffController extends Controller {
       return getUserResult.error
     }
 
+    const retryAfterSeconds = this.hitPerUserLimit(getUserResult.value.user.id)
+    if (retryAfterSeconds !== null) {
+      return refuseRateLimited(res, retryAfterSeconds)
+    }
+
     const handlerCourse =
       await this.ctx.prisma.course.findUniqueCompletionHandler({
         where: { slug: req.params.slug },
@@ -63,10 +76,7 @@ export class CreditRegistrationHandoffController extends Controller {
       return res.status(404).json({ message: "Course not found" })
     }
 
-    const tmcAccessToken = (req.headers.authorization ?? "").replace(
-      /^Bearer\s+/,
-      "",
-    )
+    const tmcAccessToken = readBearerToken(req)
 
     try {
       const response = await axios.post<{ redirect_url?: unknown }>(
@@ -81,12 +91,13 @@ export class CreditRegistrationHandoffController extends Controller {
         {
           headers: { Authorization: `Bearer ${COURSES_HANDOFF_SECRET}` },
           timeout: MINT_TIMEOUT_MS,
+          maxRedirects: 0,
         },
       )
       const { redirect_url } = response.data
 
       // The browser navigates to it, so it must not lead anywhere but courses.mooc.fi.
-      if (!isCoursesUrl(redirect_url, COURSES_BASE_URL)) {
+      if (!isCoursesUrl(redirect_url)) {
         throw new Error(
           "courses.mooc.fi answered without a usable redirect_url",
         )

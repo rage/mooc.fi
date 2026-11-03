@@ -318,6 +318,19 @@ export const cacheSet = async (
   )
 }
 
+/** Whether the value was written: false when the key already holds one or the cache failed. */
+export const cacheSetIfAbsent = async (
+  key: string,
+  value: string,
+  ttlSeconds: number,
+  options: CacheOptions = {},
+) =>
+  (await guarded(
+    `write of ${key}`,
+    (client) => client.set(key, value, { EX: ttlSeconds, NX: true }),
+    options,
+  )) === "OK"
+
 export const cacheDel = async (key: string, options: CacheOptions = {}) => {
   await guarded(`delete of ${key}`, (client) => client.del(key), options)
 }

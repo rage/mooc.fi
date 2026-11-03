@@ -3,6 +3,7 @@ import nock from "nock"
 import {
   createRequestHelpers,
   FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+  FAKE_THIRD_USER_AUTHORIZATION_HEADERS,
   getTestContext,
   RequestPost,
   setupTMCWithDefaultFakeUsers,
@@ -174,6 +175,64 @@ describe("API", () => {
           expect(response.headers["retry-after"]).toBe("30")
           expect(response.data).toEqual({ type: "rate_limited" })
         })
+    })
+
+    it("does not follow a redirect from courses.mooc.fi", async () => {
+      nock(COURSES_BASE_URL)
+        .post(MINT_PATH)
+        .reply(307, {}, { Location: "http://elsewhere.test/mint" })
+      const toElsewhere = nock("http://elsewhere.test").post("/mint")
+      const elsewhere = toElsewhere.reply(201)
+
+      await postHandoff("handled")({})
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(502)
+        })
+      expect(elsewhere.isDone()).toBe(false)
+      nock.removeInterceptor(toElsewhere)
+    })
+
+    it("limits each student, before asking courses.mooc.fi", async () => {
+      const mint = nock(COURSES_BASE_URL)
+        .post(MINT_PATH)
+        .times(10)
+        .reply(201, { redirect_url: "http://courses.test/redeem?token=t" })
+      const mintAsThird = (ip: string) =>
+        postHandoff("handled")({
+          headers: {
+            ...FAKE_THIRD_USER_AUTHORIZATION_HEADERS,
+            "X-Forwarded-For": ip,
+          },
+        })
+          .then((res) => res.status)
+          .catch(({ response }) => response.status)
+
+      for (let i = 0; i < 10; i++) {
+        expect(await mintAsThird(`192.0.2.${i}`)).toBe(200)
+      }
+      expect(mint.isDone()).toBe(true)
+
+      const mintOverLimit = nock(COURSES_BASE_URL).post(MINT_PATH)
+      const overLimit = mintOverLimit.reply(201)
+      expect(await mintAsThird("192.0.2.100")).toBe(429)
+      expect(overLimit.isDone()).toBe(false)
+      nock.removeInterceptor(mintOverLimit)
+    })
+
+    it("limits each IP, counting an IPv6 /64 as one", async () => {
+      const fromIp = (ip: string) =>
+        postHandoff("handled")({ headers: { "X-Forwarded-For": ip } })
+          .then((res) => res.status)
+          .catch(({ response }) => response.status)
+
+      for (let i = 0; i < 60; i++) {
+        expect(await fromIp("2001:db8:1:2::1")).toBe(401)
+        expect(await fromIp("2001:db8:1:2:aaaa:bbbb:cccc:dddd")).toBe(401)
+      }
+
+      expect(await fromIp("2001:db8:1:2::ffff")).toBe(429)
+      expect(await fromIp("2001:db8:1:3::1")).toBe(401)
     })
 
     it("answers 503 when not configured", async () => {

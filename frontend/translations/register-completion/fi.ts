@@ -60,20 +60,14 @@ export default {
   certificateReadyBody: "Todistuksesi on valmis.",
   certificateShow: "Näytä todistus",
   handoffDifferentAccountTitle: "Olet kirjautunut toisella tilillä",
-  handoffDifferentAccountBody:
-    "Olet luonut useamman mooc.fi-tilin. Olet nyt kirjautunut tilillä {{email}}, mutta tulit tänne toisella tililläsi.",
-  handoffDifferentAccountBodyNoEmail:
-    "Olet luonut useamman mooc.fi-tilin. Olet nyt kirjautunut yhdellä tilillä, mutta tulit tänne toisella tililläsi.",
-  handoffDifferentAccountAction:
-    "Kirjaudu ulos ja jatka sillä tilillä, jolla tulit.",
-  handoffDifferentAccountActionWithEmail:
-    "Kirjaudu ulos ja jatka sillä tilillä, jolla tulit: {{maskedEmail}}.",
+  handoffDifferentAccountBody: "Olet nyt kirjautunut tilillä {{email}}.",
+  handoffDifferentAccountBodyNoEmail: "Olet nyt kirjautunut toisella tilillä.",
   handoffConfirmTitle: "Tarkista tilisi",
-  handoffConfirmBody:
-    "Tulit tänne toiselta sivustolta. Tarkista ennen jatkamista, että tämä on sinun tilisi.",
-  handoffConfirmBodyNoEmail:
-    "Tulit tänne toiselta sivustolta. Jatka vain, jos painoit itse painiketta courses.mooc.fi:ssä.",
-  handoffContinueAs: "Jatka tilillä {{maskedEmail}}",
+  handoffSignsInAs:
+    "Tämä linkki kirjaa sinut sisään tilillä {{email}}. Jatka vain, jos painoit juuri painiketta courses.mooc.fi:ssä.",
+  handoffSignsIn:
+    "Tämä linkki kirjaa sinut sisään mooc.fi:hin. Jatka vain, jos painoit juuri painiketta courses.mooc.fi:ssä.",
+  handoffContinueAs: "Jatka tilillä {{email}}",
   handoffContinue: "Jatka",
   handoffLogOutAndContinue: "Kirjaudu ulos ja jatka",
   handoffContinuing: "Jatketaan…",
@@ -82,6 +76,9 @@ export default {
   handoffExpiredTitle: "Tämä linkki ei enää toimi",
   handoffExpiredBody:
     "Linkki toimii vain kerran ja vain hetken ajan. Palaa courses.mooc.fi:hin ja yritä uudelleen. Löydät suorituksesi myös profiilistasi.",
+  handoffIpMismatchTitle: "Aloita uudelleen samassa verkossa",
+  handoffIpMismatchBody:
+    "Turvallisuutesi vuoksi linkki toimii vain siinä verkossa, jossa painoit painiketta. Palaa courses.mooc.fi:hin ja paina painiketta uudelleen. Älä vaihda verkkoa tai laita VPN:ää päälle tai pois välillä.",
   handoffFailedTitle: "Jokin meni vikaan",
   handoffFailedBody:
     "Emme saaneet kirjattua sinua sisään. Yritä myöhemmin uudelleen. Voit myös kirjautua itse ja löytää suorituksesi profiilistasi.",

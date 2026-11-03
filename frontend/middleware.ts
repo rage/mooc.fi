@@ -116,13 +116,16 @@ const isFromCourses = (referer: string | null) => {
 /**
  * Tells the backend whether the student reached the handoff landing page from courses.mooc.fi.
  *
- * The landing redeems its token with a same-origin fetch, so only this navigation's own
- * Sec-Fetch-Site, which pages cannot set, shows where the student came from. Same-site covers every
- * mooc.fi subdomain, so the Referer must also name courses.mooc.fi. Anything else, missing headers
- * included, clears an earlier mark.
+ * Only this navigation's own Sec-Fetch-Site, which pages cannot set, shows where the student came
+ * from. Same-site covers every mooc.fi subdomain, so the Referer must also name courses.mooc.fi.
+ * Any other page load, missing headers included, clears an earlier mark.
  */
 const handoffArrivalMiddleware = (req: NextRequest, res: NextResponse) => {
-  if (!HANDOFF_LANDING_PATH.test(req.nextUrl.pathname)) {
+  // Hydration re-fetches the page as _next/data before the redeem; that must not clear the mark.
+  if (
+    !HANDOFF_LANDING_PATH.test(req.nextUrl.pathname) ||
+    req.headers.has("x-nextjs-data")
+  ) {
     return res
   }
 

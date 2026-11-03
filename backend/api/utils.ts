@@ -108,6 +108,10 @@ interface UserLookupError {
   message: string
 }
 
+/** The token of the request's `Bearer` authorization, or null without one. */
+export const readBearerToken = (req: Request): string | null =>
+  /^Bearer\s+(\S+)$/.exec(req.headers.authorization ?? "")?.[1] ?? null
+
 /**
  * Resolves the user behind the request's bearer token, creating the local user
  * row on first sight. Unlike `getUser`, never writes to the response.

@@ -2,6 +2,7 @@ import axios from "axios"
 import { Logger } from "winston"
 
 import { CERTIFICATES_URL } from "../config"
+import { requestErrorLogFields } from "../util/requestErrorLogFields"
 import { singleFlight } from "../util/singleFlight"
 import getRedisClient, { cacheGet, cacheSet } from "./redis"
 
@@ -40,8 +41,8 @@ export const getCachedCertificateAvailability = async (
     }
   }
 
-  // A student's completions on one course share a key, so they share one fetch, even when `fresh`.
-  return singleFlight(cacheKey, async () => {
+  // A student's completions on one course share one fetch; a fresh one must not join a stale one.
+  return singleFlight(fresh ? `${cacheKey}:fresh` : cacheKey, async () => {
     try {
       const availability = await fetchAvailability()
       if (typeof availability !== "undefined") {
@@ -54,11 +55,10 @@ export const getCachedCertificateAvailability = async (
       }
       return availability
     } catch (error) {
-      // Not the whole error: its request carries the student's bearer token.
-      logger.warn(`Certificate availability failed for ${key}`, {
-        status: axios.isAxiosError(error) ? error.response?.status : undefined,
-        code: axios.isAxiosError(error) ? error.code : undefined,
-      })
+      logger.warn(
+        `Certificate availability failed for ${key}`,
+        requestErrorLogFields(error),
+      )
       await cacheSet(
         cacheKey,
         FAILED_SENTINEL,
@@ -116,10 +116,7 @@ export const createCertificate = async (slug: string, accessToken: string) => {
     )
     return res?.data
   } catch (e) {
-    console.log("Creating a certificate failed", {
-      status: axios.isAxiosError(e) ? e.response?.status : undefined,
-      code: axios.isAxiosError(e) ? e.code : undefined,
-    })
+    console.log("Creating a certificate failed", requestErrorLogFields(e))
     return null
   }
 }

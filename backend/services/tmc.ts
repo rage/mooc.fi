@@ -5,6 +5,8 @@ import {
   RATELIMIT_PROTECTION_SAFE_API_KEY,
   TMC_CLIENT_ID,
   TMC_CLIENT_SECRET,
+  TMC_FRONTEND_CLIENT_ID,
+  TMC_FRONTEND_CLIENT_SECRET,
   TMC_HOST,
   TMC_PASSWORD,
   TMC_TOKEN_ISSUER_CLIENT_ID,
@@ -12,6 +14,7 @@ import {
   TMC_USERNAME,
 } from "../config"
 import { OrganizationInfo, UserInfo } from "../domain/UserInfo"
+import { requestErrorLogFields } from "../util/requestErrorLogFields"
 import { singleFlight } from "../util/singleFlight"
 
 const TMC_TIMEOUT_MS = 5000
@@ -39,6 +42,14 @@ const tmcAxios = axios.create({ timeout: TMC_TIMEOUT_MS })
 // Bulk exports for the background sync scripts can legitimately take minutes.
 const tmcBulkAxios = axios.create()
 
+const RATE_LIMIT_BYPASS_HEADERS = {
+  "RATELIMIT-PROTECTION-SAFE-API-KEY": RATELIMIT_PROTECTION_SAFE_API_KEY,
+}
+const FORM_HEADERS = {
+  "content-type": "application/x-www-form-urlencoded",
+  ...RATE_LIMIT_BYPASS_HEADERS,
+}
+
 let _accessToken: string | null = null
 
 async function fetchAccessToken(): Promise<string> {
@@ -52,17 +63,16 @@ async function fetchAccessToken(): Promise<string> {
         TMC_PASSWORD ?? "",
       )}&grant_type=password`,
       {
-        headers: {
-          "content-type": "application/x-www-form-urlencoded",
-          "RATELIMIT-PROTECTION-SAFE-API-KEY":
-            RATELIMIT_PROTECTION_SAFE_API_KEY,
-        },
+        headers: FORM_HEADERS,
       },
     )
 
     return response.data.access_token
   } catch (error) {
-    logger.error(error)
+    logger.error(
+      "Fetching tmc access token failed",
+      requestErrorLogFields(error),
+    )
     return ""
   }
 }
@@ -185,6 +195,7 @@ const ISSUER_TOKEN_EXPIRY_MARGIN_MS = 60_000
 // expiresAt is null for a token TMC issued without expiry; a 401 still drops it.
 let issuerToken: { value: string; expiresAt: number | null } | null = null
 
+/** Whether {@link issueUserAccessToken} has the issuer credentials it needs. */
 export const isUserAccessTokenIssuingConfigured = () =>
   Boolean(TMC_TOKEN_ISSUER_CLIENT_ID && TMC_TOKEN_ISSUER_CLIENT_SECRET)
 
@@ -212,10 +223,7 @@ async function fetchIssuerAccessToken(): Promise<string> {
       scope: ISSUE_USER_ACCESS_TOKENS_SCOPE,
     }).toString(),
     {
-      headers: {
-        "content-type": "application/x-www-form-urlencoded",
-        "RATELIMIT-PROTECTION-SAFE-API-KEY": RATELIMIT_PROTECTION_SAFE_API_KEY,
-      },
+      headers: FORM_HEADERS,
     },
   )
   const { access_token, expires_in } = res.data
@@ -230,9 +238,8 @@ async function fetchIssuerAccessToken(): Promise<string> {
 }
 
 /**
- * TMC refuses to issue a token for this user, e.g. staff, who must sign in with a password.
- *
- * TMC answers a misconfigured issuer with the same 403, so `message` carries TMC's reason.
+ * TMC refuses to issue a token for this user (e.g. staff). A misconfigured issuer gets the same
+ * 403, so `message` carries TMC's reason.
  */
 export class UserAccessTokenRefusedError extends Error {}
 
@@ -240,12 +247,6 @@ const readTmcErrors = (body: any): string =>
   Array.isArray(body?.errors)
     ? body.errors.filter((e: unknown) => typeof e === "string").join("; ")
     : ""
-
-export interface UserAccessToken {
-  access_token: string
-  /** Seconds; unlike a password sign-in's token, an issued one expires. */
-  expires_in: number | null
-}
 
 /**
  * Signs a TMC user in without their password: a TMC access token for `upstreamId`, usable like
@@ -258,19 +259,18 @@ export interface UserAccessToken {
  */
 export async function issueUserAccessToken(
   upstreamId: number,
-): Promise<UserAccessToken> {
+): Promise<string> {
   if (!isUserAccessTokenIssuingConfigured()) {
     throw new Error("TMC user access token issuing is not configured")
   }
   const request = (issuerAccessToken: string) =>
-    tmcAxios.post<{ access_token?: unknown; expires_in?: unknown }>(
+    tmcAxios.post<{ access_token?: unknown }>(
       `${TMC_HOST}/api/v8/application/user_access_tokens`,
       { user_id: upstreamId },
       {
         headers: {
           Authorization: `Bearer ${issuerAccessToken}`,
-          "RATELIMIT-PROTECTION-SAFE-API-KEY":
-            RATELIMIT_PROTECTION_SAFE_API_KEY,
+          ...RATE_LIMIT_BYPASS_HEADERS,
         },
       },
     )
@@ -297,22 +297,33 @@ export async function issueUserAccessToken(
     }
     throw error
   }
-  return parseUserAccessToken(res.data)
-}
-
-const parseUserAccessToken = ({
-  access_token,
-  expires_in,
-}: {
-  access_token?: unknown
-  expires_in?: unknown
-}): UserAccessToken => {
+  const { access_token } = res.data
   if (typeof access_token !== "string" || access_token === "") {
     throw new Error("TMC answered without an access token")
   }
-  return {
-    access_token,
-    expires_in:
-      typeof expires_in === "number" && expires_in > 0 ? expires_in : null,
+  return access_token
+}
+
+/**
+ * Revokes a TMC access token of the frontend's sign-ins, so it stops working at TMC too.
+ *
+ * Does nothing when the frontend's OAuth application is not configured. Rejects when TMC fails;
+ * the rejection may be an axios error, which carries the token: never log it whole.
+ */
+export async function revokeAccessToken(accessToken: string) {
+  if (!TMC_FRONTEND_CLIENT_ID || !TMC_FRONTEND_CLIENT_SECRET) {
+    return
   }
+  // Doorkeeper revokes a confidential application's token only for that application's credentials.
+  await tmcAxios.post(
+    `${TMC_HOST}/oauth/revoke`,
+    new URLSearchParams({
+      token: accessToken,
+      client_id: TMC_FRONTEND_CLIENT_ID,
+      client_secret: TMC_FRONTEND_CLIENT_SECRET,
+    }).toString(),
+    {
+      headers: FORM_HEADERS,
+    },
+  )
 }

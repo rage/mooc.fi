@@ -59,20 +59,15 @@ export default {
   certificateReadyBody: "Your certificate is ready.",
   certificateShow: "Show certificate",
   handoffDifferentAccountTitle: "You are signed in with another account",
-  handoffDifferentAccountBody:
-    "You have created more than one mooc.fi account. You are now signed in as {{email}}, but you came here with your other account.",
+  handoffDifferentAccountBody: "You are now signed in as {{email}}.",
   handoffDifferentAccountBodyNoEmail:
-    "You have created more than one mooc.fi account. You are now signed in with one account, but you came here with your other account.",
-  handoffDifferentAccountAction:
-    "Log out and continue with the account you came with.",
-  handoffDifferentAccountActionWithEmail:
-    "Log out and continue with the account you came with: {{maskedEmail}}.",
+    "You are now signed in with another account.",
   handoffConfirmTitle: "Check your account",
-  handoffConfirmBody:
-    "You came here from another site. Check that this is your account before you continue.",
-  handoffConfirmBodyNoEmail:
-    "You came here from another site. Continue only if you pressed the button on courses.mooc.fi yourself.",
-  handoffContinueAs: "Continue as {{maskedEmail}}",
+  handoffSignsInAs:
+    "This link signs you in as {{email}}. Continue only if you just pressed the button on courses.mooc.fi.",
+  handoffSignsIn:
+    "This link signs you in to mooc.fi. Continue only if you just pressed the button on courses.mooc.fi.",
+  handoffContinueAs: "Continue as {{email}}",
   handoffContinue: "Continue",
   handoffLogOutAndContinue: "Log out and continue",
   handoffContinuing: "Continuing…",
@@ -80,6 +75,9 @@ export default {
   handoffExpiredTitle: "This link no longer works",
   handoffExpiredBody:
     "The link works only once and only for a short time. Go back to courses.mooc.fi and try again. You can also find your completions in your profile.",
+  handoffIpMismatchTitle: "Start again on the same network",
+  handoffIpMismatchBody:
+    "For your safety, the link works only on the network where you pressed the button. Go back to courses.mooc.fi and press the button again. Do not change networks or turn a VPN on or off in between.",
   handoffFailedTitle: "Something went wrong",
   handoffFailedBody:
     "We could not sign you in. Try again later. You can also sign in yourself and find your completions in your profile.",

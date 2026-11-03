@@ -18,6 +18,7 @@ const REDEEM_PATH = "/api/v0/moocfi/outbound-handoffs/redeem"
 const ISSUE_PATH = "/api/v8/application/user_access_tokens"
 const JWT_SECRET = "test-jwt-secret"
 const CONTINUATION_AUDIENCE = "courses-handoff-continuation"
+const HANDOFF_TOKEN = "a".repeat(32) + "B9".repeat(16)
 const SAME_SITE_ARRIVAL = {
   Cookie: "other=x; __Host-courses_handoff_same_site_arrival=1",
 }
@@ -64,7 +65,7 @@ const redeemedHandoff = (
   moocfi_course_id = HANDLER_COURSE_ID,
 ) =>
   nock(COURSES_BASE_URL)
-    .post(REDEEM_PATH, { token: "handoff-token" })
+    .post(REDEEM_PATH, { token: HANDOFF_TOKEN, client_ip: "203.0.113.7" })
     .matchHeader("authorization", "Bearer handoff-secret")
     .reply(200, { upstream_id, moocfi_course_id, destination: "certificate" })
 
@@ -102,10 +103,10 @@ describe("API", () => {
   })
 
   describe("/api/courses-handoff/redeem", () => {
-    const redeem = (headers: object = {}) =>
+    const redeem = (headers: object = {}, token = HANDOFF_TOKEN) =>
       post("/api/courses-handoff/redeem")({
-        data: { token: "handoff-token" },
-        headers,
+        data: { token },
+        headers: { "X-Forwarded-For": "203.0.113.7", ...headers },
       })
 
     it("continues when the student is already signed in", async () => {
@@ -124,7 +125,7 @@ describe("API", () => {
       redeemedHandoff(1, HANDLED_COURSE_ID)
       const tmc = issuedToken(1, [
         200,
-        { access_token: "issued", token_type: "bearer", expires_in: 86400 },
+        { access_token: "issued", token_type: "bearer" },
       ])
 
       const res = await redeem(SAME_SITE_ARRIVAL)
@@ -132,7 +133,6 @@ describe("API", () => {
       expect(res.data).toEqual({
         result: "signed_in",
         access_token: "issued",
-        expires_in: 86400,
         destination_path: CERTIFICATE_PATH,
       })
       expect(tmc.isDone()).toBe(true)
@@ -151,7 +151,7 @@ describe("API", () => {
       expect(res.data).toEqual({
         result: "confirm",
         continuation: expect.any(String),
-        masked_email: "t…@organization.fi",
+        email: "third@organization.fi",
         destination_path: CERTIFICATE_PATH,
       })
     })
@@ -161,12 +161,12 @@ describe("API", () => {
 
       const res = await redeem()
 
-      expect(res.data).toMatchObject({ result: "confirm", masked_email: null })
+      expect(res.data).toMatchObject({ result: "confirm", email: null })
     })
 
     it("treats a session TMC rejects as signed out", async () => {
       redeemedHandoff(1)
-      issuedToken(1, [200, { access_token: "issued", expires_in: 86400 }])
+      issuedToken(1, [200, { access_token: "issued" }])
 
       const res = await redeem({
         Authorization: "Bearer stale",
@@ -196,7 +196,7 @@ describe("API", () => {
       expect(res.data).toEqual({
         result: "different_account",
         continuation: expect.any(String),
-        masked_email: "t…@organization.fi",
+        email: "third@organization.fi",
         destination_path: CERTIFICATE_PATH,
       })
       const claims = jwt.verify(res.data.continuation, continuationKey, {
@@ -227,6 +227,43 @@ describe("API", () => {
       return expectError(redeem(), 410, { type: "expired" })
     })
 
+    it("tells a student who opened the link from another network", async () => {
+      nock(COURSES_BASE_URL)
+        .post(REDEEM_PATH)
+        .reply(410, { type: "ip_mismatch" })
+
+      return expectError(redeem(), 410, { type: "ip_mismatch" })
+    })
+
+    it.each([
+      ["too short", "a".repeat(63)],
+      ["too long", "a".repeat(65)],
+      ["non-alphanumeric", "a".repeat(63) + "-"],
+      ["padded", ` ${"a".repeat(63)}`],
+    ])(
+      "refuses a %s token without asking courses.mooc.fi",
+      async (_, token) => {
+        const toCourses = nock(COURSES_BASE_URL).post(REDEEM_PATH)
+        const courses = toCourses.reply(200)
+
+        await expectError(redeem({}, token), 400, { type: "invalid" })
+        expect(courses.isDone()).toBe(false)
+        nock.removeInterceptor(toCourses)
+      },
+    )
+
+    it("does not follow a redirect from courses.mooc.fi", async () => {
+      nock(COURSES_BASE_URL)
+        .post(REDEEM_PATH)
+        .reply(307, {}, { Location: "http://elsewhere.test/redeem" })
+      const toElsewhere = nock("http://elsewhere.test").post("/redeem")
+      const elsewhere = toElsewhere.reply(200)
+
+      await expectError(redeem(), 502, { type: "unavailable" })
+      expect(elsewhere.isDone()).toBe(false)
+      nock.removeInterceptor(toElsewhere)
+    })
+
     it("answers 400 for a token courses.mooc.fi does not know", async () => {
       nock(COURSES_BASE_URL).post(REDEEM_PATH).reply(400, {})
 
@@ -245,20 +282,19 @@ describe("API", () => {
       post("/api/courses-handoff/continue")({ data: { continuation } })
 
     it("signs in the account the continuation names", async () => {
-      issuedToken(3, [200, { access_token: "issued", expires_in: 86400 }])
+      issuedToken(3, [200, { access_token: "issued" }])
 
       const res = await continueWith(signContinuation())
 
       expect(res.data).toEqual({
         result: "signed_in",
         access_token: "issued",
-        expires_in: 86400,
         destination_path: CERTIFICATE_PATH,
       })
     })
 
     it("works only once", async () => {
-      issuedToken(3, [200, { access_token: "issued", expires_in: 86400 }])
+      issuedToken(3, [200, { access_token: "issued" }])
       const continuation = signContinuation()
 
       await continueWith(continuation)
@@ -274,7 +310,7 @@ describe("API", () => {
         type: "unavailable",
       })
 
-      issuedToken(3, [200, { access_token: "issued", expires_in: 86400 }])
+      issuedToken(3, [200, { access_token: "issued" }])
       const res = await continueWith(continuation)
       expect(res.data).toMatchObject({ result: "signed_in" })
     })
