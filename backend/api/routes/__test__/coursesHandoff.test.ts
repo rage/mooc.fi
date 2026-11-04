@@ -176,12 +176,28 @@ describe("API", () => {
       expect(res.data).toMatchObject({ result: "signed_in" })
     })
 
-    it("does not replace a session TMC could not check", async () => {
-      redeemedHandoff(99)
-      issuedToken(99, [200, { access_token: "issued" }])
+    it("leaves the token unspent when TMC cannot check the session", async () => {
+      const redeemAtCourses = nock(COURSES_BASE_URL).post(REDEEM_PATH)
+      const courses = redeemAtCourses.reply(200, {})
 
-      return expectError(redeem({ Authorization: "Bearer unchecked" }), 502, {
+      await expectError(redeem({ Authorization: "Bearer unchecked" }), 502, {
         type: "unavailable",
+      })
+      expect(courses.isDone()).toBe(false)
+      nock.removeInterceptor(redeemAtCourses)
+    })
+
+    it("offers a retryable confirmation when TMC fails to sign in a student from courses.mooc.fi", async () => {
+      redeemedHandoff(3)
+      issuedToken(3, [500, {}])
+
+      const res = await redeem(SAME_SITE_ARRIVAL)
+
+      expect(res.data).toEqual({
+        result: "confirm",
+        continuation: expect.any(String),
+        email: "third@organization.fi",
+        destination_path: CERTIFICATE_PATH,
       })
     })
 

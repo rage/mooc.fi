@@ -100,6 +100,7 @@ const readContinuation = (value: unknown) =>
 const readHandoffToken = (value: unknown) =>
   typeof value === "string" && HANDOFF_TOKEN_FORMAT.test(value) ? value : null
 
+/** Signs students in from handoffs courses.mooc.fi sends back to mooc.fi. */
 export class CoursesHandoffController extends Controller {
   private lastSpentPurgeAt = 0
 
@@ -116,7 +117,8 @@ export class CoursesHandoffController extends Controller {
    * `course_not_found`, 403 `sign_in_required` (TMC will not sign this student in; adds
    * `destination_path`, to return to after a password sign-in), 429 `rate_limited`, 502
    * `unavailable`, 503 `not_configured`. The token is spent once courses.mooc.fi has accepted it,
-   * whatever the outcome.
+   * so if TMC then fails to sign the student in, the answer is `confirm`, whose continuation can be
+   * retried.
    */
   redeem = async (req: Request, res: Response) => {
     const { logger } = this.ctx
@@ -136,9 +138,21 @@ export class CoursesHandoffController extends Controller {
       return res.status(400).json({ type: "invalid" })
     }
 
-    let handoff: Handoff | null
+    // Before the redeem spends the token, so a TMC outage leaves it usable.
+    let currentUpstreamId: number | null = null
+    if (req.headers.authorization) {
+      const currentUser = await this.findUser(req)
+      if (currentUser.isOk()) {
+        currentUpstreamId = currentUser.value.user.upstream_id
+      } else if (currentUser.error.status !== 401) {
+        // A stale session is the same as none; anything else is our failure, not the student's.
+        return res.status(502).json({ type: "unavailable" })
+      }
+    }
+
+    let response
     try {
-      const response = await axios.post(
+      response = await axios.post(
         new URL(REDEEM_PATH, COURSES_BASE_URL).href,
         { token, client_ip: req.ip },
         {
@@ -147,7 +161,6 @@ export class CoursesHandoffController extends Controller {
           maxRedirects: 0,
         },
       )
-      handoff = parseHandoff(response.data)
     } catch (error) {
       const refusal = axios.isAxiosError(error) ? error.response : undefined
       const status = refusal?.status
@@ -165,6 +178,7 @@ export class CoursesHandoffController extends Controller {
       return res.status(502).json({ type: "unavailable" })
     }
 
+    const handoff = parseHandoff(response.data)
     if (!handoff) {
       logger.warn("courses.mooc.fi redeemed a handoff with an unexpected body")
       return res.status(502).json({ type: "unavailable" })
@@ -175,34 +189,29 @@ export class CoursesHandoffController extends Controller {
       return res.status(404).json({ type: "course_not_found" })
     }
 
-    if (req.headers.authorization) {
-      const currentUser = await this.findUser(req)
-
-      if (currentUser.isOk()) {
-        if (currentUser.value.user.upstream_id === handoff.upstream_id) {
-          return res
-            .status(200)
-            .json({ result: "continue", destination_path: destinationPath })
-        }
-        return this.askToConfirm(
-          res,
-          "different_account",
-          handoff,
-          destinationPath,
-        )
+    if (currentUpstreamId !== null) {
+      if (currentUpstreamId === handoff.upstream_id) {
+        return res
+          .status(200)
+          .json({ result: "continue", destination_path: destinationPath })
       }
-      // A stale session is the same as none; anything else is our failure, not the student's.
-      if (currentUser.error.status !== 401) {
-        return res.status(502).json({ type: "unavailable" })
-      }
+      return this.askToConfirm(
+        res,
+        "different_account",
+        handoff,
+        destinationPath,
+      )
     }
+
+    const askToConfirm = () =>
+      this.askToConfirm(res, "confirm", handoff, destinationPath)
 
     // Login CSRF: anyone can mint a handoff for their own account and send someone else here.
     if (!hasArrivedSameSite) {
-      return this.askToConfirm(res, "confirm", handoff, destinationPath)
+      return askToConfirm()
     }
 
-    return this.signIn(res, handoff.upstream_id, destinationPath)
+    return this.signIn(res, handoff.upstream_id, destinationPath, askToConfirm)
   }
 
   /**
@@ -254,11 +263,12 @@ export class CoursesHandoffController extends Controller {
       return res.status(410).json({ type: "expired" })
     }
 
-    return this.signIn(res, handoff.upstream_id, destinationPath, () =>
-      this.ctx.prisma.spentCoursesHandoffContinuation.deleteMany({
+    return this.signIn(res, handoff.upstream_id, destinationPath, async () => {
+      await this.ctx.prisma.spentCoursesHandoffContinuation.deleteMany({
         where: { jti },
-      }),
-    )
+      })
+      return res.status(502).json({ type: "unavailable" })
+    })
   }
 
   private askToConfirm = async (
@@ -302,12 +312,12 @@ export class CoursesHandoffController extends Controller {
     return count === 1
   }
 
-  /** `onUnavailable` runs before answering 502, which the student may retry. */
+  /** `answerUnavailable` answers when TMC fails, with something the student can retry. */
   private signIn = async (
     res: Response,
     upstreamId: number,
     destinationPath: string,
-    onUnavailable?: () => Promise<unknown>,
+    answerUnavailable: () => Promise<Response>,
   ) => {
     const { logger } = this.ctx
 
@@ -329,8 +339,7 @@ export class CoursesHandoffController extends Controller {
         "Issuing a TMC access token for a handoff failed",
         requestErrorLogFields(error),
       )
-      await onUnavailable?.()
-      return res.status(502).json({ type: "unavailable" })
+      return answerUnavailable()
     }
 
     logger.info("Signed a student in from a courses.mooc.fi handoff", {
