@@ -8,9 +8,15 @@ const fakeClient = {
   isOpen: true,
   isReady: true,
   get: jest.fn(async (key: string) => store.get(key) ?? null),
-  set: jest.fn(async (key: string, value: string) => {
-    store.set(key, value)
-  }),
+  set: jest.fn(
+    async (key: string, value: string, options?: { NX?: boolean }) => {
+      if (options?.NX && store.has(key)) {
+        return null
+      }
+      store.set(key, value)
+      return "OK"
+    },
+  ),
   del: jest.fn(async (key: string) => {
     store.delete(key)
   }),
@@ -83,6 +89,19 @@ describe("getCachedCertificateAvailability", () => {
       ),
     )
     expect(results).toEqual(Array(3).fill({ completed_course: true }))
+    expect(fetch).toHaveBeenCalledTimes(1)
+  })
+
+  it("fetches fresh at most once per interval", async () => {
+    const fetch = jest.fn().mockResolvedValue({ completed_course: true })
+
+    await getCachedCertificateAvailability("f-1", fetch, logger, {
+      fresh: true,
+    })
+    await getCachedCertificateAvailability("f-1", fetch, logger, {
+      fresh: true,
+    })
+
     expect(fetch).toHaveBeenCalledTimes(1)
   })
 

@@ -17,3 +17,7 @@ export function singleFlight<T>(
   inFlight.set(key, promise)
   return promise
 }
+
+/** The promise of the {@link singleFlight} call in flight for `key`, if any. */
+export const inFlightFor = <T>(key: string): Promise<T> | undefined =>
+  inFlight.get(key) as Promise<T> | undefined

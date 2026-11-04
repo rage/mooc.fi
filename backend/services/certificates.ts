@@ -3,13 +3,14 @@ import { Logger } from "winston"
 
 import { CERTIFICATES_URL } from "../config"
 import { requestErrorLogFields } from "../util/requestErrorLogFields"
-import { singleFlight } from "../util/singleFlight"
-import getRedisClient, { cacheGet, cacheSet } from "./redis"
+import { inFlightFor, singleFlight } from "../util/singleFlight"
+import getRedisClient, { cacheGet, cacheSet, cacheSetIfAbsent } from "./redis"
 
 const certificatesAxios = axios.create({ timeout: 2000 })
 
 const AVAILABILITY_TTL_SECONDS = 300
 const FAILURE_TTL_SECONDS = 60
+const FRESH_INTERVAL_SECONDS = 10
 
 const FAILED_SENTINEL = "failed"
 
@@ -18,7 +19,7 @@ const FAILED_SENTINEL = "failed"
  * Failures are cached briefly so a slow or down service is not hit per completion.
  *
  * `fresh` skips the cached value and replaces it, for when the student has just created a
- * certificate or asks to try again.
+ * certificate or asks to try again; at most once per key in {@link FRESH_INTERVAL_SECONDS}.
  */
 export const getCachedCertificateAvailability = async (
   key: string,
@@ -27,9 +28,23 @@ export const getCachedCertificateAvailability = async (
   { fresh = false }: { fresh?: boolean } = {},
 ) => {
   const cacheKey = `certificateavailability:${key}`
+  const freshKey = `${cacheKey}:fresh`
   const cacheOptions = { client: getRedisClient(), logger }
 
-  const cached = fresh ? null : await cacheGet(cacheKey, cacheOptions)
+  const isFresh =
+    fresh &&
+    (await cacheSetIfAbsent(
+      freshKey,
+      "1",
+      FRESH_INTERVAL_SECONDS,
+      cacheOptions,
+    ))
+  // Completions of one course share a key, so all but the first fresh one join its fetch.
+  const freshInFlight = fresh && !isFresh ? inFlightFor(freshKey) : undefined
+  if (freshInFlight) {
+    return freshInFlight
+  }
+  const cached = isFresh ? null : await cacheGet(cacheKey, cacheOptions)
   if (cached === FAILED_SENTINEL) {
     return null
   }
@@ -41,8 +56,8 @@ export const getCachedCertificateAvailability = async (
     }
   }
 
-  // A student's completions on one course share one fetch; a fresh one must not join a stale one.
-  return singleFlight(fresh ? `${cacheKey}:fresh` : cacheKey, async () => {
+  // A fresh fetch must not join one that started before, say, the certificate was created.
+  return singleFlight(isFresh ? freshKey : cacheKey, async () => {
     try {
       const availability = await fetchAvailability()
       if (typeof availability !== "undefined") {
