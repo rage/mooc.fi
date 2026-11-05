@@ -50,7 +50,10 @@ import { BACKEND_URL } from "/lib/backendUrl"
 import withSignedIn from "/lib/with-signed-in"
 import RegisterCompletionTranslations from "/translations/register-completion"
 import { getCookie } from "/util/cookie"
-import { isCompletedAfterCutoff } from "/util/creditRegistrationDelegation"
+import {
+  hasRegisteredEquivalent,
+  isCompletedAfterCutoff,
+} from "/util/creditRegistrationDelegation"
 
 import {
   CourseFromSlugDocument,
@@ -174,7 +177,10 @@ function RegisterCompletionPage() {
     ) ?? []
   // Decided per completion: one student can have completions on both sides of the cutoff.
   const delegatedCompletion = courseCompletions.find(
-    (c) => c.eligible_for_ects && isCompletedAfterCutoff(c),
+    (c) =>
+      c.eligible_for_ects &&
+      isCompletedAfterCutoff(c) &&
+      !hasRegisteredEquivalent(c, courseCompletions),
   )
   const completion =
     courseCompletions
