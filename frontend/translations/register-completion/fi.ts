@@ -39,8 +39,6 @@ export default {
     "Yritit monta kertaa lyhyessä ajassa. Odota hetki ja yritä sitten uudelleen.",
   delegatedRegistrationLaterCompletionBody:
     "Suoritit tämän kurssin myöhemmin uudelleen. Rekisteröi myöhemmän suorituksen opintopisteet courses.mooc.fi:ssä.",
-  certificateNeedCreditsBody:
-    "Tarvitsetko sittenkin opintopisteet? Rekisteröi ne courses.mooc.fi:ssä.",
   certificateServiceUnavailable:
     "Emme pysty juuri nyt tarkistamaan todistustasi. Yritä hetken päästä uudelleen.",
   certificateTryAgain: "Yritä uudelleen",

@@ -39,8 +39,6 @@ export default {
     "Du försökte många gånger på kort tid. Vänta en stund och försök sedan igen.",
   delegatedRegistrationLaterCompletionBody:
     "Du avlade den här kursen igen senare. Registrera studiepoängen för den senare prestationen på courses.mooc.fi.",
-  certificateNeedCreditsBody:
-    "Behöver du studiepoängen ändå? Registrera dem på courses.mooc.fi.",
   certificateServiceUnavailable:
     "Vi kan inte kontrollera ditt intyg just nu. Försök igen om en stund.",
   certificateTryAgain: "Försök igen",

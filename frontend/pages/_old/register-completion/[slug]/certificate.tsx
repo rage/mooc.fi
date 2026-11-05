@@ -6,7 +6,6 @@ import { styled } from "@mui/material/styles"
 
 import RegisterCompletion from "/components/Home/RegisterCompletion"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
-import DelegatedRegistrationButton from "/components/RegisterCompletion/DelegatedRegistrationButton"
 import {
   CallToActionButton,
   Card,
@@ -24,12 +23,10 @@ import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useCertificate } from "/hooks/useCertificate"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useTranslator } from "/hooks/useTranslator"
-import { BACKEND_URL } from "/lib/backendUrl"
 import { CERTIFICATES_URL } from "/lib/certificates"
 import withSignedIn from "/lib/with-signed-in"
 import CommonTranslations from "/translations/common"
 import RegisterCompletionTranslations from "/translations/register-completion"
-import { isCompletedAfterCutoff } from "/util/creditRegistrationDelegation"
 
 import {
   CourseFromSlugDocument,
@@ -187,7 +184,6 @@ function CertificatePage() {
   const completion =
     completions.find((c) => c.certificate_availability?.existing_certificate) ??
     completions[completions.length - 1]
-  const delegatedCompletion = completions.find(isCompletedAfterCutoff)
 
   useBreadcrumbs([
     { translation: "registerCompletion" },
@@ -328,13 +324,6 @@ function CertificatePage() {
           <CourseName>{t("course", { course: course.name })}</CourseName>
         </Header>
         {renderCertificate()}
-        {delegatedCompletion?.course && (
-          <DelegatedRegistrationButton
-            handoffUrl={`${BACKEND_URL}/api/credit-registration-handoff/${courseSlug}`}
-            handlerCourseId={delegatedCompletion.course.id}
-            description={t("certificateNeedCreditsBody")}
-          />
-        )}
       </Card>
     </RegisterCompletion>
   )

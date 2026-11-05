@@ -38,8 +38,6 @@ export default {
     "You tried many times in a short time. Wait a minute, then try again.",
   delegatedRegistrationLaterCompletionBody:
     "You completed this course again later. Register the credits for that later completion on courses.mooc.fi.",
-  certificateNeedCreditsBody:
-    "Do you need the credits after all? Register them on courses.mooc.fi.",
   certificateServiceUnavailable:
     "We cannot check your certificate right now. Try again in a moment.",
   certificateTryAgain: "Try again",
