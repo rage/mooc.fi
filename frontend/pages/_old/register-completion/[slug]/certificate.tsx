@@ -1,7 +1,7 @@
-import dynamic from "next/dynamic"
+import { useCallback, useState } from "react"
 
-import { useQuery } from "@apollo/client"
-import { Skeleton } from "@mui/material"
+import { NetworkStatus, useQuery } from "@apollo/client"
+import { Alert, TextField } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import RegisterCompletion from "/components/Home/RegisterCompletion"
@@ -14,42 +14,136 @@ import {
   InstructionsSection,
   PageTitle,
   Prose,
+  QuestionText,
 } from "/components/RegisterCompletion/styles"
 import Spinner from "/components/Spinner"
 import VisuallyHidden from "/components/VisuallyHidden"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
+import { useCertificate } from "/hooks/useCertificate"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useTranslator } from "/hooks/useTranslator"
+import { CERTIFICATES_URL } from "/lib/certificates"
 import withSignedIn from "/lib/with-signed-in"
 import CommonTranslations from "/translations/common"
 import RegisterCompletionTranslations from "/translations/register-completion"
 
 import {
   CourseFromSlugDocument,
-  CurrentUserOverviewDocument,
+  CurrentUserCertificateCompletionsDocument,
 } from "/graphql/generated"
 
-const CertificateButton = dynamic(
-  () => import("/components/CertificateButton"),
-  { ssr: false, loading: () => <Skeleton /> },
-)
+const NameFields = styled("div")`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
 
-// CertificateButton caps itself at 20vw for the profile page's card, which is unreadable here.
-const CertificateButtonRow = styled("div")`
-  & .MuiButtonBase-root {
-    max-width: none;
+  & > * {
+    flex: 1 1 14rem;
   }
 `
 
-function CertificatePage() {
-  const { currentUser } = useLoginStateContext()
+interface CertificateFormProps {
+  certificateSlug: string
+  onCreated: (certificateId: string) => void
+}
 
+/** Asks for the name on the certificate and creates it. */
+function CertificateForm({ certificateSlug, onCreated }: CertificateFormProps) {
+  const t = useTranslator(RegisterCompletionTranslations)
+  const { currentUser } = useLoginStateContext()
+  const [hasFailed, setHasFailed] = useState(false)
+
+  const onReceiveGeneratedCertificateSuccess = useCallback(
+    (certificate?: { id?: string }) => {
+      if (certificate?.id) {
+        onCreated(certificate.id)
+      }
+    },
+    [onCreated],
+  )
+  const onFailure = useCallback(() => setHasFailed(true), [])
+
+  const {
+    state,
+    firstName,
+    setFirstName,
+    lastName,
+    setLastName,
+    onSubmit,
+    isNameEmpty,
+  } = useCertificate({
+    course: { slug: certificateSlug },
+    completion: { certificate_availability: null },
+    onReceiveGeneratedCertificateSuccess,
+    onReceiveGeneratedCertificateError: onFailure,
+    onUpdateNameError: onFailure,
+  })
+
+  const isWorking =
+    state.status === "UPDATING_NAME" || state.status === "GENERATING"
+  const hasSavedName = Boolean(
+    currentUser?.first_name || currentUser?.last_name,
+  )
+
+  const submit = (event: React.FormEvent) => {
+    event.preventDefault()
+    setHasFailed(false)
+    onSubmit()
+  }
+
+  return (
+    <InstructionsSection as="form" onSubmit={submit}>
+      <QuestionText as="h2">
+        {hasSavedName
+          ? t("certificateNameCheckHeading")
+          : t("certificateNameAddHeading")}
+      </QuestionText>
+      <Prose>{t("certificateNameBody")}</Prose>
+      <NameFields>
+        <TextField
+          id="certificate-first-name"
+          label={t("certificateFirstName")}
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+          autoComplete="given-name"
+          disabled={isWorking}
+        />
+        <TextField
+          id="certificate-last-name"
+          label={t("certificateLastName")}
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
+          autoComplete="family-name"
+          disabled={isWorking}
+        />
+      </NameFields>
+      <CallToActionButton
+        type="submit"
+        variant="contained"
+        color="primary"
+        size="medium"
+        disabled={isWorking || isNameEmpty}
+      >
+        {isWorking ? t("certificateCreating") : t("certificateCreate")}
+      </CallToActionButton>
+      <div aria-live="polite">
+        {hasFailed && !isWorking && (
+          <Alert severity="error">{t("certificateCreateFailed")}</Alert>
+        )}
+      </div>
+    </InstructionsSection>
+  )
+}
+
+function CertificatePage() {
   const courseSlug = encodeURIComponent(
     useQueryParameter("slug") ?? "",
   ).replace(/\./g, "")
 
   const t = useTranslator(RegisterCompletionTranslations, CommonTranslations)
+  const { currentUser } = useLoginStateContext()
+  const [createdCertificateId, setCreatedCertificateId] = useState<string>()
   const {
     loading: courseLoading,
     error: courseError,
@@ -57,30 +151,39 @@ function CertificatePage() {
   } = useQuery(CourseFromSlugDocument, {
     variables: { slug: courseSlug },
   })
-  // errorPolicy "all": a certificates.mooc.fi hiccup should degrade this one page to the
-  // course-materials fallback, not take down registration entirely.
-  const {
-    loading: userLoading,
-    error: userError,
-    data: userData,
-  } = useQuery(CurrentUserOverviewDocument, { errorPolicy: "all" })
-
   const course_exists = Boolean(courseData?.course?.id)
+  const {
+    error: completionsError,
+    data: completionsData,
+    networkStatus,
+    refetch,
+  } = useQuery(CurrentUserCertificateCompletionsDocument, {
+    variables: { course_slug: courseSlug, fresh: false },
+    skip: !course_exists,
+    notifyOnNetworkStatusChange: true,
+    errorPolicy: "all",
+  })
+  const isRefetching = networkStatus === NetworkStatus.refetch
 
+  // The server caches availability for minutes, so "unavailable" or "no certificate yet" would stick.
+  const refetchFresh = useCallback(() => {
+    refetch({ fresh: true })
+  }, [refetch])
+
+  const onCreated = useCallback(
+    (certificateId: string) => {
+      setCreatedCertificateId(certificateId)
+      refetchFresh()
+    },
+    [refetchFresh],
+  )
+
+  const completions = (completionsData?.currentUser?.completions ?? []).filter(
+    (c) => c.eligible_for_ects,
+  )
   const completion =
-    userData?.currentUser?.completions
-      ?.filter((c) => c.course?.slug === courseSlug)
-      ?.sort((a, b) => {
-        if (a.completion_link && !b.completion_link) {
-          return -1
-        }
-        if (!a.completion_link && b.completion_link) {
-          return 1
-        }
-        const aDate = a.created_at ? new Date(a.created_at).getTime() : 0
-        const bDate = b.created_at ? new Date(b.created_at).getTime() : 0
-        return bDate - aDate
-      })[0] ?? undefined
+    completions.find((c) => c.certificate_availability?.existing_certificate) ??
+    completions[completions.length - 1]
 
   useBreadcrumbs([
     { translation: "registerCompletion" },
@@ -93,24 +196,21 @@ function CertificatePage() {
   ])
   const title = courseData?.course?.name ?? "..."
 
-  if (courseLoading || userLoading) {
+  if (
+    courseLoading ||
+    (course_exists && !completionsData && !completionsError)
+  ) {
     return <Spinner />
   }
 
-  if ((userError && !userData?.currentUser) || courseError) {
+  if (courseError || (completionsError && !completionsData?.currentUser)) {
     return (
       <ModifiableErrorMessage
-        errorMessage={JSON.stringify(userError ?? courseError, undefined, 2)}
-      />
-    )
-  }
-
-  if (!currentUser) {
-    return (
-      <RegisterCompletion
-        pageTitle={title}
-        title={t("error")}
-        message={t("notLoggedIn")}
+        errorMessage={JSON.stringify(
+          courseError ?? completionsError,
+          undefined,
+          2,
+        )}
       />
     )
   }
@@ -125,7 +225,7 @@ function CertificatePage() {
     )
   }
 
-  if (!completion?.eligible_for_ects) {
+  if (!completion?.course) {
     return (
       <RegisterCompletion
         pageTitle={title}
@@ -135,47 +235,95 @@ function CertificatePage() {
     )
   }
 
+  const { course } = completion
+  const availability = completion.certificate_availability
+  const certificateId =
+    createdCertificateId ?? availability?.existing_certificate
+
+  const renderRetry = (label: string) => (
+    <CallToActionButton
+      variant="outlined"
+      color="primary"
+      size="medium"
+      disabled={isRefetching}
+      onClick={refetchFresh}
+    >
+      {isRefetching ? t("certificateChecking") : label}
+    </CallToActionButton>
+  )
+
+  const renderCertificate = () => {
+    if (!course.has_certificate) {
+      return (
+        <InstructionsSection>
+          <Prose>{t("certificateFallbackBody")}</Prose>
+          {course.link && (
+            <CallToActionButton
+              variant="contained"
+              color="primary"
+              size="medium"
+              href={course.link}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t("goToCourseMaterials")}
+              <VisuallyHidden> ({t("opensInNewTab")})</VisuallyHidden>
+            </CallToActionButton>
+          )}
+        </InstructionsSection>
+      )
+    }
+    if (certificateId) {
+      return (
+        <InstructionsSection>
+          <Prose>{t("certificateReadyBody")}</Prose>
+          <CallToActionButton
+            variant="contained"
+            color="primary"
+            size="medium"
+            href={`${CERTIFICATES_URL}/validate/${certificateId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t("certificateShow")}
+            <VisuallyHidden> ({t("opensInNewTab")})</VisuallyHidden>
+          </CallToActionButton>
+        </InstructionsSection>
+      )
+    }
+    if (!availability || availability.service_unavailable) {
+      return (
+        <InstructionsSection aria-live="polite">
+          <Alert severity="warning">{t("certificateServiceUnavailable")}</Alert>
+          {renderRetry(t("certificateTryAgain"))}
+        </InstructionsSection>
+      )
+    }
+    if (!availability.completed_course) {
+      return (
+        <InstructionsSection aria-live="polite">
+          <Prose>{t("certificateNotCompletedBody")}</Prose>
+          {renderRetry(t("certificateCheckAgain"))}
+        </InstructionsSection>
+      )
+    }
+    // The form takes the saved name only when it mounts.
+    if (!currentUser) {
+      return <Spinner />
+    }
+    return (
+      <CertificateForm certificateSlug={course.slug} onCreated={onCreated} />
+    )
+  }
+
   return (
     <RegisterCompletion pageTitle={title}>
       <Card>
         <Header>
           <PageTitle>{t("certificatePageTitle")}</PageTitle>
-          <CourseName>
-            {t("course", { course: completion.course?.name })}
-          </CourseName>
+          <CourseName>{t("course", { course: course.name })}</CourseName>
         </Header>
-        <InstructionsSection>
-          {completion.course?.has_certificate ? (
-            <>
-              <Prose>{t("certificatePageIntroBody")}</Prose>
-              {completion.course && (
-                <CertificateButtonRow>
-                  <CertificateButton
-                    course={completion.course}
-                    completion={completion}
-                  />
-                </CertificateButtonRow>
-              )}
-            </>
-          ) : (
-            <>
-              <Prose>{t("certificateFallbackBody")}</Prose>
-              {completion.course?.link && (
-                <CallToActionButton
-                  variant="contained"
-                  color="primary"
-                  size="medium"
-                  href={completion.course.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {t("goToCourseMaterials")}
-                  <VisuallyHidden> ({t("opensInNewTab")})</VisuallyHidden>
-                </CallToActionButton>
-              )}
-            </>
-          )}
-        </InstructionsSection>
+        {renderCertificate()}
       </Card>
     </RegisterCompletion>
   )

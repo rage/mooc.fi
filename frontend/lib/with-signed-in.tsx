@@ -4,6 +4,7 @@ import { useRouter } from "next/router"
 
 import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useAuth } from "/hooks/useAuth"
+import redirect from "/lib/redirect"
 
 export default function withSignedIn<P extends object = object>(
   Component: ComponentType<P & { signedIn?: boolean; baseUrl?: string }>,
@@ -18,7 +19,7 @@ export default function withSignedIn<P extends object = object>(
 
     useEffect(() => {
       if (!loading && !signedIn) {
-        router.push(`${baseUrl}/sign-in`)
+        redirect({ context: router, target: `${baseUrl}/sign-in` })
       }
     }, [loading, signedIn, router, baseUrl])
 

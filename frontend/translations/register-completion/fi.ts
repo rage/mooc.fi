@@ -25,8 +25,63 @@ export default {
   certificateHandoffBody:
     "Voit saada todistuksen tämän kurssin suorittamisesta.",
   goToCertificate: "Siirry todistukseen",
+  delegatedRegistrationBody:
+    "Tämän suorituksen opintopisteet rekisteröidään courses.mooc.fi:ssä.",
+  delegatedRegistrationButton: "Rekisteröi courses.mooc.fi:ssä",
+  delegatedRegistrationOpening: "Avataan courses.mooc.fi…",
+  delegatedRegistrationError: "Emme saaneet avattua courses.mooc.fi:tä.",
+  delegatedRegistrationFallbackLink:
+    "Rekisteröi opintopisteesi courses.mooc.fi:ssä",
+  delegatedRegistrationSignedOut:
+    "Kirjautumisesi on vanhentunut. Kirjaudu uudelleen ja yritä sitten uudelleen.",
+  delegatedRegistrationSignInAgain: "Kirjaudu uudelleen",
+  delegatedRegistrationRateLimited:
+    "Yritit monta kertaa lyhyessä ajassa. Odota hetki ja yritä sitten uudelleen.",
+  delegatedRegistrationLaterCompletionBody:
+    "Suoritit tämän kurssin myöhemmin uudelleen. Rekisteröi myöhemmän suorituksen opintopisteet courses.mooc.fi:ssä.",
+  certificateServiceUnavailable:
+    "Emme pysty juuri nyt tarkistamaan todistustasi. Yritä hetken päästä uudelleen.",
+  certificateTryAgain: "Yritä uudelleen",
+  certificateCheckAgain: "Tarkista uudelleen",
+  certificateChecking: "Tarkistetaan…",
+  certificateNotCompletedBody:
+    "Todistuspalvelu ei vielä näytä, että olisit suorittanut tämän kurssin. Jos suoritit sen äskettäin, tarkista myöhemmin uudelleen.",
+  certificateNameAddHeading: "Lisää nimesi",
+  certificateNameCheckHeading: "Tarkista nimesi",
+  certificateNameBody:
+    "Todistuksessa näkyy tämä nimi. Tallennamme nimen myös mooc.fi-profiiliisi.",
+  certificateFirstName: "Etunimi",
+  certificateLastName: "Sukunimi",
+  certificateCreate: "Luo todistus",
+  certificateCreating: "Luodaan todistusta…",
+  certificateCreateFailed: "Emme saaneet luotua todistustasi. Yritä uudelleen.",
+  certificateReadyBody: "Todistuksesi on valmis.",
+  certificateShow: "Näytä todistus",
+  handoffDifferentAccountTitle: "Olet kirjautunut toisella tilillä",
+  handoffDifferentAccountBody: "Olet nyt kirjautunut tilillä {{email}}.",
+  handoffDifferentAccountBodyNoEmail: "Olet nyt kirjautunut toisella tilillä.",
+  handoffConfirmTitle: "Tarkista tilisi",
+  handoffSignsInAs:
+    "Tämä linkki kirjaa sinut sisään tilillä {{email}}. Jatka vain, jos painoit juuri painiketta courses.mooc.fi:ssä.",
+  handoffSignsIn:
+    "Tämä linkki kirjaa sinut sisään mooc.fi:hin. Jatka vain, jos painoit juuri painiketta courses.mooc.fi:ssä.",
+  handoffContinueAs: "Jatka tilillä {{email}}",
+  handoffContinue: "Jatka",
+  handoffLogOutAndContinue: "Kirjaudu ulos ja jatka",
+  handoffContinuing: "Jatketaan…",
+  handoffContinueFailed:
+    "Emme saaneet kirjattua sinua sisään. Yritä uudelleen.",
+  handoffExpiredTitle: "Tämä linkki ei enää toimi",
+  handoffExpiredBody:
+    "Linkki toimii vain kerran ja vain hetken ajan. Palaa courses.mooc.fi:hin ja yritä uudelleen. Löydät suorituksesi myös profiilistasi.",
+  handoffIpMismatchTitle: "Aloita uudelleen samassa verkossa",
+  handoffIpMismatchBody:
+    "Turvallisuutesi vuoksi linkki toimii vain siinä verkossa, jossa painoit painiketta. Palaa courses.mooc.fi:hin ja paina painiketta uudelleen. Älä vaihda verkkoa tai laita VPN:ää päälle tai pois välillä.",
+  handoffFailedTitle: "Jokin meni vikaan",
+  handoffFailedBody:
+    "Emme saaneet kirjattua sinua sisään. Yritä myöhemmin uudelleen. Voit myös kirjautua itse ja löytää suorituksesi profiilistasi.",
+  handoffGoToProfile: "Siirry profiiliisi",
   certificatePageTitle: "Todistuksesi",
-  certificatePageIntroBody: "Tästä kurssista on saatavilla todistus.",
   certificateFallbackBody:
     "Emme voi luoda todistusta tälle kurssille täällä. Palaa kurssin materiaaleihin ja hae todistuksesi sieltä. Jos jokin jää epäselväksi, ota yhteyttä kurssin vastuuhenkilöihin, jotka löydät kurssin materiaaleista.",
   goToCourseMaterials: "Kurssin materiaaleihin",

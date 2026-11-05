@@ -117,6 +117,7 @@ model Course {
   completions_handled_by_id               String?                          @db.Uuid
   course_stats_email_id                   String?                          @db.Uuid
   photo_id                                String?                          @db.Uuid
+  credit_registration_delegated_at        DateTime?                        @db.Timestamptz(6)
   created_at                              DateTime                         @default(now())
   updated_at                              DateTime                         @default(now()) @updatedAt
   completions                             Completion[]
@@ -763,4 +764,11 @@ enum OrganizationRole {
   OrganizationAdmin
 
   @@map("organization_role")
+}
+
+model SpentCoursesHandoffContinuation {
+  jti        String   @id @db.Uuid
+  expires_at DateTime @db.Timestamptz(6)
+
+  @@map("spent_courses_handoff_continuation")
 }

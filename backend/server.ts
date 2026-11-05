@@ -25,7 +25,12 @@ import {
   invalidatePublicApiCache,
   mutatesPublicApiData,
 } from "./api/publicCache"
-import { DEBUG, isProduction, isTest } from "./config"
+import {
+  CREDIT_REGISTRATION_HANDOFF_ORIGINS,
+  DEBUG,
+  isProduction,
+  isTest,
+} from "./config"
 import { createDefaultData } from "./config/defaultData"
 import { ServerContext } from "./context"
 import { createLoaders } from "./loaders/createLoaders"
@@ -35,6 +40,11 @@ import { createSchema } from "./schema/common"
 
 export const GRAPHQL_ENDPOINT_PATH = isProduction ? "/api" : "/"
 
+// Any other site could have a student's browser mint a handoff with the attacker's TMC bearer, bound
+// to the student's IP: login CSRF on courses.mooc.fi. Case-insensitive like Express's routing.
+const isCreditRegistrationHandoffPath = (path: string) =>
+  /\/credit-registration-handoff(\/|$)/i.test(path)
+
 // wrapped so that the context isn't cached between test instances
 const createExpressAppWithContext = ({
   prisma,
@@ -42,10 +52,19 @@ const createExpressAppWithContext = ({
   logger,
 }: ServerContext) => {
   const app = express()
+  // One hop (ingress-nginx), so req.ip is never a client-supplied X-Forwarded-For value.
+  app.set("trust proxy", 1)
 
   app.use(
     compression(),
-    cors<cors.CorsRequest>(),
+    cors<express.Request>((req, callback) =>
+      callback(
+        null,
+        isCreditRegistrationHandoffPath(req.path)
+          ? { origin: CREDIT_REGISTRATION_HANDOFF_ORIGINS }
+          : {},
+      ),
+    ),
     bodyParser.json({ limit: "2mb" }),
     frameguard(),
     graphqlUploadExpress(),

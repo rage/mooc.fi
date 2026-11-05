@@ -51,3 +51,13 @@ export const isAsync = <T>(
     fn && typeof fn === "function" && fn.constructor.name === "AsyncFunction"
   )
 }
+
+/** Whether `value` is shaped like a UUID, whatever its version. */
+export function isUuid(value: unknown): value is string {
+  return (
+    typeof value === "string" &&
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+      value,
+    )
+  )
+}

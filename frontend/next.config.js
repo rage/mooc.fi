@@ -50,6 +50,17 @@ const nextConfiguration = (_phase) => ({
     ],
   },
   trailingSlash: true,
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
+          { key: "X-Frame-Options", value: "DENY" },
+        ],
+      },
+    ]
+  },
   async rewrites() {
     // In development, proxy API requests to the backend server
     if (!isProduction) {

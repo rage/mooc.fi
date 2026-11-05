@@ -45,6 +45,10 @@ spec:
               value: "true"
             - name: CONNECTION_LIMIT
               value: {{ default 0 .Values.backend.connectionLimit | quote }}
+            - name: COURSES_BASE_URL
+              value: {{ .Values.backend.coursesBaseUrl | quote }}
+            - name: CREDIT_REGISTRATION_DELEGATE_ORG_SLUG
+              value: {{ .Values.backend.creditRegistrationDelegateOrgSlug | quote }}
           volumeMounts:
             - name: google-cloud-storage-serviceaccount
               mountPath: "/etc/gcs"

@@ -50,6 +50,8 @@ export interface Context extends BaseContext {
   disableRelations: boolean
   role?: Role
   userDetails?: UserInfo
+  /** TMC could not be asked about the bearer, so a missing `user` does not mean signed out. */
+  isUserLookupUnavailable?: boolean
   tmcClient: TmcClient
   locale?: string
   req: IncomingMessage

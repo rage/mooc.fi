@@ -46,7 +46,10 @@ const ctx = getTestContext()
 
 describe("User", () => {
   describe("queries", () => {
-    setupTMCWithDefaultFakeUsers()
+    setupTMCWithDefaultFakeUsers({
+      "Bearer stale": [401, {}],
+      "Bearer unchecked": [500, {}],
+    })
 
     describe("currentUser", () => {
       beforeEach(async () => {
@@ -97,6 +100,26 @@ describe("User", () => {
         `)
 
         expect(res.currentUser).toBeNull()
+      })
+
+      it("shows null for a token TMC rejects", async () => {
+        const res = await ctx.client.request<any>(
+          `query { currentUser { id } }`,
+          {},
+          { Authorization: "Bearer stale" },
+        )
+
+        expect(res.currentUser).toBeNull()
+      })
+
+      it("errors when TMC can't check the token", async () => {
+        await expect(
+          ctx.client.request(
+            `query { currentUser { id } }`,
+            {},
+            { Authorization: "Bearer unchecked" },
+          ),
+        ).rejects.toThrow("Could not check the sign-in")
       })
     })
 

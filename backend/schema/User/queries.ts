@@ -4,7 +4,11 @@ import { type NexusGenEnums } from "nexus-typegen"
 import { User } from "@prisma/client"
 
 import { isAdmin } from "../../accessControl"
-import { GraphQLForbiddenError, GraphQLUserInputError } from "../../lib/errors"
+import {
+  GraphQLForbiddenError,
+  GraphQLGenericError,
+  GraphQLUserInputError,
+} from "../../lib/errors"
 import { buildUserSearch, filterNullFields, isDefined } from "../../util"
 
 export const UserQueries = extendType({
@@ -97,6 +101,10 @@ export const UserQueries = extendType({
       resolve: (_, __, ctx) => {
         // FIXME: why don't we search anything? where's this come from?
         // const { search } = args
+        // An error, not null: clients sign out on null.
+        if (ctx.isUserLookupUnavailable) {
+          throw new GraphQLGenericError("Could not check the sign-in")
+        }
         return ctx.user ?? null
       },
     })

@@ -4,6 +4,9 @@ import nookies from "nookies"
 
 import { ApolloClient } from "@apollo/client"
 
+import { BACKEND_URL } from "./backendUrl"
+import { toSitePath } from "./sitePath"
+
 export const isSignedIn = (ctx?: NextContext): boolean => {
   if (typeof window !== "undefined") {
     const match = document.cookie.match(/(?:^|; )access_token=([^;]*)/)
@@ -22,6 +25,30 @@ export const isAdmin = (ctx?: NextContext): boolean => {
   const cookies = nookies.get(ctx)
   const admin = cookies["admin"]
   return admin === "true"
+}
+
+/**
+ * Makes a TMC access token the browser's session, as a password sign-in does. Also for tokens
+ * issued on the user's behalf, such as by a courses.mooc.fi handoff.
+ *
+ * The session lasts until the browser closes. Any session it replaces is revoked at TMC.
+ */
+export const startSession = async (
+  accessToken: string,
+  apollo?: ApolloClient<object>,
+) => {
+  const details = await userDetails(accessToken)
+
+  const replacedToken = getAccessToken()
+  if (replacedToken && replacedToken !== accessToken) {
+    revokeSession(replacedToken)
+  }
+  document.cookie = `access_token=${accessToken};path=/`
+  document.cookie = `admin=${details.administrator};path=/`
+
+  await apollo?.resetStore()
+
+  return details
 }
 
 interface SignInProps {
@@ -43,17 +70,13 @@ export const signIn = async (
     "2ddf92a15a31f87c1aabb712b7cfd1b88f3465465ec475811ccce6febb1bad28",
   )
   const res = await tmcClient.authenticate({ username: email, password })
-  const details = await userDetails(res.accessToken)
-
-  document.cookie = `access_token=${res.accessToken};path=/`
-
-  document.cookie = `admin=${details.administrator};path=/`
-
-  await apollo?.resetStore()
+  const details = await startSession(res.accessToken, apollo)
 
   cb?.()
 
   const rawRedirectLocation = nookies.get()["redirect-back"]
+  // Spent once used, so a later sign-in does not jump back to this page.
+  nookies.destroy(undefined, "redirect-back", { path: "/" })
 
   if (redirect && (!rawRedirectLocation || rawRedirectLocation === "")) {
     Router.back()
@@ -61,7 +84,8 @@ export const signIn = async (
   }
 
   try {
-    const { url } = JSON.parse(rawRedirectLocation)
+    // Any mooc.fi subdomain can set this cookie, so follow it only within this site.
+    const url = toSitePath(JSON.parse(rawRedirectLocation)?.url)
 
     if (redirect) {
       setTimeout(() => {
@@ -81,10 +105,40 @@ export const signIn = async (
   return details
 }
 
-export const signOut = async (apollo: ApolloClient<object>, cb: () => void) => {
+/**
+ * Asks the backend to revoke the token at TMC, so it is useless after sign-out even if copied.
+ * Never waits or fails: signing out must work while TMC is down.
+ */
+const revokeSession = (accessToken: string) => {
+  fetch(`${BACKEND_URL}/api/sign-out`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${accessToken}` },
+    // Survives the navigation that usually follows a sign-out.
+    keepalive: true,
+  }).catch(() => undefined)
+}
+
+/**
+ * Drops the session cookies without telling anyone, for a token TMC already rejects; see
+ * {@link endSession} for one that may still work.
+ */
+export const clearSession = () => {
   document.cookie =
     "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
   document.cookie = "admin" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
+}
+
+/** Drops the session and revokes its token at TMC; see {@link signOut} for the UI. */
+export const endSession = () => {
+  const accessToken = getAccessToken()
+  if (accessToken) {
+    revokeSession(accessToken)
+  }
+  clearSession()
+}
+
+export const signOut = async (apollo: ApolloClient<object>, cb: () => void) => {
+  endSession()
   // Give browser a moment to react to the change
   setTimeout(() => {
     cb()

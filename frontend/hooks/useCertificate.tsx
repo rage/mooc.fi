@@ -86,8 +86,8 @@ const reducer = (state: CertificateState, action: Action): CertificateState => {
 }
 
 interface UseCertificateOptions {
-  course: CourseCoreFieldsFragment
-  completion: CompletionDetailedFieldsFragment
+  course: Pick<CourseCoreFieldsFragment, "slug">
+  completion: Pick<CompletionDetailedFieldsFragment, "certificate_availability">
   user?: User
   onUpdateNameSuccess?: (...args: any[]) => any
   onUpdateNameError?: (...args: any[]) => any
@@ -167,7 +167,7 @@ export const useCertificate = ({
       } catch (e) {
         dispatch({ type: "ERROR", payload: e })
         onUpdateNameError?.()
-        dispatch({ type: "RESET", payload: initialState })
+        dispatch({ type: "RESET", payload: initialState.current })
         return
       }
     }
@@ -179,7 +179,7 @@ export const useCertificate = ({
         throw new Error("No generated certificate received")
       }
       dispatch({ type: "RECEIVE_GENERATED_CERTIFICATE", payload: res })
-      onReceiveGeneratedCertificateSuccess?.()
+      onReceiveGeneratedCertificateSuccess?.(res)
       initialState.current = {
         ...initialState.current,
         certificateId: res?.id ?? undefined,
@@ -187,7 +187,7 @@ export const useCertificate = ({
     } catch (e) {
       dispatch({ type: "ERROR", payload: e })
       onReceiveGeneratedCertificateError?.()
-      dispatch({ type: "RESET", payload: initialState })
+      dispatch({ type: "RESET", payload: initialState.current })
     }
   }
 

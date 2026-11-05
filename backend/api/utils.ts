@@ -108,6 +108,10 @@ interface UserLookupError {
   message: string
 }
 
+/** The token of the request's `Bearer` authorization, or null without one. */
+export const readBearerToken = (req: Request): string | null =>
+  /^Bearer\s+(\S+)$/.exec(req.headers.authorization ?? "")?.[1] ?? null
+
 /**
  * Resolves the user behind the request's bearer token, creating the local user
  * row on first sight. Unlike `getUser`, never writes to the response.
@@ -124,8 +128,11 @@ export function findUser({ knex, logger }: BaseContext) {
 
     const details = await getUserDetailsForToken(rawToken, { logger })
 
-    if (!details) {
+    if (details === "rejected") {
       return err({ status: 401, message: "invalid credentials" })
+    }
+    if (details === "unavailable") {
+      return err({ status: 502, message: "could not check credentials" })
     }
 
     let user = (
