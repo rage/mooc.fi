@@ -1,8 +1,9 @@
-import { NextSeo } from "next-seo"
+import { generateNextSeo } from "next-seo/pages"
+import Head from "next/head"
 import NextLink from "next/link"
 import { useRouter } from "next/router"
 
-import { useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client/react"
 import {
   Button,
   CircularProgress,
@@ -99,7 +100,13 @@ const UserPage = () => {
   if (settingsQuery.loading || userQuery.loading || !settingsQuery.data) {
     return (
       <Container style={{ display: "flex", height: "600px" }}>
-        <Grid item container justifyContent="center" alignItems="center">
+        <Grid
+          container
+          sx={{
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           <CircularProgress color="primary" size={60} />
         </Grid>
       </Container>
@@ -122,7 +129,7 @@ const UserPage = () => {
 
   return (
     <>
-      <NextSeo title={user.full_name ?? id} />
+      <Head>{generateNextSeo({ title: user.full_name ?? id })}</Head>
       <UserInfo data={user} />
       <Container>
         <Links>

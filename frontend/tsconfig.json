@@ -1,40 +1,16 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
     "paths": {
-      "/*": [
-        "./*"
-      ],
-      "@pages/*": [
-        "pages/*"
-      ],
-      "@lib/*": [
-        "../lib/*"
-      ],
-      "@components/*": [
-        "./components/*"
-      ],
-      "src/*": [
-        "./src/*",
-        "./node_modules/next-seo/lib/*" // fix broken absolute imports in next-seo
-      ],
-      "next-statoscope": [
-        "./types/next-statoscope.d.ts"
-      ],
-      "@next/mdx": [
-        "./types/next-mdx.d.ts"
-      ]
+      "/*": ["./*"]
     },
+    "types": ["node"],
     "allowJs": true,
+    "maxNodeModuleJsDepth": 2,
     "allowSyntheticDefaultImports": true,
-    "jsx": "preserve",
-    "lib": [
-      "DOM",
-      "DOM.Iterable",
-      "ESNext"
-    ],
+    "jsx": "react-jsx",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "noEmit": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -42,19 +18,12 @@
     "removeComments": false,
     "sourceMap": true,
     "strict": true,
-    "strictNullChecks": true,
     "target": "esnext",
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "incremental": true,
-    "maxNodeModuleJsDepth": 8,
-    // "typeRoots": [
-    //   "types",
-    //   "./node_modules/@types",
-    //   "./node_modules/user-agent-data-types"
-    // ],
     "plugins": [
       {
         "name": "next"
@@ -62,19 +31,13 @@
     ],
     "skipLibCheck": true
   },
-  "exclude": [
-    "node_modules",
-    "schema.graphql",
-    "../backend/generated/schema.graphql",
-    "public/images/originals",
-    ".next"
-  ],
+  "exclude": ["node_modules", "public/images/originals", ".next"],
   "include": [
     "next-env.d.ts",
-    "./types/mui.d.ts",
-    "middleware.ts",
     "**/*.ts",
     "**/*.tsx",
-    "**/*.js"
+    "**/*.js",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
   ]
 }

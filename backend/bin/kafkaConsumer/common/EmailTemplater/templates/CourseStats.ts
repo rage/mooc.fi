@@ -1,9 +1,8 @@
-import { Prisma } from "@prisma/client"
-
 import {
   completionLanguageMap,
   LanguageAbbreviation,
 } from "../../../../../config/languageConfig"
+import { Prisma } from "../../../../../generated/prisma"
 import { redisify } from "../../../../../services/redis"
 import Template from "../types/Template"
 

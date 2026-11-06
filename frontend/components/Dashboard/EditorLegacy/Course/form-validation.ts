@@ -153,7 +153,7 @@ const testUnique = <T extends FormValues>(
   }
 
 interface CourseEditSchemaArgs {
-  client: ApolloClient<object>
+  client: ApolloClient
   initialSlug: string | null
   t: Translator<Courses & Common>
 }
@@ -318,7 +318,7 @@ const courseEditSchema = ({
   })
 
 interface ValidateSlugArgs {
-  client: ApolloClient<object>
+  client: ApolloClient
   initialSlug: string | null
 }
 

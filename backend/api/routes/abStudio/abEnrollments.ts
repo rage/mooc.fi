@@ -1,7 +1,6 @@
 import { Request, Response } from "express"
 
-import { AbEnrollment } from "@prisma/client"
-
+import { AbEnrollment } from "../../../generated/prisma"
 import { asyncRouter } from "../../asyncRouter"
 import { ApiContext } from "../../types"
 import { getUser } from "../../utils"

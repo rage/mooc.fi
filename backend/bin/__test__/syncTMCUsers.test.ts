@@ -158,6 +158,6 @@ describe("syncTMCUsers", () => {
   it("throws error on error", async () => {
     fakeUserDetailReply([403, { error: "asdf" }])
 
-    expect(syncTMCUsers(ctx)).rejects.toThrowError(TMCError)
+    await expect(syncTMCUsers(ctx)).rejects.toThrow(TMCError)
   })
 })

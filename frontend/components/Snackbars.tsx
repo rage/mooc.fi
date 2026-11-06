@@ -44,9 +44,11 @@ export default function Snackbars() {
           onClose={handleClose(snackbar)}
           autoHideDuration={3000}
           anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-          TransitionComponent={TransitionComponent}
-          TransitionProps={{
-            onExited: handleExited(snackbar),
+          slots={{ transition: TransitionComponent }}
+          slotProps={{
+            transition: {
+              onExited: handleExited(snackbar),
+            },
           }}
           indexFromBottom={index}
         >

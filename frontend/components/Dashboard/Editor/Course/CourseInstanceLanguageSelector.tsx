@@ -78,7 +78,7 @@ const toOption = (
 ): Option => ({
   value,
   name:
-    value && tagNames[value] ? `${tagNames[value]} (${value})` : value ?? "",
+    value && tagNames[value] ? `${tagNames[value]} (${value})` : (value ?? ""),
 })
 
 function CourseInstanceLanguageSelector(
@@ -130,27 +130,30 @@ function CourseInstanceLanguageSelector(
           inputRef={field.ref}
           variant="outlined"
           label={t("courseInstanceLanguage")}
-          InputProps={{
-            ...params?.InputProps,
-            endAdornment: (
-              <InputAdornment
-                position="end"
-                className="MuiAutocomplete-endAdornment"
-              >
-                <RevertButton
-                  disabled={
-                    !defaultValues["language"] ||
-                    field.value === defaultValues["language"]
-                  }
-                  onRevert={onRevert}
-                />
-                <InfoTooltip
-                  label={t("courseInstanceLanguage")}
-                  title={t("helpCourseInstanceLanguage")}
-                />
-                {params?.InputProps?.endAdornment}
-              </InputAdornment>
-            ),
+          slotProps={{
+            ...params.slotProps,
+            input: {
+              ...params.slotProps.input,
+              endAdornment: (
+                <InputAdornment
+                  position="end"
+                  className="MuiAutocomplete-endAdornment"
+                >
+                  <RevertButton
+                    disabled={
+                      !defaultValues["language"] ||
+                      field.value === defaultValues["language"]
+                    }
+                    onRevert={onRevert}
+                  />
+                  <InfoTooltip
+                    label={t("courseInstanceLanguage")}
+                    title={t("helpCourseInstanceLanguage")}
+                  />
+                  {params.slotProps.input.endAdornment}
+                </InputAdornment>
+              ),
+            },
           }}
         />
       </InputContainer>

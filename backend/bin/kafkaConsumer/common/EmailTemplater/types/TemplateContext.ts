@@ -1,4 +1,4 @@
-import { BaseContext } from "/context"
+import { BaseContext } from "../../../../../context"
 
 export type TemplateContext = Pick<BaseContext, "prisma"> &
   Partial<Pick<BaseContext, "logger" | "knex">> & {

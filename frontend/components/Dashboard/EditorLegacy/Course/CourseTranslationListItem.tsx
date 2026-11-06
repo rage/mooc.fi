@@ -53,7 +53,7 @@ const CourseTranslationListItem = (props: Props) => {
         id={`course_translations[${index}].name`}
         name={`course_translations[${index}].name`}
         label={t("courseName")}
-        InputLabelProps={inputLabelProps}
+        slotProps={{ inputLabel: inputLabelProps }}
         type="text"
         error={getIn(errors, `[${index}].name`)}
         fullWidth
@@ -67,7 +67,7 @@ const CourseTranslationListItem = (props: Props) => {
         name={`course_translations[${index}].description`}
         type="textarea"
         label={t("courseDescription")}
-        InputLabelProps={inputLabelProps}
+        slotProps={{ inputLabel: inputLabelProps }}
         error={getIn(errors, `[${index}].description`)}
         fullWidth
         multiline
@@ -82,7 +82,7 @@ const CourseTranslationListItem = (props: Props) => {
         name={`course_translations[${index}].instructions`}
         type="textarea"
         label={t("courseInstructions")}
-        InputLabelProps={inputLabelProps}
+        slotProps={{ inputLabel: inputLabelProps }}
         error={getIn(errors, `[${index}].instructions`)}
         fullWidth
         multiline
@@ -96,7 +96,7 @@ const CourseTranslationListItem = (props: Props) => {
         name={`course_translations[${index}].link`}
         type="text"
         label={t("courseLink")}
-        InputLabelProps={inputLabelProps}
+        slotProps={{ inputLabel: inputLabelProps }}
         error={getIn(errors, `[${index}].link`)}
         fullWidth
         autoComplete="off"
@@ -105,7 +105,7 @@ const CourseTranslationListItem = (props: Props) => {
       />
       <StyledFieldWithAnchor
         label={t("courseOpenCode")}
-        InputLabelProps={inputLabelProps}
+        slotProps={{ inputLabel: inputLabelProps }}
         id={`course_translations[${index}].open_university_course_link.course_code`}
         name={`course_translations[${index}].open_university_course_link.course_code`}
         type="text"
@@ -121,7 +121,7 @@ const CourseTranslationListItem = (props: Props) => {
       />
       <StyledFieldWithAnchor
         label={t("courseOpenLink")}
-        InputLabelProps={inputLabelProps}
+        slotProps={{ inputLabel: inputLabelProps }}
         id={`course_translations[${index}].open_university_course_link.link`}
         name={`course_translations[${index}].open_university_course_link.link`}
         type="text"

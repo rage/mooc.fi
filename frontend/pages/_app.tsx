@@ -1,6 +1,6 @@
 import { useEffect, useInsertionEffect, useMemo, useState } from "react"
 
-import { DefaultSeo } from "next-seo"
+import { generateDefaultSeo } from "next-seo/pages"
 import type { AppProps, NextWebVitalsMetric } from "next/app"
 import Head from "next/head"
 import { useRouter } from "next/router"
@@ -71,6 +71,7 @@ export function MyApp({ Component, pageProps, deviceType }: MyAppProps) {
   return (
     <>
       <Head>
+        {generateDefaultSeo(seoConfig)}
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
@@ -89,7 +90,6 @@ export function MyApp({ Component, pageProps, deviceType }: MyAppProps) {
           <LoginStateProvider value={loginStateContextValue}>
             <AppContextProvider>
               <DynamicLayout isOld={isOld}>
-                <DefaultSeo {...seoConfig} />
                 <Component {...pageProps} />
               </DynamicLayout>
             </AppContextProvider>

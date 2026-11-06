@@ -11,8 +11,6 @@ import {
   stringArg,
 } from "nexus"
 
-import { Prisma } from "@prisma/client"
-
 import { isAdmin } from "../accessControl"
 import {
   PointsByGroup,
@@ -26,6 +24,7 @@ import {
   BAItiers,
   exerciseCompletionsNeeded,
 } from "../config/courseConfig"
+import { Prisma } from "../generated/prisma"
 import { GraphQLUserInputError } from "../lib/errors"
 import { ensureDefinedArray, filterNullFields } from "../util"
 import { OrphanedEntityError } from "./common"

@@ -1,7 +1,6 @@
 import { gql } from "graphql-request"
 
-import { Course } from "@prisma/client"
-
+import { Course } from "../../../generated/prisma"
 import {
   FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
   FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
@@ -585,7 +584,7 @@ const fullCourseQuery = gql`
 const coursesQuery = gql`
   query AllCourses(
     $language: String
-    $orderBy: [CourseOrderByWithRelationAndSearchRelevanceInput!]
+    $orderBy: [CourseOrderByWithRelationInput!]
     $search: String
     $hidden: Boolean
     $handledBy: String

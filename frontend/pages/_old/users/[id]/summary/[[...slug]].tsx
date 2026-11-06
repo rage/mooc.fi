@@ -1,9 +1,10 @@
 import React, { useCallback, useMemo, useState } from "react"
 
-import { NextSeo } from "next-seo"
+import { generateNextSeo } from "next-seo/pages"
+import Head from "next/head"
 import { useRouter } from "next/router"
 
-import { useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client/react"
 import BuildIcon from "@mui/icons-material/Build"
 import { Button, Dialog, Paper, TextField, useMediaQuery } from "@mui/material"
 import { styled, Theme } from "@mui/material/styles"
@@ -160,7 +161,7 @@ function UserSummaryView() {
 
   return (
     <>
-      <NextSeo title={title} />
+      <Head>{generateNextSeo({ title: title })}</Head>
       <Container>
         <StyledForm onSubmit={onSubmit}>
           <TextField

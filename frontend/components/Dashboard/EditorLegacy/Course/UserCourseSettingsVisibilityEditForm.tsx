@@ -43,10 +43,10 @@ const UserCourseSettingsVisibilityEditForm = () => {
                   newValue.map((v) => (isString(v) ? { language: v } : v)),
                 )
               }
-              renderTags={(_, getTagProps) => {
+              renderValue={(_, getItemProps) => {
                 return values.map((field, index) => (
                   <Chip
-                    {...getTagProps({ index })}
+                    {...getItemProps({ index })}
                     variant="outlined"
                     label={field.language}
                     onDelete={() =>

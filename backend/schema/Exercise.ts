@@ -10,12 +10,11 @@ import {
   stringArg,
 } from "nexus"
 
-import { Prisma } from "@prisma/client"
-
 import { isAdmin, Role } from "../accessControl"
+import { Context } from "../context"
+import { Prisma } from "../generated/prisma"
 import { GraphQLAuthenticationError } from "../lib/errors"
 import { filterNullRecursive, isDefined } from "../util"
-import { Context } from "/context"
 
 export const Exercise = objectType({
   name: "Exercise",
@@ -41,7 +40,7 @@ export const Exercise = objectType({
         orderBy: list(
           nonNull(
             arg({
-              type: "ExerciseCompletionOrderByWithRelationAndSearchRelevanceInput",
+              type: "ExerciseCompletionOrderByWithRelationInput",
             }),
           ),
         ),
@@ -73,7 +72,7 @@ export const Exercise = objectType({
               ...(filterNullRecursive(orderBy) ?? []),
             ].filter(
               isDefined,
-            ) as Prisma.Enumerable<Prisma.ExerciseCompletionOrderByWithRelationAndSearchRelevanceInput>,
+            ) as Prisma.Enumerable<Prisma.ExerciseCompletionOrderByWithRelationInput>,
           })
       },
     })

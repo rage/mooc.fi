@@ -1,6 +1,5 @@
 // import { createReadStream } from "fs"
 import { gql } from "graphql-request"
-import { mocked } from "jest-mock"
 import { omit } from "lodash"
 
 import KafkaProducer from "../../../services/kafkaProducer"
@@ -169,7 +168,7 @@ describe("Course", () => {
     describe("addCourse", () => {
       beforeEach(async () => {
         await seed(ctx.prisma)
-        mocked(KafkaProducer).mockClear()
+        jest.mocked(KafkaProducer).mockClear()
       })
 
       const cases: TestCase[] = [
@@ -241,7 +240,7 @@ describe("Course", () => {
           })
 
           expect(
-            mocked(KafkaProducer).mock.instances[0].queueProducerMessage,
+            jest.mocked(KafkaProducer).mock.instances[0].queueProducerMessage,
           ).toHaveBeenCalledWith({
             message: JSON.stringify(
               omit(createdCourse, Object.keys(courseInclude)),

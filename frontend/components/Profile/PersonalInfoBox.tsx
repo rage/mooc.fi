@@ -77,7 +77,7 @@ const PersonalInfoBox = (props: PersonalInfoProps) => {
     <InfoBoxBackground>
       <StyledIcon color="secondary" />
 
-      <Info display="inline">{email}</Info>
+      <Info sx={{ display: "inline" }}>{email}</Info>
 
       <Info>{student_id}</Info>
     </InfoBoxBackground>

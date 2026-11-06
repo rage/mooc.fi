@@ -1,6 +1,5 @@
-import { Organization } from "@prisma/client"
-
 import { FRONTEND_URL } from "../../../../../config"
+import { Organization } from "../../../../../generated/prisma"
 import { EmailTemplaterError } from "../../../../../lib/errors"
 import { calculateActivationCode, PromiseReturnType } from "../../../../../util"
 import Template from "../types/Template"

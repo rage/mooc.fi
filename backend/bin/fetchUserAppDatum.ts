@@ -1,10 +1,10 @@
-import { DateTime } from "luxon"
-import { v4 as uuidv4 } from "uuid"
+import { randomUUID } from "crypto"
 
-import { Course, Prisma, UserCourseSetting } from "@prisma/client"
+import { DateTime } from "luxon"
 
 import { CONFIG_NAME } from "../config"
 import { UserInfo } from "../domain/UserInfo"
+import { Course, Prisma, UserCourseSetting } from "../generated/prisma"
 import { DatabaseInputError, TMCError } from "../lib/errors"
 import sentryLogger from "../lib/logger"
 import prisma from "../prisma"
@@ -244,7 +244,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: number, tmc: TmcClient) => {
     throw e
   }
 
-  const prismaId = details.courses_mooc_fi_user_id ?? uuidv4()
+  const prismaId = details.courses_mooc_fi_user_id ?? randomUUID()
 
   const prismaDetails = {
     id: prismaId,

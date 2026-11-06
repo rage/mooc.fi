@@ -61,7 +61,7 @@ const getIp = (req: NextRequest) => {
 }
 
 const loggerMiddleware = async (req: NextRequest, res: NextResponse) => {
-  const remoteAddress = getIp(req) ?? req.ip ?? "-"
+  const remoteAddress = getIp(req) ?? "-"
   const remoteUser = "user"
   const date = new Date().toISOString()
   const method = req.method
@@ -98,7 +98,7 @@ const redirectMiddleware = (req: NextRequest, res: NextResponse) => {
 
 const middlewares = [redirectMiddleware, loggerMiddleware]
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   let response = NextResponse.next()
 
   for (const mw of middlewares) {

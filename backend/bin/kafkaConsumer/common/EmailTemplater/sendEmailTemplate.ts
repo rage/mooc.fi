@@ -1,5 +1,4 @@
-import { EmailTemplate, Organization, User } from "@prisma/client"
-
+import { EmailTemplate, Organization, User } from "../../../../generated/prisma"
 import { emptyOrNullToUndefined, sendMail } from "../../../../util"
 import { EmailTemplater } from "../EmailTemplater/EmailTemplater"
 import { TemplateContext } from "./types/TemplateContext"

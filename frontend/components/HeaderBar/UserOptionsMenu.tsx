@@ -2,7 +2,7 @@ import { useCallback } from "react"
 
 import nookies from "nookies"
 
-import { useApolloClient } from "@apollo/client"
+import { useApolloClient } from "@apollo/client/react"
 import { useEventCallback } from "@mui/material/utils"
 
 import ProfileButton from "./ProfileButton"

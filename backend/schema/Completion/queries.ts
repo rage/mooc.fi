@@ -3,7 +3,6 @@ import { merge } from "lodash"
 import { extendType, idArg, intArg, nonNull, stringArg } from "nexus"
 
 import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
-import { Prisma } from "@prisma/client"
 
 import {
   isAdmin,
@@ -11,6 +10,7 @@ import {
   isOrganization,
   or,
 } from "../../accessControl"
+import { Prisma } from "../../generated/prisma"
 import { GraphQLForbiddenError, GraphQLUserInputError } from "../../lib/errors"
 import { buildUserSearch } from "../../util"
 

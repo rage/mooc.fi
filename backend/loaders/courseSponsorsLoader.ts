@@ -1,7 +1,6 @@
 import DataLoader from "dataloader"
 
-import { Sponsor, SponsorImage, SponsorTranslation } from "@prisma/client"
-
+import { Sponsor, SponsorImage, SponsorTranslation } from "../generated/prisma"
 import { ExtendedPrismaClient } from "../prisma"
 
 export interface CourseSponsorsKey {

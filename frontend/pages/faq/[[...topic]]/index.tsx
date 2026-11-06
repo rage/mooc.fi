@@ -1,4 +1,5 @@
-import { NextSeo } from "next-seo"
+import { generateNextSeo } from "next-seo/pages"
+import Head from "next/head"
 import { useRouter } from "next/router"
 
 import { ContentBox, FAQPage, SectionBox } from "/components/Home/FAQ/Common"
@@ -30,7 +31,9 @@ function FAQTopic() {
 
   return (
     <>
-      <NextSeo title={isIndex ? undefined : title ?? "..."} />
+      <Head>
+        {generateNextSeo({ title: isIndex ? undefined : (title ?? "...") })}
+      </Head>
       <FAQPage meta={meta} error={error}>
         {render && <Component />}
         {error ? (

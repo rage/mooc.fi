@@ -1,7 +1,11 @@
-import { Course, Prisma, User, UserCourseProgress } from "@prisma/client"
-
 import { BAItiers } from "../../../../config/courseConfig"
 import { BaseContext } from "../../../../context"
+import {
+  Course,
+  Prisma,
+  User,
+  UserCourseProgress,
+} from "../../../../generated/prisma"
 import {
   checkCompletion,
   getCombinedUserCourseProgress,

@@ -24,7 +24,8 @@ export type ValidateArgsFieldConfig<
 }
 
 const ValidateArgsResolverImport = printedGenTypingImport({
-  module: "middlewares/validate",
+  // Relative to the typegen file in generated/.
+  module: "../middlewares/validate",
   bindings: ["ValidateArgsResolver"],
 })
 

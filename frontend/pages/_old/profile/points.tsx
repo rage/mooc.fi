@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client/react"
 
 import Container from "/components/Container"
 import { H1NoBackground } from "/components/Text/headers"

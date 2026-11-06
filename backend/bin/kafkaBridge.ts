@@ -95,7 +95,7 @@ app.post("/kafka-bridge/api/v0/event", async (req, res) => {
     return res.status(403).json({ error: "Not authorized" }).send()
   }
 
-  const { topic, payload } = req.body
+  const { topic, payload } = req.body ?? {}
   if (!topic || !payload) {
     logger.info(
       `Received an event without a topic or without a payload ${JSON.stringify(

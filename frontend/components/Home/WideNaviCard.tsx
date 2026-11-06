@@ -1,6 +1,3 @@
-import { ClickableDiv, ShadowedDiv } from "components/Surfaces/ClickableCard"
-import { CardTitle } from "components/Text/headers"
-
 import { Button, EnhancedLink, Grid, Link } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
@@ -9,6 +6,8 @@ import {
   BackgroundImage,
   FullCoverTextBackground,
 } from "/components/Images/CardBackgroundFullCover"
+import { ClickableDiv, ShadowedDiv } from "/components/Surfaces/ClickableCard"
+import { CardTitle } from "/components/Text/headers"
 import { CardText } from "/components/Text/paragraphs"
 
 const NaviItemBase = styled(ClickableDiv)`
@@ -94,7 +93,7 @@ function WideNaviCard(props: NaviCardProps) {
   const { item } = props
 
   return (
-    <Grid item xs={12}>
+    <Grid size={12}>
       {item.link && item.linkText ? (
         <StyledLink
           href={item.link}
@@ -131,7 +130,11 @@ function WideNaviCard(props: NaviCardProps) {
                   {item.title}
                 </WideNaviCardTitle>
               )}
-              <WideNaviCardText paragraph variant="body1" align="left">
+              <WideNaviCardText
+                sx={{ marginBottom: "16px" }}
+                variant="body1"
+                align="left"
+              >
                 {item.text}
               </WideNaviCardText>
               {item.linkText && (
@@ -174,7 +177,11 @@ function WideNaviCard(props: NaviCardProps) {
                   {item.title}
                 </WideNaviCardTitle>
               )}
-              <WideNaviCardText paragraph variant="body1" align="left">
+              <WideNaviCardText
+                sx={{ marginBottom: "16px" }}
+                variant="body1"
+                align="left"
+              >
                 {item.text}
               </WideNaviCardText>
             </Background>

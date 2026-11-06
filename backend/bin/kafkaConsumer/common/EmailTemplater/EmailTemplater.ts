@@ -1,7 +1,6 @@
 import { render, tokenize } from "micromustache"
 
-import { EmailTemplate, Organization, User } from "@prisma/client"
-
+import { EmailTemplate, Organization, User } from "../../../../generated/prisma"
 import { EmailTemplaterError } from "../../../../lib/errors"
 import * as Templates from "./templates"
 import {

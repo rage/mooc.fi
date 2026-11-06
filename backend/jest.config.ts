@@ -1,4 +1,4 @@
-import type { JestConfigWithTsJest } from "ts-jest/dist/types"
+import type { JestConfigWithTsJest } from "ts-jest"
 
 /*
  * For a detailed explanation regarding each configuration property and type check, visit:
@@ -130,7 +130,7 @@ const config: JestConfigWithTsJest = {
   // setupFiles: [],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
-  // setupFilesAfterEnv: [],
+  setupFilesAfterEnv: ["<rootDir>/tests/restoreNock.ts"],
 
   // The number of seconds after which a test is considered as slow and reported as such in the results.
   // slowTestThreshold: 5,

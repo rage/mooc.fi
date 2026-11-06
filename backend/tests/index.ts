@@ -1,13 +1,12 @@
+import { randomBytes } from "crypto"
 import { Server } from "http"
+import { AddressInfo } from "net"
 
-import getPort, { makeRange } from "get-port"
 import { GraphQLClient } from "graphql-request"
 import { knex, Knex } from "knex"
-import { nanoid } from "nanoid"
 import winston from "winston"
 
 import type { ApolloServer } from "@apollo/server"
-import { User } from "@prisma/client"
 
 import {
   DATABASE_URL_WITHOUT_SCHEMA,
@@ -16,14 +15,13 @@ import {
   EXTENSION_PATH,
 } from "../config"
 import { ServerContext } from "../context"
+import { User } from "../generated/prisma"
 import binPrisma, {
   createPrismaClient,
   type ExtendedPrismaClient,
 } from "../prisma"
 import server from "../server"
 import { fail } from "./util"
-
-require("sharp") // ensure correct zlib thingy
 
 // @ts-ignore: jest has no explicit fail anymore
 global.fail = fail
@@ -92,9 +90,6 @@ export function getTestContext(): TestContext {
   return testContext
 }
 
-const wait = async (time: number) =>
-  new Promise((resolve) => setTimeout(resolve, time))
-
 function createTestContext(testContext: TestContext) {
   let apolloInstance: ApolloServer<ServerContext> | null = null
   let serverInstance: Server | null = null
@@ -116,31 +111,19 @@ function createTestContext(testContext: TestContext) {
       })
       apolloInstance = apolloServer
 
-      while (true) {
-        try {
-          port = await getPort({ port: makeRange(4001, 4999) })
-          serverInstance = await new Promise((resolve, reject) =>
-            httpServer
-              .listen(port, () => resolve(httpServer))
-              .on("error", reject),
-          )
-          if (!serverInstance) {
-            throw new Error("no server instance")
-          }
-          DEBUG && console.log(`got port ${port}`)
+      serverInstance = await new Promise<Server>((resolve, reject) =>
+        httpServer.listen(0, () => resolve(httpServer)).on("error", reject),
+      )
+      port = (serverInstance.address() as AddressInfo).port
+      DEBUG && console.log(`got port ${port}`)
 
-          return {
-            port,
-            client: new GraphQLClient(`http://localhost:${port}`, {
-              headers: { "Apollo-Require-Preflight": "true" },
-            }),
-            prisma,
-            knexClient,
-          }
-        } catch {
-          DEBUG && console.log("race condition on ports, waiting...")
-          await wait(100)
-        }
+      return {
+        port,
+        client: new GraphQLClient(`http://localhost:${port}`, {
+          headers: { "Apollo-Require-Preflight": "true" },
+        }),
+        prisma,
+        knexClient,
       }
     },
     async clean() {
@@ -177,7 +160,7 @@ function prismaTestContext() {
   return {
     async before() {
       // Generate a unique schema identifier for this test context
-      schemaName = `test_${nanoid()}`
+      schemaName = `test_${randomBytes(8).toString("hex")}`
       // Generate the pg connection string for the test schema
       const databaseURLObject = new URL(DATABASE_URL_WITHOUT_SCHEMA)
       databaseURLObject.searchParams.append("schema", schemaName)
@@ -215,7 +198,9 @@ function prismaTestContext() {
       DEBUG && console.log(`creating prisma ${databaseUrl}`)
 
       prisma = createPrismaClient({
-        datasources: { db: { url: databaseUrl } },
+        databaseUrl,
+        searchPath: [schemaName, EXTENSION_PATH],
+        connectionLimit: 10,
       })
 
       return {

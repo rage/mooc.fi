@@ -6,7 +6,7 @@ import { sortBy } from "remeda"
 import { ArrowDropDown, ArrowDropUp, QuestionMark } from "@mui/icons-material"
 import {
   Autocomplete,
-  AutocompleteRenderGetTagProps,
+  AutocompleteRenderValueGetItemProps,
   AutocompleteRenderInputParams,
   Chip,
   IconButton,
@@ -105,7 +105,7 @@ function CourseSponsorsForm() {
   const renderSponsors = useCallback(
     (
       sponsors: Array<SponsorFormValue>,
-      getTagProps: AutocompleteRenderGetTagProps,
+      getItemProps: AutocompleteRenderValueGetItemProps<true>,
     ) => {
       return sponsors.map((sponsor, index) => {
         if (!hasName(sponsor)) {
@@ -113,7 +113,7 @@ function CourseSponsorsForm() {
         }
         return (
           <Chip
-            {...getTagProps({ index })}
+            {...getItemProps({ index })}
             variant="outlined"
             label={sponsor.name ?? ""}
             onDelete={onDelete(index)}
@@ -174,7 +174,7 @@ function CourseSponsorsForm() {
         value={field.value}
         options={options}
         onChange={onChange}
-        renderTags={renderSponsors}
+        renderValue={renderSponsors}
         renderInput={renderInput}
         renderOption={renderOption}
         getOptionLabel={(option) => option.name ?? ""}

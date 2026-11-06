@@ -5,7 +5,7 @@ import { sortBy } from "remeda"
 
 import {
   Autocomplete,
-  AutocompleteRenderGetTagProps,
+  AutocompleteRenderValueGetItemProps,
   AutocompleteRenderGroupParams,
   AutocompleteRenderInputParams,
   Chip,
@@ -43,16 +43,14 @@ const renderGroup =
   (params: AutocompleteRenderGroupParams) => (
     <li key={params.key}>
       <GroupHeader>
-        {params.group
-          ?.split(", ")
-          .map((type) => (
-            <TagTypeChip
-              key={type}
-              variant="outlined"
-              label={typeLabel(type)}
-              size="small"
-            />
-          ))}
+        {params.group?.split(", ").map((type) => (
+          <TagTypeChip
+            key={type}
+            variant="outlined"
+            label={typeLabel(type)}
+            size="small"
+          />
+        ))}
       </GroupHeader>
       <GroupItems>{params.children}</GroupItems>
     </li>
@@ -72,12 +70,12 @@ function CourseTagsForm() {
   const typeLabel = useCallback(
     (type: string) =>
       (
-        ({
+        {
           language: t("tagTypeLanguage"),
           difficulty: t("tagTypeDifficulty"),
           module: t("tagTypeModule"),
           none: t("tagTypeNone"),
-        }) as Record<string, string>
+        } as Record<string, string>
       )[type] ?? type,
     [t],
   )
@@ -101,10 +99,13 @@ function CourseTagsForm() {
   )
 
   const renderTags = useCallback(
-    (tags: Array<TagFormValue>, getTagProps: AutocompleteRenderGetTagProps) => {
+    (
+      tags: Array<TagFormValue>,
+      getItemProps: AutocompleteRenderValueGetItemProps<true>,
+    ) => {
       return tags.map((tag, index) => (
         <Chip
-          {...getTagProps({ index })}
+          {...getItemProps({ index })}
           variant="outlined"
           label={tag.name ?? ""}
           onDelete={onDelete(index)}
@@ -135,7 +136,7 @@ function CourseTagsForm() {
         options={options}
         onChange={onChange}
         groupBy={(option) => option.types?.join(", ") || "none"}
-        renderTags={renderTags}
+        renderValue={renderTags}
         renderInput={renderInput}
         renderOption={renderOption}
         renderGroup={renderGroupWithLabels}

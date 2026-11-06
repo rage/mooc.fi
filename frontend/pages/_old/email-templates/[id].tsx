@@ -1,11 +1,12 @@
 import React, { Reducer, useEffect, useReducer, useState } from "react"
 
 import { useConfirm } from "material-ui-confirm"
-import { NextSeo } from "next-seo"
+import { generateNextSeo } from "next-seo/pages"
+import Head from "next/head"
 import Router, { useRouter } from "next/router"
 import { omit } from "remeda"
 
-import { useMutation, useQuery } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client/react"
 import {
   Button,
   Card,
@@ -69,8 +70,10 @@ interface SnackbarData {
   message: string
 }
 
-interface EmailTemplateState
-  extends Omit<EmailTemplateFieldsFragment, "__typename" | "template_type"> {
+interface EmailTemplateState extends Omit<
+  EmailTemplateFieldsFragment,
+  "__typename" | "template_type"
+> {
   template_type?: EmailTemplateType | null
 }
 
@@ -201,7 +204,7 @@ const EmailTemplateView = () => {
 
   return (
     <>
-      <NextSeo title={pageTitle} />
+      <Head>{generateNextSeo({ title: pageTitle })}</Head>
       <section>
         <WideContainer>
           <Paper style={{ padding: "0.5rem" }}>
@@ -332,18 +335,15 @@ const EmailTemplateView = () => {
                     color="primary"
                     onClick={async () => {
                       if (!state?.id) return
-                      try {
-                        await confirm({
-                          title: t("deleteConfirmTitle"),
-                          description: t("deleteConfirmDescription", {
-                            name: state.name,
-                          }),
-                          confirmationText: t("delete"),
-                          cancellationText: t("cancel"),
-                        })
-                      } catch {
-                        return
-                      }
+                      const { confirmed } = await confirm({
+                        title: t("deleteConfirmTitle"),
+                        description: t("deleteConfirmDescription", {
+                          name: state.name,
+                        }),
+                        confirmationText: t("delete"),
+                        cancellationText: t("cancel"),
+                      })
+                      if (!confirmed) return
                       try {
                         await deleteEmailTemplateMutation({
                           variables: { id: state.id },

@@ -1,4 +1,4 @@
-import { FileUpload } from "graphql-upload"
+import type { FileUpload } from "graphql-upload/processRequest.mjs"
 import { arg, booleanArg, extendType, idArg, nonNull, objectType } from "nexus"
 import sharp from "sharp"
 

@@ -1,6 +1,5 @@
-import { EmailDelivery } from "@prisma/client"
-
 import { isProduction } from "../config"
+import { EmailDelivery } from "../generated/prisma"
 import { EmailTemplaterError } from "../lib/errors"
 import sentryLogger from "../lib/logger"
 import prisma from "../prisma"

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react"
 
-import { useMutation } from "@apollo/client"
+import { useMutation } from "@apollo/client/react"
 
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import withSignedIn from "/lib/with-signed-in"

@@ -1,9 +1,10 @@
 import { ChangeEvent, useCallback, useState } from "react"
 
-import { NextSeo } from "next-seo"
+import { generateNextSeo } from "next-seo/pages"
+import Head from "next/head"
 import { useRouter } from "next/router"
 
-import { useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client/react"
 import { TextField } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import { useEventCallback } from "@mui/material/utils"
@@ -138,7 +139,7 @@ const Completions = () => {
   }
   return (
     <>
-      <NextSeo title={title} />
+      <Head>{generateNextSeo({ title: title })}</Head>
       <CourseLanguageContext.Provider value={lng}>
         <DashboardTabBar slug={slug} selectedValue={1} />
 

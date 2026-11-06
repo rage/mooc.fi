@@ -1,7 +1,7 @@
 import { GraphQLError } from "graphql/error"
-import { NexusGenObjects } from "nexus-typegen"
 
-import { Prisma } from "@prisma/client"
+import type { NexusGenObjects } from "../../generated/nexus-typegen"
+import { Prisma } from "../../generated/prisma"
 
 export class ConflictError extends GraphQLError {
   constructor(message: string, extensions?: Record<string, any>) {

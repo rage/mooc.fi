@@ -36,10 +36,6 @@ export const CardHeaderImage = styled(Image)`
   z-index: 0;
 `
 
-//CardHeaderImage.defaultProps = {
-//  "aria-hidden": true,
-//}
-
 export const CardBody = styled("div")`
   background-color: #fff;
   display: flex;
@@ -105,10 +101,6 @@ export const CardHeaderBackground = styled("span", {
 //   /*filter: hue-rotate(${props.hue ?? 0}deg)
 // brightness(${props.brightness} ?? 1});*/
 
-CardHeaderBackground.defaultProps = {
-  "aria-hidden": true,
-}
-
 export const CardImageHeaderBackground = styled(Image, {
   shouldForwardProp: (prop) =>
     typeof prop !== "string" || !["color", "hue", "brightness"].includes(prop),
@@ -122,10 +114,6 @@ export const CardImageHeaderBackground = styled(Image, {
       ? `background-image: linear-gradient(to left, rgba(255, 0, 0, 0), ${color} 55%)`
       : ""}
 `
-
-CardImageHeaderBackground.defaultProps = {
-  "aria-hidden": true,
-}
 
 export const CardHeaderBackgroundSkeleton = styled("span")`
   ${CommonHeaderBackground.styles};

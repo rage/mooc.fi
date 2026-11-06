@@ -1,7 +1,7 @@
 import { useRouter } from "next/router"
-import { isDefined } from "remeda"
+import { isNonNullish } from "remeda"
 
-import { useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client/react"
 
 import ModifiableErrorMessage from "../ModifiableErrorMessage"
 import ModuleList from "./ModuleList"
@@ -26,7 +26,7 @@ const hasCourses = (
       FrontpageModulesWithCoursesQuery["study_modules"]
     >[number]["courses"]
   >
-} => isDefined(studyModule?.courses) && studyModule.courses.length > 0
+} => isNonNullish(studyModule?.courses) && studyModule.courses.length > 0
 
 const ModuleSection = () => {
   const { locale = "fi" } = useRouter()

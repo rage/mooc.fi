@@ -1,29 +1,14 @@
-import React, { ComponentType, useEffect } from "react"
+import { ComponentType, useEffect } from "react"
 
 import { useRouter } from "next/router"
 
-import { gql, useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client/react"
 
 import AdminError from "/components/Dashboard/AdminError"
 import Spinner from "/components/Spinner"
 import { useAuth } from "/hooks/useAuth"
 
-const COURSE_OWNER_CHECK = gql`
-  query CourseOwnerCheck($slug: String!) {
-    course(slug: $slug) {
-      id
-      slug
-      name
-    }
-    currentUser {
-      id
-      administrator
-      course_ownerships {
-        course_id
-      }
-    }
-  }
-`
+import { CourseOwnerCheckDocument } from "/graphql/generated"
 
 function withAdminOrCourseOwner<P extends object = object>(
   Component: ComponentType<
@@ -35,13 +20,13 @@ function withAdminOrCourseOwner<P extends object = object>(
     const { signedIn, loading, admin } = useAuth()
     const baseUrl = router.pathname.includes("_old") ? "/_old" : ""
     const rawSlug = router.query.slug
-    const slug = Array.isArray(rawSlug) ? rawSlug[0] ?? "" : rawSlug ?? ""
+    const slug = Array.isArray(rawSlug) ? (rawSlug[0] ?? "") : (rawSlug ?? "")
 
     const {
       data,
       loading: ownershipLoading,
       error,
-    } = useQuery(COURSE_OWNER_CHECK, {
+    } = useQuery(CourseOwnerCheckDocument, {
       variables: { slug },
       skip: !signedIn || !slug,
       fetchPolicy: "network-only",
@@ -49,9 +34,9 @@ function withAdminOrCourseOwner<P extends object = object>(
 
     const isOwner = Boolean(
       data?.course?.id &&
-        data?.currentUser?.course_ownerships?.some(
-          (o: { course_id: string | null }) => o.course_id === data.course?.id,
-        ),
+      data?.currentUser?.course_ownerships?.some(
+        (o) => o.course_id === data.course?.id,
+      ),
     )
 
     useEffect(() => {

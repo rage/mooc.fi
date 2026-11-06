@@ -6,7 +6,7 @@ import {
   MultipleFieldErrors,
   Resolver,
 } from "react-hook-form"
-import { equals } from "remeda"
+import { isDeepEqual } from "remeda"
 import * as Yup from "yup"
 
 import { yupResolver } from "@hookform/resolvers/yup"
@@ -100,14 +100,14 @@ const TabSectionImpl = (
 
 // would otherwise render all tabsections again a bit too often
 export const TabSection = React.memo(TabSectionImpl, (prevProps, nextProps) => {
-  return equals(prevProps, nextProps)
+  return isDeepEqual(prevProps, nextProps)
 }) as typeof TabSectionImpl
 
 export function useCustomValidationResolver<
   TFieldValues extends FieldValues = FieldValues,
   TContext = any,
-  TSchema extends
-    Yup.ObjectSchema<TFieldValues> = Yup.ObjectSchema<TFieldValues>,
+  TSchema extends Yup.ObjectSchema<TFieldValues> =
+    Yup.ObjectSchema<TFieldValues>,
 >(schema: TSchema): Resolver<TFieldValues, TContext> {
   return useCallback(
     (values, context, options) =>

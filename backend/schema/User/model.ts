@@ -1,8 +1,7 @@
 import { groupBy, orderBy as lodashOrderBy, omit, partition } from "lodash"
 import { arg, booleanArg, idArg, objectType, stringArg } from "nexus"
 
-import { Course, Prisma } from "@prisma/client"
-
+import { Course, Prisma } from "../../generated/prisma"
 import { GraphQLUserInputError, UserInputError } from "../../lib/errors"
 import { isDefined } from "../../util"
 

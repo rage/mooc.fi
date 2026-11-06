@@ -59,7 +59,7 @@ function validateImage(this: Yup.TestContext, _value?: any): boolean {
 }
 
 interface StudyModuleEditSchemaArgs {
-  client: ApolloClient<object>
+  client: ApolloClient
   initialSlug: string | null
   t: Translator<StudyModules & Common>
 }
@@ -115,7 +115,7 @@ export type StudyModuleEditSchemaType = Yup.InferType<
 >
 
 interface ValidateSlugArgs {
-  client: ApolloClient<object>
+  client: ApolloClient
   initialSlug: string | null
 }
 
@@ -138,7 +138,7 @@ const validateSlug = ({ client, initialSlug }: ValidateSlugArgs) =>
         variables: { slug: value },
       })
 
-      const existing = data.study_module_exists
+      const existing = data?.study_module_exists
 
       return !existing
     } catch (e) {

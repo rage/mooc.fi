@@ -3,7 +3,7 @@ import { useId, useMemo, useState } from "react"
 import Router from "next/router"
 import { omit } from "remeda"
 
-import { useMutation, useQuery } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client/react"
 import {
   Button,
   Dialog,

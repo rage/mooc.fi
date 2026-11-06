@@ -1,5 +1,6 @@
 import { gql } from "graphql-request"
 
+import { DEFAULT_JOIN_ORGANIZATION_EMAIL_TEMPLATE_ID } from "../../../config/defaultData"
 import {
   EmailDelivery,
   EmailTemplate,
@@ -7,9 +8,7 @@ import {
   User,
   UserOrganization,
   UserOrganizationJoinConfirmation,
-} from "@prisma/client"
-
-import { DEFAULT_JOIN_ORGANIZATION_EMAIL_TEMPLATE_ID } from "../../../config/defaultData"
+} from "../../../generated/prisma"
 import {
   FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
   FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
@@ -50,7 +49,7 @@ type ErrorCase = {
   title: string
   message: string
   args?: Record<string, any>
-  headers?: HeadersInit
+  headers?: Record<string, string>
   options?: Record<string, any>
   before?: ((...args: any[]) => any) | AsyncFunction
 }

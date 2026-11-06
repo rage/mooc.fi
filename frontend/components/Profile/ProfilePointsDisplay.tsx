@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client/react"
 
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 import ErrorMessage from "/components/ErrorMessage"

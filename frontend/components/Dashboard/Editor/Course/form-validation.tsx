@@ -80,7 +80,7 @@ export const initialVisibility: UserCourseSettingsVisibilityFormValues = {
 export const study_modules: { value: any; label: any }[] = []
 
 interface CourseEditSchemaArgs {
-  client: ApolloClient<object>
+  client: ApolloClient
   initialSlug: string | null
   t: Translator<Courses & Common>
 }
@@ -243,7 +243,7 @@ export type CourseEditSchemaType = Omit<
 > & { start_date: DateTime | null } // help typescript a bit, even if we don't really allow null
 
 interface ValidateSlugArgs {
-  client: ApolloClient<object>
+  client: ApolloClient
   initialSlug: string | null
 }
 

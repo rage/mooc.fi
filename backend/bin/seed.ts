@@ -1,5 +1,4 @@
-import { CourseStatus } from "@prisma/client"
-
+import { CourseStatus } from "../generated/prisma"
 import prisma from "../prisma"
 
 const Modules = [

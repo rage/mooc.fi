@@ -1,10 +1,11 @@
 import { useCallback, useEffect } from "react"
 
-import { NextSeo } from "next-seo"
+import { generateNextSeo } from "next-seo/pages"
 import dynamic from "next/dynamic"
+import Head from "next/head"
 import { useRouter } from "next/router"
 
-import { useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client/react"
 import { Link, Paper, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
@@ -104,7 +105,7 @@ const EditStudyModule = () => {
 
   return (
     <>
-      <NextSeo title={title} />
+      <Head>{generateNextSeo({ title: title })}</Head>
       <ContainerBackground>
         <WideContainer>
           <H1NoBackground component="h1" variant="h1" align="center">

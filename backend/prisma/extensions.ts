@@ -1,8 +1,7 @@
 import { omit } from "lodash"
 
-import { Prisma, PrismaClient } from "@prisma/client"
-import type { Types } from "@prisma/client/runtime/library"
-
+import { Prisma, PrismaClient } from "../generated/prisma"
+import type { Types } from "../generated/prisma/runtime/client"
 import TMCClient from "../services/tmc"
 import { isDefinedAndNotEmpty } from "../util"
 
@@ -14,7 +13,7 @@ interface PaginationArgs<T> {
   skip?: number | null
 }
 
-function baseFindManyWithPagination<T, A extends Types.Extensions.Args>(
+function baseFindManyWithPagination<T, A extends Types.Extensions.InternalArgs>(
   this: T,
   args: Prisma.Exact<A, Prisma.Args<T, "findMany">> & PaginationArgs<T>,
 ): Prisma.Result<T, A, "findMany"> {
@@ -55,7 +54,10 @@ export const findManyPagination = Prisma.defineExtension((client) =>
     name: "findManyWithPagination",
     model: {
       $allModels: {
-        async findManyWithPagination<T, A extends Types.Extensions.Args>(
+        async findManyWithPagination<
+          T,
+          A extends Types.Extensions.InternalArgs,
+        >(
           this: T,
           args: Prisma.Exact<A, Prisma.Args<T, "findMany">> & PaginationArgs<T>,
         ): Promise<Prisma.Result<T, A, "findMany">> {
@@ -65,7 +67,10 @@ export const findManyPagination = Prisma.defineExtension((client) =>
       },
       // FIXME: when $allModels not showing on specific model is fixed, remove
       user: {
-        async findManyWithPagination<T, A extends Types.Extensions.Args>(
+        async findManyWithPagination<
+          T,
+          A extends Types.Extensions.InternalArgs,
+        >(
           this: T,
           args: Prisma.Exact<A, Prisma.Args<T, "findMany">> & PaginationArgs<T>,
         ): Promise<Prisma.Result<T, A, "findMany">> {
@@ -89,9 +94,10 @@ export const courseFindUniqueFns = Prisma.defineExtension((client) =>
          * @returns {Prisma.Prisma__CourseClient<Prisma.CourseGetPayload<T> | null, null>} course or course delegate
          */
         findUniqueOrAlias<
-          A extends Types.Extensions.Args = Types.Extensions.DefaultArgs,
-          Args extends
-            Prisma.CourseFindUniqueOrThrowArgs<A> = Prisma.CourseFindUniqueOrThrowArgs<A>,
+          A extends Types.Extensions.InternalArgs =
+            Types.Extensions.DefaultArgs,
+          Args extends Prisma.CourseFindUniqueOrThrowArgs<A> =
+            Prisma.CourseFindUniqueOrThrowArgs<A>,
         >(
           args: Args,
         ): Prisma.Prisma__CourseClient<
@@ -139,9 +145,10 @@ export const courseFindUniqueFns = Prisma.defineExtension((client) =>
          * @returns {Prisma.Prisma__CourseClient<Prisma.CourseGetPayload<T> | null, null>} course or course delegate
          */
         findUniqueCompletionHandler<
-          A extends Types.Extensions.Args = Types.Extensions.DefaultArgs,
-          Args extends
-            Prisma.CourseFindUniqueArgs<A> = Prisma.CourseFindUniqueArgs<A>,
+          A extends Types.Extensions.InternalArgs =
+            Types.Extensions.DefaultArgs,
+          Args extends Prisma.CourseFindUniqueArgs<A> =
+            Prisma.CourseFindUniqueArgs<A>,
         >(
           args: Args,
         ): Prisma.Prisma__CourseClient<
@@ -221,7 +228,7 @@ export const findUsercourseSettings = Prisma.defineExtension((client) =>
          * Get user course settings for a given user and a given course.
          * If the course inherits user course settings from other course, get settings from that one.
          * @param args {UserFindUserCourseSettingsArgs}
-         * @returns {import("@prisma/client").UserCourseSetting | null}
+         * @returns {import("../generated/prisma").UserCourseSetting | null}
          */
         async findUserCourseSettings(
           args: UserFindUserCourseSettingsArgs,

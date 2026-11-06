@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client/react"
 import { Paper, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 

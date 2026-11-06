@@ -1,19 +1,17 @@
 type NullFiltered<T> = T extends null
   ? Exclude<T, null>
   : T extends Array<infer R>
-  ? Array<NullFiltered<R>>
-  : T extends Record<PropertyKey, unknown>
-  ? {
-      [K in keyof T]: NullFiltered<T[K]>
-    }
-  : T
+    ? Array<NullFiltered<R>>
+    : T extends Record<PropertyKey, unknown>
+      ? {
+          [K in keyof T]: NullFiltered<T[K]>
+        }
+      : T
 
 export function filterNull<T extends Record<PropertyKey, unknown>>(
   o: T,
 ): NullFiltered<T>
-export function filterNull<T extends Record<PropertyKey, unknown>>(
-  o: null | undefined,
-): undefined
+export function filterNull(o: null | undefined): undefined
 export function filterNull<T extends Record<PropertyKey, unknown>>(
   o?: T | null,
 ): NullFiltered<T> | undefined {
@@ -39,9 +37,7 @@ export function filterNull<T extends Record<PropertyKey, unknown>>(
 export function filterNullRecursive<T extends Record<PropertyKey, unknown>>(
   o: T,
 ): NullFiltered<T>
-export function filterNullRecursive<T extends Record<PropertyKey, unknown>>(
-  o: null | undefined,
-): undefined
+export function filterNullRecursive(o: null | undefined): undefined
 export function filterNullRecursive<T extends Record<PropertyKey, unknown>>(
   o?: T | null,
 ): NullFiltered<T> | undefined {

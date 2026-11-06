@@ -33,7 +33,7 @@ interface SignInProps {
 
 export const signIn = async (
   { email, password, redirect = true, shallow = true }: SignInProps,
-  apollo?: ApolloClient<object>,
+  apollo?: ApolloClient,
   cb?: () => void,
 ) => {
   const { locale = "fi" } = Router
@@ -81,7 +81,7 @@ export const signIn = async (
   return details
 }
 
-export const signOut = async (apollo: ApolloClient<object>, cb: () => void) => {
+export const signOut = async (apollo: ApolloClient, cb: () => void) => {
   document.cookie =
     "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
   document.cookie = "admin" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"

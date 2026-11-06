@@ -1,13 +1,11 @@
-import { withComponents } from "./components"
-import { withPalette } from "./palette"
-import { withTypography } from "./typography"
-
-import type {} from "@mui/x-date-pickers/themeAugmentation"
-import type {} from "@mui/lab/themeAugmentation"
-
 import { pipe } from "remeda"
 
 import { createTheme } from "@mui/material/styles"
+import type {} from "@mui/x-date-pickers/themeAugmentation"
+
+import { withComponents } from "./components"
+import { withPalette } from "./palette"
+import { withTypography } from "./typography"
 
 let theme = createTheme({
   breakpoints: {

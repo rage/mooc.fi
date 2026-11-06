@@ -98,14 +98,13 @@ function CourseLanguageSelector({ translations }: LanguageSelectorProps) {
       const { name, description } = getValues(`course_translations.${index}`)
 
       if (name || description) {
-        try {
-          await confirm({
-            title: t("courseRemoveTranslation"),
-            description: t("confirmationRemoveTranslation"),
-            confirmationText: t("confirmationYes"),
-            cancellationText: t("confirmationNo"),
-          })
-        } catch {
+        const { confirmed } = await confirm({
+          title: t("courseRemoveTranslation"),
+          description: t("confirmationRemoveTranslation"),
+          confirmationText: t("confirmationYes"),
+          cancellationText: t("confirmationNo"),
+        })
+        if (!confirmed) {
           return
         }
       }

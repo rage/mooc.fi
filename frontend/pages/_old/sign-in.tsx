@@ -39,7 +39,12 @@ const SignInPage = () => {
           <Header component="h1" variant="h4" gutterBottom>
             {t("login")}
           </Header>
-          <Typography component="p" paragraph>
+          <Typography
+            component="p"
+            sx={{
+              marginBottom: "16px",
+            }}
+          >
             {t("loginDetails")}
           </Typography>
           <SignInForm />

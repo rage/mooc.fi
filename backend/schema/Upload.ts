@@ -1,4 +1,4 @@
-import { GraphQLUpload } from "graphql-upload"
+import GraphQLUpload from "graphql-upload/GraphQLUpload.mjs"
 import { scalarType } from "nexus"
 
 export const Upload = scalarType({

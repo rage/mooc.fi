@@ -1,11 +1,10 @@
 import { omit } from "lodash"
 import { booleanArg, extendType, idArg, nonNull, stringArg } from "nexus"
 
-import { User } from "@prisma/client"
-
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { DEFAULT_JOIN_ORGANIZATION_EMAIL_TEMPLATE_ID } from "../../config/defaultData"
 import { Context } from "../../context"
+import { User } from "../../generated/prisma"
 import {
   GraphQLAuthenticationError,
   GraphQLForbiddenError,
@@ -367,7 +366,7 @@ export const UserOrganizationMutations = extendType({
 
         const newUserOrganizationJoinConfirmationEmail = emailChanged
           ? organizational_email
-          : userOrganization.organizational_email ?? user.email
+          : (userOrganization.organizational_email ?? user.email)
 
         const previousConfirmation = user_organization_join_confirmations?.[0]
         // or do we get some according to the last email, or expired, or what?

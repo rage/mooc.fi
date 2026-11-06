@@ -1,9 +1,10 @@
 import { useState } from "react"
 
 import { useConfirm } from "material-ui-confirm"
-import { NextSeo } from "next-seo"
+import { generateNextSeo } from "next-seo/pages"
+import Head from "next/head"
 
-import { useApolloClient, useMutation, useQuery } from "@apollo/client"
+import { useApolloClient, useMutation, useQuery } from "@apollo/client/react"
 import {
   Button,
   EnhancedLink,
@@ -142,18 +143,20 @@ const Course = () => {
     setSubscribing(true)
 
     try {
-      await client.mutate({
-        mutation: !isSubscribed
-          ? UserCourseStatsSubscribeDocument
-          : UserCourseStatsUnsubscribeDocument,
-        variables: {
-          id:
-            (!isSubscribed
-              ? data?.course?.course_stats_email?.id
-              : subscription?.id) ?? "",
-        },
-        refetchQueries: [{ query: CurrentUserStatsSubscriptionsDocument }],
-      })
+      const refetchQueries = [{ query: CurrentUserStatsSubscriptionsDocument }]
+      if (isSubscribed) {
+        await client.mutate({
+          mutation: UserCourseStatsUnsubscribeDocument,
+          variables: { id: subscription?.id ?? "" },
+          refetchQueries,
+        })
+      } else {
+        await client.mutate({
+          mutation: UserCourseStatsSubscribeDocument,
+          variables: { id: data?.course?.course_stats_email?.id ?? "" },
+          refetchQueries,
+        })
+      }
     } catch {
       //
     } finally {
@@ -163,7 +166,7 @@ const Course = () => {
 
   return (
     <>
-      <NextSeo title={title} />
+      <Head>{generateNextSeo({ title: title })}</Head>
       <section>
         <DashboardTabBar slug={slug} selectedValue={0} />
 
@@ -231,7 +234,11 @@ const Course = () => {
                     description: t("recheckConfirmDescription"),
                     confirmationText: t("recheckConfirmYes"),
                     cancellationText: t("recheckConfirmCancel"),
-                  }).then(handleRecheck)
+                  }).then(({ confirmed }) => {
+                    if (confirmed) {
+                      return handleRecheck()
+                    }
+                  })
                 }}
                 disabled={checking}
               >

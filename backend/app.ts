@@ -13,8 +13,6 @@ import knex from "./services/knex"
 import { initializeRedis } from "./services/redis"
 import { attachPrismaEvents } from "./util"
 
-require("sharp") // image library sharp seems to crash without this require
-
 if (isProduction && !NEXUS_REFLECTION) {
   if (NEW_RELIC_LICENSE_KEY) {
     require("newrelic")

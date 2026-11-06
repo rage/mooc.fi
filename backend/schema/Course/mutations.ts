@@ -1,12 +1,17 @@
 /* eslint-disable complexity */
 import { omit, uniqBy } from "lodash"
 import { arg, extendType, idArg, nonNull, stringArg } from "nexus"
-import { NexusGenInputs } from "nexus-typegen"
-
-import { Course, CourseSponsor, Prisma, StudyModule, Tag } from "@prisma/client"
 
 import { isAdmin, isAdminOrCourseOwner } from "../../accessControl"
 import { Context } from "../../context"
+import type { NexusGenInputs } from "../../generated/nexus-typegen"
+import {
+  Course,
+  CourseSponsor,
+  Prisma,
+  StudyModule,
+  Tag,
+} from "../../generated/prisma"
 import { GraphQLUserInputError } from "../../lib/errors"
 import { invalidateAllGraphqlCachedQueries } from "../../middlewares/expressGraphqlCache"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
@@ -414,8 +419,8 @@ function getTagMutation<C extends Course>(
       )["tags"]
     | null,
 ): Prisma.TagUpdateManyWithoutCoursesNestedInput | undefined {
-  const languageTags = (tags ?? []).filter(
-    (tag) => tag.types?.includes("language"),
+  const languageTags = (tags ?? []).filter((tag) =>
+    tag.types?.includes("language"),
   )
   if (course.language) {
     // Older courses store a locale code as their language
@@ -434,8 +439,8 @@ function getTagMutation<C extends Course>(
     ),
   )
   const previousLanguageTagId = existingCourse.language
-    ? translationLanguageTagIds[existingCourse.language] ??
-      existingCourse.language
+    ? (translationLanguageTagIds[existingCourse.language] ??
+      existingCourse.language)
     : undefined
   if (
     previousLanguageTagId &&

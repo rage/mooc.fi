@@ -1,4 +1,3 @@
-import { CardSubtitle, CardTitle } from "components/Text/headers"
 import dynamic from "next/dynamic"
 import Image from "next/image"
 
@@ -6,6 +5,7 @@ import DoneIcon from "@mui/icons-material/Done"
 import { Avatar, Button, Paper, PaperProps, Skeleton } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import { CardSubtitle, CardTitle } from "/components/Text/headers"
 import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
 import { formatDateTime, mapLangToLanguage } from "/util/dataFormatFunctions"
@@ -150,7 +150,9 @@ export const CompletionListItem = ({
                   {isRegistered && completion.completions_registered
                     ? completion.completions_registered?.map((r) => (
                         <Column id={r.id} key={r.id}>
-                          <CardSubtitle display="flex" alignItems="flex-end">
+                          <CardSubtitle
+                            sx={{ display: "flex", alignItems: "flex-end" }}
+                          >
                             <strong>
                               {t("registeredDate")}{" "}
                               {formatDateTime(r.created_at)}

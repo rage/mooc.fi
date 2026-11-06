@@ -1,37 +1,23 @@
-import { useCallback, useMemo, useRef } from "react"
+import { useMemo } from "react"
 
-import type {
-  MRT_ColumnDef,
-  MRT_Row,
-  MRT_TableInstance,
-} from "material-react-table"
 import { useRouter } from "next/router"
 
-import {
-  TableCellProps,
-  TableRowProps,
-  Theme,
-  Typography,
-  useMediaQuery,
-} from "@mui/material"
+import { Theme, Typography, useMediaQuery } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import {
   ExerciseRow,
   renderCheck,
-  renderHeader,
   renderNarrowCell,
   renderNarrowCheck,
   renderNarrowRequiredActions,
   renderRequiredActions,
-  useExerciseListProps,
 } from "./common"
 import ExerciseInfo from "./ExerciseInfo"
-import {
-  MaterialReactTable,
-  SummaryCard,
-  useMaterialReactTableLocalization,
-} from "/components/Dashboard/Users/Summary/common"
+import { SummaryCard } from "/components/Dashboard/Users/Summary/common"
+import SummaryTable, {
+  createSummaryColumnHelper,
+} from "/components/Dashboard/Users/Summary/SummaryTable"
 import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
 import { formatDateTime } from "/util/dataFormatFunctions"
@@ -41,7 +27,8 @@ import { ExerciseWithExerciseCompletionsFieldsFragment } from "/graphql/generate
 const mapExerciseToRow =
   (locale?: string) =>
   (exercise: ExerciseWithExerciseCompletionsFieldsFragment): ExerciseRow => {
-    const exerciseCompletion = exercise.exercise_completions?.[0]
+    const exerciseCompletions = exercise.exercise_completions ?? []
+    const exerciseCompletion = exerciseCompletions[0]
 
     const created_at = exerciseCompletion?.created_at
       ? formatDateTime(exerciseCompletion.created_at, locale)
@@ -59,223 +46,136 @@ const mapExerciseToRow =
         exercise.max_points
       }`,
       max_points: exercise.max_points ?? 0,
-      completed:
-        exercise.exercise_completions?.some((e) => e.completed) ?? false,
-      attempted:
-        exercise.exercise_completions?.some((e) => e.attempted) ?? false,
+      completed: exerciseCompletions.some((e) => e.completed),
+      attempted: exerciseCompletions.some((e) => e.attempted),
       exercise_completion_required_actions:
         exerciseCompletion?.exercise_completion_required_actions ?? [],
       created_at,
       timestamp,
-      exercise_completions: exercise.exercise_completions ?? [],
+      exercise_completions: exerciseCompletions,
     }
   }
 
 interface ExerciseListProps {
+  /** Without data, the list renders as a loading placeholder. */
   data?: Array<ExerciseWithExerciseCompletionsFieldsFragment> | null
   loading?: boolean
 }
 
-const renderNarrowCellFn = renderNarrowCell<ExerciseRow>()
-
-const hideCellIfNoExerciseCompletions = ({
-  row,
-}: {
-  row: MRT_Row<ExerciseRow>
-}): TableCellProps =>
-  row.original.exercise_completions?.length > 0
-    ? {}
-    : { sx: { display: "none" } }
-
-const ExerciseListTitle = () => {
-  const t = useTranslator(ProfileTranslations)
-
-  return <Typography variant="h3">{t("exercises")}</Typography>
-}
+const columnHelper = createSummaryColumnHelper<ExerciseRow>()
+const renderNarrowValue = renderNarrowCell()
+const COMPLETION_DATE_COLUMN_IDS = ["created_at", "timestamp"]
 
 const ExerciseListSummaryCard = styled(SummaryCard)`
   padding: 0.5rem;
 `
 
+const hasExerciseCompletions = (row: ExerciseRow) =>
+  row.exercise_completions.length > 0
+
 function ExerciseList({ data, loading }: ExerciseListProps) {
   const t = useTranslator(ProfileTranslations)
   const { locale } = useRouter()
-  const tableInstanceRef = useRef<MRT_TableInstance<ExerciseRow>>(null)
   const isNarrow = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"))
 
-  const columns = useMemo((): Array<MRT_ColumnDef<ExerciseRow>> => {
+  const columns = useMemo(() => {
     if (!isNarrow) {
-      return [
-        {
-          accessorKey: "partSection",
-          header: "#",
-          size: 30,
-        },
-        {
-          accessorKey: "name",
-          header: t("exercise"),
-        },
-        {
-          accessorKey: "points",
-          header: t("points"),
-          size: 50,
-        },
-        {
+      return columnHelper.columns([
+        columnHelper.accessor("partSection", { header: "#", size: 30 }),
+        columnHelper.accessor("name", { header: t("exercise") }),
+        columnHelper.accessor("points", { header: t("points"), size: 50 }),
+        columnHelper.group({
           id: "status",
-          accessorKey: "completed",
           header: t("exerciseStatus"),
-          Cell: renderCheck({ success: t("completed") }),
-          columns: [
-            {
-              accessorKey: "completed",
+          columns: columnHelper.columns([
+            columnHelper.accessor("completed", {
               header: t("completed"),
               size: 50,
-              Header: renderHeader({ tooltip: t("completedTooltip") }),
-              Cell: renderCheck({ success: t("completed") }),
-            },
-            {
-              accessorKey: "attempted",
+              meta: { headerTooltip: t("completedTooltip") },
+              cell: renderCheck({ success: t("completed") }),
+            }),
+            columnHelper.accessor("attempted", {
               header: t("attempted"),
               size: 50,
-              Header: renderHeader({ tooltip: t("attemptedTooltip") }),
-              Cell: renderCheck({ success: t("attempted") }),
-            },
-            {
-              accessorKey: "exercise_completion_required_actions",
+              meta: { headerTooltip: t("attemptedTooltip") },
+              cell: renderCheck({ success: t("attempted") }),
+            }),
+            columnHelper.accessor("exercise_completion_required_actions", {
               header: t("requiredActions"),
               size: 80,
-              Header: renderHeader({ tooltip: t("requiredActionsTooltip") }),
-              Cell: renderRequiredActions(t),
-            },
-          ],
-        },
-      ]
+              meta: { headerTooltip: t("requiredActionsTooltip") },
+              cell: renderRequiredActions,
+            }),
+          ]),
+        }),
+      ])
     }
 
-    return [
-      {
-        accessorKey: "partSection",
+    return columnHelper.columns([
+      columnHelper.accessor("partSection", {
         header: t("partSection"),
-        Cell: renderNarrowCellFn,
-      },
-      {
-        accessorKey: "name",
+        cell: renderNarrowValue,
+      }),
+      columnHelper.accessor("name", {
         header: t("exercise"),
-        Cell: renderNarrowCellFn,
-      },
-      {
-        accessorKey: "points",
+        cell: renderNarrowValue,
+      }),
+      columnHelper.accessor("points", {
         header: t("points"),
-        Cell: renderNarrowCellFn,
-      },
-      {
-        accessorKey: "completed",
+        cell: renderNarrowValue,
+      }),
+      columnHelper.accessor("completed", {
         header: t("completed"),
-        Header: renderHeader({ tooltip: t("completedTooltip") }),
-        Cell: renderNarrowCheck({
+        cell: renderNarrowCheck({
           success: t("completed"),
           failure: t("notCompleted"),
         }),
-      },
-      {
-        accessorKey: "attempted",
+      }),
+      columnHelper.accessor("attempted", {
         header: t("attempted"),
-        Header: renderHeader({ tooltip: t("attemptedTooltip") }),
-        Cell: renderNarrowCheck({
+        cell: renderNarrowCheck({
           success: t("attempted"),
           failure: t("notAttempted"),
         }),
-      },
-      {
-        accessorKey: "exercise_completion_required_actions",
+      }),
+      columnHelper.accessor("exercise_completion_required_actions", {
         header: t("requiredActions"),
-        Header: renderHeader({ tooltip: t("requiredActionsTooltip") }),
-        Cell: renderNarrowRequiredActions(t),
-      },
-      {
-        accessorKey: "created_at",
+        cell: renderNarrowRequiredActions,
+      }),
+      columnHelper.accessor("created_at", {
         header: t("createdAt"),
-        Cell: (props) =>
-          props.row.original.exercise_completions.length
-            ? renderNarrowCellFn(props)
-            : undefined,
-        muiTableBodyCellProps: hideCellIfNoExerciseCompletions,
-      },
-      {
-        accessorKey: "timestamp",
+        cell: renderNarrowValue,
+      }),
+      columnHelper.accessor("timestamp", {
         header: t("timestamp"),
-        Cell: (props) =>
-          props.row.original.exercise_completions.length
-            ? renderNarrowCellFn(props)
-            : undefined,
-        muiTableBodyCellProps: hideCellIfNoExerciseCompletions,
-      },
-    ]
-  }, [locale, t, isNarrow])
+        cell: renderNarrowValue,
+      }),
+    ])
+  }, [t, isNarrow])
 
-  const rows = useMemo(() => {
-    const localeMapExerciseToRow = mapExerciseToRow(locale)
-
-    return (data ?? []).map(localeMapExerciseToRow)
-  }, [locale, data])
-
-  const getExpandButtonProps = useCallback(
-    ({ row }: { row: MRT_Row<ExerciseRow> }) =>
-      isNarrow || (row.original.exercise_completions ?? []).length === 0
-        ? {
-            sx: {
-              display: "none",
-            },
-          }
-        : {},
-    [isNarrow],
-  )
-
-  const renderExerciseInfo = useCallback(
-    ({ row }: { row: MRT_Row<ExerciseRow> }) =>
-      !isNarrow ? <ExerciseInfo exercise={row.original} /> : undefined,
-    [isNarrow],
-  )
-
-  const tableProps = useExerciseListProps<ExerciseRow>()
-  const localization = useMaterialReactTableLocalization(locale)
-  const muiTableBodyRowProps = useCallback(
-    ({ row }: { row: MRT_Row<ExerciseRow> }) => ({
-      ...tableProps["muiTableBodyRowProps"],
-      sx: {
-        ...(tableProps["muiTableBodyRowProps"] as TableRowProps)?.sx,
-        ...(row.original.max_points === 0 ? { backgroundColor: "#eee" } : {}),
-      },
-    }),
-    [tableProps],
+  const rows = useMemo(
+    () => (data ?? []).map(mapExerciseToRow(locale)),
+    [locale, data],
   )
 
   return (
     <ExerciseListSummaryCard>
-      <MaterialReactTable<ExerciseRow>
-        {...tableProps}
-        muiTableBodyRowProps={muiTableBodyRowProps}
+      <SummaryTable
         data={rows}
         columns={columns}
-        renderTopToolbarCustomActions={ExerciseListTitle}
-        muiExpandButtonProps={getExpandButtonProps}
-        renderDetailPanel={renderExerciseInfo}
-        localization={localization}
-        initialState={{
-          isLoading: true,
-          pagination: { pageIndex: 0, pageSize: 30 },
-        }}
-        tableInstanceRef={tableInstanceRef}
-        positionPagination={
-          (tableInstanceRef?.current?.getState()?.pagination?.pageSize ?? 30) >
-          10
-            ? "both"
-            : "bottom"
+        title={<Typography variant="h3">{t("exercises")}</Typography>}
+        isLoading={loading || !data}
+        isPaginated
+        isSearchable
+        renderDetailPanel={(row) => <ExerciseInfo exercise={row} />}
+        getRowCanExpand={hasExerciseCompletions}
+        getRowBackgroundColor={(row) =>
+          row.max_points === 0 ? "#eee" : undefined
         }
-        state={{
-          isLoading: loading || (!loading && !data?.length),
-          // TODO: will this show loading on no data, or do we not render exerciselist at all then?
-        }}
+        isCellHidden={(cell) =>
+          COMPLETION_DATE_COLUMN_IDS.includes(cell.column.id) &&
+          !hasExerciseCompletions(cell.row.original)
+        }
       />
     </ExerciseListSummaryCard>
   )

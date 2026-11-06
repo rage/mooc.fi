@@ -4,28 +4,25 @@ import dynamic from "next/dynamic"
 import { useRouter } from "next/router"
 import { FieldValues, useController, useFormContext } from "react-hook-form"
 
-import { Skeleton, TextField, TextFieldProps } from "@mui/material"
+import { Skeleton } from "@mui/material"
 import { styled } from "@mui/material/styles"
-import type { DatePickerProps } from "@mui/x-date-pickers"
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
+import type { DatePickerProps } from "@mui/x-date-pickers/DatePicker"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
+import { PickersTextField } from "@mui/x-date-pickers/PickersTextField"
 
 import { ControlledFieldProps } from "."
 import { pulseAnimation } from ".."
 import { useAnchor } from "/hooks/useAnchors"
 
-const StyledTextField = styled(TextField)`
+const DatePickerTextField = styled(PickersTextField)`
   margin-bottom: 1rem;
 
   ${pulseAnimation}
 `
 
-const DatePickerTextField = (props: TextFieldProps) => (
-  <StyledTextField {...props} variant="outlined" />
-)
-
 const DynamicDatePicker = dynamic(
-  () => import("@mui/x-date-pickers").then((mod) => mod.DatePicker),
+  () => import("@mui/x-date-pickers/DatePicker").then((mod) => mod.DatePicker),
   { ssr: false, loading: () => <Skeleton variant="rectangular" /> },
 )
 
@@ -52,16 +49,17 @@ function ControlledDatePickerImpl<
       <DynamicDatePicker
         value={field.value}
         onChange={
-          field.onChange as Exclude<DatePickerProps<any>["onChange"], undefined>
+          field.onChange as Exclude<DatePickerProps["onChange"], undefined>
         }
         onClose={onCloseDatePicker}
         label={label}
+        inputRef={(el: HTMLInputElement | null) => {
+          field.ref(el)
+          anchor.ref(el)
+        }}
         slotProps={{
           textField: {
-            inputRef: (el) => {
-              field.ref(el)
-              anchor.ref(el)
-            }, //field.ref,
+            variant: "outlined",
             error: fieldState.invalid,
             onBlur: onCloseDatePicker,
             helperText: fieldState.error?.message,
