@@ -53,7 +53,9 @@ function useExitConfirmation({ texts, enabled }: UseExitConfirmationArgs = {}) {
 
       confirm(texts).then(({ confirmed }) => {
         if (confirmed) {
-          Router.events.off("routeChangeStart", handleBrowseAway)
+          // Not Router.events.off: closing the dialog re-renders and re-subscribes this handler
+          // before the push starts.
+          bypassConfirmationRef.current = true
           Router.push(url)
         }
       })

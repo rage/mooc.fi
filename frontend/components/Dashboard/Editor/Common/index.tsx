@@ -1,12 +1,12 @@
-import React, { PropsWithChildren, useCallback } from "react"
+import React, { PropsWithChildren, useCallback, useEffect, useRef } from "react"
 
 import {
   FieldValues,
   Message,
   MultipleFieldErrors,
   Resolver,
+  UseFormReturn,
 } from "react-hook-form"
-import { isDeepEqual } from "remeda"
 import * as Yup from "yup"
 
 import { yupResolver } from "@hookform/resolvers/yup"
@@ -98,10 +98,34 @@ const TabSectionImpl = (
   )
 }
 
-// would otherwise render all tabsections again a bit too often
-export const TabSection = React.memo(TabSectionImpl, (prevProps, nextProps) => {
-  return isDeepEqual(prevProps, nextProps)
-}) as typeof TabSectionImpl
+export const TabSection = React.memo(TabSectionImpl) as typeof TabSectionImpl
+
+/**
+ * Returns a function that resets the form once the running submission ends: to the given values,
+ * or to the form's current values when called without any.
+ *
+ * react-hook-form leaves `isDirty` set when `reset` is called inside the submit handler. Prefer
+ * the no-argument form over the handler's `values`: the resolver's cast drops keys whose value is
+ * `undefined`, so the still-mounted fields would make the form dirty again.
+ */
+export function useResetAfterSubmit<T extends FieldValues>({
+  reset,
+  getValues,
+  formState: { isSubmitting },
+}: UseFormReturn<T>) {
+  const pendingReset = useRef<{ values?: T }>(undefined)
+
+  useEffect(() => {
+    if (!isSubmitting && pendingReset.current) {
+      reset(pendingReset.current.values ?? getValues())
+      pendingReset.current = undefined
+    }
+  }, [isSubmitting, reset, getValues])
+
+  return useCallback((values?: T) => {
+    pendingReset.current = { values }
+  }, [])
+}
 
 export function useCustomValidationResolver<
   TFieldValues extends FieldValues = FieldValues,

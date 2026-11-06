@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 
-import { useFieldArray } from "react-hook-form"
+import { useFieldArray, useFormContext } from "react-hook-form"
 
 import { styled } from "@mui/material/styles"
 
@@ -38,12 +38,16 @@ function CourseEditForm() {
     name: "course_translations",
   })
   const syncLanguageTag = useLanguageTagSync()
+  const { reset, getValues } = useFormContext<CourseFormValues>()
 
   useEffect(() => {
     if (!defaultValues.id) {
       defaultValues.course_translations.forEach(({ language }) =>
         syncLanguageTag(language, true),
       )
+      // The prefilled language tags and hidden-field values are a new course's starting point,
+      // not unsaved changes.
+      reset(getValues())
     }
   }, [])
 

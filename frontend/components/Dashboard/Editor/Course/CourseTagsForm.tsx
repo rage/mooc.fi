@@ -34,9 +34,13 @@ const GroupItems = styled("ul")`
 `
 
 const renderOption = (
-  props: React.HTMLAttributes<HTMLLIElement>,
+  { key, ...props }: React.HTMLAttributes<HTMLLIElement> & { key?: React.Key },
   option: TagFormValue,
-) => <li {...props}>{option.name}</li>
+) => (
+  <li key={key} {...props}>
+    {option.name}
+  </li>
+)
 
 const renderGroup =
   (typeLabel: (type: string) => string) =>
@@ -103,14 +107,18 @@ function CourseTagsForm() {
       tags: Array<TagFormValue>,
       getItemProps: AutocompleteRenderValueGetItemProps<true>,
     ) => {
-      return tags.map((tag, index) => (
-        <Chip
-          {...getItemProps({ index })}
-          variant="outlined"
-          label={tag.name ?? ""}
-          onDelete={onDelete(index)}
-        />
-      ))
+      return tags.map((tag, index) => {
+        const { key, ...itemProps } = getItemProps({ index })
+        return (
+          <Chip
+            key={key}
+            {...itemProps}
+            variant="outlined"
+            label={tag.name ?? ""}
+            onDelete={onDelete(index)}
+          />
+        )
+      })
     },
     [setValue, getValues],
   )

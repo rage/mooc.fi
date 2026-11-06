@@ -13,6 +13,7 @@ import { useApolloClient, useMutation } from "@apollo/client/react"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { useEventCallback } from "@mui/material/utils"
 
+import { useResetAfterSubmit } from "../Common"
 import EditorContainer from "../EditorContainer"
 import CourseEditForm from "./CourseEditForm"
 import { useCourseEditorData } from "./CourseEditorDataContext"
@@ -74,7 +75,9 @@ function CourseEditor() {
     shouldFocusError: false,
     shouldUnregister: false,
   })
-  const { trigger, reset } = methods
+  const { trigger } = methods
+  const resetAfterSubmit = useResetAfterSubmit(methods)
+  const { isDirty } = methods.formState
 
   useEffect(() => {
     if (course?.id && !isClone) {
@@ -83,10 +86,10 @@ function CourseEditor() {
   }, [])
 
   useEffect(() => {
-    if (redirectSlug) {
+    if (redirectSlug && !isDirty) {
       router.push(`${baseUrl}/courses/${redirectSlug}/edit`)
     }
-  }, [redirectSlug])
+  }, [redirectSlug, isDirty])
 
   const [addCourse] = useMutation(AddCourseDocument)
   const [updateCourse] = useMutation(UpdateCourseDocument)
@@ -130,7 +133,7 @@ function CourseEditor() {
             refetchQueries: () => refetchQueries,
           })
 
-          reset(values)
+          resetAfterSubmit()
           setRedirectSlug(data?.addCourse?.slug ?? values.new_slug)
         } else {
           const { data } = await updateCourse({
@@ -142,7 +145,7 @@ function CourseEditor() {
             const saved = toCourseForm({ course: data.updateCourse })
 
             savedValues.current = saved
-            reset(saved)
+            resetAfterSubmit(saved)
           }
           if (values.new_slug !== values.slug) {
             setRedirectSlug(values.new_slug)

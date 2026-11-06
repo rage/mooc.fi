@@ -12,6 +12,7 @@ import { ApolloClient } from "@apollo/client"
 import { useApolloClient, useMutation } from "@apollo/client/react"
 import { yupResolver } from "@hookform/resolvers/yup"
 
+import { useResetAfterSubmit } from "../Common"
 import EditorContainer from "../EditorContainer"
 import { EditorContextProvider } from "../EditorContext"
 import studyModuleEditSchema from "./form-validation"
@@ -70,6 +71,8 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
     mode: "onBlur",
   })
   const { trigger } = methods
+  const resetAfterSubmit = useResetAfterSubmit(methods)
+  const { isDirty } = methods.formState
 
   useEffect(() => {
     if (module?.id) {
@@ -80,10 +83,10 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
   const [redirectSlug, setRedirectSlug] = useState<string>()
 
   useEffect(() => {
-    if (redirectSlug) {
+    if (redirectSlug && !isDirty) {
       Router.push(`${baseUrl}/study-modules/${redirectSlug}/edit`)
     }
-  }, [redirectSlug])
+  }, [redirectSlug, isDirty])
 
   const [addStudyModule] = useMutation(AddStudyModuleDocument)
   const [updateStudyModule] = useMutation(UpdateStudyModuleDocument)
@@ -123,7 +126,7 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
             message: t("statusSavingSuccess"),
             severity: "success",
           })
-          methods.reset(values)
+          resetAfterSubmit()
           setRedirectSlug(data?.addStudyModule?.slug ?? values.new_slug)
           return
         }

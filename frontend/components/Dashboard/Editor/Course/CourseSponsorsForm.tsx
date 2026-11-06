@@ -111,9 +111,11 @@ function CourseSponsorsForm() {
         if (!hasName(sponsor)) {
           return null
         }
+        const { key, ...itemProps } = getItemProps({ index })
         return (
           <Chip
-            {...getItemProps({ index })}
+            key={key}
+            {...itemProps}
             variant="outlined"
             label={sponsor.name ?? ""}
             onDelete={onDelete(index)}
@@ -137,11 +139,17 @@ function CourseSponsorsForm() {
   )
 
   const renderOption = useCallback(
-    (props: React.HTMLAttributes<HTMLLIElement>, option: SponsorFormValue) => {
+    (
+      {
+        key,
+        ...props
+      }: React.HTMLAttributes<HTMLLIElement> & { key?: React.Key },
+      option: SponsorFormValue,
+    ) => {
       const logos = option.images?.filter((image) => image.type === "logo")
 
       return (
-        <SponsorOption {...props}>
+        <SponsorOption key={key} {...props}>
           <SponsorSmallLogoContainer>
             {logos.length > 0 ? (
               <ContainedImage

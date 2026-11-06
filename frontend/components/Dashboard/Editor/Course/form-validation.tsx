@@ -63,6 +63,7 @@ export const initialValues: CourseFormValues = {
   open_university_registration_links: [],
   course_variants: [],
   course_aliases: [],
+  thumbnail: "",
   delete_photo: false,
   has_certificate: false,
   user_course_settings_visibilities: [],

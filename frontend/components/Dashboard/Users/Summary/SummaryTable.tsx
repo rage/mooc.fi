@@ -333,6 +333,9 @@ function SummaryTableHead<TData extends object>({
                   sx={{
                     fontWeight: "bold",
                     verticalAlign: "bottom",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
                   }}
                 >
                   {header.isPlaceholder ? null : tooltip ? (
@@ -456,7 +459,10 @@ function SummaryTable<TData extends object>({
         <Table
           sx={
             isWide
-              ? { tableLayout: "fixed" }
+              ? {
+                  tableLayout: "fixed",
+                  "& .MuiTableCell-root": { paddingX: 1 },
+                }
               : { display: "block", "& > tbody": { display: "block" } }
           }
         >

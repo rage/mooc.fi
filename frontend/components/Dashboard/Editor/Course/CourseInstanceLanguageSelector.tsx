@@ -162,7 +162,13 @@ function CourseInstanceLanguageSelector(
   )
 
   const renderOption = useCallback(
-    (props: React.HTMLAttributes<HTMLLIElement>, option: Option) => (
+    (
+      {
+        key: _key,
+        ...props
+      }: React.HTMLAttributes<HTMLLIElement> & { key?: React.Key },
+      option: Option,
+    ) => (
       <li {...props} key={option.name}>
         {option.name ?? t("selectNoChoice")}
       </li>

@@ -49,6 +49,11 @@ const nextConfiguration = (_phase) => ({
       },
     ],
     qualities: [75, 100],
+    // Study module editors append ?v=<timestamp> to bust the cache after an upload.
+    localPatterns: [
+      { pathname: "/images/modules/**" },
+      { pathname: "/**", search: "" },
+    ],
   },
   trailingSlash: true,
   async rewrites() {
@@ -182,15 +187,6 @@ const nextConfiguration = (_phase) => ({
       exclude: /node_modules/,
       loader: "graphql-tag/loader",
     })
-
-    const alias = config.resolve?.alias
-    if (!config.resolve) {
-      config.resolve = {}
-    }
-    config.resolve.alias = {
-      ...alias,
-      ...(!isProduction && { "react-dom$": "react-dom/profiling" }),
-    }
 
     if (options.isServer && isProduction) {
       config.devtool = "source-map" // false
