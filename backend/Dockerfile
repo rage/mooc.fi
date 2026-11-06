@@ -1,21 +1,15 @@
 # Build context is the repository root (see bin/build-docker-backend.sh): the pnpm workspace
 # files and lockfile live there.
-FROM node:26.13.0-alpine
+FROM node:26.13.0-alpine AS build
 
+# node-rdkafka compiles librdkafka from source; its configure script needs bash.
 RUN apk add --no-cache \
-      build-base \
       bash \
+      build-base \
       cyrus-sasl-dev \
-      git \
-      jq \
-      libpng-dev \
-      libpq \
       linux-headers \
       openssl-dev \
-      pigz \
-      postgresql-client \
       python3 \
-      redis \
       zlib-dev \
       zstd-dev
 
@@ -48,6 +42,29 @@ RUN cp .env.example .env \
     && env NODE_ENV=production GOOGLE_CLOUD_STORAGE_BUCKET=x pnpm run build
 RUN pnpm run build-sourcemap
 RUN pnpm run copy-env
+
+# A --prod install over the full one unlinks devDependencies but leaves them in node_modules/.pnpm.
+RUN cd /app \
+    && rm -rf node_modules backend/node_modules \
+    && pnpm install --frozen-lockfile --offline --prod --filter ./backend
+
+# Only the addon and the librdkafka shared libraries it loads via rpath are needed at runtime;
+# the rest is librdkafka's source and object files.
+RUN cd /app/node_modules/.pnpm/node-rdkafka@*/node_modules/node-rdkafka \
+    && rm -rf deps build/Release/obj.target build/Release/.deps \
+    && find build/deps -mindepth 1 -maxdepth 1 ! -name 'librdkafka*.so*' -exec rm -rf {} +
+
+FROM node:26.13.0-alpine
+
+# Shared libraries librdkafka links against.
+RUN apk add --no-cache libsasl zstd-libs
+
+USER node
+
+WORKDIR /app/backend
+
+COPY --from=build --chown=node /app/node_modules /app/node_modules
+COPY --from=build --chown=node /app/backend /app/backend
 
 ENV NODE_ENV=production
 

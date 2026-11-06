@@ -31,11 +31,13 @@ echo Building "$TAG"
 
 docker build . --cache-from eu.gcr.io/moocfi/moocfi-frontend:latest -f frontend/Dockerfile -t "$TAG" --load --progress=plain 
 
-echo "Copying next cache from container to host"
-docker create -ti --name frontend_tmp "$TAG" sh
+echo "Exporting next cache from the build stage"
+# The build context includes frontend/.next/cache, so it must not change before this build or
+# every layer after the context copy misses the cache.
+rm -rf /mnt/ramdisk/next-cache
+docker build . -f frontend/Dockerfile --target next-cache --output type=local,dest=/mnt/ramdisk/next-cache --progress=plain
 mkdir -p /mnt/ramdisk/frontend/.next
 rm -rf /mnt/ramdisk/frontend/.next/cache
-docker cp frontend_tmp:/app/frontend/.next/cache /mnt/ramdisk/frontend/.next/cache
-docker rm -f frontend_tmp
+mv /mnt/ramdisk/next-cache /mnt/ramdisk/frontend/.next/cache
 
 echo "Successfully built image: $TAG"

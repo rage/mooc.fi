@@ -40,6 +40,9 @@ const withMDX = require("@next/mdx")({
  */
 const nextConfiguration = (_phase) => ({
   reactStrictMode: true,
+  output: "standalone",
+  // Dependencies live in the workspace root's node_modules/.pnpm.
+  outputFileTracingRoot: path.join(__dirname, ".."),
   images: {
     remotePatterns: [
       {

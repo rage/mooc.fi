@@ -108,6 +108,7 @@
     "sharp": "^0.35.5",
     "shortid": "^2.2.17",
     "tmc-client-js": "^0.0.11",
+    "tsx": "^4.23.15",
     "winston": "^3.19.0",
     "winston-transport": "^4.9.0",
     "ws": "^8.22.0",
@@ -139,7 +140,6 @@
     "jest-snapshot": "^30.5.2",
     "nock": "^15.0.5",
     "ts-jest": "^29.4.15",
-    "tsx": "^4.23.15",
     "typescript": "npm:@typescript/typescript6@^6.0.2"
   }
 }
