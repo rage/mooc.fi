@@ -1,8 +1,7 @@
 import { FieldAuthorizeResolver } from "nexus/dist/plugins/fieldAuthorizePlugin"
 
-import { Organization, User } from "@prisma/client"
-
 import { Context } from "./context"
+import { Organization, User } from "./generated/prisma"
 
 export enum Role {
   VISITOR = 0,

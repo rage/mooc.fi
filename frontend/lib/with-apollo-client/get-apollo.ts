@@ -1,23 +1,23 @@
-import { createUploadLink } from "apollo-upload-client/public/index.mjs"
+import UploadHttpLink from "apollo-upload-client/UploadHttpLink.mjs"
 import deepmerge from "deepmerge"
 import extractFiles from "extract-files/extractFiles.mjs"
 import isExtractableFile from "extract-files/isExtractableFile.mjs"
 import { createClient } from "graphql-ws"
 import fetch from "isomorphic-unfetch"
 import nookies from "nookies"
-import { equals } from "remeda"
+import { isDeepEqual } from "remeda"
 
 import {
   ApolloClient,
-  ApolloLink, // defaultDataIdFromObject,
+  ApolloLink,
+  CombinedGraphQLErrors,
   InMemoryCache,
   NormalizedCacheObject,
   Observable,
-  split,
 } from "@apollo/client"
 import { BatchHttpLink } from "@apollo/client/link/batch-http"
-import { setContext } from "@apollo/client/link/context"
-import { onError } from "@apollo/client/link/error"
+import { SetContextLink } from "@apollo/client/link/context"
+import { ErrorLink } from "@apollo/client/link/error"
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions"
 import { getMainDefinition } from "@apollo/client/utilities"
 
@@ -25,7 +25,7 @@ import { isDefinedAndNotEmpty } from "/util/guards"
 
 import { StrictTypedTypePolicies } from "/graphql/generated"
 
-let apolloClient: ApolloClient<NormalizedCacheObject> | null = null
+let apolloClient: ApolloClient | null = null
 
 const production = process.env.NODE_ENV === "production"
 const devBackendUrl =
@@ -79,7 +79,7 @@ function create(
   locale?: string,
   skipSsrFetch?: boolean,
 ) {
-  const authLink = setContext((_, { headers }) => {
+  const authLink = new SetContextLink(({ headers }) => {
     // Always get the current access token from cookies in case it has changed
     let accessToken: string | undefined = nookies.get()["access_token"]
     if (!accessToken && typeof window === "undefined") {
@@ -96,7 +96,7 @@ function create(
     }
   })
 
-  const localeLink = setContext((_, { headers }) => {
+  const localeLink = new SetContextLink(({ headers }) => {
     const headersCopy = { ...headers }
     if (locale) {
       headersCopy["accept-language"] = locale
@@ -106,14 +106,13 @@ function create(
     }
   })
 
-  const httpLinkOptions: Parameters<typeof createUploadLink>[0] &
+  const httpLinkOptions: ConstructorParameters<typeof UploadHttpLink>[0] &
     BatchHttpLink.Options = {
     uri: production ? "https://www.mooc.fi/api/" : devBackendUrl,
     credentials: "same-origin",
     fetch,
     fetchOptions: {
       credentials: "same-origin",
-      timeout: 20000,
     },
     headers: {
       "apollo-require-preflight": "true",
@@ -132,9 +131,9 @@ function create(
 
   // use BatchHttpLink if there are no uploaded files, otherwise use
   // uploadLink that uses simple HttpLink
-  const uploadAndBatchHTTPLink = split(
+  const uploadAndBatchHTTPLink = ApolloLink.split(
     (operation) => extractFiles(operation, isExtractableFile).files.size > 0,
-    createUploadLink(httpLinkOptions),
+    new UploadHttpLink(httpLinkOptions),
     createBatchHttpLink(httpLinkOptions),
   )
 
@@ -155,24 +154,23 @@ function create(
       )
     : null
 
-  const errorLink = onError(
-    ({ graphQLErrors, networkError, forward, operation }) => {
-      if (graphQLErrors)
-        graphQLErrors.forEach(({ message, locations, path }) =>
-          console.log(
-            `[GraphQL error]: Message: ${message}, Location: ${JSON.stringify(
-              locations,
-            )}, Path: ${path}`,
-          ),
-        )
-      if (networkError) console.log(`[Network error]: ${networkError}`)
-      return forward(operation)
-    },
-  )
+  const errorLink = new ErrorLink(({ error }) => {
+    if (CombinedGraphQLErrors.is(error)) {
+      error.errors.forEach(({ message, locations, path }) =>
+        console.log(
+          `[GraphQL error]: Message: ${message}, Location: ${JSON.stringify(
+            locations,
+          )}, Path: ${path}`,
+        ),
+      )
+    } else {
+      console.log(`[Network error]: ${error}`)
+    }
+  })
 
   const wsAndUploadAndBatchHTTPLink =
     isBrowser && wsLink
-      ? split(
+      ? ApolloLink.split(
           ({ query }) => {
             const definition = getMainDefinition(query)
             return (
@@ -198,9 +196,7 @@ function create(
           observer.complete()
         },
         next: observer.next.bind(observer),
-        error: (error) => {
-          return observer.next(error)
-        },
+        error: observer.error.bind(observer),
       })
 
       return () => {
@@ -220,7 +216,7 @@ function create(
 
   const cache = createCache()
 
-  return new ApolloClient<NormalizedCacheObject>({
+  return new ApolloClient({
     link: isBrowser
       ? ApolloLink.from(
           [authLink, errorLink, localeLink, wsAndUploadAndBatchHTTPLink].filter(
@@ -228,22 +224,26 @@ function create(
           ),
         )
       : skipSsrFetch
-      ? skipSsrFetchLink
-      : ApolloLink.from(
-          [
-            development ? metricsLink : undefined,
-            authLink,
-            localeLink,
-            uploadAndBatchHTTPLink,
-          ].filter(isDefinedAndNotEmpty),
-        ),
+        ? skipSsrFetchLink
+        : ApolloLink.from(
+            [
+              development ? metricsLink : undefined,
+              authLink,
+              localeLink,
+              uploadAndBatchHTTPLink,
+            ].filter(isDefinedAndNotEmpty),
+          ),
+
     cache: isBrowser ? cache.restore(initialState ?? {}) : cache,
     ssrMode: !isBrowser,
     ssrForceFetchDelay: 100,
+
     defaultOptions: {
       watchQuery: {
         fetchPolicy: "cache-first", //"no-cache",
-        errorPolicy: "ignore",
+        errorPolicy: "all",
+        // Apollo 4 defaults to true; components here treat `loading` as "no data yet".
+        notifyOnNetworkStatusChange: false,
       },
       query: {
         fetchPolicy: "cache-first", //"no-cache",
@@ -270,19 +270,19 @@ export default function getApollo(
   // serving cached data from the previous user.
   const _apolloClient =
     !userChanged && !localeChanged && isBrowser
-      ? apolloClient ?? create(initialState, accessToken, locale)
+      ? (apolloClient ?? create(initialState, accessToken, locale))
       : create(undefined, accessToken, locale, skipSsrFetch)
 
   previousAccessToken = accessToken
   previousLocale = locale
 
   if (initialState && isBrowser) {
-    const existingCache = _apolloClient.extract()
+    const existingCache = _apolloClient.extract() as NormalizedCacheObject
     const data = deepmerge(existingCache, initialState, {
       arrayMerge: (destination: any, source: any) => [
         ...source,
         ...destination.filter((d: any) =>
-          source.every((s: any) => !equals(d, s)),
+          source.every((s: any) => !isDeepEqual(d, s)),
         ),
       ],
     })

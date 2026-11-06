@@ -1,8 +1,7 @@
 import { Request, Response } from "express"
 import { intersection, omit } from "lodash"
 
-import { UserCourseSettingsVisibility } from "@prisma/client"
-
+import { UserCourseSettingsVisibility } from "../../generated/prisma"
 import { redisify } from "../../services/redis"
 import { ApiContext, Controller } from "../types"
 
@@ -86,7 +85,7 @@ export class UserCourseSettingsController extends Controller {
     if (!slug) {
       return res.status(400).json({ message: "must provide slug" })
     }
-    const { body } = req
+    const body = req.body ?? {}
 
     const getUserResult = await this.getUser(req, res)
 

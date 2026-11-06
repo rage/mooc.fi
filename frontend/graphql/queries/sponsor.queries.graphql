@@ -1,9 +1,5 @@
-query CourseEditorSponsors(
-  $language: String
-) {
-  sponsors(
-    language: $language
-  ) {
+query CourseEditorSponsors($language: String) {
+  sponsors(language: $language) {
     ...SponsorCoreFields
   }
 }

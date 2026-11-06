@@ -153,8 +153,10 @@ const Pagination: React.FC = () => {
       count={meta.count ?? 0}
       rowsPerPage={rowsPerPage}
       page={page}
-      SelectProps={{
-        inputProps: { "aria-label": t("rowsPerPage") },
+      slotProps={{
+        select: {
+          inputProps: { "aria-label": t("rowsPerPage") },
+        },
       }}
       labelRowsPerPage={t("rowsPerPage")}
       labelDisplayedRows={labelDisplayedRows}

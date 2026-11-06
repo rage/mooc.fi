@@ -1,6 +1,7 @@
+import { randomUUID } from "crypto"
+
 import * as Kafka from "node-rdkafka"
 import { ConsumerGlobalConfig } from "node-rdkafka"
-import { v4 } from "uuid"
 import winston from "winston"
 
 import {
@@ -37,7 +38,7 @@ export const createKafkaConsumer = ({
 }: CreateKafkaConsumerArgs) => {
   let consumerGroup = KAFKA_CONSUMER_GROUP ?? "kafka"
   if (KAFKA_TOP_OF_THE_QUEUE) {
-    consumerGroup = v4()
+    consumerGroup = randomUUID()
   }
   logger.info(`Joining consumer group ${consumerGroup}.`)
 

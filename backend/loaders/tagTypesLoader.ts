@@ -1,7 +1,6 @@
 import DataLoader from "dataloader"
 
-import { TagType } from "@prisma/client"
-
+import { TagType } from "../generated/prisma"
 import { ExtendedPrismaClient } from "../prisma"
 
 export interface TagTypesKey {

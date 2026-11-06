@@ -1,5 +1,6 @@
 import assert from "assert"
 
+import { BaseContext } from "../../../../context"
 import {
   Completion,
   Course,
@@ -8,9 +9,7 @@ import {
   ExerciseCompletionRequiredAction,
   Prisma,
   User,
-} from "@prisma/client"
-
-import { BaseContext } from "../../../../context"
+} from "../../../../generated/prisma"
 import { getTestContext } from "../../../../tests"
 import { seed } from "../../../../tests/data"
 import {

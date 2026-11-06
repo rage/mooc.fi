@@ -1,5 +1,3 @@
-import React from "react"
-
 import Image, { ImageProps } from "next/image"
 
 import { PropsOf } from "@emotion/react"
@@ -134,7 +132,8 @@ const FlagBackground = styled(FullCoverTextBackground)`
   padding: 0 1rem;
   background-color: #ffd700;
   z-index: 2;
-  background-image: linear-gradient(90deg, transparent 20px, white 20px),
+  background-image:
+    linear-gradient(90deg, transparent 20px, white 20px),
     linear-gradient(180deg, #0057b7 50%, #ffd700 50%);
   background-repeat: no-repeat;
   gap: 1rem;

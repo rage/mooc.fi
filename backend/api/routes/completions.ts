@@ -6,15 +6,14 @@ import { chunk, omit } from "lodash"
 import * as XLSX from "xlsx"
 import * as yup from "yup"
 
+import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
 import {
   Completion,
   Course,
   CourseTranslation,
   OpenUniversityRegistrationLink,
   User,
-} from "@prisma/client"
-
-import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
+} from "../../generated/prisma"
 import { err, isDefined } from "../../util"
 import { ApiContext, Controller } from "../types"
 import { requireAdminOrCourseOwner } from "../utils"
@@ -429,7 +428,7 @@ export class CompletionController extends Controller {
     }
 
     const { slug } = req.params
-    const { user_upstream_id, certificate_id } = req.body
+    const { user_upstream_id, certificate_id } = req.body ?? {}
 
     const user = await prisma.user.findUnique({
       where: {
@@ -512,7 +511,7 @@ export class CompletionController extends Controller {
       return adminRes.error
     }
 
-    const { course_id, slug, user_id, user_upstream_id } = req.body
+    const { course_id, slug, user_id, user_upstream_id } = req.body ?? {}
 
     if (!course_id && !slug) {
       return res.status(400).json({

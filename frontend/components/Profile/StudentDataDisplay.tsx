@@ -1,11 +1,10 @@
 import { PropsWithChildren } from "react"
 
-import ProfileCompletionsDisplay from "components/Profile/ProfileCompletionsDisplay"
-import ProfilePointsDisplay from "components/Profile/ProfilePointsDisplay"
-
 import { Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import ProfileCompletionsDisplay from "/components/Profile/ProfileCompletionsDisplay"
+import ProfilePointsDisplay from "/components/Profile/ProfilePointsDisplay"
 import ProfileSettings from "/components/Profile/ProfileSettings"
 
 import { UserOverviewFieldsFragment } from "/graphql/generated"

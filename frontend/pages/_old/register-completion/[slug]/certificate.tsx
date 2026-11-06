@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic"
 
-import { useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client/react"
 import { Skeleton } from "@mui/material"
 import { styled } from "@mui/material/styles"
 

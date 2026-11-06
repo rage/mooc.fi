@@ -1,8 +1,7 @@
 import { objectType } from "nexus"
 
-import { UserCourseProgress } from "@prisma/client"
-
 import { BAIParentCourse, BAITierCourses } from "../../config/courseConfig"
+import { UserCourseProgress } from "../../generated/prisma"
 import { GraphQLForbiddenError } from "../../lib/errors"
 import {
   checkCertificate,

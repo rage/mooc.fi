@@ -1,7 +1,6 @@
-import { Course, User } from "@prisma/client"
-
 import { BAIbadge, BAItiers } from "../../../../../config/courseConfig"
 import { BaseContext } from "../../../../../context"
+import { Course, User } from "../../../../../generated/prisma"
 import {
   createCompletion,
   getExerciseCompletionsForCourses,

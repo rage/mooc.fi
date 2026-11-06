@@ -1,3 +1,6 @@
+import { Role } from "../../accessControl"
+import { DEFAULT_JOIN_ORGANIZATION_EMAIL_TEMPLATE_ID } from "../../config/defaultData"
+import { Context } from "../../context"
 import {
   EmailDelivery,
   EmailTemplate,
@@ -6,16 +9,13 @@ import {
   User,
   UserOrganization,
   UserOrganizationJoinConfirmation,
-} from "@prisma/client"
-
-import { Role } from "../../accessControl"
-import { DEFAULT_JOIN_ORGANIZATION_EMAIL_TEMPLATE_ID } from "../../config/defaultData"
-import { Context } from "../../context"
+} from "../../generated/prisma"
 import {
   GraphQLForbiddenError,
   GraphQLGenericError,
   GraphQLUserInputError,
 } from "../../lib/errors"
+import { ExtendedTransactionClient } from "../../prisma"
 import {
   emptyOrNullToUndefined,
   ensureDefinedArray,
@@ -24,7 +24,6 @@ import {
   Result,
 } from "../../util"
 import { ConfigurationError, ConflictError } from "../common"
-import { ExtendedTransactionClient } from "/prisma"
 
 export function assertUserIdOnlyForAdmin(ctx: Context, id?: User["id"] | null) {
   if (!id) {

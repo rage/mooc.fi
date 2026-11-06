@@ -1,4 +1,4 @@
-import { ApolloError } from "@apollo/client"
+import { type ErrorLike } from "@apollo/client"
 
 import NoPointsErrorMessage from "./NoPointsErrorMessage"
 import PointsListGrid from "./PointsListGrid"
@@ -11,7 +11,7 @@ interface PointsListProps {
   showOnlyTen?: boolean
   data?: CurrentUserProgressesQuery
   loading: boolean
-  error?: ApolloError
+  error?: ErrorLike
 }
 
 function PointsList({ data, error, loading, showOnlyTen }: PointsListProps) {

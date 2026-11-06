@@ -1,9 +1,8 @@
 import { arg, extendType, idArg, intArg, list, nonNull, stringArg } from "nexus"
-import { type NexusGenEnums } from "nexus-typegen"
-
-import { User } from "@prisma/client"
 
 import { isAdmin } from "../../accessControl"
+import type { NexusGenEnums } from "../../generated/nexus-typegen"
+import { User } from "../../generated/prisma"
 import { GraphQLForbiddenError, GraphQLUserInputError } from "../../lib/errors"
 import { buildUserSearch, filterNullFields, isDefined } from "../../util"
 

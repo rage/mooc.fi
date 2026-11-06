@@ -2,7 +2,7 @@ import React, { createContext, useCallback, useMemo, useState } from "react"
 
 import { useRouter } from "next/router"
 
-import { useApolloClient } from "@apollo/client"
+import { useApolloClient } from "@apollo/client/react"
 import {
   ButtonBase,
   Drawer,
@@ -570,7 +570,9 @@ const MobileNavigationMenu = ({
       <MobileMenu
         anchor="right"
         open={open}
-        PaperProps={{ component: "nav", role: "navigation", elevation: 0 }}
+        slotProps={{
+          paper: { component: "nav", role: "navigation", elevation: 0 },
+        }}
         onClose={onClose}
       >
         <MobileMenuContext.Provider value={menuContextValue}>

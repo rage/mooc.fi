@@ -1,7 +1,6 @@
 import DataLoader from "dataloader"
 
-import { UserCourseServiceProgress } from "@prisma/client"
-
+import { UserCourseServiceProgress } from "../generated/prisma"
 import { ExtendedPrismaClient } from "../prisma"
 
 export interface UserCourseServiceProgressesKey {

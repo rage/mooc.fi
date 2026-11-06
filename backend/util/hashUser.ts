@@ -2,9 +2,8 @@ import { createHash } from "crypto"
 
 import { pick } from "lodash"
 
-import { User } from "@prisma/client"
-
 import { USER_HASH_SECRET } from "../config"
+import { User } from "../generated/prisma"
 
 export const hashUser = (user: User) =>
   createHash("sha512")

@@ -21,7 +21,7 @@ const commitInterval = config.commit_interval
 interface HandleMessageArgs<Message extends { timestamp: string }> {
   context: KafkaContext
   kafkaMessage: KafkaMessage
-  MessageYupSchema: yup.ObjectSchema<any>
+  MessageYupSchema: yup.AnyObjectSchema
   saveToDatabase: (
     context: KafkaContext,
     message: Message,

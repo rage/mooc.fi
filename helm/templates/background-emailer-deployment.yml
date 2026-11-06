@@ -21,7 +21,7 @@ spec:
       containers:
         - name: {{ $deploymentname }}
           image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          command: ["sh", "-c", "npm run background-emailer"]
+          command: ["node", "dist/bin/backgroundEmailer.js"]
           imagePullPolicy: Always
           resources:
             limits:

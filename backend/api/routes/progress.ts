@@ -1,10 +1,9 @@
 import { Request, Response } from "express"
 import { chunk, groupBy, omit } from "lodash"
 
-import { Completion, User, UserCourseProgress } from "@prisma/client"
-
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
 import { BAIParentCourse, BAItiers } from "../../config/courseConfig"
+import { Completion, User, UserCourseProgress } from "../../generated/prisma"
 import { isDefined } from "../../util"
 import { ApiContext, Controller } from "../types"
 

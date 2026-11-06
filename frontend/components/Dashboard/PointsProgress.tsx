@@ -1,4 +1,4 @@
-import React, {
+import {
   PropsWithChildren,
   useCallback,
   useEffect,
@@ -133,14 +133,18 @@ const ProgressLegendMarker = ({
         key={`marker-${percentage}-${caption}-${isOverflowingRight.current}`}
         percentage={percentage}
         color={color}
-        ref={(el: HTMLDivElement | null) => (markerRef.current = el)}
+        ref={(el: HTMLDivElement | null) => {
+          markerRef.current = el
+        }}
       />
       {(caption || valueCaption) && (
         <Caption
           key={`caption-${percentage}-${caption}-${isOverflowingRight.current}`}
           percentage={percentage}
           reversed={isOverflowingRight.current}
-          ref={(el: HTMLDivElement | null) => (captionRef.current = el)}
+          ref={(el: HTMLDivElement | null) => {
+            captionRef.current = el
+          }}
         >
           {caption && <Typography variant="caption">{caption}</Typography>}
           {valueCaption && (

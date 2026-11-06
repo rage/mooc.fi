@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react"
 
-import { useApolloClient } from "@apollo/client"
+import { useApolloClient } from "@apollo/client/react"
 
 import { isAdmin, isSignedIn } from "/lib/authentication"
 
 import {
   CurrentUserDetailedDocument,
-  CurrentUserDetailedQuery,
   UserDetailedFieldsFragment,
 } from "/graphql/generated"
 
@@ -35,11 +34,14 @@ export function useAuth(): UseAuthResult {
 
       if (isUserSignedIn) {
         try {
-          const { data } = await apolloClient.query<CurrentUserDetailedQuery>({
+          const { data, error } = await apolloClient.query({
             query: CurrentUserDetailedDocument,
             fetchPolicy: "network-only",
           })
-          setCurrentUser(data.currentUser ?? null)
+          if (error) {
+            console.error("Failed to fetch current user:", error)
+          }
+          setCurrentUser(data?.currentUser ?? null)
         } catch (error) {
           console.error("Failed to fetch current user:", error)
           setCurrentUser(null)

@@ -1,8 +1,7 @@
 import { omit } from "lodash"
 import { arg, booleanArg, list, nonNull, objectType, stringArg } from "nexus"
 
-import { Course, CourseTranslation } from "@prisma/client"
-
+import { Course, CourseTranslation } from "../../generated/prisma"
 import { filterNullRecursive } from "../../util"
 
 export const StudyModule = objectType({
@@ -25,7 +24,7 @@ export const StudyModule = objectType({
         orderBy: list(
           nonNull(
             arg({
-              type: "CourseOrderByWithRelationAndSearchRelevanceInput",
+              type: "CourseOrderByWithRelationInput",
             }),
           ),
         ),

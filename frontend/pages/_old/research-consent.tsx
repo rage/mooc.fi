@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 
 import Router from "next/router"
 
-import { useMutation, useQuery } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client/react"
 import { CircularProgress, Paper } from "@mui/material"
 import { styled } from "@mui/material/styles"
 

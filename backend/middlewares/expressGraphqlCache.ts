@@ -89,10 +89,10 @@ function getOperationType(op: any): string {
   return src.startsWith("mutation")
     ? "mutation"
     : src.startsWith("subscription")
-    ? "subscription"
-    : src.startsWith("query") || src.startsWith("{")
-    ? "query"
-    : "unknown"
+      ? "subscription"
+      : src.startsWith("query") || src.startsWith("{")
+        ? "query"
+        : "unknown"
 }
 
 // Detect GraphQL errors in a response payload
@@ -102,8 +102,8 @@ function hasGraphQLErrors(body: any): boolean {
       typeof body === "string"
         ? JSON.parse(body)
         : Buffer.isBuffer(body)
-        ? JSON.parse(body.toString("utf8"))
-        : body
+          ? JSON.parse(body.toString("utf8"))
+          : body
 
     return Boolean(
       parsed && Array.isArray(parsed.errors) && parsed.errors.length > 0,
@@ -118,8 +118,8 @@ function toPayload(body: any): string {
   return typeof body === "string"
     ? body
     : Buffer.isBuffer(body)
-    ? body.toString("utf8")
-    : JSON.stringify(body)
+      ? body.toString("utf8")
+      : JSON.stringify(body)
 }
 
 /** Why a response must not be stored, or `undefined` when it is cacheable. */

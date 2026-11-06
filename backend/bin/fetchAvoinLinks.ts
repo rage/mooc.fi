@@ -2,9 +2,8 @@ import axios from "axios"
 import { maxBy } from "lodash"
 import { DateTime } from "luxon"
 
-import { OpenUniversityRegistrationLink } from "@prisma/client"
-
 import { AVOIN_COURSE_URL, AVOIN_TOKEN } from "../config"
+import { OpenUniversityRegistrationLink } from "../generated/prisma"
 import { AvoinError } from "../lib/errors"
 import sentryLogger from "../lib/logger"
 import prisma from "../prisma"

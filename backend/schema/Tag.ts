@@ -10,9 +10,8 @@ import {
   stringArg,
 } from "nexus"
 
-import { Prisma, TagType, Tag as TypeofTag } from "@prisma/client"
-
 import { isAdmin, Role } from "../accessControl"
+import { Prisma, TagType, Tag as TypeofTag } from "../generated/prisma"
 import { GraphQLForbiddenError, GraphQLUserInputError } from "../lib/errors"
 import { isDefinedAndNotEmpty } from "../util"
 import { localeToLanguage } from "../util/locale"

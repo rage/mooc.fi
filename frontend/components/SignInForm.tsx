@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 
-import { useApolloClient } from "@apollo/client"
+import { useApolloClient } from "@apollo/client/react"
 import { PropsOf } from "@emotion/react"
 import {
   FormControl,

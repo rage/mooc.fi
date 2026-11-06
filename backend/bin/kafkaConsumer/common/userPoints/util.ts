@@ -1,7 +1,6 @@
 import { DateTime } from "luxon"
 
-import { User } from "@prisma/client"
-
+import { User } from "../../../../generated/prisma"
 import { DatabaseInputError, TMCError } from "../../../../lib/errors"
 import { err, ok, parseTimestamp } from "../../../../util"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"

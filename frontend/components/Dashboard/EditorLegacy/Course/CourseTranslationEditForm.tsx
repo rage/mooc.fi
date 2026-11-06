@@ -1,6 +1,6 @@
 import { FieldArray, useFormikContext } from "formik"
 
-import { Grid, Typography } from "@mui/material"
+import { Stack, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import CourseTranslationListItem from "./CourseTranslationListItem"
@@ -25,14 +25,14 @@ const CourseTranslationEditForm = () => {
 
   return (
     <section>
-      <Grid container direction="column">
+      <Stack>
         <FieldArray name="course_translations">
           {() => (
             <>
               {values.length ? (
                 values?.map(
                   (value: CourseTranslationFormValues, index: number) => (
-                    <LanguageEntry item key={value.id ?? value.language}>
+                    <LanguageEntry key={value.id ?? value.language}>
                       <CourseTranslationListItem
                         index={index}
                         translationLanguage={value.language}
@@ -50,7 +50,7 @@ const CourseTranslationEditForm = () => {
             </>
           )}
         </FieldArray>
-      </Grid>
+      </Stack>
     </section>
   )
 }

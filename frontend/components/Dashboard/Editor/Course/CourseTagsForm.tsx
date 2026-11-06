@@ -5,7 +5,7 @@ import { sortBy } from "remeda"
 
 import {
   Autocomplete,
-  AutocompleteRenderGetTagProps,
+  AutocompleteRenderValueGetItemProps,
   AutocompleteRenderGroupParams,
   AutocompleteRenderInputParams,
   Chip,
@@ -34,25 +34,27 @@ const GroupItems = styled("ul")`
 `
 
 const renderOption = (
-  props: React.HTMLAttributes<HTMLLIElement>,
+  { key, ...props }: React.HTMLAttributes<HTMLLIElement> & { key?: React.Key },
   option: TagFormValue,
-) => <li {...props}>{option.name}</li>
+) => (
+  <li key={key} {...props}>
+    {option.name}
+  </li>
+)
 
 const renderGroup =
   (typeLabel: (type: string) => string) =>
   (params: AutocompleteRenderGroupParams) => (
     <li key={params.key}>
       <GroupHeader>
-        {params.group
-          ?.split(", ")
-          .map((type) => (
-            <TagTypeChip
-              key={type}
-              variant="outlined"
-              label={typeLabel(type)}
-              size="small"
-            />
-          ))}
+        {params.group?.split(", ").map((type) => (
+          <TagTypeChip
+            key={type}
+            variant="outlined"
+            label={typeLabel(type)}
+            size="small"
+          />
+        ))}
       </GroupHeader>
       <GroupItems>{params.children}</GroupItems>
     </li>
@@ -72,12 +74,12 @@ function CourseTagsForm() {
   const typeLabel = useCallback(
     (type: string) =>
       (
-        ({
+        {
           language: t("tagTypeLanguage"),
           difficulty: t("tagTypeDifficulty"),
           module: t("tagTypeModule"),
           none: t("tagTypeNone"),
-        }) as Record<string, string>
+        } as Record<string, string>
       )[type] ?? type,
     [t],
   )
@@ -101,15 +103,22 @@ function CourseTagsForm() {
   )
 
   const renderTags = useCallback(
-    (tags: Array<TagFormValue>, getTagProps: AutocompleteRenderGetTagProps) => {
-      return tags.map((tag, index) => (
-        <Chip
-          {...getTagProps({ index })}
-          variant="outlined"
-          label={tag.name ?? ""}
-          onDelete={onDelete(index)}
-        />
-      ))
+    (
+      tags: Array<TagFormValue>,
+      getItemProps: AutocompleteRenderValueGetItemProps<true>,
+    ) => {
+      return tags.map((tag, index) => {
+        const { key, ...itemProps } = getItemProps({ index })
+        return (
+          <Chip
+            key={key}
+            {...itemProps}
+            variant="outlined"
+            label={tag.name ?? ""}
+            onDelete={onDelete(index)}
+          />
+        )
+      })
     },
     [setValue, getValues],
   )
@@ -135,7 +144,7 @@ function CourseTagsForm() {
         options={options}
         onChange={onChange}
         groupBy={(option) => option.types?.join(", ") || "none"}
-        renderTags={renderTags}
+        renderValue={renderTags}
         renderInput={renderInput}
         renderOption={renderOption}
         renderGroup={renderGroupWithLabels}

@@ -1,0 +1,77 @@
+diff --git a/dist/typegen/render.js b/dist/typegen/render.js
+index 630a11447565e6f5918abf702a205b2f46763c7d..7038bb633cf8295d907931ae36e8d999e6ac4d70 100644
+--- a/dist/typegen/render.js
++++ b/dist/typegen/render.js
+@@ -120,20 +120,26 @@ interface PrismaModels {
+ ${dmmf.datamodel.models.map((m) => `  ${m.name}: Prisma.${m.name}`).join('\n')}
+ }`;
+ }
++function getUniqueFields(data) {
++    return Array.from(new Set(data.map((d) => d.fieldName))).map((fieldName) => ({
++        fieldName,
++        returnType: data.find((d) => d.fieldName === fieldName).returnType,
++    }));
++}
+ function renderNexusPrismaOutputs(dmmf) {
+-    const queriesByType = (0, mapping_1.getCrudMappedFields)('Query', dmmf).map((mappedfield) => ({
++    const queriesByType = getUniqueFields((0, mapping_1.getCrudMappedFields)('Query', dmmf).map((mappedfield) => ({
+         fieldName: mappedfield.field.name,
+         returnType: mappedfield.field.outputType.type,
+-    }));
+-    const mutationsByType = (0, mapping_1.getCrudMappedFields)('Mutation', dmmf).map((mappedField) => ({
++    })));
++    const mutationsByType = getUniqueFields((0, mapping_1.getCrudMappedFields)('Mutation', dmmf).map((mappedField) => ({
+         fieldName: mappedField.field.name,
+         returnType: mappedField.field.outputType.type,
+-    }));
++    })));
+     const fieldsByType = dmmf.datamodel.models.reduce((acc, m) => {
+-        acc[m.name] = m.fields.map((f) => ({
++        acc[m.name] = getUniqueFields(m.fields.map((f) => ({
+             fieldName: f.name,
+             returnType: f.type,
+-        }));
++        })));
+         return acc;
+     }, {});
+     // TODO: Add JS Docs
+diff --git a/src/typegen/render.ts b/src/typegen/render.ts
+index 9d7dfccb5280a57b9efb050b75f5db387c0c83e4..3eb4e73a47c7704bd1df101a6b2f5b4715471d69 100644
+--- a/src/typegen/render.ts
++++ b/src/typegen/render.ts
+@@ -100,22 +100,29 @@ ${dmmf.datamodel.models.map((m) => `  ${m.name}: Prisma.${m.name}`).join('\n')}
+ }`
+ }
+ 
++function getUniqueFields(data: { fieldName: string, returnType: string }[]) {
++  return Array.from(new Set(data.map((d) => d.fieldName))).map((fieldName) => ({
++    fieldName,
++    returnType: data.find((d) => d.fieldName === fieldName)!.returnType,
++  }))
++}
++
+ function renderNexusPrismaOutputs(dmmf: DmmfDocument) {
+-  const queriesByType = getCrudMappedFields('Query', dmmf).map((mappedfield) => ({
++  const queriesByType = getUniqueFields(getCrudMappedFields('Query', dmmf).map((mappedfield) => ({
+     fieldName: mappedfield.field.name,
+     returnType: mappedfield.field.outputType.type,
+-  }))
+-  const mutationsByType = getCrudMappedFields('Mutation', dmmf).map((mappedField) => ({
++  })))
++  const mutationsByType = getUniqueFields(getCrudMappedFields('Mutation', dmmf).map((mappedField) => ({
+     fieldName: mappedField.field.name,
+     returnType: mappedField.field.outputType.type,
+-  }))
++  })))
+   const fieldsByType = dmmf.datamodel.models.reduce<
+     Record<string, { fieldName: string; returnType: string }[]>
+   >((acc, m) => {
+-    acc[m.name] = m.fields.map((f) => ({
++    acc[m.name] = getUniqueFields(m.fields.map((f) => ({
+       fieldName: f.name,
+       returnType: f.type,
+-    }))
++    })))
+ 
+     return acc
+   }, {})

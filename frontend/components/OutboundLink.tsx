@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from "react"
+import { PropsWithChildren } from "react"
 
 import { EnhancedLink, EnhancedLinkProps, Link as MUILink } from "@mui/material"
 import { css, styled } from "@mui/material/styles"

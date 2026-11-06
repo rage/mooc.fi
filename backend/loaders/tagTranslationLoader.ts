@@ -1,7 +1,6 @@
 import DataLoader from "dataloader"
 
-import { TagTranslation } from "@prisma/client"
-
+import { TagTranslation } from "../generated/prisma"
 import { ExtendedPrismaClient } from "../prisma"
 
 export interface TagTranslationKey {

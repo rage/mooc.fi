@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 
-import { type DefaultSeoProps } from "next-seo"
+import { type DefaultSeoProps } from "next-seo/pages"
 import { useRouter } from "next/router"
 
 import { useTranslator } from "./useTranslator"

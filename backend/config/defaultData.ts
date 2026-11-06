@@ -1,5 +1,4 @@
-import { Prisma } from "@prisma/client"
-
+import { Prisma } from "../generated/prisma"
 import { type ExtendedPrismaClient } from "../prisma"
 
 export const DEFAULT_JOIN_ORGANIZATION_EMAIL_TEMPLATE_ID =

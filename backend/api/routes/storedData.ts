@@ -22,7 +22,7 @@ export class StoredDataController extends Controller {
 
     const { user } = getUserResult.value
     const { slug } = req.params
-    const { data } = req.body
+    const { data } = req.body ?? {}
 
     if (!data) {
       return res.status(400).json({ message: "must provide data" })

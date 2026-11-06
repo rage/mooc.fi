@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react"
 
-import { ApolloClient, useApolloClient } from "@apollo/client"
+import { ApolloClient } from "@apollo/client"
+import { useApolloClient } from "@apollo/client/react"
 import { styled } from "@mui/material/styles"
 
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
@@ -110,7 +111,7 @@ async function flatten(
 
 async function downloadInChunks(
   courseSlug: string,
-  client: ApolloClient<object>,
+  client: ApolloClient,
   setMessage: React.Dispatch<React.SetStateAction<string>>,
 ): Promise<ExportUserCourseProgressesQuery["userCourseProgresses"]> {
   let finished = false

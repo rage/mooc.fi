@@ -504,16 +504,18 @@ function CourseGrid() {
             autoComplete="off"
             variant="outlined"
             onChange={handleSearchChange}
-            InputProps={{
-              endAdornment: searchString ? (
-                <IconButton
-                  size="small"
-                  aria-label={t("clearSearch")}
-                  onClick={handleClearSearch}
-                >
-                  <ClearIcon fontSize="small" />
-                </IconButton>
-              ) : undefined,
+            slotProps={{
+              input: {
+                endAdornment: searchString ? (
+                  <IconButton
+                    size="small"
+                    aria-label={t("clearSearch")}
+                    onClick={handleClearSearch}
+                  >
+                    <ClearIcon fontSize="small" />
+                  </IconButton>
+                ) : undefined,
+              },
             }}
           />
           <StyledBorderedSection title={t("filter")}>

@@ -113,11 +113,11 @@ const FormWrapper = <T extends FormValues>(
         description: t("confirmationLeaveWithoutSaving"),
         confirmationText: t("confirmationYes"),
         cancellationText: t("confirmationNo"),
+      }).then(({ confirmed }) => {
+        if (confirmed) {
+          return onCancel()
+        }
       })
-        .then(onCancel)
-        .catch(() => {
-          // ignore
-        })
     }
     return onCancel()
   }, [dirty])
@@ -129,7 +129,11 @@ const FormWrapper = <T extends FormValues>(
         description: t("confirmationDelete"),
         confirmationText: t("confirmationYes"),
         cancellationText: t("confirmationNo"),
-      }).then(() => onDelete(values)),
+      }).then(({ confirmed }) => {
+        if (confirmed) {
+          return onDelete(values)
+        }
+      }),
     [values],
   )
 
@@ -143,7 +147,7 @@ const FormWrapper = <T extends FormValues>(
         {children}
         <br />
         <Grid container direction="row" spacing={2}>
-          <Grid item xs={4}>
+          <Grid size={4}>
             <StyledButton
               color="primary"
               disabled={!dirty || isSubmitting || submitted}
@@ -153,7 +157,7 @@ const FormWrapper = <T extends FormValues>(
               {isSubmitting ? <CircularProgress size={20} /> : t("save")}
             </StyledButton>
           </Grid>
-          <Grid item xs={4}>
+          <Grid size={4}>
             <StyledButton
               color="secondary"
               style={{ width: "100%" }}
@@ -164,7 +168,7 @@ const FormWrapper = <T extends FormValues>(
               {t("cancel")}
             </StyledButton>
           </Grid>
-          <Grid item xs={2}>
+          <Grid size={2}>
             {!isProduction && values.id ? (
               <Tooltip title={t("showDelete")}>
                 <MUICheckbox

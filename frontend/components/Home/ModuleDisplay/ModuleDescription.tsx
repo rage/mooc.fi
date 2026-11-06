@@ -12,7 +12,9 @@ const ModuleDescription = (props: DescriptionProps) => {
   const { name, description } = props
   return (
     <ContentContainer>
-      <ModuleHeader>{name}</ModuleHeader>
+      <ModuleHeader variant="h2" align="left">
+        {name}
+      </ModuleHeader>
       <ModuleDescriptionText>{description}</ModuleDescriptionText>
     </ContentContainer>
   )

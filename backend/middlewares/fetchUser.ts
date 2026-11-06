@@ -1,10 +1,9 @@
 import { plugin } from "nexus"
 import { MiddlewareFn } from "nexus/dist/plugin"
 
-import { User } from "@prisma/client"
-
 import { Role } from "../accessControl"
 import { Context } from "../context"
+import { User } from "../generated/prisma"
 import { GraphQLAuthenticationError } from "../lib/errors"
 import TmcClient from "../services/tmc"
 import { getUserDetailsForToken } from "../services/userDetails"

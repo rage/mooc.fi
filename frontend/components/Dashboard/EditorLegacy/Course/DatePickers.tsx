@@ -1,10 +1,10 @@
 import { useField } from "formik"
 
-import { TextField } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
+import { PickersTextField } from "@mui/x-date-pickers/PickersTextField"
 
-const DatePickerTextField = styled(TextField, {
+const DatePickerTextField = styled(PickersTextField, {
   shouldForwardProp: (prop) => prop !== "hasError",
 })<{ hasError?: boolean }>`
   width: 70%;
@@ -20,7 +20,6 @@ const DatePickerField = ({ ...props }: any) => {
         {...fieldInputProps}
         {...props}
         format="yyyy-MM-dd"
-        mask="____-__-__"
         onChange={setValue}
         onClose={setTouched}
         slotProps={{

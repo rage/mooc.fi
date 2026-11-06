@@ -13,10 +13,9 @@ import {
   stringArg,
 } from "nexus"
 
-import { Prisma } from "@prisma/client"
-
 import { isAdmin, isSameOrganization, or, Role } from "../accessControl"
 import { Context } from "../context"
+import { Prisma } from "../generated/prisma"
 import { GraphQLUserInputError } from "../lib/errors"
 import { filterNullFields, filterNullRecursive } from "../util"
 
@@ -134,7 +133,7 @@ export const OrganizationQueries = extendType({
         orderBy: list(
           nonNull(
             arg({
-              type: "OrganizationOrderByWithRelationAndSearchRelevanceInput",
+              type: "OrganizationOrderByWithRelationInput",
             }),
           ),
         ),

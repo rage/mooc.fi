@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client/react"
 
 import { WideContainer } from "/components/Container"
 import ModuleGrid from "/components/Dashboard/StudyModules/ModuleGrid"

@@ -66,11 +66,18 @@ function ControlledCheckboxImpl<
         value={field.value}
         checked={Boolean(field.value)}
         onChange={onChange}
-        control={<Checkbox />}
-        inputRef={(el) => {
-          field.ref(el)
-          anchor.ref(el)
-        }}
+        control={
+          <Checkbox
+            slotProps={{
+              input: {
+                ref: (el: HTMLInputElement | null) => {
+                  field.ref(el)
+                  anchor.ref(el)
+                },
+              },
+            }}
+          />
+        }
       />
     </div>
   )

@@ -1,8 +1,7 @@
 import { booleanArg, intArg, list, nonNull, objectType, stringArg } from "nexus"
 
-import { Prisma } from "@prisma/client"
-
 import { isAdmin, isAdminOrCourseOwner } from "../../accessControl"
+import { Prisma } from "../../generated/prisma"
 import { GraphQLForbiddenError, GraphQLUserInputError } from "../../lib/errors"
 import { filterNullFields } from "../../util"
 

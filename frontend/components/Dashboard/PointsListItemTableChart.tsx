@@ -1,8 +1,7 @@
-import { CardSubtitle } from "components/Text/headers"
-
 import { LinearProgress } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import { CardSubtitle } from "/components/Text/headers"
 import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
 import { FormattedGroupPoints } from "/util/formatPointsData"
@@ -59,7 +58,11 @@ function PointsListItemTableChart(props: Props) {
   return (
     <>
       <ChartContainer>
-        <CardSubtitle component="h3" variant="body1" marginRight="1rem">
+        <CardSubtitle
+          component="h3"
+          variant="body1"
+          sx={{ marginRight: "1rem" }}
+        >
           {title}
         </CardSubtitle>
         <CardSubtitle align="right">

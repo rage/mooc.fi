@@ -126,3 +126,18 @@ query CourseDashboard($slug: String!, $language: String) {
     ...CourseDashboardCourseFields
   }
 }
+
+query CourseOwnerCheck($slug: String!) {
+  course(slug: $slug) {
+    id
+    slug
+    name
+  }
+  currentUser {
+    id
+    administrator
+    course_ownerships {
+      course_id
+    }
+  }
+}

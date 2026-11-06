@@ -1,15 +1,9 @@
 {
   "name": "eslint-plugin-eslint-custom-rules",
   "version": "1.0.1",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
+  "private": true,
+  "description": "Project-specific lint rules, loaded by oxlint as a JS plugin",
   "license": "ISC",
-  "description": "",
-  "peerDependencies": {
-    "eslint": "^8.13.0"
-  }
+  "author": "",
+  "main": "index.js"
 }

@@ -1,24 +1,26 @@
 import http from "http"
 
-import bodyParser from "body-parser"
 import compression from "compression"
 import cors from "cors"
 import express, { Express } from "express"
-import { graphqlUploadExpress } from "graphql-upload"
-import { useServer as addServer } from "graphql-ws/lib/use/ws"
+import graphqlUploadExpress from "graphql-upload/graphqlUploadExpress.mjs"
+import { useServer as addServer } from "graphql-ws/use/ws"
 import { frameguard } from "helmet"
 import morgan from "morgan"
 import { WebSocketServer } from "ws"
 
 import { ApolloServer } from "@apollo/server"
-import { ApolloServerPluginEmbeddedLandingPageProductionDefaultOptions } from "@apollo/server/dist/esm/plugin/landingPage/default/types"
-import { expressMiddleware } from "@apollo/server/express4"
 import { ApolloServerPluginCacheControlDisabled } from "@apollo/server/plugin/disabled"
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer"
 import {
   ApolloServerPluginLandingPageLocalDefault,
   ApolloServerPluginLandingPageProductionDefault,
+  type ApolloServerPluginLandingPageProductionDefaultOptions,
 } from "@apollo/server/plugin/landingPage/default"
+import {
+  expressMiddleware,
+  type ExpressContextFunctionArgument,
+} from "@as-integrations/express5"
 
 import { apiRouter } from "./api"
 import {
@@ -46,7 +48,7 @@ const createExpressAppWithContext = ({
   app.use(
     compression(),
     cors<cors.CorsRequest>(),
-    bodyParser.json({ limit: "2mb" }),
+    express.json({ limit: "2mb" }),
     frameguard(),
     graphqlUploadExpress(),
   )
@@ -71,7 +73,7 @@ const addExpressMiddleware = async (
   app.use(
     GRAPHQL_ENDPOINT_PATH,
     expressMiddleware(apolloServer, {
-      context: async (ctx) => {
+      context: async (ctx: ExpressContextFunctionArgument) => {
         const loaders = createLoaders(prisma)
         return {
           ...ctx,
@@ -102,8 +104,10 @@ const server = async (serverContext: ServerContext) => {
       ApolloServerPluginCacheControlDisabled(),
       isProduction
         ? ApolloServerPluginLandingPageProductionDefault({
+            // Without a graphRef this renders the embedded Sandbox; the types only model the
+            // Studio-backed Explorer.
             embed: true,
-          } as ApolloServerPluginEmbeddedLandingPageProductionDefaultOptions)
+          } as ApolloServerPluginLandingPageProductionDefaultOptions)
         : ApolloServerPluginLandingPageLocalDefault(),
       {
         async requestDidStart() {

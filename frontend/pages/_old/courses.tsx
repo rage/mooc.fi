@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 
 import { useRouter } from "next/router"
 
-import { useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client/react"
 import { styled } from "@mui/material/styles"
 
 import { WideContainer } from "/components/Container"
@@ -184,7 +184,7 @@ const createInitialSearchVariables = ({
 
   const initialSearchVariables = {
     search,
-    hidden: (hidden ?? "").toLowerCase() !== "false" ?? true,
+    hidden: (hidden ?? "").toLowerCase() !== "false",
     handledBy: handledBy ?? null,
     status: statusParam.length
       ? statusParam.filter(isDefinedAndNotEmpty)

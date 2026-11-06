@@ -86,21 +86,23 @@ export function ControlledSelect<
       error={fieldState.invalid}
       helperText={fieldState.error?.message}
       required={required}
-      InputLabelProps={{
-        shrink: Boolean(field.value),
-      }}
-      {...(revertable && {
-        InputProps: {
-          startAdornment: (
-            <ShiftedInputAdornment position="start">
-              <RevertButton
-                onRevert={onRevert}
-                disabled={field.value === defaultValues[name]}
-              />
-            </ShiftedInputAdornment>
-          ),
+      slotProps={{
+        inputLabel: {
+          shrink: Boolean(field.value),
         },
-      })}
+        ...(revertable && {
+          input: {
+            startAdornment: (
+              <ShiftedInputAdornment position="start">
+                <RevertButton
+                  onRevert={onRevert}
+                  disabled={field.value === defaultValues[name]}
+                />
+              </ShiftedInputAdornment>
+            ),
+          },
+        }),
+      }}
     >
       <MenuItem key="empty" value="">
         {t("selectNoChoice")}

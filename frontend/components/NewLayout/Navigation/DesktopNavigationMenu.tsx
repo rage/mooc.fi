@@ -1,6 +1,6 @@
-import React, { useCallback } from "react"
+import { useCallback } from "react"
 
-import { useApolloClient } from "@apollo/client"
+import { useApolloClient } from "@apollo/client/react"
 import { styled } from "@mui/material/styles"
 
 import { NavigationMenuItem } from "."

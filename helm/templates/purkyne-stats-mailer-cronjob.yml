@@ -24,7 +24,7 @@ spec:
           containers:
             - name: purkyne-stats-emailer
               image: "{{ $.Values.image.repository }}/moocfi-backend:{{ $.Values.image.tag | default $.Chart.AppVersion }}"
-              command: ["sh", "-c", "npm run purkyne-stats-emailer"]
+              command: ["node", "dist/bin/purkyneStatsEmailer.js"]
               envFrom:
                 - secretRef:
                     name: backend-secret

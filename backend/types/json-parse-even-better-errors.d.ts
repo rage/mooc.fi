@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
 declare module "json-parse-even-better-errors" {
   class JSONParseError extends SyntaxError {
     code: "EJSONPARSE"
@@ -7,7 +6,7 @@ declare module "json-parse-even-better-errors" {
       err: Error,
       txt: string,
       context: number,
-      caller: Function | ((...a: any[]) => any),
+      caller: (...a: any[]) => any,
     )
     get name(): string
     set name(_: string)

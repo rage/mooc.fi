@@ -1,7 +1,6 @@
-import { type Prisma } from "@prisma/client"
-
 import { PRISMA_LOG_LEVELS } from "../config"
 import { ServerContext } from "../context"
+import { type Prisma } from "../generated/prisma"
 
 const logLevel = (PRISMA_LOG_LEVELS?.split(",") ?? []) as Prisma.LogLevel[]
 

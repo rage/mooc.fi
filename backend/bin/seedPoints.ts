@@ -1,8 +1,6 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import * as faker from "faker"
+import { faker } from "@faker-js/faker"
 
-import { Prisma } from "@prisma/client"
-
+import { Prisma } from "../generated/prisma"
 import prisma from "../prisma"
 
 //Generate integer id which is not already taken
@@ -40,15 +38,21 @@ const addUsers = async () => {
   //and add them to the database
   let i = 0
   while (i < 100) {
-    const first_name = faker.name.firstName()
-    const last_name = faker.name.lastName()
+    const first_name = faker.person.firstName()
+    const last_name = faker.person.lastName()
 
     const newUser = {
       upstream_id: generateUniqueUpstreamId(upstreamIdsInUse),
       first_name,
       last_name,
-      username: faker.internet.userName(first_name, last_name),
-      email: faker.internet.email(first_name, last_name),
+      username: faker.internet.username({
+        firstName: first_name,
+        lastName: last_name,
+      }),
+      email: faker.internet.email({
+        firstName: first_name,
+        lastName: last_name,
+      }),
       administrator: false,
       student_number: generateRandomString(),
       real_student_number: generateRandomString(),

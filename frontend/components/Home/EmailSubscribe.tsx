@@ -98,7 +98,9 @@ function EmailSubscribe() {
                       id="email"
                       label="email"
                       name="EMAIL"
-                      inputProps={{ "aria-label": "email" }}
+                      slotProps={{
+                        htmlInput: { "aria-label": "email" },
+                      }}
                     />
                   </StyledFormControl>
                 </FieldWrapper>

@@ -9,9 +9,8 @@ import {
   stringArg,
 } from "nexus"
 
-import { StudyModule, StudyModuleTranslation } from "@prisma/client"
-
 import { isAdmin, isUser, or, Role } from "../../accessControl"
+import { StudyModule, StudyModuleTranslation } from "../../generated/prisma"
 import { GraphQLUserInputError } from "../../lib/errors"
 import { filterNullRecursive } from "../../util"
 
@@ -101,7 +100,7 @@ export const StudyModuleQueries = extendType({
         orderBy: list(
           nonNull(
             arg({
-              type: "StudyModuleOrderByWithRelationAndSearchRelevanceInput",
+              type: "StudyModuleOrderByWithRelationInput",
             }),
           ),
         ),

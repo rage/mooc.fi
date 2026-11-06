@@ -10,8 +10,7 @@ import { Path, useFormContext } from "react-hook-form"
 
 import BuildIcon from "@mui/icons-material/Build"
 import BuildOutlinedIcon from "@mui/icons-material/BuildOutlined"
-import { LoadingButton } from "@mui/lab"
-import { Checkbox, Container, Paper, Tooltip } from "@mui/material"
+import { Button, Checkbox, Container, Paper, Tooltip } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import { useEventCallback } from "@mui/material/utils"
 
@@ -36,10 +35,6 @@ const StyledFormBackground = styled(FormBackground)`
   background-color: #8c64ac;
 `
 
-StyledFormBackground.defaultProps = {
-  elevation: 1,
-}
-
 const ButtonContainer = styled("div")`
   display: flex;
   width: 100%;
@@ -47,7 +42,7 @@ const ButtonContainer = styled("div")`
   margin-top: 0.5rem;
 `
 
-const StyledLoadingButton = styled(LoadingButton)`
+const StyledButton = styled(Button)`
   height: 3rem;
   font-size: larger;
 `
@@ -84,15 +79,15 @@ function EditorContainer<T extends FormValues = FormValues>(
       if (!isDirty) {
         return onCancel()
       }
-      try {
-        await confirm({
-          title: t("confirmationUnsavedChanges"),
-          description: t("confirmationLeaveWithoutSaving"),
-          confirmationText: t("confirmationYes"),
-          cancellationText: t("confirmationNo"),
-        })
+      const { confirmed } = await confirm({
+        title: t("confirmationUnsavedChanges"),
+        description: t("confirmationLeaveWithoutSaving"),
+        confirmationText: t("confirmationYes"),
+        cancellationText: t("confirmationNo"),
+      })
+      if (confirmed) {
         return onCancel()
-      } catch {}
+      }
     },
     [isDirty, onCancel, confirm, t],
   )
@@ -101,15 +96,15 @@ function EditorContainer<T extends FormValues = FormValues>(
     async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault()
 
-      try {
-        await confirm({
-          title: t("confirmationAboutToDelete"),
-          description: t("confirmationDelete"),
-          confirmationText: t("confirmationYes"),
-          cancellationText: t("confirmationNo"),
-        })
+      const { confirmed } = await confirm({
+        title: t("confirmationAboutToDelete"),
+        description: t("confirmationDelete"),
+        confirmationText: t("confirmationYes"),
+        cancellationText: t("confirmationNo"),
+      })
+      if (confirmed) {
         return onDelete(id)
-      } catch {}
+      }
     },
     [id, onDelete, confirm, t],
   )
@@ -128,7 +123,7 @@ function EditorContainer<T extends FormValues = FormValues>(
           {children}
         </StyledForm>
         <ButtonContainer>
-          <StyledLoadingButton
+          <StyledButton
             color="primary"
             size="large"
             variant="contained"
@@ -138,8 +133,8 @@ function EditorContainer<T extends FormValues = FormValues>(
             fullWidth
           >
             {t("save")}
-          </StyledLoadingButton>
-          <StyledLoadingButton
+          </StyledButton>
+          <StyledButton
             color="secondary"
             disabled={isSubmitting || (isSubmitted && isValid)}
             variant="contained"
@@ -147,11 +142,11 @@ function EditorContainer<T extends FormValues = FormValues>(
             fullWidth
           >
             {t("cancel")}
-          </StyledLoadingButton>
+          </StyledButton>
           {!isProduction && id ? (
             <>
               {deleteVisible && (
-                <StyledLoadingButton
+                <StyledButton
                   variant="contained"
                   color="warning"
                   hidden={!deleteVisible}
@@ -159,7 +154,7 @@ function EditorContainer<T extends FormValues = FormValues>(
                   onClick={onDeleteClick}
                 >
                   {t("delete")}
-                </StyledLoadingButton>
+                </StyledButton>
               )}
               <Tooltip title={t("showDelete")}>
                 <Checkbox

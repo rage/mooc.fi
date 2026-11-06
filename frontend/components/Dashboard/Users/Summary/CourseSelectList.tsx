@@ -159,9 +159,7 @@ const CourseSelectList = () => {
           >
             <CourseSelectListItemText
               primary={course.name}
-              primaryTypographyProps={{
-                variant: "subtitle2",
-              }}
+              slotProps={{ primary: { variant: "subtitle2" } }}
               secondary={tier_summaries?.map(({ course: tierCourse }) => (
                 <CourseSelectListItemTextNested key={tierCourse.id}>
                   {tierCourse.name}

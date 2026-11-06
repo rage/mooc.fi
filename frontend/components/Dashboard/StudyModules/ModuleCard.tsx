@@ -124,7 +124,15 @@ function ModuleCard({ studyModule, image, loading }: ModuleCardProps) {
   const moduleNotFound = !loading && !studyModule
 
   return (
-    <Grid item xxxs={12} xxs={12} xs={12} sm={6} lg={6}>
+    <Grid
+      size={{
+        xxxs: 12,
+        xxs: 12,
+        xs: 12,
+        sm: 6,
+        lg: 6,
+      }}
+    >
       <Base>
         {loading && (
           <ImageBackgroundSkeleton>

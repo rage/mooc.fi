@@ -1,4 +1,4 @@
-import React, { useCallback } from "react"
+import { useCallback } from "react"
 
 import { Autocomplete, TextField } from "@mui/material"
 import { styled } from "@mui/material/styles"
@@ -61,8 +61,8 @@ const TagSelectDropdowns = ({
   return (
     <TagsContainer>
       {Object.keys(tags).map((category) => {
-        const categoryActiveTags = activeTags.filter(
-          (tag) => tag.types?.includes(category),
+        const categoryActiveTags = activeTags.filter((tag) =>
+          tag.types?.includes(category),
         )
         return (
           <Autocomplete

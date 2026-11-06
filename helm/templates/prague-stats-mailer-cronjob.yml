@@ -24,7 +24,7 @@ spec:
           containers:
             - name: prague-stats-emailer
               image: "{{ $.Values.image.repository }}/moocfi-backend:{{ $.Values.image.tag | default $.Chart.AppVersion }}"
-              command: ["sh", "-c", "npm run prague-stats-emailer"]
+              command: ["node", "dist/bin/pragueStatsEmailer.js"]
               envFrom:
                 - secretRef:
                     name: backend-secret

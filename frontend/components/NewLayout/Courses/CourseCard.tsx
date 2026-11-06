@@ -491,8 +491,8 @@ const CourseCard = React.forwardRef<
         }
         href={course?.link}
         sponsors={
-          course.sponsors?.some(
-            (sponsor) => sponsor.images?.some((image) => image.type === "logo"),
+          course.sponsors?.some((sponsor) =>
+            sponsor.images?.some((image) => image.type === "logo"),
           ) && (
             <CourseDetailItem icon={Handshake}>
               <Sponsors data={course.sponsors} />

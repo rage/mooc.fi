@@ -97,7 +97,7 @@ function PointsListItemCard(props: PointsListItemCardProps) {
   )
 
   return (
-    <PointsListItemCardContainer item xs={12} sm={12} md={12} lg={12}>
+    <PointsListItemCardContainer size={12}>
       {showPersonalDetails && user ? (
         <PersonalDetailsDisplay user={user} />
       ) : (

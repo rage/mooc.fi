@@ -1,6 +1,7 @@
-import { NextSeo } from "next-seo"
+import { generateNextSeo } from "next-seo/pages"
+import Head from "next/head"
 
-import { useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client/react"
 
 import Container from "/components/Container"
 import DashboardTabBar from "/components/Dashboard/DashboardTabBar"
@@ -62,7 +63,7 @@ const Points = () => {
   }
   return (
     <>
-      <NextSeo title={title} />
+      <Head>{generateNextSeo({ title: title })}</Head>
       <DashboardTabBar slug={slug} selectedValue={2} />
 
       <Container>

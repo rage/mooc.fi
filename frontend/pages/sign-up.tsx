@@ -1,6 +1,6 @@
 import Router from "next/router"
 
-import { useApolloClient } from "@apollo/client"
+import { useApolloClient } from "@apollo/client/react"
 
 import { RegularContainer } from "/components/Container"
 import CreateAccountForm from "/components/CreateAccountForm"

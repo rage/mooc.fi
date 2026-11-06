@@ -38,7 +38,7 @@ export function abStudiesRouter(ctx: ApiContext) {
       return adminRes.error
     }
 
-    const { name, group_count } = req.body
+    const { name, group_count } = req.body ?? {}
 
     if (!isDefined(name) || !isDefined(group_count)) {
       return res
@@ -75,7 +75,7 @@ export function abStudiesRouter(ctx: ApiContext) {
       return adminRes.error
     }
 
-    const { users } = req.body
+    const { users } = req.body ?? {}
 
     if (!users || !Array.isArray(users)) {
       return res

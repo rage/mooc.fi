@@ -44,7 +44,7 @@ export const languages = (t: StudyModuleEditSchemaArgs["t"]) => [
 ]
 
 interface StudyModuleEditSchemaArgs {
-  client: ApolloClient<object>
+  client: ApolloClient
   initialSlug: string | null
   t: Translator<StudyModules & Common>
 }
@@ -126,7 +126,7 @@ const studyModuleEditSchema = ({
   })
 
 interface ValidateSlugArgs {
-  client: ApolloClient<object>
+  client: ApolloClient
   initialSlug: string | null
 }
 
@@ -149,7 +149,7 @@ const validateSlug = ({ client, initialSlug }: ValidateSlugArgs) =>
         variables: { slug: value },
       })
 
-      const existing = data.study_module_exists
+      const existing = data?.study_module_exists
 
       return !existing
     } catch (e) {

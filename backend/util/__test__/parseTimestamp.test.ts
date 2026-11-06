@@ -122,7 +122,7 @@ describe("parseTimestamp", () => {
         if (throws) {
           expect(() => {
             parseTimestamp(input)
-          }).toThrowError()
+          }).toThrow()
         } else {
           try {
             const res = parseTimestamp(input)
