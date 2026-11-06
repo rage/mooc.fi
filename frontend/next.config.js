@@ -56,6 +56,7 @@ const nextConfiguration = (_phase) => ({
     ],
   },
   trailingSlash: true,
+  agentRules: false,
   async rewrites() {
     // In development, proxy API requests to the backend server
     if (!isProduction) {
