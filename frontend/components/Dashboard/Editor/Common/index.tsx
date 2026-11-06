@@ -100,9 +100,22 @@ const TabSectionImpl = (
 
 export const TabSection = React.memo(TabSectionImpl) as typeof TabSectionImpl
 
+/** Deep-copies plain objects and arrays; other values (Luxon dates, files) are immutable or opaque. */
+const copyFormValues = <V,>(value: V): V => {
+  if (Array.isArray(value)) {
+    return value.map(copyFormValues) as V
+  }
+  if (value && Object.getPrototypeOf(value) === Object.prototype) {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, entry]) => [key, copyFormValues(entry)]),
+    ) as V
+  }
+  return value
+}
+
 /**
  * Returns a function that resets the form once the running submission ends: to the given values,
- * or to the form's current values when called without any.
+ * or to the values as they were when the submission started.
  *
  * react-hook-form leaves `isDirty` set when `reset` is called inside the submit handler. Prefer
  * the no-argument form over the handler's `values`: the resolver's cast drops keys whose value is
@@ -113,11 +126,16 @@ export function useResetAfterSubmit<T extends FieldValues>({
   getValues,
   formState: { isSubmitting },
 }: UseFormReturn<T>) {
+  const submittedValues = useRef<T>(undefined)
   const pendingReset = useRef<{ values?: T }>(undefined)
 
   useEffect(() => {
-    if (!isSubmitting && pendingReset.current) {
-      reset(pendingReset.current.values ?? getValues())
+    if (isSubmitting) {
+      submittedValues.current = copyFormValues(getValues())
+      return
+    }
+    if (pendingReset.current) {
+      reset(pendingReset.current.values ?? submittedValues.current)
       pendingReset.current = undefined
     }
   }, [isSubmitting, reset, getValues])

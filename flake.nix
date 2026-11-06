@@ -19,8 +19,6 @@
         lib = pkgs.lib;
 
         # Must match packageManager in package.json; nixpkgs lags behind.
-        # Bump version+hashes together:
-        # nix-prefetch-url https://registry.npmjs.org/@pnpm/exe.<PLATFORM>/-/exe.<PLATFORM>-<VER>.tgz
         pnpmVersion = "12.17.0";
         pnpmPlatforms = {
           x86_64-linux = { name = "linux-x64"; sha256 = "1m69jc8dmc8i2aj6vj27bnnx2gskjhd6vpw8fj7msxl21z87273c"; };

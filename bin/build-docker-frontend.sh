@@ -33,7 +33,8 @@ docker build . --cache-from eu.gcr.io/moocfi/moocfi-frontend:latest -f frontend/
 
 echo "Copying next cache from container to host"
 docker create -ti --name frontend_tmp "$TAG" sh
-mkdir -p /mnt/ramdisk/frontend/.next/cache
+mkdir -p /mnt/ramdisk/frontend/.next
+rm -rf /mnt/ramdisk/frontend/.next/cache
 docker cp frontend_tmp:/app/frontend/.next/cache /mnt/ramdisk/frontend/.next/cache
 docker rm -f frontend_tmp
 

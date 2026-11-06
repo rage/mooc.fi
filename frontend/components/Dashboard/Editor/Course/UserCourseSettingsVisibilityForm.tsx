@@ -60,14 +60,18 @@ function UserCourseSettingsVisibilityForm() {
       value: (string | UserCourseSettingsVisibilityFormValues)[],
       getItemProps: AutocompleteRenderValueGetItemProps<true>,
     ) =>
-      value.map((field, index) => (
-        <Chip
-          {...getItemProps({ index })}
-          variant="outlined"
-          label={isString(field) ? field : field.language}
-          onDelete={onDelete(index)}
-        />
-      )),
+      value.map((field, index) => {
+        const { key, ...itemProps } = getItemProps({ index })
+        return (
+          <Chip
+            key={key}
+            {...itemProps}
+            variant="outlined"
+            label={isString(field) ? field : field.language}
+            onDelete={onDelete(index)}
+          />
+        )
+      }),
     [onDelete],
   )
 

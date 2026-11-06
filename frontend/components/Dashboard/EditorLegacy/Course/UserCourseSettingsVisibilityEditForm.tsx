@@ -44,19 +44,25 @@ const UserCourseSettingsVisibilityEditForm = () => {
                 )
               }
               renderValue={(_, getItemProps) => {
-                return values.map((field, index) => (
-                  <Chip
-                    {...getItemProps({ index })}
-                    variant="outlined"
-                    label={field.language}
-                    onDelete={() =>
-                      setFieldValue(
-                        "user_course_settings_visibilities",
-                        values.filter((_, _index: number) => index !== _index),
-                      )
-                    }
-                  />
-                ))
+                return values.map((field, index) => {
+                  const { key, ...itemProps } = getItemProps({ index })
+                  return (
+                    <Chip
+                      key={key}
+                      {...itemProps}
+                      variant="outlined"
+                      label={field.language}
+                      onDelete={() =>
+                        setFieldValue(
+                          "user_course_settings_visibilities",
+                          values.filter(
+                            (_, _index: number) => index !== _index,
+                          ),
+                        )
+                      }
+                    />
+                  )
+                })
               }}
               renderInput={(params) => (
                 <TextField {...params} error={Boolean(errors)} />

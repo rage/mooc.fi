@@ -53,7 +53,8 @@ function withAdminOrCourseOwner<P extends object = object>(
       return <div>Redirecting...</div>
     }
 
-    if (error) {
+    // Partial GraphQL errors fall through to the admin/owner check below.
+    if (error && !data) {
       return <AdminError />
     }
 

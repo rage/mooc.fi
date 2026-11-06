@@ -33,7 +33,7 @@ const StyledTabSection = styled(TabSection)`
 ` as typeof TabSection
 
 function CourseEditForm() {
-  const { courses, defaultValues } = useCourseEditorData()
+  const { courses, defaultValues, isClone } = useCourseEditorData()
   const translations = useFieldArray<CourseFormValues, "course_translations">({
     name: "course_translations",
   })
@@ -46,8 +46,10 @@ function CourseEditForm() {
         syncLanguageTag(language, true),
       )
       // The prefilled language tags and hidden-field values are a new course's starting point,
-      // not unsaved changes.
-      reset(getValues())
+      // not unsaved changes. A clone stays dirty: its copied data has not been saved yet.
+      if (!isClone) {
+        reset(getValues())
+      }
     }
   }, [])
 
