@@ -22,7 +22,7 @@ spec:
           containers:
             - name: update-course-statuses
               image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
-              command: ["sh", "-c", "npm run update-course-statuses"]
+              command: ["node", "dist/bin/updateCourseStatuses.js"]
               envFrom:
               - secretRef:
                   name: backend-secret

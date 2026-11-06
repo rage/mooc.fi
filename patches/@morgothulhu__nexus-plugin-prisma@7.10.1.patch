@@ -1,8 +1,8 @@
-diff --git a/node_modules/@morgothulhu/nexus-plugin-prisma/dist/typegen/render.js b/node_modules/@morgothulhu/nexus-plugin-prisma/dist/typegen/render.js
-index f207722..2bb36da 100644
---- a/node_modules/@morgothulhu/nexus-plugin-prisma/dist/typegen/render.js
-+++ b/node_modules/@morgothulhu/nexus-plugin-prisma/dist/typegen/render.js
-@@ -111,20 +111,26 @@ interface PrismaModels {
+diff --git a/dist/typegen/render.js b/dist/typegen/render.js
+index 630a11447565e6f5918abf702a205b2f46763c7d..7038bb633cf8295d907931ae36e8d999e6ac4d70 100644
+--- a/dist/typegen/render.js
++++ b/dist/typegen/render.js
+@@ -120,20 +120,26 @@ interface PrismaModels {
  ${dmmf.datamodel.models.map((m) => `  ${m.name}: Prisma.${m.name}`).join('\n')}
  }`;
  }
@@ -35,10 +35,10 @@ index f207722..2bb36da 100644
          return acc;
      }, {});
      // TODO: Add JS Docs
-diff --git a/node_modules/@morgothulhu/nexus-plugin-prisma/src/typegen/render.ts b/node_modules/@morgothulhu/nexus-plugin-prisma/src/typegen/render.ts
-index 9d7dfcc..3eb4e73 100644
---- a/node_modules/@morgothulhu/nexus-plugin-prisma/src/typegen/render.ts
-+++ b/node_modules/@morgothulhu/nexus-plugin-prisma/src/typegen/render.ts
+diff --git a/src/typegen/render.ts b/src/typegen/render.ts
+index 9d7dfccb5280a57b9efb050b75f5db387c0c83e4..3eb4e73a47c7704bd1df101a6b2f5b4715471d69 100644
+--- a/src/typegen/render.ts
++++ b/src/typegen/render.ts
 @@ -100,22 +100,29 @@ ${dmmf.datamodel.models.map((m) => `  ${m.name}: Prisma.${m.name}`).join('\n')}
  }`
  }

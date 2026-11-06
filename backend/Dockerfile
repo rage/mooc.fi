@@ -1,54 +1,60 @@
-FROM node:18.16.1-alpine
+# Build context is the repository root (see bin/build-docker-backend.sh): the pnpm workspace
+# files and lockfile live there.
+FROM node:26.13.0-alpine
 
-RUN apk update && \
-    apk add \
+RUN apk add --no-cache \
       build-base \
-      libpng-dev \
-      postgresql-client \
-      libpq \
-      redis \
+      bash \
+      cyrus-sasl-dev \
       git \
       jq \
-      bash \
-      python3 \
+      libpng-dev \
+      libpq \
+      linux-headers \
+      openssl-dev \
       pigz \
-      librdkafka=2.1.1-r0 \
-      librdkafka-dev=2.1.1-r0
-
-RUN rm -rf /var/cache/apk/*
+      postgresql-client \
+      python3 \
+      redis \
+      zlib-dev \
+      zstd-dev
 
 RUN mkdir -p /app && chown -R node /app
+
+COPY package.json /tmp/package.json
+RUN npm install -g --no-update-notifier \
+      "$(node -p 'require("/tmp/package.json").packageManager')" \
+    && rm /tmp/package.json
 
 USER node
 
 WORKDIR /app
 
-COPY --chown=node package.json package-lock.json /app/
+COPY --chown=node package.json pnpm-lock.yaml pnpm-workspace.yaml /app/
 COPY --chown=node patches /app/patches
-COPY --chown=node prisma /app/prisma
-COPY --chown=node .npm /home/node/.npm
+COPY --chown=node backend/package.json /app/backend/
+COPY --chown=node backend/prisma /app/backend/prisma
 
-ARG BUILD_LIBRDKAFKA=0
-RUN npm ci --prefer-offline --no-audit
-RUN rm -rf /node_modules/node-rdkafka/deps
+RUN pnpm install --frozen-lockfile --filter ./backend
 
-COPY --chown=node . /app
-RUN rm -rf /app/.npm
+COPY --chown=node backend /app/backend
+
+WORKDIR /app/backend
 
 RUN cp .env.example .env \
     && cp tsconfig.production.json tsconfig.json \
-    && npm run download-env \
-    && npm run generate \
-    && env NODE_ENV=production GOOGLE_CLOUD_STORAGE_BUCKET=x npm run build
-RUN npm run build-sourcemap
-RUN npm run copy-env
+    && pnpm run download-env \
+    && pnpm run generate \
+    && env NODE_ENV=production GOOGLE_CLOUD_STORAGE_BUCKET=x pnpm run build
+RUN pnpm run build-sourcemap
+RUN pnpm run copy-env
 
 ENV NODE_ENV=production
 
 EXPOSE 4000
 EXPOSE 7001
 
-CMD [ "npm", "run", "start" ]
+CMD [ "node", "dist/app.js" ]
 
 ARG GIT_COMMIT=""
 LABEL GIT_COMMIT=${GIT_COMMIT}

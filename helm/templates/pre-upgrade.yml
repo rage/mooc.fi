@@ -22,7 +22,7 @@ spec:
       containers:
         - name: run-migrations
           image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          command: ["npm", "run", "migrate", "--", "--env", "production"]
+          command: ["node", "--import", "tsx", "node_modules/knex/bin/cli.js", "migrate:latest", "--env", "production"]
           envFrom:
             - secretRef:
                 name: backend-secret

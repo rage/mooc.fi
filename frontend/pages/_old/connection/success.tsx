@@ -1,6 +1,4 @@
-import React from "react"
-
-import { useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client/react"
 import { Card, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 

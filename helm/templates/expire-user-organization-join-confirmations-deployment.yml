@@ -20,7 +20,7 @@ spec:
       containers:
         - name: expire-user-organization-join-confirmations
           image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          command: ["sh", "-c", "npm run expire-user-organization-join-confirmations"]
+          command: ["node", "dist/bin/expireUserOrganizationJoinConfirmations.js"]
           imagePullPolicy: Always
           resources:
             limits:

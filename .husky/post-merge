@@ -1,0 +1,5 @@
+#!/bin/sh
+
+. "$(dirname "$0")/ensure-dev-path.sh"
+
+node .husky/ensure-dependencies-up-to-date.ts

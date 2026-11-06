@@ -1,0 +1,8 @@
+**/node_modules
+**/.env
+**/.next
+frontend
+.git
+backend/generated
+backend/dist
+backend/sourcemap

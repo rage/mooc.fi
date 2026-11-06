@@ -22,7 +22,7 @@ spec:
           containers:
             - name: fetch-user-field-values
               image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
-              command: ["sh", "-c", "npm run fetch-user-field-values"]
+              command: ["node", "dist/bin/fetchUserFieldValues.js"]
               envFrom:
               - secretRef:
                   name: backend-secret

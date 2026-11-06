@@ -6,9 +6,9 @@ If you make changes to the GraphQL schema, resolvers etc. in the backend and/or 
 
 ### In brief:
 
-Ensure you have a fresh GraphQL schema by running `npm run generate` in the backend folder.
+Ensure you have a fresh GraphQL schema by running `pnpm run generate` in the backend folder.
 
-Then run `npm run graphql-codegen` in the frontend folder. You can also run `npm run graphql-codegen:watch` to watch for changes and regenerate the frontend types automatically.
+Then run `pnpm run graphql-codegen` in the frontend folder. You can also run `pnpm run graphql-codegen:watch` to watch for changes and regenerate the frontend types automatically.
 
 ## Detailed example from backend to frontend:
 
@@ -30,9 +30,9 @@ model StaffMember {
 
 You've also created the appropriate database migration and created a resolver for a query called `staffMember`, taking a single required parameter `id` of type `ID` and returing a `StaffMember` or `null` if none found.
 
-If you've created a new file for your model in the backend `graphql` folder (as you probably should) and added the appropriate Nexus types, add that file to the `index.ts` file as an export or run `npm run createExports`. If your model starts growing and there are many queries and mutations related to it, better create a new directory for it -- just like `Course`, `Completion` etc. now. 
+If you've created a new file for your model in the backend `graphql` folder (as you probably should) and added the appropriate Nexus types, add that file to the `index.ts` file as an export or run `pnpm run createExports`. If your model starts growing and there are many queries and mutations related to it, better create a new directory for it -- just like `Course`, `Completion` etc. now.
 
-When you've added the exports, ensure that you have a fresh GraphQL schema and Nexus types by running `npm run generate` in the backend folder. The generated schema is automatically linked to the frontend folder.
+When you've added the exports, ensure that you have a fresh GraphQL schema and Nexus types by running `pnpm run generate` in the backend folder. The generated schema is automatically linked to the frontend folder.
 
 You then might define the query in the frontend as follows in a `.graphql` file situated somewhere in the `graphql` folder:
 
@@ -53,7 +53,7 @@ query StaffMemberDetails($id: ID!) {
 
 Note that even if you could leave the query unnamed, it would then be assigned a random type name which would be less helpful.
 
-Run `npm run graphql-codegen` in the frontend folder. This will generate a bucketload of useful typings and other code.
+Run `pnpm run graphql-codegen` in the frontend folder. This will generate a bucketload of useful typings and other code.
 
 The most useful is the `StaffMemberDetailsDocument`, which is a correctly typed document node for the GraphQL operation, also providing the result type automatically. The result type is available separately as `StaffMemberDetailsQuery` and the operation variables as `StaffMemberDetailsQueryVariables`. Also, the model definition is available as `StaffMember` -- do note that it includes all the fields exposed in the GraphQL schema, not just the ones that are actually used in the query. If you're using only a subselection of fields for a query and passing the result to a component, you might want to create a fragment for the fields you're using and use the generated type.
 

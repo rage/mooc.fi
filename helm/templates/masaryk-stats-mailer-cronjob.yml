@@ -25,7 +25,7 @@ spec:
           containers:
             - name: masaryk-stats-emailer
               image: "{{ $.Values.image.repository }}/moocfi-backend:{{ $.Values.image.tag | default $.Chart.AppVersion }}"
-              command: ["sh", "-c", "npm run masaryk-stats-emailer"]
+              command: ["node", "dist/bin/masarykStatsEmailer.js"]
               envFrom:
                 - secretRef:
                     name: backend-secret

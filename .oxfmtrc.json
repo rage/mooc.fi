@@ -1,0 +1,45 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "semi": false,
+  "singleQuote": false,
+  "trailingComma": "all",
+  "printWidth": 80,
+  "bracketSpacing": true,
+  "sortPackageJson": true,
+  "sortImports": {
+    "customGroups": [
+      { "groupName": "react", "elementNamePattern": ["react", "react-dom"] },
+      {
+        "groupName": "graphql-alias",
+        "elementNamePattern": [
+          "/graphql",
+          "/graphql/**",
+          "/schema",
+          "/schema/**"
+        ]
+      },
+      { "groupName": "root-alias", "elementNamePattern": ["/**"] },
+      { "groupName": "scoped", "elementNamePattern": ["@*/**", "@*"] }
+    ],
+    "groups": [
+      ["builtin", "react"],
+      "external",
+      "scoped",
+      ["root-alias", "parent", "sibling", "index"],
+      "graphql-alias",
+      "unknown"
+    ]
+  },
+  "ignorePatterns": [
+    "node_modules",
+    ".next",
+    "dist",
+    "sourcemap",
+    "coverage",
+    "backend/generated",
+    "frontend/graphql/generated",
+    "**/pnpm-lock.yaml",
+    "helm",
+    "kubernetes"
+  ]
+}

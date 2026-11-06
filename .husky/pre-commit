@@ -1,4 +1,5 @@
 #!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
 
-npx lint-staged
+. "$(dirname "$0")/ensure-dev-path.sh"
+
+pnpm exec lint-staged -c ./.husky/lint-staged.config.js
