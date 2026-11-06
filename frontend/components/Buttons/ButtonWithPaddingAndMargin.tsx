@@ -8,8 +8,8 @@ export const ButtonWithPaddingAndMargin = styled(Button)`
     color === "secondary"
       ? "#4e4637"
       : color === "primary"
-      ? "#FFFFFF"
-      : color ?? "#000000"};
+        ? "#FFFFFF"
+        : (color ?? "#000000")};
   font-size: 18px;
   padding: 0.5em;
 ` as EnhancedButton

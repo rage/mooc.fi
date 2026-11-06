@@ -18,7 +18,7 @@ fragment SponsorImageFields on SponsorImage {
   width
   height
   uri
-} 
+}
 
 fragment SponsorCoreFields on Sponsor {
   ...SponsorFields

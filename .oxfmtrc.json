@@ -38,7 +38,10 @@
     "coverage",
     "backend/generated",
     "frontend/graphql/generated",
+    "frontend/next-env.d.ts",
     "**/pnpm-lock.yaml",
+    "**/*.md",
+    "**/*.mdx",
     "helm",
     "kubernetes"
   ]

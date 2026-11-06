@@ -82,8 +82,7 @@ const BreadcrumbItemComponent = styled("li")<BreadcrumbItemComponentProps>(
 )
 
 interface BreadcrumbItemProps
-  extends BreadcrumbItemComponentProps,
-    Breadcrumb {}
+  extends BreadcrumbItemComponentProps, Breadcrumb {}
 
 const BreadcrumbItem = ({ isCurrent, ...item }: BreadcrumbItemProps) => {
   const t = useTranslator(BreadcrumbsTranslations)
