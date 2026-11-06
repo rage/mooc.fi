@@ -21,6 +21,7 @@ import binPrisma, {
   type ExtendedPrismaClient,
 } from "../prisma"
 import server from "../server"
+import { parseTimestampsAsUtc } from "../util/pgTimestamps"
 import { fail } from "./util"
 
 // @ts-ignore: jest has no explicit fail anymore
@@ -169,6 +170,7 @@ function prismaTestContext() {
       const databaseName = databaseURLObject.pathname.replace("/", "")
 
       DEBUG && console.log(`creating knex ${databaseUrl}`)
+      parseTimestampsAsUtc()
       knexClient = knex({
         client: "pg",
         connection: databaseUrl,

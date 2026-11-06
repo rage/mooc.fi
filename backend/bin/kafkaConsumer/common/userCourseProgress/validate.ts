@@ -47,9 +47,13 @@ const handleNullProgressImpl = (value: Message) => ({
 })
 
 export const handleNullProgress = (message: KafkaMessage) => {
-  const parsedMessage = parseJSON(
-    message?.value?.toString("utf8") ?? "",
-  ) as Message
+  let parsedMessage: Message
+  try {
+    parsedMessage = parseJSON(message?.value?.toString("utf8") ?? "") as Message
+  } catch {
+    // handleMessage logs and commits unparseable messages
+    return message
+  }
 
   return {
     ...message,

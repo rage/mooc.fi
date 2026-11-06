@@ -404,6 +404,9 @@ importers:
       '@types/node':
         specifier: ^26.6.6
         version: 26.6.6
+      '@types/pg':
+        specifier: ^8.23.1
+        version: 8.23.1
       '@types/serve-static':
         specifier: ^2.2.0
         version: 2.2.0
@@ -18797,6 +18800,7 @@ time:
   '@types/morgan@1.9.10': '2025-06-07T02:17:59.602Z'
   '@types/node@26.6.6': '2026-10-28T18:36:36.455Z'
   '@types/papaparse@5.5.2': '2025-12-13T11:01:57.309Z'
+  '@types/pg@8.23.1': '2026-08-17T20:10:18.296Z'
   '@types/react-dom@19.3.0': '2026-09-09T18:07:51.886Z'
   '@types/react-fontawesome@1.6.8': '2023-11-07T14:06:51.759Z'
   '@types/react@19.3.0': '2026-09-09T18:08:49.750Z'
