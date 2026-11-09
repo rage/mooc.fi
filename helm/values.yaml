@@ -31,9 +31,6 @@ kafkaConsumer:
     userCoursePointsRealtime:
       replicaCount: 1
 
-shibboTest:
-  replicaCount: 0
-
 email:
   # controls whether the background email service should be running
   enabled: true

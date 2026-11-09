@@ -81,7 +81,7 @@ function ControlledTextFieldComponent<
 
   const onRevert = useCallback(() => resetField(name), [resetField, name])
 
-  const InputProps = useMemo(
+  const inputSlotProps = useMemo(
     () => ({
       autoComplete: "none",
       endAdornment:
@@ -116,7 +116,7 @@ function ControlledTextFieldComponent<
         disabled={disabled}
         rows={rows}
         multiline={(rows && rows > 0) || false}
-        InputProps={InputProps}
+        slotProps={{ input: inputSlotProps }}
         {...textFieldProps}
         inputRef={(el) => {
           field.ref(el)

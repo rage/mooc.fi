@@ -1,12 +1,12 @@
-import React, { PropsWithChildren, useCallback } from "react"
+import React, { PropsWithChildren, useCallback, useEffect, useRef } from "react"
 
 import {
   FieldValues,
   Message,
   MultipleFieldErrors,
   Resolver,
+  UseFormReturn,
 } from "react-hook-form"
-import { equals } from "remeda"
 import * as Yup from "yup"
 
 import { yupResolver } from "@hookform/resolvers/yup"
@@ -98,16 +98,58 @@ const TabSectionImpl = (
   )
 }
 
-// would otherwise render all tabsections again a bit too often
-export const TabSection = React.memo(TabSectionImpl, (prevProps, nextProps) => {
-  return equals(prevProps, nextProps)
-}) as typeof TabSectionImpl
+export const TabSection = React.memo(TabSectionImpl) as typeof TabSectionImpl
+
+/** Deep-copies plain objects and arrays; other values (Luxon dates, files) are immutable or opaque. */
+const copyFormValues = <V,>(value: V): V => {
+  if (Array.isArray(value)) {
+    return value.map(copyFormValues) as V
+  }
+  if (value && Object.getPrototypeOf(value) === Object.prototype) {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, entry]) => [key, copyFormValues(entry)]),
+    ) as V
+  }
+  return value
+}
+
+/**
+ * Returns a function that resets the form once the running submission ends: to the given values,
+ * or to the values as they were when the submission started.
+ *
+ * react-hook-form leaves `isDirty` set when `reset` is called inside the submit handler. Prefer
+ * the no-argument form over the handler's `values`: the resolver's cast drops keys whose value is
+ * `undefined`, so the still-mounted fields would make the form dirty again.
+ */
+export function useResetAfterSubmit<T extends FieldValues>({
+  reset,
+  getValues,
+  formState: { isSubmitting },
+}: UseFormReturn<T>) {
+  const submittedValues = useRef<T>(undefined)
+  const pendingReset = useRef<{ values?: T }>(undefined)
+
+  useEffect(() => {
+    if (isSubmitting) {
+      submittedValues.current = copyFormValues(getValues())
+      return
+    }
+    if (pendingReset.current) {
+      reset(pendingReset.current.values ?? submittedValues.current)
+      pendingReset.current = undefined
+    }
+  }, [isSubmitting, reset, getValues])
+
+  return useCallback((values?: T) => {
+    pendingReset.current = { values }
+  }, [])
+}
 
 export function useCustomValidationResolver<
   TFieldValues extends FieldValues = FieldValues,
   TContext = any,
-  TSchema extends
-    Yup.ObjectSchema<TFieldValues> = Yup.ObjectSchema<TFieldValues>,
+  TSchema extends Yup.ObjectSchema<TFieldValues> =
+    Yup.ObjectSchema<TFieldValues>,
 >(schema: TSchema): Resolver<TFieldValues, TContext> {
   return useCallback(
     (values, context, options) =>

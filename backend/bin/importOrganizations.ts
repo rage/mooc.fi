@@ -1,8 +1,7 @@
 import { omit } from "lodash"
 
-import { Prisma } from "@prisma/client"
-
 import { OrganizationInfo, UserInfo } from "../domain/UserInfo"
+import { Prisma } from "../generated/prisma"
 import { TMCError } from "../lib/errors"
 import sentryLogger from "../lib/logger"
 import prisma from "../prisma"

@@ -2,15 +2,15 @@ When running the local dev environment for the first time, a few extra commands 
 
 In addition you need to create a .env file in backend/ (copy backend/.env.example and update necessary values)
 
-Make sure you have node version 14.
+Use the Node.js version pinned in `package.json` (`nix develop` provides it).
 
-Run `npm ci` in repo root.
+Run `pnpm install` in repo root.
 
 for frontend:
 
 1. `cd frontend`
-2. `npm ci`
-3. `npm run dev`
+2. `pnpm install`
+3. `pnpm run dev`
 
 for backend:
 
@@ -20,7 +20,7 @@ for backend:
 then in another terminal:
 
 1. `cd backend`
-2. `npm ci`
+2. `pnpm install`
 3. `sudo -u postgres psql` to open psql terminal
 4. In psql terminal run `CREATE ROLE prisma WITH SUPERUSER CREATEDB CREATEROLE LOGIN ENCRYPTED PASSWORD 'prisma';`
 5. ctrl+d to exit the psql terminal
@@ -29,9 +29,9 @@ then in another terminal:
 8. `create schema "default$default";`
 9. ctrl+d to exit the psql terminal
 10. Make a `.env` file in `backend/` based on `backend/.env.example`, and update its DB_* values based on previous steps 5-9
-11. `npm run migrate`
-12. `npm run dev`
+11. `pnpm run migrate`
+12. `pnpm run dev`
 13. In another window run the following commands in the `backend/` directory
-    - `npm run build`
-    - `npm run seedAll`
-    - `npm run generate`
+    - `pnpm run build`
+    - `pnpm run seedAll`
+    - `pnpm run generate`

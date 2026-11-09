@@ -47,11 +47,8 @@ export type TranslationDictionary<
 export type KeyOfTranslation<T> = T extends TranslationObjectEntry
   ? keyof T
   : never
-export type KeyOfTranslationDictionary<T> = T extends TranslationDictionary<
-  infer T
->
-  ? keyof T
-  : never
+export type KeyOfTranslationDictionary<T> =
+  T extends TranslationDictionary<infer T> ? keyof T : never
 
 type VarsHelper<
   T extends string,
@@ -64,12 +61,12 @@ type Vars<T extends string> = VarsHelper<T, never>
 type VariablesOfEntry<EntryType, Acc = never> = EntryType extends string
   ? Acc | Vars<EntryType>
   : EntryType extends string[]
-  ? Acc | Vars<EntryType[number]>
-  : EntryType extends object
-  ? EntryType extends (infer ET)[]
-    ? VariablesOfEntry<ET, Acc>
-    : VariablesOfEntry<EntryType[keyof EntryType], Acc>
-  : Acc
+    ? Acc | Vars<EntryType[number]>
+    : EntryType extends object
+      ? EntryType extends (infer ET)[]
+        ? VariablesOfEntry<ET, Acc>
+        : VariablesOfEntry<EntryType[keyof EntryType], Acc>
+      : Acc
 
 type AllKeys<T> = T extends unknown ? keyof T : never
 

@@ -19,15 +19,14 @@ cd backend
 echo "Running tests"
 
 docker run --env NODE_ENV=test --env PGPASSWORD=prisma \
-  --env LD_PRELOAD=/app/node_modules/sharp/vendor/lib/libz.so \
   --env JEST_JUNIT_OUTPUT_DIR=./coverage/junit/ \
   --network host \
   --name "$TEST_NAME" "$TAG" \
-  /bin/bash -c "npm run create-test-db; npm run test -- --ci --coverage --reporters=default --reporters=jest-junit" 
+  /bin/bash -c "pnpm run create-test-db; pnpm run test --ci --coverage --reporters=default --reporters=jest-junit" 
 
 echo "Copying coverage metadata"
 
-docker cp "$TEST_NAME":/app/coverage coverage
+docker cp "$TEST_NAME":/app/backend/coverage coverage
 docker rm "$TEST_NAME"
 
 cd ..

@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`UserOrganization mutations addUserOrganization succeeds with confirmation required creating a user organization join confirmation and an email delivery 1`] = `
 {

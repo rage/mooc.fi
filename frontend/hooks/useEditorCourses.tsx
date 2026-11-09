@@ -2,7 +2,7 @@ import { useMemo } from "react"
 
 import { omit } from "remeda"
 
-import { useMutation, useQuery } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client/react"
 
 import { toCourseForm } from "/components/Dashboard/Editor/Course/serialization"
 import { filterNull } from "/util/filterNull"

@@ -1,52 +1,44 @@
 {
   "name": "mooc.fi",
   "version": "1.0.0",
-  "description": "",
   "private": true,
-  "devDependencies": {
-    "@ianvs/prettier-plugin-sort-imports": "^4.1.0",
-    "@next/eslint-plugin-next": "^13.4.10",
-    "@types/eslint": "^8.44.0",
-    "@types/mime-types": "^2.1.1",
-    "@types/node": "^20.4.2",
-    "@types/prettier": "^2.7.3",
-    "@typescript-eslint/eslint-plugin": "^6.1.0",
-    "@typescript-eslint/parser": "^6.1.0",
-    "eslint": "^8.45.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-eslint-custom-rules": "file:eslint-custom-rules",
-    "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-jsx-a11y": "^6.7.1",
-    "eslint-plugin-react": "^7.32.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-styled-components-a11y": "^2.1.3",
-    "husky": "^8.0.3",
-    "lint-staged": "^15.5.2",
-    "prettier": "^3.0.0",
-    "typescript": "^5.1.6"
+  "description": "",
+  "homepage": "https://github.com/rage/mooc.fi#readme",
+  "bugs": {
+    "url": "https://github.com/rage/mooc.fi/issues"
   },
-  "scripts": {
-    "prettier": "prettier --write \"**/*.js\" \"**/*.ts\" \"**/*.tsx\" \"**/*.d.ts\" --cache",
-    "prettier-check": "prettier  --list-different \"**/*.js\" \"**/*.ts\" \"**/*.tsx\" \"**/*.d.ts\" --cache",
-    "eslint": "eslint '*/**/*.{js,ts,tsx}'",
-    "eslint-pre-push": "eslint '*/**/*.{js,ts,tsx}' --no-eslintrc -c .eslintrc.pre-push.js",
-    "helm-lint": "helm lint ./helm",
-    "prepare": "husky install"
-  },
+  "license": "ISC",
+  "author": "",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rage/mooc.fi.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/rage/mooc.fi/issues"
+  "type": "module",
+  "scripts": {
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "helm-lint": "helm lint ./helm",
+    "lint": "oxlint --fix",
+    "lint:ci": "oxlint",
+    "prepare": "husky",
+    "typecheck": "pnpm -r --no-bail run typecheck"
   },
-  "homepage": "https://github.com/rage/mooc.fi#readme",
-  "lint-staged": {
-    "*.{js,ts,tsx}": [
-      "prettier --write"
-    ]
-  }
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "eslint-plugin-styled-components-a11y": "^2.2.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
+    "oxfmt": "0.75.0",
+    "oxlint": "1.90.0",
+    "typescript": "npm:@typescript/typescript6@^6.0.2"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "26.13.0",
+      "onFail": "error"
+    }
+  },
+  "packageManager": "pnpm@12.17.0"
 }

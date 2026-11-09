@@ -1,25 +1,20 @@
-import { useCallback, useMemo } from "react"
-
-import { MRT_Column, MRT_ColumnDef, MRT_Row } from "material-react-table"
-import { useRouter } from "next/router"
+import { useMemo } from "react"
 
 import { Theme, Typography, useMediaQuery } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import {
-  MaterialReactTable,
-  SummaryCard,
-  useMaterialReactTableLocalization,
-} from "../common"
+import { SummaryCard } from "../common"
 import { useSelectedData } from "../contexts"
+import SummaryTable, {
+  createSummaryColumnHelper,
+  getColumnLabel,
+} from "../SummaryTable"
 import {
   NarrowCell,
   renderCheck,
-  renderHeader,
   renderNarrowCell,
   renderNarrowCheck,
   TierExerciseRow,
-  useExerciseListProps,
 } from "./common"
 import TierExerciseCompletions from "./TierExerciseCompletions"
 import { useTranslator } from "/hooks/useTranslator"
@@ -51,159 +46,90 @@ const Column = styled("div")`
   width: 100%;
 `
 
-const conditionallyRenderTierExerciseCompletions = ({
-  row,
-  column,
-}: {
-  row: MRT_Row<TierExerciseRow>
-  column: MRT_Column<TierExerciseRow>
-}) => {
-  return (row.original.exercise_completions ?? []).length > 0 ? (
-    <Column>
-      <NarrowCell header={column.columnDef.header} />
-      <TierExerciseCompletions
-        data={row.original.exercise_completions}
-        highestTier={row.original.tier}
-        points={row.original.n_points}
-      />
-    </Column>
-  ) : undefined
-}
+const columnHelper = createSummaryColumnHelper<TierExerciseRow>()
+const renderNarrowValue = renderNarrowCell()
 
-const renderTierExerciseCompletions = ({
-  row,
-}: {
-  row: MRT_Row<TierExerciseRow>
-}) => (
-  /*!isNarrow && (row.original.exercise_completions ?? []).length > 0 ?*/
+const renderTierExerciseCompletions = (row: TierExerciseRow) => (
   <TierExerciseCompletions
-    data={row.original.exercise_completions}
-    highestTier={row.original.tier}
-    points={row.original.n_points}
+    data={row.exercise_completions}
+    highestTier={row.tier}
+    points={row.n_points}
   />
 )
 
-const renderNarrowCellFn = renderNarrowCell<TierExerciseRow>()
-
-const TierExerciseListTitle = () => {
-  const t = useTranslator(ProfileTranslations)
-
-  return <Typography variant="h3">{t("combinedExercises")}</Typography>
-}
+const hasExerciseCompletions = (row: TierExerciseRow) =>
+  row.exercise_completions.length > 0
 
 const TierExerciseList = () => {
   const selectedData = useSelectedData()
-  const data = selectedData?.user_course_progress?.extra?.exercises ?? []
-  const { locale } = useRouter()
+  const data = selectedData?.user_course_progress?.extra?.exercises
   const t = useTranslator(ProfileTranslations)
   const isNarrow = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"))
 
-  const columns = useMemo((): Array<MRT_ColumnDef<TierExerciseRow>> => {
+  const columns = useMemo(() => {
     if (!isNarrow) {
-      return [
-        {
-          accessorKey: "exercise_number",
-          header: "#",
-          size: 20,
-        },
-        {
-          accessorKey: "name",
-          header: t("exercise"),
-          size: 160,
-        },
-        {
-          accessorKey: "tier",
-          header: t("tier"),
-          size: 40,
-        },
-        {
-          accessorKey: "points",
-          header: t("points"),
-          size: 50,
-        },
-        {
-          accessorKey: "completed",
+      return columnHelper.columns([
+        columnHelper.accessor("exercise_number", { header: "#", size: 20 }),
+        columnHelper.accessor("name", { header: t("exercise"), size: 160 }),
+        columnHelper.accessor("tier", { header: t("tier"), size: 40 }),
+        columnHelper.accessor("points", { header: t("points"), size: 50 }),
+        columnHelper.accessor("completed", {
           header: t("completed"),
           size: 40,
-          Header: renderHeader({ tooltip: t("completedTooltip") }),
-          Cell: renderCheck({ success: t("completed") }),
-        },
-      ]
+          meta: { headerTooltip: t("completedTooltip") },
+          cell: renderCheck({ success: t("completed") }),
+        }),
+      ])
     }
 
-    return [
-      {
-        accessorKey: "exercise_number",
+    return columnHelper.columns([
+      columnHelper.accessor("exercise_number", {
         header: "#",
-        Cell: renderNarrowCellFn,
-      },
-      {
-        accessorKey: "name",
+        cell: renderNarrowValue,
+      }),
+      columnHelper.accessor("name", {
         header: t("exercise"),
-        Cell: renderNarrowCellFn,
-      },
-      {
-        accessorKey: "tier",
+        cell: renderNarrowValue,
+      }),
+      columnHelper.accessor("tier", {
         header: t("tier"),
-        Cell: renderNarrowCellFn,
-      },
-      {
-        accessorKey: "points",
+        cell: renderNarrowValue,
+      }),
+      columnHelper.accessor("points", {
         header: t("points"),
-        Cell: renderNarrowCellFn,
-      },
-      {
-        accessorKey: "completed",
+        cell: renderNarrowValue,
+      }),
+      columnHelper.accessor("completed", {
         header: t("completed"),
-        Header: renderHeader({ tooltip: t("completedTooltip") }),
-        Cell: renderNarrowCheck({
+        cell: renderNarrowCheck({
           success: t("completed"),
           failure: t("notCompleted"),
         }),
-      },
-      {
-        accessorKey: "exercise_completions",
+      }),
+      columnHelper.accessor("exercise_completions", {
         header: t("submissions"),
-        Cell: conditionallyRenderTierExerciseCompletions,
-      },
-    ]
-  }, [locale, t, isNarrow])
+        cell: (props) =>
+          hasExerciseCompletions(props.row.original) ? (
+            <Column>
+              <NarrowCell header={getColumnLabel(props)} />
+              {renderTierExerciseCompletions(props.row.original)}
+            </Column>
+          ) : null,
+      }),
+    ])
+  }, [t, isNarrow])
 
-  const rows: Array<TierExerciseRow> = useMemo(
-    () => (data ?? []).map(mapExerciseToRow),
-    [data],
-  )
-
-  const getExpandButtonProps = useCallback(
-    ({ row }: { row: MRT_Row<TierExerciseRow> }) =>
-      isNarrow || (row.original.exercise_completions ?? []).length === 0
-        ? {
-            sx: {
-              display: "none",
-            },
-          }
-        : {},
-    [isNarrow],
-  )
-
-  const tableProps = useExerciseListProps<TierExerciseRow>()
-  const localization = useMaterialReactTableLocalization(locale)
+  const rows = useMemo(() => (data ?? []).map(mapExerciseToRow), [data])
 
   return (
     <SummaryCard>
-      <MaterialReactTable<TierExerciseRow>
-        {...tableProps}
+      <SummaryTable
         data={rows}
         columns={columns}
-        layoutMode="grid"
-        enablePagination={false}
-        enableColumnActions={false}
-        renderTopToolbarCustomActions={TierExerciseListTitle}
-        muiExpandButtonProps={getExpandButtonProps}
-        renderDetailPanel={
-          !isNarrow ? renderTierExerciseCompletions : undefined
-        }
-        localization={localization}
+        title={<Typography variant="h3">{t("combinedExercises")}</Typography>}
+        isSearchable
+        renderDetailPanel={renderTierExerciseCompletions}
+        getRowCanExpand={hasExerciseCompletions}
       />
     </SummaryCard>
   )

@@ -92,7 +92,7 @@ export const toCourseForm = ({
             ...(open_university_course_link
               ? omit(open_university_course_link, ["__typename", "id"])
               : undefined),
-            _id: open_university_course_link?.id,
+            _id: open_university_course_link?.id ?? "",
             link: open_university_course_link?.link ?? "",
             language: course_translation.language ?? "",
             course_code: open_university_course_link?.course_code ?? "",
@@ -114,7 +114,8 @@ export const toCourseForm = ({
         _id: course_alias.id,
       })) ?? [],
     new_slug: course.slug,
-    thumbnail: course?.photo?.compressed,
+    thumbnail: course?.photo?.compressed ?? "",
+    delete_photo: false,
     ects: course.ects ?? undefined,
     import_photo: "",
     inherit_settings_from: course.inherit_settings_from?.id ?? "",

@@ -44,8 +44,8 @@ type UnwrapArray<T> = T extends (infer U)[] ? U : T
 
 export type FieldArrayWithOptionalId<
   TFieldValues extends FieldValues = FieldValues,
-  TFieldArrayName extends
-    FieldArrayPath<TFieldValues> = FieldArrayPath<TFieldValues>,
+  TFieldArrayName extends FieldArrayPath<TFieldValues> =
+    FieldArrayPath<TFieldValues>,
   TKeyName extends string = "id",
 > = FieldArray<TFieldValues, TFieldArrayName> &
   Partial<Record<TKeyName, string>>
@@ -57,8 +57,8 @@ export interface RenderItemProps<TItem> {
 }
 export interface ControlledFieldArrayListProps<
   TFieldValues extends FieldValues,
-  TFieldArrayName extends
-    FieldArrayPath<TFieldValues> = FieldArrayPath<TFieldValues>,
+  TFieldArrayName extends FieldArrayPath<TFieldValues> =
+    FieldArrayPath<TFieldValues>,
   TKeyName extends string = "_id",
   TItem extends FieldArrayWithOptionalId<
     TFieldValues,
@@ -90,8 +90,8 @@ export const StyledButton = styled(Button)`
 
 function ControlledFieldArrayListImpl<
   TFieldValues extends Partial<FieldValues> & Partial<Record<"_id", string>>,
-  TFieldArrayName extends
-    FieldArrayPath<TFieldValues> = FieldArrayPath<TFieldValues>,
+  TFieldArrayName extends FieldArrayPath<TFieldValues> =
+    FieldArrayPath<TFieldValues>,
 >(props: ControlledFieldArrayListProps<TFieldValues, TFieldArrayName>) {
   const t = useTranslator(CoursesTranslations, CommonTranslations)
   const {
@@ -135,13 +135,11 @@ function ControlledFieldArrayListImpl<
             description,
             confirmationText,
             cancellationText,
-          })
-            .then(() => {
+          }).then(({ confirmed }) => {
+            if (confirmed) {
               remove(index)
-            })
-            .catch(() => {
-              // ignore
-            })
+            }
+          })
         }
       },
     [conditions, confirm, description, remove, title],

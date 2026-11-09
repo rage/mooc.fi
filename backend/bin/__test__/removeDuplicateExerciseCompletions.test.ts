@@ -1,8 +1,7 @@
 import {
   ExerciseCompletion,
   ExerciseCompletionRequiredAction,
-} from "@prisma/client"
-
+} from "../../generated/prisma"
 import { getTestContext } from "../../tests"
 import { seed } from "../../tests/data"
 import { removeDuplicateExerciseCompletions } from "../removeDuplicateExerciseCompletions"

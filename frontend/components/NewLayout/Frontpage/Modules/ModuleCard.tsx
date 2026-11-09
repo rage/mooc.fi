@@ -49,10 +49,11 @@ export const ModuleCard = ({
           <CardImageHeaderBackground
             src={require(`/public/images/modules/${image}`)}
             alt=""
+            aria-hidden
             placeholder="blur"
           />
         ) : (
-          <CardHeaderBackground />
+          <CardHeaderBackground aria-hidden />
         )}
       </CardHeader>
       <CardBody>

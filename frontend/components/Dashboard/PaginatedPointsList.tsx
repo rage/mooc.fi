@@ -1,8 +1,8 @@
-import { ChangeEvent, useEffect, useState } from "react"
+import { ChangeEvent, useState } from "react"
 
 import { range } from "remeda"
 
-import { useLazyQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client/react"
 import { Button, Grid, Skeleton, Slider, TextField } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
@@ -33,24 +33,16 @@ function PaginatedPointsList(props: Props) {
   const [cutterValue, setCutterValue] = useState(0)
   const [search, setSearch] = useDebounce(searchString, 1000)
 
-  // use lazy query to prevent running query on each render
-  const [getData, { data, loading, error, fetchMore }] = useLazyQuery(
+  const { data, loading, error, fetchMore } = useQuery(
     StudentProgressesDocument,
     {
-      // fetchPolicy: "cache-first",
-      ssr: false,
-      // notifyOnNetworkStatusChange :true
-    },
-  )
-
-  useEffect(() => {
-    getData({
       variables: {
         course_id: courseId,
         search,
       },
-    })
-  }, [search])
+      ssr: false,
+    },
+  )
 
   if (error) {
     return <p>ERROR: {JSON.stringify(error)}</p>
@@ -70,7 +62,7 @@ function PaginatedPointsList(props: Props) {
   return (
     <ErrorBoundary>
       <Grid container spacing={2}>
-        <Grid item xs={6}>
+        <Grid size={6}>
           <TextField
             id="searchString"
             label={t("search")}
@@ -83,7 +75,7 @@ function PaginatedPointsList(props: Props) {
             onKeyDown={(e) => e.key === "Enter" && setSearch()}
           />
         </Grid>
-        <Grid item xs={4}>
+        <Grid size={4}>
           <Slider
             value={cutterValue}
             onChangeCommitted={(_, value) => setCutterValue(value as number)}
@@ -93,7 +85,7 @@ function PaginatedPointsList(props: Props) {
             valueLabelDisplay="auto"
           />
         </Grid>
-        <Grid item xs={2}>
+        <Grid size={2}>
           <TextField
             id="cutter"
             label={t("pointsCutter")}

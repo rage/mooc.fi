@@ -1,24 +1,21 @@
 import { useMemo } from "react"
 
-import { MRT_ColumnDef } from "material-react-table"
 import { useRouter } from "next/router"
 
 import { Theme, Typography, useMediaQuery } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
-import {
-  MaterialReactTable,
-  useMaterialReactTableLocalization,
-} from "../common"
+import SummaryTable, {
+  createSummaryColumnHelper,
+  SummaryCellProps,
+} from "../SummaryTable"
 import {
   renderCheck,
-  renderHeader,
   renderNarrowCell,
   renderNarrowCheck,
   renderNarrowRequiredActions,
   renderRequiredActions,
   TierExerciseCompletionRow,
-  useExerciseListProps,
 } from "./common"
 import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
@@ -26,7 +23,9 @@ import { formatDateTime } from "/util/dataFormatFunctions"
 
 interface TierExerciseCompletionProps {
   data: Array<TierExerciseCompletionRow>
+  /** Tier value to emphasize. */
   highestTier?: number
+  /** Points value to emphasize. */
   points?: number
 }
 
@@ -34,64 +33,34 @@ const EmphasizedValue = styled("span")`
   font-weight: 800;
 `
 
-const mapDataToRow = (locale?: string) => (ec: TierExerciseCompletionRow) => {
-  const created_at = ec.created_at
-    ? formatDateTime(ec.created_at, locale)
-    : undefined
-  const timestamp = ec.timestamp
-    ? formatDateTime(ec.timestamp, locale)
-    : undefined
-  return {
+const mapDataToRow =
+  (locale?: string) =>
+  (ec: TierExerciseCompletionRow): TierExerciseCompletionRow => ({
     ...ec,
-    created_at,
-    timestamp,
-  }
-}
+    created_at: ec.created_at
+      ? formatDateTime(ec.created_at, locale)
+      : undefined,
+    timestamp: ec.timestamp ? formatDateTime(ec.timestamp, locale) : undefined,
+  })
 
-const getRenderTierCell =
-  (highestTier?: number): MRT_ColumnDef<TierExerciseCompletionRow>["Cell"] =>
-  (props) => {
-    if (props.cell.getValue<number>() === highestTier) {
-      return <EmphasizedValue>{props.cell.getValue<number>()}</EmphasizedValue>
-    }
-    return props.cell.getValue<number>()
-  }
+const renderNarrowValue = renderNarrowCell()
 
-const getRenderPointsCell =
-  (points?: number): MRT_ColumnDef<TierExerciseCompletionRow>["Cell"] =>
-  (props) => {
-    if (props.cell.getValue<number>() === points) {
-      return <EmphasizedValue>{props.cell.getValue<number>()}</EmphasizedValue>
-    }
-    return props.cell.getValue<number>()
+const renderEmphasizedIfEqual =
+  (emphasizedValue?: number) =>
+  ({ getValue }: SummaryCellProps<number | null>) => {
+    const value = getValue()
+
+    return value === emphasizedValue ? (
+      <EmphasizedValue>{value}</EmphasizedValue>
+    ) : (
+      value
+    )
   }
 
-const getRenderTierCellStyle =
-  (highestTier?: number) =>
-  (
-    props: Parameters<
-      NonNullable<MRT_ColumnDef<TierExerciseCompletionRow>["Cell"]>
-    >[0],
-  ) =>
-    props.cell.getValue<number>() === highestTier ? { fontWeight: 800 } : {}
+const renderNarrowEmphasizedIfEqual = (emphasizedValue?: number) =>
+  renderNarrowCell((value) => value === emphasizedValue)
 
-const getRenderPointsCellStyle =
-  (points?: number) =>
-  (
-    props: Parameters<
-      NonNullable<MRT_ColumnDef<TierExerciseCompletionRow>["Cell"]>
-    >[0],
-  ) => (props.cell.getValue<number>() === points ? { fontWeight: 800 } : {})
-
-const TierExerciseCompletionsTitle = () => {
-  const t = useTranslator(ProfileTranslations)
-
-  return (
-    <Typography variant="body2" fontWeight="bold">
-      {t("submissions")}
-    </Typography>
-  )
-}
+const columnHelper = createSummaryColumnHelper<TierExerciseCompletionRow>()
 
 const TierExerciseCompletions = ({
   data,
@@ -101,111 +70,79 @@ const TierExerciseCompletions = ({
   const { locale } = useRouter()
   const t = useTranslator(ProfileTranslations)
   const isNarrow = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"))
-  const renderTierCell = getRenderTierCell(highestTier)
-  const renderPointsCell = getRenderPointsCell(points)
-  const renderNarrowTierCell = renderNarrowCell({
-    ValueProps: getRenderTierCellStyle(highestTier),
-  })
-  const renderNarrowPointsCell = renderNarrowCell({
-    ValueProps: getRenderPointsCellStyle(points),
-  })
 
-  const columns = useMemo((): Array<
-    MRT_ColumnDef<TierExerciseCompletionRow>
-  > => {
+  const columns = useMemo(() => {
     if (!isNarrow) {
-      return [
-        {
-          accessorKey: "timestamp",
+      return columnHelper.columns([
+        columnHelper.accessor("timestamp", {
           header: t("submissionDate"),
           size: 40,
-        },
-        {
-          accessorKey: "tier",
+        }),
+        columnHelper.accessor("tier", {
           header: t("tier"),
           size: 20,
-          Cell: renderTierCell,
-        },
-        {
-          accessorKey: "n_points",
+          cell: renderEmphasizedIfEqual(highestTier),
+        }),
+        columnHelper.accessor("n_points", {
           header: t("points"),
           size: 20,
-          Cell: renderPointsCell,
-        },
-        {
-          accessorKey: "completed",
+          cell: renderEmphasizedIfEqual(points),
+        }),
+        columnHelper.accessor("completed", {
           header: t("completed"),
           size: 20,
-          Header: renderHeader({ tooltip: t("completedTooltip") }),
-          Cell: renderCheck({ success: t("completed") }),
-        },
-        {
-          accessorKey: "exercise_completion_required_actions",
+          meta: { headerTooltip: t("completedTooltip") },
+          cell: renderCheck({ success: t("completed") }),
+        }),
+        columnHelper.accessor("exercise_completion_required_actions", {
           header: t("requiredActions"),
           size: 100,
-          Header: renderHeader({ tooltip: t("requiredActionsTooltip") }),
-          Cell: renderRequiredActions(t),
-        },
-      ]
+          meta: { headerTooltip: t("requiredActionsTooltip") },
+          cell: renderRequiredActions,
+        }),
+      ])
     }
 
-    return [
-      {
-        accessorKey: "timestamp",
+    return columnHelper.columns([
+      columnHelper.accessor("timestamp", {
         header: t("submissionDate"),
-        Cell: renderNarrowCell(),
-      },
-      {
-        accessorKey: "tier",
+        cell: renderNarrowValue,
+      }),
+      columnHelper.accessor("tier", {
         header: t("tier"),
-        Cell: renderNarrowTierCell,
-      },
-      {
-        accessorKey: "n_points",
+        cell: renderNarrowEmphasizedIfEqual(highestTier),
+      }),
+      columnHelper.accessor("n_points", {
         header: t("points"),
-        Cell: renderNarrowPointsCell,
-      },
-      {
-        accessorKey: "completed",
+        cell: renderNarrowEmphasizedIfEqual(points),
+      }),
+      columnHelper.accessor("completed", {
         header: t("completed"),
-        Header: renderHeader({ tooltip: t("completedTooltip") }),
-        Cell: renderNarrowCheck({
+        cell: renderNarrowCheck({
           success: t("completed"),
           failure: t("notCompleted"),
         }),
-      },
-      {
-        accessorKey: "exercise_completion_required_actions",
+      }),
+      columnHelper.accessor("exercise_completion_required_actions", {
         header: t("requiredActions"),
-        Header: renderHeader({ tooltip: t("requiredActionsTooltip") }),
-        Cell: renderNarrowRequiredActions(t),
-      },
-    ]
-  }, [locale, t, isNarrow, renderNarrowCell])
+        cell: renderNarrowRequiredActions,
+      }),
+    ])
+  }, [t, isNarrow, highestTier, points])
 
-  const rows: Array<TierExerciseCompletionRow> = useMemo(() => {
-    const localeMapDataToRow = mapDataToRow(locale)
-    return (data ?? []).map(localeMapDataToRow)
-  }, [locale, data])
-  const tableProps = useExerciseListProps<TierExerciseCompletionRow>()
-  const localization = useMaterialReactTableLocalization(locale)
+  const rows = useMemo(() => data.map(mapDataToRow(locale)), [locale, data])
 
   return (
-    <MaterialReactTable<TierExerciseCompletionRow>
-      {...tableProps}
+    <SummaryTable
       data={rows}
       columns={columns}
-      layoutMode="grid"
-      enableDensityToggle={false}
-      enableFilters={false}
-      enableHiding={false}
-      enableFullScreenToggle={false}
-      enablePagination={false}
-      enableColumnActions={false}
-      renderTopToolbarCustomActions={
-        !isNarrow ? TierExerciseCompletionsTitle : undefined
+      title={
+        isNarrow ? undefined : (
+          <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+            {t("submissions")}
+          </Typography>
+        )
       }
-      localization={localization}
     />
   )
 }

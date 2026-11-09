@@ -24,7 +24,7 @@ spec:
           containers:
             - name: opava-stats-emailer
               image: "{{ $.Values.image.repository }}/moocfi-backend:{{ $.Values.image.tag | default $.Chart.AppVersion }}"
-              command: ["sh", "-c", "npm run opava-stats-emailer"]
+              command: ["node", "dist/bin/opavaStatsEmailer.js"]
               envFrom:
                 - secretRef:
                     name: backend-secret

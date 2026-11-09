@@ -1,5 +1,5 @@
 import parseJSON from "json-parse-even-better-errors"
-import { createClient } from "redis"
+import { createClient, type RedisClientType } from "redis"
 import * as winston from "winston"
 
 import {
@@ -23,7 +23,7 @@ const _logger = winston.createLogger({
   transports: [new winston.transports.Console()],
 })
 
-type RedisClient = ReturnType<typeof createClient>
+type RedisClient = RedisClientType
 let redisClient: RedisClient | undefined
 let redisSubscriberClient: RedisClient | undefined
 

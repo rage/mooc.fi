@@ -1,7 +1,6 @@
 import DataLoader from "dataloader"
 
-import { SponsorTranslation } from "@prisma/client"
-
+import { SponsorTranslation } from "../generated/prisma"
 import { ExtendedPrismaClient } from "../prisma"
 
 export interface SponsorTranslationsKey {

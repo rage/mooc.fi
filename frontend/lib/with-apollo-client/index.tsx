@@ -2,7 +2,7 @@ import { ComponentType, useMemo } from "react"
 
 import { useRouter } from "next/router"
 
-import { ApolloProvider } from "@apollo/client"
+import { ApolloProvider } from "@apollo/client/react"
 
 import getApollo from "./get-apollo"
 import { getAccessToken } from "/lib/authentication"

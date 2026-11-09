@@ -67,7 +67,15 @@ function CourseCard({ course }: CourseCardProps) {
   const t = useTranslator(HomeTranslations)
 
   return (
-    <Grid item xs={12} sm={12} md={6} lg={4} xl={3}>
+    <Grid
+      size={{
+        xs: 12,
+        sm: 12,
+        md: 6,
+        lg: 4,
+        xl: 3,
+      }}
+    >
       <Background
         focusRipple
         href={course?.link ?? ""}
@@ -103,7 +111,11 @@ function CourseCard({ course }: CourseCardProps) {
               <CardTitle component="h3" variant="h3">
                 {course.name}
               </CardTitle>
-              <CardText variant="body1" paragraph align="left">
+              <CardText
+                variant="body1"
+                sx={{ marginBottom: "16px" }}
+                align="left"
+              >
                 {course.description}
               </CardText>
             </>
@@ -112,7 +124,7 @@ function CourseCard({ course }: CourseCardProps) {
               <CardTitle variant="h3">
                 <Skeleton variant="text" width="100%" />
               </CardTitle>
-              <CardText paragraph variant="body1">
+              <CardText sx={{ marginBottom: "16px" }} variant="body1">
                 <Skeleton variant="text" width="100%" />
                 <Skeleton variant="text" width="100%" />
               </CardText>

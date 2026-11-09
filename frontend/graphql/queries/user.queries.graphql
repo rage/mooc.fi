@@ -26,7 +26,7 @@ query UserSummary(
   $upstream_id: Int
   $includeNoPointsAwardedExercises: Boolean
   $includeDeletedExercises: Boolean
-  ) {
+) {
   user(upstream_id: $upstream_id) {
     ...UserDetailedFields
     user_course_summary(
@@ -42,7 +42,7 @@ query UserSummaryCourseList(
   $upstream_id: Int
   $includeNoPointsAwardedExercises: Boolean
   $includeDeletedExercises: Boolean
-  ) {
+) {
   user(upstream_id: $upstream_id) {
     ...UserDetailedFields
     user_course_summary(
@@ -59,7 +59,7 @@ query UserSummaryForCourse(
   $course_slug: String!
   $includeNoPointsAwardedExercises: Boolean
   $includeDeletedExercises: Boolean
-  ) {
+) {
   user(upstream_id: $upstream_id) {
     ...UserDetailedFields
     user_course_summary(

@@ -1,8 +1,8 @@
-import React, { useMemo } from "react"
+import { useMemo } from "react"
 
 import { useRouter } from "next/router"
 
-import { useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client/react"
 
 import CourseHighlights from "./CourseHighlights"
 import ModuleSection from "./ModuleSection"

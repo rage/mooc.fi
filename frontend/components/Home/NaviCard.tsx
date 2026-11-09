@@ -1,5 +1,3 @@
-import { ClickableDiv, ShadowedDiv } from "components/Surfaces/ClickableCard"
-import { CardTitle } from "components/Text/headers"
 import Image from "next/image"
 
 import { Button, EnhancedLink, Grid, Link } from "@mui/material"
@@ -9,6 +7,8 @@ import {
   BackgroundImage,
   FullCoverTextBackground,
 } from "/components/Images/CardBackgroundFullCover"
+import { ClickableDiv, ShadowedDiv } from "/components/Surfaces/ClickableCard"
+import { CardTitle } from "/components/Text/headers"
 import { CardText } from "/components/Text/paragraphs"
 
 const NaviItemBase = styled(ClickableDiv)`
@@ -94,7 +94,7 @@ function NaviCard(props: NaviCardProps) {
         }
 
   return (
-    <Grid item {...gridProps}>
+    <Grid size={gridProps}>
       {item.link && item.linkText ? (
         <StyledLink href={item.link} aria-label={item.linkText}>
           <NaviItemBase>
@@ -123,7 +123,11 @@ function NaviCard(props: NaviCardProps) {
                   item.title
                 )}
               </NaviItemCardTitle>
-              <NaviItemCardText paragraph variant="body1" align="left">
+              <NaviItemCardText
+                sx={{ marginBottom: "16px" }}
+                variant="body1"
+                align="left"
+              >
                 {item.text}
               </NaviItemCardText>
               {item.linkText ? (
@@ -162,7 +166,11 @@ function NaviCard(props: NaviCardProps) {
                   item.title
                 )}
               </NaviItemCardTitle>
-              <NaviItemCardText paragraph variant="body1" align="left">
+              <NaviItemCardText
+                sx={{ marginBottom: "16px" }}
+                variant="body1"
+                align="left"
+              >
                 {item.text}
               </NaviItemCardText>
             </NaviItemTextBackground>

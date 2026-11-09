@@ -1,3 +1,3 @@
-import Register from "pages/_old/register"
+import Register from "/pages/_old/register"
 
 export default Register

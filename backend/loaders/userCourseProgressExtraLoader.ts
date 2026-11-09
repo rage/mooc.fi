@@ -1,7 +1,6 @@
 import DataLoader from "dataloader"
 
-import { Prisma } from "@prisma/client"
-
+import { Prisma } from "../generated/prisma"
 import { ExtendedPrismaClient } from "../prisma"
 
 /** `extra` JSON of user course progresses, keyed by progress id. */

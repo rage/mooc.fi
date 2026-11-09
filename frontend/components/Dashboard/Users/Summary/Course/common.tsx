@@ -32,15 +32,13 @@ export const CourseEntriesContainer = styled("div")`
   width: 100%;
 `
 
-export const CourseEntryCardBase = styled(Card)`
+export const CourseEntryCardBase = styled((props: CardProps) => (
+  <Card elevation={4} {...props} />
+))`
   margin-bottom: 0.5rem;
   padding: 0.5rem;
   width: 100%;
 `
-
-CourseEntryCardBase.defaultProps = {
-  elevation: 4,
-}
 
 export const CourseEntryCardTitleWrapper = styled("div")`
   margin: 0 1rem;

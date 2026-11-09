@@ -16,7 +16,7 @@ function getArrayDiff(a: any[], b: any[]) {
 function useWhyDidYouUpdate(name: string, props: any) {
   // Get a mutable ref object where we can store props ...
   // ... for comparison next time this hook runs.
-  const previousProps: any = useRef()
+  const previousProps: any = useRef(undefined)
 
   useEffect(() => {
     if (previousProps.current) {

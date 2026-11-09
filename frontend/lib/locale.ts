@@ -1,7 +1,6 @@
-import { type MRT_Localization } from "material-react-table"
-
 import { Localization } from "@mui/material/locale"
 import { type PickersLocaleText } from "@mui/x-date-pickers/locales"
+import { type TimeView } from "@mui/x-date-pickers/models"
 
 // https://github.com/mui/material-ui/blob/master/packages/mui-material/src/locale/index.ts
 export const fiFI: Localization = {
@@ -75,14 +74,14 @@ export const fiFI: Localization = {
   },
 }
 
-const views = {
+const views: Record<TimeView, string> = {
   hours: "tunnit",
   minutes: "minuutit",
   seconds: "sekunnit",
 }
 
 // https://github.com/mui/mui-x/blob/master/packages/x-date-pickers/src/locales/fiFI.ts
-const fiFIPickers: Partial<PickersLocaleText<any>> = {
+const fiFIPickers: Partial<PickersLocaleText> = {
   // Calendar navigation
   previousMonth: "Edellinen kuukausi",
   nextMonth: "Seuraava kuukausi",
@@ -112,11 +111,11 @@ const fiFIPickers: Partial<PickersLocaleText<any>> = {
   dateRangePickerToolbarTitle: "Valitse aikaväli",
 
   // Clock labels
-  clockLabelText: (view, time, adapter) =>
+  clockLabelText: (view, formattedTime) =>
     `Valitse ${views[view]}. ${
-      time === null
+      formattedTime === null
         ? "Ei aikaa valittuna"
-        : `Valittu aika on ${adapter.format(time, "fullTime")}`
+        : `Valittu aika on ${formattedTime}`
     }`,
   hoursClockNumberText: (hours) => `${hours} tuntia`,
   minutesClockNumberText: (minutes) => `${minutes} minuuttia`,
@@ -129,13 +128,13 @@ const fiFIPickers: Partial<PickersLocaleText<any>> = {
   // calendarWeekNumberText: weekNumber => `${weekNumber}`,
 
   // Open picker labels
-  openDatePickerDialogue: (value, utils) =>
-    value !== null && utils.isValid(value)
-      ? `Valitse päivä, valittu päivä on ${utils.format(value, "fullDate")}`
+  openDatePickerDialogue: (formattedDate) =>
+    formattedDate
+      ? `Valitse päivä, valittu päivä on ${formattedDate}`
       : "Valitse päivä",
-  openTimePickerDialogue: (value, utils) =>
-    value !== null && utils.isValid(value)
-      ? `Valitse aika, valittu aika on ${utils.format(value, "fullTime")}`
+  openTimePickerDialogue: (formattedTime) =>
+    formattedTime
+      ? `Valitse aika, valittu aika on ${formattedTime}`
       : "Valitse aika",
 
   // Table labels
@@ -154,7 +153,7 @@ const fiFIPickers: Partial<PickersLocaleText<any>> = {
 }
 
 const getPickersLocalization = (
-  pickersTranslations: Partial<PickersLocaleText<any>>,
+  pickersTranslations: Partial<PickersLocaleText>,
 ) => {
   return {
     components: {
@@ -168,97 +167,3 @@ const getPickersLocalization = (
 }
 
 export const datePickersfiFI = getPickersLocalization(fiFIPickers)
-
-export const MRT_Localization_FI: MRT_Localization = {
-  actions: "Toiminnot",
-  and: "ja",
-  cancel: "Peruuta",
-  changeFilterMode: "Muuta suodattimen tilaa",
-  changeSearchMode: "Muuta hakutapaa",
-  clearFilter: "Tyhjennä suodatin",
-  clearSearch: "Tyhjennä haku",
-  clearSort: "Tyhjennä lajittelu",
-  clickToCopy: "Kopioi napsauttamalla",
-  collapse: "Supista",
-  collapseAll: "Supista kaikki",
-  columnActions: "Saraketoiminnot",
-  copiedToClipboard: "Kopioitu leikepöydälle",
-  dropToGroupBy: "Pudota tähän ryhmitelläksesi sarakkeen {column} mukaan",
-  edit: "Muokkaa",
-  expand: "Laajenna",
-  expandAll: "Laajenna kaikki",
-  filterArrIncludes: "Sisältää",
-  filterArrIncludesAll: "Sisältää kaikki",
-  filterArrIncludesSome: "Sisältää",
-  filterBetween: "Välillä",
-  filterBetweenInclusive: "Välillä mukaan lukien",
-  filterByColumn: "Suodata sarakkeen {column} mukaan",
-  filterContains: "Sisältää",
-  filterEmpty: "Tyhjä",
-  filterEndsWith: "Loppuu",
-  filterEquals: "On yhtä kuin",
-  filterEqualsString: "On yhtä kuin",
-  filterFuzzy: "Sumea",
-  filterGreaterThan: "Enemmän kuin",
-  filterGreaterThanOrEqualTo: "Enemmän tai yhtä paljon kuin",
-  filterInNumberRange: "Välillä",
-  filterIncludesString: "Sisältää",
-  filterIncludesStringSensitive: "Sisältää",
-  filterLessThan: "Vähemmän kuin",
-  filterLessThanOrEqualTo: "Vähemmän tai yhtä paljon kuin",
-  filterMode: "Suodattimen tila: {filterType}",
-  filterNotEmpty: "Ei tyhjä",
-  filterNotEquals: "Ei ole yhtä kuin",
-  filterStartsWith: "Alkaa",
-  filterWeakEquals: "On yhtä kuin",
-  filteringByColumn:
-    "Suodatetaan sarakkeen {column} mukaan - {filterType} {filterValue}",
-  goToFirstPage: "Siirry ensimmäiselle sivulle",
-  goToLastPage: "Siirry viimeiselle sivulle",
-  goToNextPage: "Siirry seuraavalle sivulle",
-  goToPreviousPage: "Siirry edelliselle sivulle",
-  grab: "Nappaa",
-  groupByColumn: "Ryhmittele sarakkeen {column} mukaan",
-  groupedBy: "Ryhmitelty sarakkeella ",
-  hideAll: "Piilota kaikki",
-  hideColumn: "Piilota sarake {column}",
-  max: "Maksimi",
-  min: "Minimi",
-  move: "Siirrä",
-  noRecordsToDisplay: "Ei näytettäviä tietueita",
-  noResultsFound: "Ei tuloksia",
-  of: "/",
-  or: "tai",
-  pinToLeft: "Kiinnitä vasemmalle",
-  pinToRight: "Kiinnitä oikealle",
-  resetColumnSize: "Nollaa sarakkeen koko",
-  resetOrder: "Nollaa järjestys",
-  rowActions: "Rivitoiminnot",
-  rowNumber: "#",
-  rowNumbers: "Rivinumerot",
-  rowsPerPage: "Rivejä per sivu",
-  save: "Tallenna",
-  search: "Etsi",
-  selectedCountOfRowCountRowsSelected:
-    "{selectedCount}/{rowCount} rivi(ä) valittu",
-  select: "Valitse",
-  showAll: "Näytä kaikki",
-  showAllColumns: "Näytä kaikki sarakkeet",
-  showHideColumns: "Näytä/piilota sarakkeita",
-  showHideFilters: "Näytä/piilota suodattimet",
-  showHideSearch: "Näytä/piilota haku",
-  sortByColumnAsc: "Järjestä sarakkeen {column} mukaan nousevasti",
-  sortByColumnDesc: "Järjestä sarakkeen {column} mukaan laskevasti",
-  sortedByColumnAsc: "Järjestetty sarakkeen {column} mukaan nousevasti",
-  sortedByColumnDesc: "Järjestetty sarakkeen {column} mukaan laskevasti",
-  thenBy: ", sitten ",
-  toggleDensity: "Vaihda tiheyttä",
-  toggleFullScreen: "Vaihda kokoruututila",
-  toggleSelectAll: "Vaihda valitse kaikki",
-  toggleSelectRow: "Vaihda valitse rivi",
-  toggleVisibility: "Vaihda näkyvyys",
-  ungroupByColumn: "Poista ryhmittely sarakkeen {column} mukaan",
-  unpin: "Poista kiinnitys",
-  unpinAll: "Poista kiinnitys kaikilta",
-  unsorted: "Järjestämätön",
-}

@@ -1,9 +1,8 @@
 import { omit } from "lodash"
 import { arg, extendType, idArg, nonNull, stringArg } from "nexus"
 
-import { Prisma } from "@prisma/client"
-
 import { isAdmin } from "../../accessControl"
+import { Prisma } from "../../generated/prisma"
 import { GraphQLUserInputError } from "../../lib/errors"
 
 export const StudyModuleMutations = extendType({

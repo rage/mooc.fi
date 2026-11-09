@@ -3,8 +3,7 @@ import {
   User,
   UserOrganization,
   UserOrganizationJoinConfirmation,
-} from "@prisma/client"
-
+} from "../generated/prisma"
 import { type ExtendedPrismaClient } from "../prisma"
 import { OrphanedEntityError } from "../schema/common"
 import { err, ok, Result } from "../util"

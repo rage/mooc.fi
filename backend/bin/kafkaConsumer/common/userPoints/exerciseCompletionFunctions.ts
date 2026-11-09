@@ -4,8 +4,7 @@ import {
   Exercise,
   ExerciseCompletion,
   ExerciseCompletionRequiredAction,
-} from "@prisma/client"
-
+} from "../../../../generated/prisma"
 import {
   DatabaseInputError,
   TimestampWarning,

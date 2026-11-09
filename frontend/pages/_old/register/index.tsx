@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from "react"
 
 import { range } from "remeda"
 
-import { useMutation, useQuery } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client/react"
 import {
   Button,
   Card,
@@ -70,10 +70,10 @@ const OrganizationCard = ({
     <Card style={{ marginBottom: "0.5rem" }}>
       <CardContent>
         <Grid container direction="row">
-          <Grid item xs={9}>
+          <Grid size={9}>
             <Typography variant="h3">{name}</Typography>
           </Grid>
-          <Grid item xs={3} style={{ textAlign: "right" }}>
+          <Grid style={{ textAlign: "right" }} size={3}>
             <Button
               color={isMember ? "secondary" : "primary"}
               onClick={async () => {

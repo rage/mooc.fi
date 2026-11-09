@@ -48,7 +48,9 @@ interface BaseControlledFieldProps {
 export interface ControlledFieldProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
-> extends FieldProps<TFieldValues, TName>,
+>
+  extends
+    FieldProps<TFieldValues, TName>,
     BaseControlledFieldProps,
     LabeledFieldProps,
     RequiredFieldProps {
@@ -58,7 +60,9 @@ export interface ControlledFieldProps<
 export interface ControlledFieldArrayProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldArrayPath<TFieldValues> = FieldArrayPath<TFieldValues>,
-> extends FieldArrayProps<TFieldValues, TName>,
+>
+  extends
+    FieldArrayProps<TFieldValues, TName>,
     BaseControlledFieldProps,
     LabeledFieldProps,
     RequiredFieldProps {

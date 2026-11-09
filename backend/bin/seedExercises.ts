@@ -1,18 +1,17 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import * as faker from "faker"
 import { sample } from "lodash"
 
-import { Exercise } from "@prisma/client"
+import { faker } from "@faker-js/faker"
 
+import { Exercise } from "../generated/prisma"
 import prisma from "../prisma"
 
 const createExercise = () => ({
-  name: faker.random.words(),
+  name: faker.lorem.words(),
   max_points: Math.round(Math.random() * 10),
   part: Math.round(Math.random() * 3 + 1),
   section: Math.round(Math.random() * 3 + 1),
   timestamp: new Date(),
-  custom_id: faker.random.uuid(),
+  custom_id: faker.string.uuid(),
 })
 
 const createExerciseCompletion = (exercise: Exercise) => ({

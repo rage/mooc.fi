@@ -1,12 +1,11 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch", "postgresqlExtensions"]
-  // , "fieldReference", 
+  output          = "../generated/prisma"
+  previewFeatures = ["fullTextSearchPostgres", "postgresqlExtensions"]
 }
 
 datasource db {
   provider   = "postgresql"
-  url        = env("DATABASE_URL")
   extensions = [uuidOssp(map: "uuid-ossp", schema: "extensions"), pg_trgm(schema: "extensions"), btree_gin(schema: "extensions")]
 }
 
@@ -753,14 +752,10 @@ enum CourseStatus {
   Active
   Ended
   Upcoming
-
-  @@map("course_status")
 }
 
 enum OrganizationRole {
   Teacher
   Student
   OrganizationAdmin
-
-  @@map("organization_role")
 }

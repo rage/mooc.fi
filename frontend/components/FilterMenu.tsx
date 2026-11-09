@@ -132,9 +132,9 @@ export default function FilterMenu({ fields, label }: FilterProps) {
       const newStatus = (
         e.target.checked
           ? [...(searchVariables?.status ?? []), value]
-          : (searchVariables?.status as CourseStatus[])?.filter(
+          : ((searchVariables?.status as CourseStatus[])?.filter(
               (v) => v !== value,
-            ) ?? []
+            ) ?? [])
       ) as CourseStatus[]
 
       setSearchVariables((previousSearchVariables) => ({
@@ -199,20 +199,22 @@ export default function FilterMenu({ fields, label }: FilterProps) {
           variant="outlined"
           onChange={onSearchChange}
           onKeyDown={onSearchKeyDown}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  onClick={onSearchReset}
-                  disabled={search === ""}
-                  edge="end"
-                  title={t("reset")}
-                  size="large"
-                >
-                  <Clear />
-                </IconButton>
-              </InputAdornment>
-            ),
+          slotProps={{
+            input: {
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={onSearchReset}
+                    disabled={search === ""}
+                    edge="end"
+                    title={t("reset")}
+                    size="large"
+                  >
+                    <Clear />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            },
           }}
         />
       </Row>
@@ -254,7 +256,7 @@ export default function FilterMenu({ fields, label }: FilterProps) {
           {showHandler ? (
             <HandledByFormControl disabled={loading}>
               <Select
-                value={loading ? "" : handledBy ?? ""}
+                value={loading ? "" : (handledBy ?? "")}
                 variant="outlined"
                 onChange={handleHandledByChange}
                 label={t("handledBy")}

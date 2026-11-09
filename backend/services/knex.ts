@@ -10,6 +10,7 @@ import {
   DB_USER,
   SEARCH_PATH,
 } from "../config"
+import { parseTimestampsAsUtc } from "../util/pgTimestamps"
 
 const connection: Knex.PgConnectionConfig = {
   host: DB_HOST,
@@ -20,6 +21,8 @@ const connection: Knex.PgConnectionConfig = {
   ...DB_CONNECTION_PARAMS,
   application_name: `${APPLICATION_NAME}-knex`,
 }
+
+parseTimestampsAsUtc()
 
 export default knex({
   client: "pg",

@@ -43,7 +43,8 @@ const FlagBackground = styled(FullCoverTextBackground)`
   padding: 1rem;
   background-color: #ffd700;
   z-index: 2;
-  background-image: linear-gradient(-90deg, transparent, white 28%),
+  background-image:
+    linear-gradient(-90deg, transparent, white 28%),
     linear-gradient(180deg, #0057b7 50%, #ffd700 50%);
   background-repeat: no-repeat;
   gap: 1rem;
@@ -61,7 +62,8 @@ const WaveOverlay = styled("div")`
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, white 45%),
+    background:
+      linear-gradient(90deg, transparent, white 45%),
       linear-gradient(
         60deg,
         rgba(0, 0, 0, 0.35) 0%,
@@ -111,7 +113,7 @@ function UkraineInfo() {
   const t = useTranslator(CommonTranslations)
 
   return (
-    <Grid item xs={12}>
+    <Grid size={12}>
       <NaviItemBase>
         <FlagBackground>
           <InfoGrid>

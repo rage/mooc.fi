@@ -1,5 +1,6 @@
+import { randomUUID } from "crypto"
+
 import { DateTime } from "luxon"
-import { v4 as uuidv4 } from "uuid"
 
 import { CONFIG_NAME } from "../config"
 import { UserInfo } from "../domain/UserInfo"
@@ -106,7 +107,7 @@ const getUserFromTmcAndSaveToDB = async (user_id: number, tmc: TmcClient) => {
     throw e
   }
 
-  const prismaId = details.courses_mooc_fi_user_id ?? uuidv4()
+  const prismaId = details.courses_mooc_fi_user_id ?? randomUUID()
 
   const prismaDetails = {
     id: prismaId,

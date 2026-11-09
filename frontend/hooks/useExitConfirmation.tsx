@@ -51,14 +51,16 @@ function useExitConfirmation({ texts, enabled }: UseExitConfirmationArgs = {}) {
       if (shouldBypassConfirmation()) return
       if (url === asPath) return
 
-      confirm(texts)
-        .then(() => {
-          Router.events.off("routeChangeStart", handleBrowseAway)
-          Router.push(url)
-        })
-        .catch(() => {
-          /* do nothing */
-        })
+      confirm(texts).then(({ confirmed }) => {
+        if (confirmed) {
+          // Not Router.events.off: closing the dialog re-renders and re-subscribes this handler
+          // before the push starts.
+          bypassConfirmationRef.current = true
+          Router.push(url).finally(() => {
+            bypassConfirmationRef.current = false
+          })
+        }
+      })
       stopNavigation()
     }
     window.addEventListener("beforeunload", handleWindowClose)

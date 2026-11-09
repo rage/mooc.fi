@@ -1,7 +1,8 @@
 import { useCallback, useEffect } from "react"
 
-import { NextSeo } from "next-seo"
+import { generateNextSeo } from "next-seo/pages"
 import dynamic from "next/dynamic"
+import Head from "next/head"
 import { useRouter } from "next/router"
 
 import { Link, Paper, Typography } from "@mui/material"
@@ -85,7 +86,7 @@ const EditCourse = () => {
     },
   ])
 
-  const title = !loading && !course ? slug : course?.name ?? "..."
+  const title = !loading && !course ? slug : (course?.name ?? "...")
 
   const EditorComponent = useCallback(() => {
     if (!course) {
@@ -111,7 +112,7 @@ const EditCourse = () => {
 
   return (
     <>
-      <NextSeo title={title} />
+      <Head>{generateNextSeo({ title: title })}</Head>
       <ContainerBackground>
         <DashboardTabBar slug={slug} selectedValue={3} />
         <WideContainer>

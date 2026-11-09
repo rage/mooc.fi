@@ -1,4 +1,5 @@
-import { NextSeo } from "next-seo"
+import { generateNextSeo } from "next-seo/pages"
+import Head from "next/head"
 
 import { Typography } from "@mui/material"
 
@@ -13,7 +14,7 @@ const NotFoundPage = () => {
 
   return (
     <>
-      <NextSeo title={t("pageNotFoundTitle")} />
+      <Head>{generateNextSeo({ title: t("pageNotFoundTitle") })}</Head>
       <ContentWrapper as="section" sx={{ textAlign: "center" }}>
         <Typography
           component="h1"

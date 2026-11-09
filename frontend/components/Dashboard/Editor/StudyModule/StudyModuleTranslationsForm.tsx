@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react"
+import { useCallback, useMemo } from "react"
 
 import { styled } from "@mui/material/styles"
 
@@ -6,7 +6,6 @@ import { FormSubtitle } from "../Common"
 import {
   ControlledFieldArrayList,
   ControlledFieldArrayListProps,
-  ControlledHiddenField,
   ControlledSelect,
   ControlledTextField,
 } from "../Common/Fields"
@@ -33,7 +32,6 @@ function StudyModuleTranslationsForm() {
   >["render"] = useCallback(
     ({ item, index }) => (
       <ItemContainer>
-        <ControlledHiddenField name="_id" defaultValue={item._id} />
         <ControlledSelect<StudyModuleFormValues>
           name={`study_module_translations.${index}.language`}
           label={t("moduleLanguage")}

@@ -4,10 +4,18 @@ query StudyModules($language: String) {
   }
 }
 
-query FrontpageModulesWithCourses($language: String, $statuses: [CourseStatus!]) {
-  study_modules(orderBy: [{ order: { sort: asc }  }] language: $language) {
+query FrontpageModulesWithCourses(
+  $language: String
+  $statuses: [CourseStatus!]
+) {
+  study_modules(orderBy: [{ order: { sort: asc } }], language: $language) {
     ...StudyModuleFields
-    courses(orderBy: [{ study_module_order: { sort: asc } }, { order: { sort: asc } }], language: $language, hidden: false, statuses: $statuses) {
+    courses(
+      orderBy: [{ study_module_order: { sort: asc } }, { order: { sort: asc } }]
+      language: $language
+      hidden: false
+      statuses: $statuses
+    ) {
       ...FrontpageModuleCourseFields
     }
   }
@@ -16,7 +24,12 @@ query FrontpageModulesWithCourses($language: String, $statuses: [CourseStatus!])
 query StudyModulesWithCourses($language: String, $statuses: [CourseStatus!]) {
   study_modules(orderBy: [{ order: { sort: asc } }], language: $language) {
     ...StudyModuleFields
-    courses(orderBy: [{ study_module_order: { sort: asc } }, { order: { sort: asc } }], language: $language, hidden: false, statuses: $statuses) {
+    courses(
+      orderBy: [{ study_module_order: { sort: asc } }, { order: { sort: asc } }]
+      language: $language
+      hidden: false
+      statuses: $statuses
+    ) {
       ...CourseFields
     }
   }

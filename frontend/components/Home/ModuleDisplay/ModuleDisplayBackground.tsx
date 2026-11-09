@@ -19,7 +19,7 @@ const Background = styled("div", {
   position: relative;
   ${(props) =>
     `background-image: linear-gradient(to left, rgba(255,0,0,0), ${props.backgroundColor} 55%);`}
-  @media(max-width: 1200px) {
+  @media (max-width: 1200px) {
     ${(props) =>
       `background-image: linear-gradient(to top, rgba(255,0,0,0), ${props.backgroundColor} 55%);`}
   }

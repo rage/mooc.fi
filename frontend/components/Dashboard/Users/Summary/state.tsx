@@ -133,12 +133,11 @@ const updateSortedData = (state: UserSummaryState) => {
   }
 
   if (state.searchVariables.search) {
-    sortedData = sortedData.filter(
-      (entry) =>
-        entry?.course?.name
-          .trim()
-          .toLocaleLowerCase()
-          .includes(state.searchVariables.search?.toLocaleLowerCase() ?? ""),
+    sortedData = sortedData.filter((entry) =>
+      entry?.course?.name
+        .trim()
+        .toLocaleLowerCase()
+        .includes(state.searchVariables.search?.toLocaleLowerCase() ?? ""),
     )
   }
 

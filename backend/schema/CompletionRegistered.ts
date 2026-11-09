@@ -8,10 +8,10 @@ import {
   objectType,
   stringArg,
 } from "nexus"
-import { type NexusGenInputs } from "nexus-typegen"
 
 import { isAdmin, isOrganization, or } from "../accessControl"
 import { Context } from "../context"
+import type { NexusGenInputs } from "../generated/nexus-typegen"
 import { GraphQLForbiddenError } from "../lib/errors"
 import { filterNullFields } from "../util"
 

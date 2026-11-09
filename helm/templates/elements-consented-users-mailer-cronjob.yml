@@ -24,7 +24,7 @@ spec:
           containers:
             - name: elements-consented-users-emailer
               image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
-              command: ["sh", "-c", "npm run elements-consented-users-emailer"]
+              command: ["node", "dist/bin/elementsConsentedUsersEmailer.js"]
               envFrom:
                 - secretRef:
                     name: backend-secret

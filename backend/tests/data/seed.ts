@@ -1,7 +1,6 @@
-import { Prisma } from "@prisma/client"
-import type { Types } from "@prisma/client/runtime/library"
-
 import { createDefaultData } from "../../config/defaultData"
+import { Prisma } from "../../generated/prisma"
+import type { Types } from "../../generated/prisma/runtime/client"
 import { type ExtendedPrismaClient } from "../../prisma"
 import {
   abEnrollments,
@@ -37,9 +36,9 @@ export const seed = async (prisma: ExtendedPrismaClient) => {
   const create = async <
     K extends ExcludeInternalKeys<keyof ExtendedPrismaClient>,
     T,
-    ResultType extends Types.DefaultSelection<
+    ResultType extends Types.Result.DefaultSelection<
       Prisma.TypeMap["model"][Capitalize<K>]["payload"]
-    > = Types.DefaultSelection<
+    > = Types.Result.DefaultSelection<
       Prisma.TypeMap["model"][Capitalize<K>]["payload"]
     >,
   >(

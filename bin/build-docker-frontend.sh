@@ -19,11 +19,9 @@ if [ -n "$CIRCLE_SHA1" ]; then
   source "$CURRENT_DIR/ci-setup-google-cloud.sh"
 fi
 
-cd frontend
-
 echo "Remove static files only used in development"
 
-rm -rf public/images/courseimages
+rm -rf frontend/public/images/courseimages
 
 echo "Pulling cache"
 
@@ -31,15 +29,15 @@ docker pull eu.gcr.io/moocfi/moocfi-frontend:latest || true
 
 echo Building "$TAG"
 
-docker build . --cache-from eu.gcr.io/moocfi/moocfi-frontend:latest -f Dockerfile -t "$TAG" --load --progress=plain 
+docker build . --cache-from eu.gcr.io/moocfi/moocfi-frontend:latest -f frontend/Dockerfile -t "$TAG" --load --progress=plain 
 
-echo "Copying npm and next caches from container to host"
-docker create -ti --name frontend_tmp "$TAG" sh
-docker cp frontend_tmp:/home/node/.npm /mnt/ramdisk/frontend/.npm
-mkdir -p .next/cache
-docker cp frontend_tmp:/app/.next/cache /mnt/ramdisk/frontend/.next/cache
-docker rm -f frontend_tmp
-
-cd ..
+echo "Exporting next cache from the build stage"
+# The build context includes frontend/.next/cache, so it must not change before this build or
+# every layer after the context copy misses the cache.
+rm -rf /mnt/ramdisk/next-cache
+docker build . -f frontend/Dockerfile --target next-cache --output type=local,dest=/mnt/ramdisk/next-cache --progress=plain
+mkdir -p /mnt/ramdisk/frontend/.next
+rm -rf /mnt/ramdisk/frontend/.next/cache
+mv /mnt/ramdisk/next-cache /mnt/ramdisk/frontend/.next/cache
 
 echo "Successfully built image: $TAG"

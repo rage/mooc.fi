@@ -56,11 +56,6 @@ export const ModuleHeader = styled(H2NoBackground)(
 `,
 )
 
-ModuleHeader.defaultProps = {
-  variant: "h2",
-  align: "left",
-}
-
 const ModuleImageContainer = styled("div")`
   position: relative;
   height: 100%;

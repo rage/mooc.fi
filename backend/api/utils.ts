@@ -1,9 +1,8 @@
 import { Request, Response } from "express"
 
-import { CourseOwnership, Organization, User } from "@prisma/client"
-
 import { BaseContext } from "../context"
 import { UserInfo } from "../domain/UserInfo"
+import { CourseOwnership, Organization, User } from "../generated/prisma"
 import { getUserDetailsForToken } from "../services/userDetails"
 import { err, ok, Result } from "../util/result"
 

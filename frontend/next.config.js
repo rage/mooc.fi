@@ -40,6 +40,9 @@ const withMDX = require("@next/mdx")({
  */
 const nextConfiguration = (_phase) => ({
   reactStrictMode: true,
+  output: "standalone",
+  // Dependencies live in the workspace root's node_modules/.pnpm.
+  outputFileTracingRoot: path.join(__dirname, ".."),
   images: {
     remotePatterns: [
       {
@@ -48,8 +51,15 @@ const nextConfiguration = (_phase) => ({
         pathname: "/**",
       },
     ],
+    qualities: [75, 100],
+    // Study module editors append ?v=<timestamp> to bust the cache after an upload.
+    localPatterns: [
+      { pathname: "/images/modules/**" },
+      { pathname: "/**", search: "" },
+    ],
   },
   trailingSlash: true,
+  agentRules: false,
   async rewrites() {
     // In development, proxy API requests to the backend server
     if (!isProduction) {
@@ -96,18 +106,6 @@ const nextConfiguration = (_phase) => ({
   },
   transpilePackages: ["@mui/system", "@mui/material", "@mui/icons-material"],
   modularizeImports: {
-    "@mui/material/?(((\\w*)?/?)*)": {
-      transform: {
-        css: "/lib/reexports/css",
-        "*": "@mui/material/{{ matches.[1] }}/{{member}}",
-      },
-    },
-    "@mui/lab": {
-      transform: "@mui/lab/{{member}}",
-    },
-    "@mui/icons-material/?(((\\w*)?/?)*)": {
-      transform: "@mui/icons-material/{{ matches.[1] }}/{{member}}",
-    },
     "/graphql/generated": {
       transform: {
         "(.*)Document": "/graphql/generated/definitions/{{member}}",
@@ -164,6 +162,11 @@ const nextConfiguration = (_phase) => ({
       test: /\.svg$/,
       issuer: /\.[jt]sx?$/,
       resourceQuery: /icon/,
+      // the generated component imports @mui/material from the svg's own location, which
+      // under pnpm (e.g. @fortawesome svgs) can't see our dependencies
+      resolve: {
+        modules: [path.resolve(__dirname, "node_modules"), "node_modules"],
+      },
       use: [
         {
           loader: "@svgr/webpack",
@@ -189,27 +192,6 @@ const nextConfiguration = (_phase) => ({
       loader: "graphql-tag/loader",
     })
 
-    const alias = config.resolve?.alias
-    if (!config.resolve) {
-      config.resolve = {}
-    }
-    config.resolve.alias = {
-      ...alias,
-      "@mui/material/styled": path.resolve(
-        __dirname,
-        "node_modules/@mui/material/styles/styled.js",
-      ),
-      "@mui/material/styles/css": path.resolve(
-        __dirname,
-        "node_modules/@mui/styled-engine",
-      ),
-      "@mui/material/locale/fiFI/default": path.resolve(
-        __dirname,
-        "node_modules/@mui/material/locale",
-      ),
-      ...(!isProduction && { "react-dom$": "react-dom/profiling" }),
-    }
-
     if (options.isServer && isProduction) {
       config.devtool = "source-map" // false
     }
@@ -231,7 +213,6 @@ const nextConfiguration = (_phase) => ({
     ignoreBuildErrors: true,
   },*/
   experimental: {
-    ...(!isProduction && { logging: "verbose" }),
     /*swcPlugins: [
       [
         "@graphql-codegen/client-preset-swc-plugin",

@@ -22,7 +22,7 @@ spec:
           containers:
             - name: fetch-user-app-datum
               image: "{{ .Values.image.repository }}/moocfi-backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
-              command: ["sh", "-c", "npm run fetch-user-app-datum"]
+              command: ["node", "dist/bin/fetchUserAppDatum.js"]
               envFrom:
               - secretRef:
                   name: backend-secret

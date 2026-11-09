@@ -57,7 +57,7 @@ fragment TierProgressFields on TierProgress {
   service_id
   exercise_completions {
     ...TierProgressExerciseCompletionFields
-  } 
+  }
 }
 
 fragment TierProgressExerciseCompletionFields on ExerciseCompletion {

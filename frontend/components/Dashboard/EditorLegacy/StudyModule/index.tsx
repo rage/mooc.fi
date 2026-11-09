@@ -3,11 +3,8 @@ import { useCallback, useMemo, useRef } from "react"
 import { FormikHelpers } from "formik"
 import Router from "next/router"
 
-import {
-  useApolloClient,
-  useMutation,
-  type PureQueryOptions,
-} from "@apollo/client"
+import { ApolloClient } from "@apollo/client"
+import { useApolloClient, useMutation } from "@apollo/client/react"
 
 import studyModuleEditSchema from "./form-validation"
 import { fromStudyModuleForm, toStudyModuleForm } from "./serialization"
@@ -77,7 +74,7 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
               }),
             )
           : []),
-      ] as PureQueryOptions[]
+      ] as ApolloClient.QueryOptions[]
 
       const moduleMutation = newStudyModule ? addStudyModule : updateStudyModule
 

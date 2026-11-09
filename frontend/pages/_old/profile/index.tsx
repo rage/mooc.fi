@@ -1,4 +1,4 @@
-import React, {
+import {
   SyntheticEvent,
   useCallback,
   useEffect,
@@ -8,7 +8,7 @@ import React, {
 
 import Router, { useRouter } from "next/router"
 
-import { useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client/react"
 import { styled } from "@mui/material/styles"
 
 import Container from "/components/Container"
@@ -26,7 +26,6 @@ import withSignedIn from "/lib/with-signed-in"
 
 import { CurrentUserOverviewDocument } from "/graphql/generated"
 
-// import VerifiedUsers from "/components/Profile/VerifiedUsers/VerifiedUsers"
 const ProfileContainer = styled(Container)(
   ({ theme }) => `
   max-width: 900px;

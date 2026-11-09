@@ -38,8 +38,8 @@ export function fakeTMCCurrent(
       nock(TMC_HOST ?? "")
         .persist()
         .get(url)
-        .reply(function () {
-          const auth = this.req.headers.authorization
+        .reply((request: Request) => {
+          const auth = request.headers.get("authorization") ?? ""
 
           if (!Array.isArray(users[auth])) {
             throw new Error(`Invalid fakeTMCCurrent entry for auth ${auth}`)

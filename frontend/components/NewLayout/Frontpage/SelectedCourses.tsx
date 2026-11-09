@@ -1,7 +1,7 @@
 import { useRouter } from "next/router"
 import { range } from "remeda"
 
-import { useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client/react"
 import { Button, Typography, TypographyProps } from "@mui/material"
 import { styled } from "@mui/material/styles"
 

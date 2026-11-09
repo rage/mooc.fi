@@ -1,9 +1,7 @@
+import { randomUUID } from "crypto"
+
 import { chunk, difference, groupBy } from "lodash"
 import { arg, extendType, idArg, intArg, list, nonNull, stringArg } from "nexus"
-import { v4 as uuidv4 } from "uuid"
-
-import { Completion } from "@prisma/client"
-import { User } from "@sentry/node"
 
 import {
   isAdmin,
@@ -13,6 +11,7 @@ import {
   Role,
 } from "../../accessControl"
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
+import { Completion, User } from "../../generated/prisma"
 import { GraphQLUserInputError } from "../../lib/errors"
 import { isDefined } from "../../util"
 import { ConflictError } from "../common"
@@ -186,7 +185,7 @@ export const CompletionMutations = extendType({
 
           // TODO: add completion_language to manual completion parameter or get it from ucs?
           return {
-            id: uuidv4(),
+            id: randomUUID(),
             created_at: new Date(),
             updated_at: new Date(),
             user_upstream_id: o.user_id ? parseInt(o.user_id) : null,
@@ -210,7 +209,7 @@ export const CompletionMutations = extendType({
         const newEmailDeliveries = completions.map((o) => {
           const databaseUser = databaseUsersByUpstreamId[o.user_id][0]
           return {
-            id: uuidv4(),
+            id: randomUUID(),
             created_at: new Date(),
             updated_at: new Date(),
             user_id: databaseUser.id,

@@ -1,7 +1,6 @@
 import DataLoader from "dataloader"
 
-import { Exercise } from "@prisma/client"
-
+import { Exercise } from "../generated/prisma"
 import { ExtendedPrismaClient } from "../prisma"
 
 /** First exercise with the given `custom_id`, across all courses. */

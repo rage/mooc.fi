@@ -67,7 +67,7 @@ export function capitalizeFirstLetter(string: string) {
 export interface CreateAccountFormProps {
   onComplete: (...args: any[]) => any
   router: NextRouter
-  apollo: ApolloClient<object>
+  apollo: ApolloClient
 }
 
 const getSignUpTranslator = getTranslator(SignUpTranslations)
@@ -243,7 +243,7 @@ class CreateAccountForm extends Component<CreateAccountFormProps> {
           {t("signupTitle")}
         </Header>
         <Form onChange={this.validate}>
-          <StyledTypography component="p" paragraph>
+          <StyledTypography component="p" sx={{ marginBottom: "16px" }}>
             {t("formInfoText")}
           </StyledTypography>
           <Row>

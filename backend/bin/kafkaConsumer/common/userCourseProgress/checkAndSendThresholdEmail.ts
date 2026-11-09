@@ -1,8 +1,7 @@
-import { v4 as uuidv4 } from "uuid"
-
-import { Course, User } from "@prisma/client"
+import { randomUUID } from "crypto"
 
 import { BaseContext } from "../../../../context"
+import { Course, User } from "../../../../generated/prisma"
 import { CombinedUserCourseProgress } from "../userFunctions"
 
 interface CheckAndSendThresholdEmailArgs {
@@ -51,7 +50,7 @@ export const checkAndSendThresholdEmail = async ({
     if (!mailSent) {
       await context.prisma.emailDelivery.create({
         data: {
-          id: uuidv4(),
+          id: randomUUID(),
           created_at: new Date(),
           updated_at: new Date(),
           user_id: user.id,

@@ -1,7 +1,6 @@
-import { Course, Prisma } from "@prisma/client"
-
+import { Context } from "../context"
+import { Course, Prisma } from "../generated/prisma"
 import { isDefinedAndNotEmpty } from "./guards"
-import { Context } from "/context"
 
 export const getIds = (arr: any[], idField = "id") =>
   (arr || []).map((t) => t[idField])
@@ -27,33 +26,20 @@ type IdKeyType = "id" | `${string}_id`
 
 type PartialAndNullable<T> = { [P in keyof T]?: T[P] | null }
 
-type InferSelectType<Relation extends keyof Prisma.Prisma__CourseClient<any>> =
-  Prisma.Prisma__CourseClient<any>[Relation] extends (
-    args?: Prisma.Subset<infer T, infer Args> | undefined,
-  ) => any
-    ? Prisma.Prisma__CourseClient<any>[Relation] extends (
-        args?: Prisma.Subset<T, Args> | undefined,
-      ) => Prisma.CheckSelect<T, infer S, any>
-      ? S
-      : never
-    : never
+type CourseRelationPayloads = Prisma.$CoursePayload["objects"]
 
 // limit to relations of array type
 type CourseRelation = {
-  [Key in keyof Prisma.Prisma__CourseClient<any>]: InferSelectType<Key> extends infer S
-    ? S extends Promise<Array<any>>
-      ? Key
-      : never
-    : never
-}[keyof Prisma.Prisma__CourseClient<any>]
+  [
+    Key in keyof CourseRelationPayloads
+  ]: CourseRelationPayloads[Key] extends Array<any> ? Key : never
+}[keyof CourseRelationPayloads]
 
 // get relation type from relation name
 type CourseRelationType<Relation extends CourseRelation = CourseRelation> =
-  InferSelectType<Relation> extends infer S
-    ? S extends Promise<infer Type>
-      ? Type extends Array<infer ArrayType>
-        ? NonNullable<ArrayType>
-        : NonNullable<Type>
+  CourseRelationPayloads[Relation] extends Array<infer Payload>
+    ? Payload extends { scalars: infer Scalars }
+      ? Scalars
       : never
     : never
 
@@ -70,8 +56,8 @@ type CreateMutationReturn<Relation extends CourseRelation = CourseRelation> =
 
 type CreateMutationParams<
   Relation extends CourseRelation = CourseRelation,
-  RelationInstance extends
-    CourseRelationType<Relation> = CourseRelationType<Relation>,
+  RelationInstance extends CourseRelationType<Relation> =
+    CourseRelationType<Relation>,
   IdKey extends CourseRelationKey<Relation> = CourseRelationKey<Relation>,
 > = IdKey extends IdKeyType
   ? {
@@ -159,9 +145,9 @@ const isMutableRelationWithId = <
 type CourseRelationsFromMutableRelations<
   MutableRelations extends readonly MutableRelation[],
 > = {
-  [K in keyof MutableRelations]: MutableRelations[K] extends MutableRelationWithId<
-    infer Relation
-  >
+  [
+    K in keyof MutableRelations
+  ]: MutableRelations[K] extends MutableRelationWithId<infer Relation>
     ? Relation
     : MutableRelations[K]
 }[number] &
@@ -178,10 +164,10 @@ type DataType = PartialAndNullable<Course> & {
 export const createCourseMutations =
   (ctx: Context, slug: string) =>
   <
-    MutableRelations extends
-      readonly MutableRelation[] = readonly MutableRelation[],
-    Relations extends
-      CourseRelationsFromMutableRelations<MutableRelations> = CourseRelationsFromMutableRelations<MutableRelations>,
+    MutableRelations extends readonly MutableRelation[] =
+      readonly MutableRelation[],
+    Relations extends CourseRelationsFromMutableRelations<MutableRelations> =
+      CourseRelationsFromMutableRelations<MutableRelations>,
   >(
     relations: MutableRelations,
   ) =>
@@ -233,8 +219,8 @@ const hasId =
     id: IdKey,
   ) =>
   <
-    RelationInstance extends
-      CourseRelationType<Relation> = CourseRelationType<Relation>,
+    RelationInstance extends CourseRelationType<Relation> =
+      CourseRelationType<Relation>,
   >(
     data: any,
   ): data is RelationInstance & { [key in IdKey]: string | null } =>
@@ -248,8 +234,8 @@ const hasNotId =
     id: IdKey,
   ) =>
   <
-    RelationInstance extends
-      CourseRelationType<Relation> = CourseRelationType<Relation>,
+    RelationInstance extends CourseRelationType<Relation> =
+      CourseRelationType<Relation>,
   >(
     data: any,
   ): data is RelationInstance & { [key in IdKey]: undefined } =>

@@ -39,7 +39,7 @@ const CourseVariantEditForm = () => {
 
   return (
     <section>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <FormControl>
           <FormGroup>
             <FieldArray name="course_variants">
@@ -52,7 +52,7 @@ const CourseVariantEditForm = () => {
                         spacing={2}
                         key={variant.id ?? variant.slug}
                       >
-                        <Grid item xs={2}>
+                        <Grid size={2}>
                           <StyledFieldWithAnchor
                             id={`course_variants[${index}].slug`}
                             name={`course_variants[${index}].slug`}
@@ -62,11 +62,11 @@ const CourseVariantEditForm = () => {
                             label={t("courseSlug")}
                             error={getIn(errors, `[${index}].slug`)}
                             variant="outlined"
-                            InputLabelProps={inputLabelProps}
+                            slotProps={{ inputLabel: inputLabelProps }}
                             required
                           />
                         </Grid>
-                        <Grid item xs={10}>
+                        <Grid size={10}>
                           <StyledFieldWithAnchor
                             id={`course_variants[${index}].description`}
                             name={`course_variants[${index}].description`}
@@ -76,10 +76,10 @@ const CourseVariantEditForm = () => {
                             label={t("courseDescription")}
                             error={getIn(errors, `[${index}].description`)}
                             variant="outlined"
-                            InputLabelProps={inputLabelProps}
+                            slotProps={{ inputLabel: inputLabelProps }}
                           />
                         </Grid>
-                        <Grid item xs={10}>
+                        <Grid size={10}>
                           <StyledFieldWithAnchor
                             id={`course_variants[${index}].instructions`}
                             name={`course_variants[${index}].instructions`}
@@ -91,14 +91,16 @@ const CourseVariantEditForm = () => {
                             label={t("courseInstructions")}
                             error={getIn(errors, `[${index}].instructions`)}
                             variant="outlined"
-                            InputLabelProps={inputLabelProps}
+                            slotProps={{ inputLabel: inputLabelProps }}
                           />
                         </Grid>
-                        <Grid item xs={2}>
+                        <Grid size={2}>
                           <Grid
                             container
-                            justifyItems="flex-end"
-                            alignItems="center"
+                            sx={{
+                              justifyItems: "flex-end",
+                              alignItems: "center",
+                            }}
                           >
                             <StyledButton
                               style={{ margin: "auto" }}
@@ -114,11 +116,11 @@ const CourseVariantEditForm = () => {
                                     description: t("confirmationRemoveVariant"),
                                     confirmationText: t("confirmationYes"),
                                     cancellationText: t("confirmationNo"),
+                                  }).then(({ confirmed }) => {
+                                    if (confirmed) {
+                                      helpers.remove(index)
+                                    }
                                   })
-                                    .then(() => helpers.remove(index))
-                                    .catch(() => {
-                                      // ignore
-                                    })
                                 }
                               }}
                               endIcon={
@@ -144,7 +146,12 @@ const CourseVariantEditForm = () => {
                   {(values.length === 0 ||
                     (values.length > 0 &&
                       values[values.length - 1].slug !== "")) && (
-                    <Grid container justifyItems="center">
+                    <Grid
+                      container
+                      sx={{
+                        justifyItems: "center",
+                      }}
+                    >
                       <ButtonWithWhiteText
                         variant="contained"
                         color="primary"
