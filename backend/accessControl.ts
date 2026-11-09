@@ -83,17 +83,41 @@ export const isAdminOrCourseOwner =
     return await isCourseOwner(course_id)(root, args, ctx, info)
   }
 
+/**
+ * Passes when any predicate passes. Predicates run in order and the first pass
+ * stops evaluation; an `Error` result counts as a failure.
+ */
 export const or =
   (...predicates: AuthorizeFunction[]): AuthorizeFunction =>
-  (...params) =>
-    predicates.some((p) => p(...params))
+  async (...params) => {
+    for (const predicate of predicates) {
+      if ((await predicate(...params)) === true) {
+        return true
+      }
+    }
+    return false
+  }
 
+/**
+ * Passes when every predicate passes. Predicates run in order and the first
+ * failure stops evaluation; an `Error` result counts as a failure.
+ */
 export const and =
   (...predicates: AuthorizeFunction[]): AuthorizeFunction =>
-  (...params) =>
-    predicates.every((p) => p(...params))
+  async (...params) => {
+    for (const predicate of predicates) {
+      if ((await predicate(...params)) !== true) {
+        return false
+      }
+    }
+    return true
+  }
 
+/**
+ * Passes only when `fn` returns `false`; an `Error` result also fails, so a
+ * broken predicate never grants access.
+ */
 export const not =
   (fn: AuthorizeFunction): AuthorizeFunction =>
-  (...params) =>
-    !fn(...params)
+  async (...params) =>
+    (await fn(...params)) === false

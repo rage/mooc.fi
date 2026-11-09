@@ -11,7 +11,10 @@ export const Course = objectType({
     t.model.id()
     t.model.automatic_completions()
     t.model.completion_email_id()
-    t.model.completion_email()
+    t.model.completion_email({
+      authorize: (root, args, ctx, info) =>
+        isAdminOrCourseOwner(root.id)({}, args, ctx, info),
+    })
     t.model.completions_handled_by_id()
     t.model.completions_handled_by()
     t.model.course_translations()
@@ -60,7 +63,7 @@ export const Course = objectType({
     // t.model.user_course_service_progresses()
     // t.model.user_course_settings()
     t.model.user_course_settings_visibilities()
-    t.model.services()
+    t.model.services({ authorize: isAdmin })
     t.model.study_modules()
     t.model.automatic_completions_eligible_for_ects()
     t.model.upcoming_active_link()
@@ -68,7 +71,10 @@ export const Course = objectType({
     t.model.handles_completions_for()
     t.model.handles_settings_for()
     t.model.course_stats_email_id()
-    t.model.course_stats_email()
+    t.model.course_stats_email({
+      authorize: (root, args, ctx, info) =>
+        isAdminOrCourseOwner(root.id)({}, args, ctx, info),
+    })
     t.model.language()
 
     t.string("description")

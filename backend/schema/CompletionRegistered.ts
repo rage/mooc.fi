@@ -9,10 +9,10 @@ import {
   stringArg,
 } from "nexus"
 
-import { isAdmin, isOrganization, or } from "../accessControl"
+import { isAdmin, isOrganization, or, Role } from "../accessControl"
 import { Context } from "../context"
 import type { NexusGenInputs } from "../generated/nexus-typegen"
-import { GraphQLForbiddenError } from "../lib/errors"
+import { GraphQLForbiddenError, GraphQLUserInputError } from "../lib/errors"
 import { filterNullFields } from "../util"
 
 export const CompletionRegistered = objectType({
@@ -49,10 +49,19 @@ export const CompletionRegisteredQueries = extendType({
       },
       authorize: or(isOrganization, isAdmin),
       resolve: async (_, args, ctx) => {
-        const { course: slug, skip, take, cursor } = args
+        const { course: slug, skip, cursor } = args
+        const take = args.take ?? 50
 
-        if ((take ?? 0) > 50) {
-          throw new GraphQLForbiddenError("Cannot query more than 50 items")
+        if (take < 1 || take > 50) {
+          throw new GraphQLUserInputError("take must be between 1 and 50")
+        }
+
+        let where = {}
+        if (ctx.role !== Role.ADMIN) {
+          if (!ctx.organization) {
+            throw new GraphQLForbiddenError("organization required")
+          }
+          where = { organization_id: ctx.organization.id }
         }
 
         const queryParams = {
@@ -61,16 +70,21 @@ export const CompletionRegisteredQueries = extendType({
             take,
           }),
           ...(cursor?.id && { cursor: { id: cursor.id } }),
+          where,
         }
 
         if (slug) {
-          return ctx.prisma.course
-            .findUniqueOrAlias({
-              where: {
-                slug,
-              },
-            })
-            .completions_registered(queryParams)
+          const course = await ctx.prisma.course.findUniqueOrAlias({
+            where: { slug },
+            select: { id: true },
+          })
+          if (!course) {
+            return []
+          }
+          return ctx.prisma.completionRegistered.findMany({
+            ...queryParams,
+            where: { ...where, course_id: course.id },
+          })
         }
 
         return ctx.prisma.completionRegistered.findMany(queryParams)

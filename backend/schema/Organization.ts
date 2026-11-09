@@ -45,7 +45,9 @@ export const Organization = objectType({
     t.model.verified_at()
     t.model.website()
     t.model.creator_id()
-    t.model.creator()
+    t.model.creator({
+      authorize: or(isAdmin, isSameOrganization),
+    })
     t.model.completions_registered({
       authorize: or(isAdmin, isSameOrganization),
     })

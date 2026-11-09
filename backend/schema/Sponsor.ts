@@ -10,6 +10,7 @@ import {
   stringArg,
 } from "nexus"
 
+import { isAdmin } from "../accessControl"
 import { isDefined } from "../util"
 import { filterNull } from "../util/db-functions"
 
@@ -160,6 +161,7 @@ export const SponsorMutations = extendType({
     t.field("createSponsor", {
       type: "Sponsor",
       args: { data: nonNull(arg({ type: "SponsorCreateInput" })) },
+      authorize: isAdmin,
       resolve: async (_, { data: { translations, images, ...rest } }, ctx) => {
         return ctx.prisma.sponsor.create({
           data: {
@@ -181,6 +183,7 @@ export const SponsorMutations = extendType({
         id: nonNull(stringArg()),
         data: nonNull(arg({ type: "SponsorUpsertInput" })),
       },
+      authorize: isAdmin,
       resolve: async (
         _,
         { id, data: { translations, images, ...rest } },

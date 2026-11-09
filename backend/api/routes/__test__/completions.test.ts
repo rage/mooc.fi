@@ -68,6 +68,21 @@ describe("API", () => {
         })
     })
 
+    it("errors on disabled organization", async () => {
+      await ctx.prisma.organization.update({
+        where: { secret_key: "kissa" },
+        data: { disabled: true },
+      })
+
+      return getCompletions("course1")({
+        headers: { Authorization: "Basic kissa" },
+      })
+        .then(() => fail())
+        .catch(({ response }) => {
+          expect(response.status).toBe(401)
+        })
+    })
+
     it("errors on non-existent course", async () => {
       return getCompletions("bogus")({
         headers: { Authorization: "Basic kissa" },
@@ -260,6 +275,56 @@ describe("API", () => {
             updated_at: expect.any(Date),
           },
         ],
+      })
+    })
+  })
+
+  describe("/api/completions/:courseId/csv/token", () => {
+    setupTMCWithDefaultFakeUsers()
+
+    const ownedCourseId = "00000000000000000000000000000001"
+    let getToken: RequestGet
+
+    beforeEach(async () => {
+      await seed(ctx.prisma)
+      const { get } = createRequestHelpers(ctx.port)
+      getToken = get(`/api/completions/${ownedCourseId}/csv/token`, {})
+    })
+
+    it("gives a token to the course owner", async () => {
+      const res = await getToken({
+        headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+      })
+
+      expect(res.data.token).toEqual(expect.any(String))
+    })
+
+    describe("when completions are handled by an unowned course", () => {
+      beforeEach(async () => {
+        await ctx.prisma.course.update({
+          where: { id: ownedCourseId },
+          data: {
+            completions_handled_by: {
+              connect: { id: "00000000000000000000000000000002" },
+            },
+          },
+        })
+      })
+
+      it("refuses the course owner", async () => {
+        return getToken({ headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS })
+          .then(() => fail())
+          .catch(({ response }) => {
+            expect(response.status).toBe(401)
+          })
+      })
+
+      it("gives a token to an admin", async () => {
+        const res = await getToken({
+          headers: FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+        })
+
+        expect(res.data.token).toEqual(expect.any(String))
       })
     })
   })

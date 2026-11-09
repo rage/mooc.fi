@@ -140,6 +140,18 @@ export class CompletionController extends Controller {
       return res.status(404).json({ message: "Course not found" })
     }
 
+    // The export lists the handling course's completions.
+    if (course.completions_handled_by_id) {
+      const handlerAuthRes = await requireAdminOrCourseOwner(
+        course.completions_handled_by_id,
+        this.ctx,
+      )(req, res)
+
+      if (handlerAuthRes.isErr()) {
+        return handlerAuthRes.error
+      }
+    }
+
     // Generate a signed JWT token valid for 30 seconds
     const payload: DownloadTokenPayload = {
       courseId,

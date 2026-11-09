@@ -214,7 +214,7 @@ export function getOrganization({ knex }: BaseContext) {
         .limit(1)
     )[0]
 
-    if (!org) {
+    if (!org || org.disabled) {
       return err(res.status(401).json({ message: "Access denied." }))
     }
 
