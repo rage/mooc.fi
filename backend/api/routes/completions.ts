@@ -16,7 +16,7 @@ import {
 } from "../../generated/prisma"
 import { err, isDefined } from "../../util"
 import { ApiContext, Controller } from "../types"
-import { requireAdminOrCourseOwner } from "../utils"
+import { ownsCourse, requireAdminOrCourseOwner } from "../utils"
 
 const languageMap: Record<string, string> = {
   en: "en_US",
@@ -140,20 +140,14 @@ export class CompletionController extends Controller {
       return res.status(404).json({ message: "Course not found" })
     }
 
-    // The export lists the handling course's completions.
+    // The export lists the handling course's completions, so non-admins must own it.
     const { user, details } = authRes.value
-    if (course.completions_handled_by_id && !details.administrator) {
-      const handlerOwnership = await this.ctx.prisma.courseOwnership.findFirst({
-        where: {
-          user_id: user.id,
-          course_id: course.completions_handled_by_id,
-        },
-        select: { id: true },
-      })
-
-      if (!handlerOwnership) {
-        return res.status(401).json({ message: "unauthorized" })
-      }
+    if (
+      course.completions_handled_by_id &&
+      !details.administrator &&
+      !(await ownsCourse(this.ctx, user.id, course.completions_handled_by_id))
+    ) {
+      return res.status(401).json({ message: "unauthorized" })
     }
 
     // Generate a signed JWT token valid for 30 seconds

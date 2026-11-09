@@ -2,6 +2,7 @@ import parseJSON from "json-parse-even-better-errors"
 import { Message as KafkaMessage } from "node-rdkafka"
 import * as yup from "yup"
 
+import { userIdSchema } from "../validate"
 import { Message } from "./interfaces"
 
 const CURRENT_MESSAGE_FORMAT_VERSION = 1
@@ -26,7 +27,7 @@ export const MessageYupSchema = yup.object().shape({
   timestamp: yup.date().required(),
   course_id: yup.string().length(36).required(),
   service_id: yup.string().length(36).required(),
-  user_id: yup.number().integer().positive(),
+  user_id: userIdSchema,
   progress: yup.array().of(PointsByGroupYupSchema).required(),
   message_format_version: yup
     .number()

@@ -180,3 +180,91 @@ describe("organization lookup", () => {
     ).toEqual([{ display_name: "Verified" }])
   })
 })
+
+describe("join_organization_email_template", () => {
+  setupTMCWithDefaultFakeUsers()
+
+  const joinEmailTemplateQuery = gql`
+    {
+      organization(slug: "test") {
+        join_organization_email_template {
+          title
+        }
+      }
+    }
+  `
+
+  beforeEach(async () => {
+    await seed(ctx.prisma)
+  })
+
+  it("refuses anonymous callers", async () => {
+    await expect(ctx.client.request(joinEmailTemplateQuery)).rejects.toThrow(
+      /Not authorized/,
+    )
+  })
+
+  it("lets admins read it", async () => {
+    const res = await ctx.client.request<any>(
+      joinEmailTemplateQuery,
+      {},
+      FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+    )
+
+    expect(res.organization.join_organization_email_template).toEqual({
+      title: "organization join email",
+    })
+  })
+})
+
+describe("addVerifiedUser", () => {
+  setupTMCWithDefaultFakeUsers()
+
+  const addVerifiedUserMutation = gql`
+    mutation AddVerifiedUser($organization_id: ID!, $secret: String!) {
+      addVerifiedUser(
+        verified_user: {
+          personal_unique_code: "puc"
+          organization_id: $organization_id
+          organization_secret: $secret
+        }
+      ) {
+        personal_unique_code
+      }
+    }
+  `
+
+  const addVerifiedUser = (secret: string) =>
+    ctx.client.request<any>(
+      addVerifiedUserMutation,
+      { organization_id: "10000000000000000000000000000102", secret },
+      FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+    )
+
+  beforeEach(async () => {
+    await seed(ctx.prisma)
+  })
+
+  it("accepts the organization's secret", async () => {
+    const res = await addVerifiedUser("kissa")
+
+    expect(res.addVerifiedUser).toEqual({ personal_unique_code: "puc" })
+  })
+
+  it("refuses a wrong secret", async () => {
+    await expect(addVerifiedUser("koira")).rejects.toThrow(
+      /wrong organization secret key/,
+    )
+  })
+
+  it("refuses a disabled organization's secret", async () => {
+    await ctx.prisma.organization.update({
+      where: { id: "10000000000000000000000000000102" },
+      data: { disabled: true },
+    })
+
+    await expect(addVerifiedUser("kissa")).rejects.toThrow(
+      /wrong organization secret key/,
+    )
+  })
+})

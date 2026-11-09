@@ -45,6 +45,7 @@ import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useTranslator } from "/hooks/useTranslator"
+import { escapeHtml } from "/lib/escapeHtml"
 import withSignedIn from "/lib/with-signed-in"
 import RegisterCompletionTranslations from "/translations/register-completion"
 import { getCookie } from "/util/cookie"
@@ -445,7 +446,9 @@ function RegisterCompletionPage() {
             <AccordionDetails>
               <Prose
                 dangerouslySetInnerHTML={{
-                  __html: t("emailChangedBody", { email: completion.email }),
+                  __html: t("emailChangedBody", {
+                    email: escapeHtml(completion.email),
+                  }),
                 }}
               />
             </AccordionDetails>

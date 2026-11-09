@@ -107,6 +107,7 @@ export const assertJoinConfirmationOptions = ({
   if (language != null && !LANGUAGE_PATTERN.test(language)) {
     throw new GraphQLUserInputError("invalid language", "language")
   }
+  // Keep in sync with isSafeRedirectPath in frontend/lib/redirectBack.ts.
   if (
     redirect != null &&
     (!/^\/(?![/\\])/.test(redirect) || CONTROL_CHARACTER_PATTERN.test(redirect))

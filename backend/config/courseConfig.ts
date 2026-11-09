@@ -61,6 +61,7 @@ export const BAItiers: Record<string, string> = byTier((tierName, tier) => [
 
 export const BAITierCourses = Object.values(BAItiers)
 
+/** Id of the Building AI course that the tier courses belong to. */
 export const BAIParentCourse = bai.parentCourseId
 
 export const BAITierNames: Record<string, string> = {
@@ -75,7 +76,9 @@ export const BAITierNameToNumber: Record<string, number> = {
   advanced: 3,
 }
 
+/** Number of Building AI exercises per tier, including the final task. */
 export const BAIExerciseCount = bai.exercises.length + 1
+
 export const requiredByTestTier: Record<string, number> = {
   "1": 2,
   "2": 1,

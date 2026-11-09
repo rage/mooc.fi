@@ -1,9 +1,17 @@
 import { booleanArg, intArg, list, nonNull, objectType, stringArg } from "nexus"
+import { FieldAuthorizeResolver } from "nexus/dist/plugins/fieldAuthorizePlugin"
 
 import { isAdmin, isAdminOrCourseOwner } from "../../accessControl"
 import { Prisma } from "../../generated/prisma"
 import { GraphQLForbiddenError, GraphQLUserInputError } from "../../lib/errors"
 import { filterNullFields } from "../../util"
+
+const isAdminOrRootCourseOwner: FieldAuthorizeResolver<"Course", any> = (
+  root,
+  args,
+  ctx,
+  info,
+) => isAdminOrCourseOwner(root.id)({}, args, ctx, info)
 
 export const Course = objectType({
   name: "Course",
@@ -12,8 +20,7 @@ export const Course = objectType({
     t.model.automatic_completions()
     t.model.completion_email_id()
     t.model.completion_email({
-      authorize: (root, args, ctx, info) =>
-        isAdminOrCourseOwner(root.id)({}, args, ctx, info),
+      authorize: isAdminOrRootCourseOwner,
     })
     t.model.completions_handled_by_id()
     t.model.completions_handled_by()
@@ -72,8 +79,7 @@ export const Course = objectType({
     t.model.handles_settings_for()
     t.model.course_stats_email_id()
     t.model.course_stats_email({
-      authorize: (root, args, ctx, info) =>
-        isAdminOrCourseOwner(root.id)({}, args, ctx, info),
+      authorize: isAdminOrRootCourseOwner,
     })
     t.model.language()
 
@@ -87,9 +93,7 @@ export const Course = objectType({
         user_id: stringArg(),
         user_upstream_id: intArg(),
       },
-      authorize: async (parent, args, ctx, info) => {
-        return await isAdminOrCourseOwner(parent.id)({}, args, ctx, info)
-      },
+      authorize: isAdminOrRootCourseOwner,
       validate: (_, { user_id, user_upstream_id }) => {
         if (!user_id && !user_upstream_id) {
           throw new GraphQLUserInputError("needs user_id or user_upstream_id", [

@@ -2,6 +2,7 @@ import { FieldAuthorizeResolver } from "nexus/dist/plugins/fieldAuthorizePlugin"
 
 import { Context } from "./context"
 import { Organization, User } from "./generated/prisma"
+import { normalizeUuid } from "./util/uuid"
 
 export enum Role {
   VISITOR = 0,
@@ -56,9 +57,6 @@ export const isSameOrganization: FieldAuthorizeResolver<
 // Course fields check ownership per row, so a list of courses would otherwise
 // query once per course.
 const ownedCourseIdsByContext = new WeakMap<Context, Promise<Set<string>>>()
-
-// Callers may pass ids from client args, which Postgres accepts unhyphenated.
-const normalizeUuid = (id: string) => id.replaceAll("-", "").toLowerCase()
 
 const getOwnedCourseIds = (ctx: Context, userId: string) => {
   let ownedCourseIds = ownedCourseIdsByContext.get(ctx)

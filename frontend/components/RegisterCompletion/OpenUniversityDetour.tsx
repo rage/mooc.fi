@@ -14,6 +14,7 @@ import {
   QuestionText,
 } from "./styles"
 import { useTranslator } from "/hooks/useTranslator"
+import { escapeHtml } from "/lib/escapeHtml"
 import RegisterCompletionTranslations from "/translations/register-completion"
 
 import {
@@ -133,14 +134,14 @@ function OpenUniversityDetour({
           <Prose
             dangerouslySetInnerHTML={{
               __html: t("identificationEidasExplanation", {
-                url: EIDAS_IDENTIFICATION_URL,
+                url: escapeHtml(EIDAS_IDENTIFICATION_URL),
               }),
             }}
           />
           <Prose
             dangerouslySetInnerHTML={{
               __html: t("identificationOtherSuomiFiExplanation", {
-                url: SUOMI_FI_IDENTIFICATION_URL,
+                url: escapeHtml(SUOMI_FI_IDENTIFICATION_URL),
               }),
             }}
           />

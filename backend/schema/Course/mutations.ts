@@ -22,6 +22,7 @@ import {
   createCourseMutations,
   getIds,
 } from "../../util/courseMutationHelpers"
+import { normalizeUuid } from "../../util/uuid"
 import { deleteImage, uploadImage } from "../Image"
 
 // @ts-ignore: not used for now
@@ -416,9 +417,33 @@ async function updatePossibleNewPhoto(
   return newImage.id
 }
 
-// Clients may send uuids without dashes.
 const normalizeId = (id: string | null | undefined) =>
-  id ? id.replace(/-/g, "").toLowerCase() : null
+  id ? normalizeUuid(id) : null
+
+// Empty course links disconnect; an empty email id or photo is left as is.
+const courseLinkRules = [
+  {
+    field: "completions_handled_by",
+    existingField: "completions_handled_by_id",
+    emptyDisconnects: true,
+  },
+  {
+    field: "inherit_settings_from",
+    existingField: "inherit_settings_from_id",
+    emptyDisconnects: true,
+  },
+  {
+    field: "completion_email_id",
+    existingField: "completion_email_id",
+    emptyDisconnects: false,
+  },
+  {
+    field: "course_stats_email_id",
+    existingField: "course_stats_email_id",
+    emptyDisconnects: false,
+  },
+  { field: "photo", existingField: "photo_id", emptyDisconnects: false },
+] as const
 
 /**
  * Rejects a non-admin update that would link the course to another course,
@@ -431,26 +456,15 @@ function assertCourseLinksUnchanged(
   course: NexusGenInputs["CourseUpsertArg"],
   existingCourse: Course,
 ) {
-  // Empty course links disconnect, empty email ids and photo leave the value as is.
-  const changedFields = [
-    normalizeId(course.completions_handled_by) !==
-      normalizeId(existingCourse.completions_handled_by_id) &&
-      "completions_handled_by",
-    normalizeId(course.inherit_settings_from) !==
-      normalizeId(existingCourse.inherit_settings_from_id) &&
-      "inherit_settings_from",
-    course.completion_email_id &&
-      normalizeId(course.completion_email_id) !==
-        normalizeId(existingCourse.completion_email_id) &&
-      "completion_email_id",
-    course.course_stats_email_id &&
-      normalizeId(course.course_stats_email_id) !==
-        normalizeId(existingCourse.course_stats_email_id) &&
-      "course_stats_email_id",
-    course.photo &&
-      normalizeId(course.photo) !== normalizeId(existingCourse.photo_id) &&
-      "photo",
-  ].filter(Boolean)
+  const changedFields = courseLinkRules
+    .filter(({ field, existingField, emptyDisconnects }) => {
+      const requested = course[field]
+      return (
+        (emptyDisconnects || requested) &&
+        normalizeId(requested) !== normalizeId(existingCourse[existingField])
+      )
+    })
+    .map(({ field }) => field)
 
   if (changedFields.length > 0) {
     throw new GraphQLForbiddenError(
@@ -486,8 +500,27 @@ async function assertNoCourseCodeCollisions(
   if (aliasCodes.length === 0) {
     return
   }
+  // Existing aliases may already collide; the editor resends them on
+  // every save, so only aliases new to this course are checked.
+  const existingAliasCodes = new Set(
+    (
+      await ctx.prisma.courseAlias.findMany({
+        where: {
+          course_id: existingCourse.id,
+          course_code: { in: aliasCodes },
+        },
+        select: { course_code: true },
+      })
+    ).map((alias) => alias.course_code),
+  )
+  const newAliasCodes = aliasCodes.filter(
+    (code) => !existingAliasCodes.has(code),
+  )
+  if (newAliasCodes.length === 0) {
+    return
+  }
   const collidingCourse = await ctx.prisma.course.findFirst({
-    where: { slug: { in: aliasCodes }, id: { not: existingCourse.id } },
+    where: { slug: { in: newAliasCodes }, id: { not: existingCourse.id } },
     select: { slug: true },
   })
   if (collidingCourse) {

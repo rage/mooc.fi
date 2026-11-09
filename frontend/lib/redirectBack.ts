@@ -4,6 +4,8 @@
  * Accepts only root-relative paths. `//host` and `/\host` are rejected because browsers
  * treat them as protocol-relative, and control characters because the URL parser strips
  * tabs and newlines, which would turn `/\t/host` into `//host`.
+ * Keep in sync with `assertJoinConfirmationOptions` in
+ * backend/schema/UserOrganization/helpers.ts.
  */
 export const isSafeRedirectPath = (url: unknown): url is string =>
   typeof url === "string" &&

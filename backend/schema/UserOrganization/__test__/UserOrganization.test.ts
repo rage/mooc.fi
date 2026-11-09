@@ -637,6 +637,44 @@ describe("UserOrganization", () => {
           })
         })
 
+        it("keeps a membership with a wrong code from being deleted and rejoined", async () => {
+          await guessWrong(1)
+
+          await expect(
+            ctx.client.request(
+              deleteUserOrganizationMutation,
+              { id: USER_ORGANIZATION_ID },
+              FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+            ),
+          ).rejects.toMatchObject({
+            response: {
+              errors: [
+                {
+                  message:
+                    "a membership with wrong activation codes can't be deleted before it is confirmed",
+                },
+              ],
+            },
+          })
+          expect(await getFailedAttempts()).toBe(1)
+        })
+
+        it("lets an admin delete a membership with wrong codes", async () => {
+          await guessWrong(1)
+
+          await ctx.client.request(
+            deleteUserOrganizationMutation,
+            { id: USER_ORGANIZATION_ID },
+            FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+          )
+
+          expect(
+            await ctx.prisma.userOrganization.findUnique({
+              where: { id: USER_ORGANIZATION_ID },
+            }),
+          ).toBeNull()
+        })
+
         it("accepts the right code after fewer than 5 wrong ones", async () => {
           await guessWrong(4)
 

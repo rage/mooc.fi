@@ -19,6 +19,7 @@ export const UserMutations = extendType({
         first_name: stringArg(),
         last_name: stringArg(),
       },
+      authorize: or(isUser, isAdmin),
       resolve: async (_, { first_name, last_name }, ctx: Context) => {
         const { user: currentUser } = ctx
         const authorization = ctx?.req?.headers?.authorization
@@ -47,6 +48,7 @@ export const UserMutations = extendType({
       args: {
         value: nonNull(booleanArg()),
       },
+      authorize: or(isUser, isAdmin),
       resolve: async (_, { value }, ctx: Context) => {
         const { user: currentUser } = ctx
         const authorization = ctx?.req?.headers?.authorization

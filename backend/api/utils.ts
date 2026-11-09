@@ -2,8 +2,9 @@ import { Request, Response } from "express"
 
 import { BaseContext } from "../context"
 import { UserInfo } from "../domain/UserInfo"
-import { CourseOwnership, Organization, User } from "../generated/prisma"
+import { Organization, User } from "../generated/prisma"
 import { getUserDetailsForToken } from "../services/userDetails"
+import { findActiveOrganizationBySecret } from "../util/organization"
 import { err, ok, Result } from "../util/result"
 
 interface GetUserReturn {
@@ -23,30 +24,20 @@ export function requireCourseOwnership({
   return async function (
     req: Request,
     res: Response,
-  ): Promise<Result<CourseOwnership, Response>> {
+  ): Promise<Result<true, Response>> {
     const getUserResult = await getUser(ctx)(req, res)
 
     if (getUserResult.isErr()) {
       return err(getUserResult.error)
     }
 
-    const { user } = getUserResult.value
-    const ownership = (
-      await ctx.knex
-        .select<any, CourseOwnership[]>("*")
-        .from("course_ownership")
-        .where("course_id", course_id)
-        .andWhere("user_id", user.id)
-        .limit(1)
-    )?.[0]
-
-    if (!ownership) {
+    if (!(await ownsCourse(ctx, getUserResult.value.user.id, course_id))) {
       return err(
         res.status(401).json({ message: "no ownership for this course" }),
       )
     }
 
-    return ok(ownership)
+    return ok(true)
   }
 }
 
@@ -90,20 +81,31 @@ export function requireAdminOrCourseOwner(courseId: string, ctx: BaseContext) {
       return ok(getUserResult.value)
     }
 
-    // Check if user has course ownership for this course
-    const ownership = await ctx.knex
-      .select("id")
-      .from("course_ownership")
-      .where("user_id", user.id)
-      .andWhere("course_id", courseId)
-      .first()
-
-    if (ownership) {
+    if (await ownsCourse(ctx, user.id, courseId)) {
       return ok(getUserResult.value)
     }
 
     return err(res.status(401).json({ message: "unauthorized" }))
   }
+}
+
+/**
+ * Whether the user owns the course. Admins are not owners by default; see
+ * `requireAdminOrCourseOwner`.
+ */
+export async function ownsCourse(
+  ctx: BaseContext,
+  userId: string,
+  courseId: string,
+): Promise<boolean> {
+  const ownership = await ctx.knex
+    .select("id")
+    .from("course_ownership")
+    .where("user_id", userId)
+    .andWhere("course_id", courseId)
+    .first()
+
+  return Boolean(ownership)
 }
 
 interface UserLookupError {
@@ -191,7 +193,7 @@ export function getUser(ctx: BaseContext) {
   }
 }
 
-export function getOrganization({ knex }: BaseContext) {
+export function getOrganization({ prisma }: BaseContext) {
   return async function (
     req: Request,
     res: Response,
@@ -210,15 +212,9 @@ export function getOrganization({ knex }: BaseContext) {
       )
     }
 
-    const org = (
-      await knex
-        .select<any, Organization[]>("*")
-        .from("organization")
-        .where({ secret_key })
-        .limit(1)
-    )[0]
+    const org = await findActiveOrganizationBySecret(prisma, secret_key)
 
-    if (!org || org.disabled) {
+    if (!org) {
       return err(res.status(401).json({ message: "Access denied." }))
     }
 

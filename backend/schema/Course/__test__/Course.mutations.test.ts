@@ -788,6 +788,38 @@ describe("Course", () => {
         expect(alias.course_id).toEqual("00000000-0000-0000-0000-000000000001")
       })
 
+      it("keeps accepting an existing alias that is another course's slug", async () => {
+        await ctx.prisma.courseAlias.create({
+          data: {
+            id: "67000000-0000-0000-0000-000000000101",
+            course_code: "course2",
+            course: { connect: { slug: "course1" } },
+          },
+        })
+        const existingAliases = [
+          { id: "67000000-0000-0000-0000-000000000001", course_code: "alias" },
+          {
+            id: "67000000-0000-0000-0000-000000000101",
+            course_code: "course2",
+          },
+        ]
+
+        await ctx.client.request(
+          updateLinksMutation,
+          { course: { ...getCourse1(), course_aliases: existingAliases } },
+          FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+        )
+
+        const errors = await requestErrors(
+          {
+            ...getCourse1(),
+            course_aliases: [...existingAliases, { course_code: "handler" }],
+          },
+          FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+        )
+        expect(errors).toEqual([expect.stringContaining("handler")])
+      })
+
       it("accepts an alias equal to the course's own slug", async () => {
         await ctx.client.request(
           updateLinksMutation,

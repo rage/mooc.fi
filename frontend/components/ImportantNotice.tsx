@@ -4,6 +4,7 @@ import { SvgIcon, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import { useTranslator } from "/hooks/useTranslator"
+import { escapeHtml } from "/lib/escapeHtml"
 import RegisterCompletionTranslations from "/translations/register-completion"
 
 const NoticeContainer = styled("div")`
@@ -75,7 +76,7 @@ function ImportantNotice({
     <Notice>
       <EmailNoticeText
         dangerouslySetInnerHTML={{
-          __html: t(translationKey, { email }),
+          __html: t(translationKey, { email: escapeHtml(email) }),
         }}
       />
     </Notice>

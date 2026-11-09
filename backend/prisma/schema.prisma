@@ -581,7 +581,7 @@ model UserOrganization {
   user_id                              String?                            @db.Uuid
   organization_id                      String?                            @db.Uuid
   consented                            Boolean?                           @default(false)
-  /// Activation code guesses across all of this membership's join confirmations, reset on confirmation; at MAX_ACTIVATION_ATTEMPTS no code is accepted or issued until an admin resets it to 0
+  /// Wrong activation codes across all of this membership's join confirmations, reset on confirmation; at MAX_ACTIVATION_ATTEMPTS the membership is locked until an admin resets it
   activation_failed_attempts           Int                                @default(0)
   created_at                           DateTime                           @default(now())
   updated_at                           DateTime                           @default(now()) @updatedAt

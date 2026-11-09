@@ -12,7 +12,7 @@ import {
 } from "../../lib/errors"
 import {
   filterNullFields,
-  isActivationCodeMatch,
+  isSecretMatch,
   MAX_ACTIVATION_ATTEMPTS,
 } from "../../util"
 import {
@@ -32,6 +32,8 @@ import {
   joinUserOrganization,
   TooManyActivationAttemptsError,
 } from "./helpers"
+
+const CONFIRMATION_EXPIRED_MESSAGE = "confirmation link has expired"
 
 export const UserOrganizationMutations = extendType({
   type: "Mutation",
@@ -212,18 +214,8 @@ export const UserOrganizationMutations = extendType({
 
         const currentDate = new Date()
 
-        const expireConfirmation = async () => {
-          await ctx.prisma.userOrganizationJoinConfirmation.update({
-            where: { id },
-            data: {
-              expired: { set: true },
-            },
-          })
-          return new GraphQLForbiddenError("confirmation link has expired")
-        }
-
         if (userOrganizationJoinConfirmation.expired) {
-          throw new GraphQLForbiddenError("confirmation link has expired")
+          throw new GraphQLForbiddenError(CONFIRMATION_EXPIRED_MESSAGE)
         }
 
         if (
@@ -231,7 +223,13 @@ export const UserOrganizationMutations = extendType({
             userOrganizationJoinConfirmation.expires_at < currentDate) ||
           !userOrganizationJoinConfirmation.activation_code
         ) {
-          throw await expireConfirmation()
+          await ctx.prisma.userOrganizationJoinConfirmation.update({
+            where: { id },
+            data: {
+              expired: { set: true },
+            },
+          })
+          throw new GraphQLForbiddenError(CONFIRMATION_EXPIRED_MESSAGE)
         }
 
         // Counting the attempt atomically before comparing keeps concurrent
@@ -254,10 +252,7 @@ export const UserOrganizationMutations = extendType({
         }
 
         if (
-          !isActivationCodeMatch(
-            userOrganizationJoinConfirmation.activation_code,
-            code,
-          )
+          !isSecretMatch(userOrganizationJoinConfirmation.activation_code, code)
         ) {
           throw new GraphQLForbiddenError("invalid activation code")
         }
@@ -630,10 +625,16 @@ export const UserOrganizationMutations = extendType({
           throw new GraphQLUserInputError("no user organization found", "id")
         }
 
-        // Deleting would drop the attempt count and let the user re-join with
-        // a fresh code.
-        if (ctx.role !== Role.ADMIN && !userOrganization.confirmed) {
+        // Re-joining would start a fresh attempt count.
+        if (
+          ctx.role !== Role.ADMIN &&
+          !userOrganization.confirmed &&
+          userOrganization.activation_failed_attempts > 0
+        ) {
           assertActivationAttemptsLeft(userOrganization)
+          throw new GraphQLForbiddenError(
+            "a membership with wrong activation codes can't be deleted before it is confirmed",
+          )
         }
 
         const { user_id, organization_id, organization } = userOrganization
