@@ -15,15 +15,12 @@ import {
   Optional,
 } from "./guards"
 
-// Search strings come from clients; name combinations grow quadratically.
+// Search strings come from clients, and the name combinations built from them
+// grow quadratically with the input length.
 const MAX_SEARCH_LENGTH = 100
-const MAX_NAME_SEARCH_WORDS = 5
 
 const getNameCombinations = (search: string) => {
   const parts = search.match(/[^\s\n]+/g) ?? []
-  if (parts.length > MAX_NAME_SEARCH_WORDS) {
-    return []
-  }
   const combinations = []
   for (let i = 1; i < parts.length; i++) {
     combinations.push({

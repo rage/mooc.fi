@@ -73,7 +73,7 @@ const setContextOrganization = async (
   const org = await ctx.prisma.organization.findUnique({
     where: { secret_key: secret },
   })
-  if (!org) {
+  if (!org || org.disabled) {
     throw new GraphQLAuthenticationError("Please log in.")
   }
 

@@ -532,43 +532,58 @@ describe("UserOrganization", () => {
 
       describe("attempt limit", () => {
         const ACTIVATION_CODE = "123456"
+        const USER_ORGANIZATION_ID = "96900000-0000-0000-0000-000000000101"
+        const LOCKED_MESSAGE =
+          "too many wrong activation codes; an administrator has to unlock this membership"
 
         beforeEach(async () => {
+          await createUnconfirmedUserOrganization()
           await ctx.prisma.userOrganizationJoinConfirmation.update({
             where: { id: CONFIRMATION_ID },
             data: {
-              confirmed: { set: false },
               expired: { set: false },
               expires_at: "2100-01-01T10:00:00.00+02:00",
               activation_code: ACTIVATION_CODE,
-              activation_attempts: 0,
-              user_organization: {
-                update: { confirmed: { set: false } },
-              },
             },
           })
         })
 
-        const confirm = (code: string) =>
+        const confirm = (code: string, id = CONFIRMATION_ID) =>
           ctx.client.request(
             confirmUserOrganizationJoinMutation,
-            { id: CONFIRMATION_ID, code },
+            { id, code },
             FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
           )
 
-        it("locks the confirmation after 5 wrong codes", async () => {
-          for (let i = 0; i < 5; i++) {
-            await expect(confirm("000000")).rejects.toMatchObject({
+        const guessWrong = async (times: number, id = CONFIRMATION_ID) => {
+          for (let i = 0; i < times; i++) {
+            await expect(confirm("000000", id)).rejects.toMatchObject({
               response: {
                 errors: [{ message: "invalid activation code" }],
               },
             })
           }
+        }
+
+        const requestNewConfirmation = () =>
+          ctx.client.request<any>(
+            requestNewUserOrganizationJoinConfirmationMutation,
+            { id: USER_ORGANIZATION_ID },
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+          )
+
+        const getFailedAttempts = async () =>
+          (
+            await ctx.prisma.userOrganization.findUniqueOrThrow({
+              where: { id: USER_ORGANIZATION_ID },
+            })
+          ).activation_failed_attempts
+
+        it("locks the membership after 5 wrong codes", async () => {
+          await guessWrong(5)
 
           await expect(confirm(ACTIVATION_CODE)).rejects.toMatchObject({
-            response: {
-              errors: [{ message: "confirmation link has expired" }],
-            },
+            response: { errors: [{ message: LOCKED_MESSAGE }] },
           })
 
           const confirmation =
@@ -578,15 +593,52 @@ describe("UserOrganization", () => {
                 include: { user_organization: true },
               },
             )
-          expect(confirmation.expired).toBe(true)
           expect(confirmation.confirmed).toBe(false)
           expect(confirmation.user_organization.confirmed).toBe(false)
+          expect(
+            confirmation.user_organization.activation_failed_attempts,
+          ).toBe(5)
+        })
+
+        it("counts wrong codes across confirmations", async () => {
+          await guessWrong(3)
+
+          const newConfirmationId = (await requestNewConfirmation())
+            .requestNewUserOrganizationJoinConfirmation.id
+          const { activation_code: newActivationCode } =
+            await ctx.prisma.userOrganizationJoinConfirmation.findUniqueOrThrow(
+              { where: { id: newConfirmationId } },
+            )
+
+          await guessWrong(2, newConfirmationId)
+
+          await expect(
+            confirm(newActivationCode!, newConfirmationId),
+          ).rejects.toMatchObject({
+            response: { errors: [{ message: LOCKED_MESSAGE }] },
+          })
+          await expect(requestNewConfirmation()).rejects.toMatchObject({
+            response: { errors: [{ message: LOCKED_MESSAGE }] },
+          })
+          expect(await getFailedAttempts()).toBe(5)
+        })
+
+        it("keeps a locked membership from being deleted and rejoined", async () => {
+          await guessWrong(5)
+
+          await expect(
+            ctx.client.request(
+              deleteUserOrganizationMutation,
+              { id: USER_ORGANIZATION_ID },
+              FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+            ),
+          ).rejects.toMatchObject({
+            response: { errors: [{ message: LOCKED_MESSAGE }] },
+          })
         })
 
         it("accepts the right code after fewer than 5 wrong ones", async () => {
-          for (let i = 0; i < 4; i++) {
-            await expect(confirm("000000")).rejects.toBeDefined()
-          }
+          await guessWrong(4)
 
           await confirm(ACTIVATION_CODE)
 
@@ -595,6 +647,7 @@ describe("UserOrganization", () => {
               { where: { id: CONFIRMATION_ID } },
             )
           expect(confirmation.confirmed).toBe(true)
+          expect(await getFailedAttempts()).toBe(0)
         })
 
         it("counts aliased guesses in one request against the limit", async () => {
@@ -613,15 +666,9 @@ describe("UserOrganization", () => {
             ),
           ).rejects.toBeDefined()
 
-          const confirmation =
-            await ctx.prisma.userOrganizationJoinConfirmation.findUniqueOrThrow(
-              { where: { id: CONFIRMATION_ID } },
-            )
-          expect(confirmation.activation_attempts).toBe(5)
+          expect(await getFailedAttempts()).toBe(5)
           await expect(confirm(ACTIVATION_CODE)).rejects.toMatchObject({
-            response: {
-              errors: [{ message: "confirmation link has expired" }],
-            },
+            response: { errors: [{ message: LOCKED_MESSAGE }] },
           })
         })
       })
@@ -1072,6 +1119,21 @@ describe("UserOrganization", () => {
           },
           headers: FAKE_THIRD_USER_AUTHORIZATION_HEADERS,
           message: "redirect must be a root-relative path",
+        },
+        {
+          title: "if the membership is locked by wrong activation codes",
+          args: {
+            id: "96900000000000000000000000000199",
+            organizational_email: "third2@organization.fi",
+          },
+          headers: FAKE_THIRD_USER_AUTHORIZATION_HEADERS,
+          message:
+            "too many wrong activation codes; an administrator has to unlock this membership",
+          before: async () =>
+            ctx.prisma.userOrganization.update({
+              where: { id: "96900000000000000000000000000199" },
+              data: { activation_failed_attempts: 5 },
+            }),
         },
       ]
 
@@ -1548,6 +1610,14 @@ const updateUserOrganizationOrganizationalMailMutation = gql`
           }
         }
       }
+    }
+  }
+`
+
+const deleteUserOrganizationMutation = gql`
+  mutation DeleteUserOrganization($id: ID!) {
+    deleteUserOrganization(id: $id) {
+      id
     }
   }
 `

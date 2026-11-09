@@ -175,7 +175,6 @@ exports[`UserOrganization mutations addUserOrganization succeeds with no confirm
 
 exports[`UserOrganization mutations confirmUserOrganizationJoin succeeds confirming membership if all checks pass: Bearer normal 1`] = `
 {
-  "activation_attempts": 1,
   "activation_code": "123456",
   "confirmed": true,
   "confirmed_at": Any<Date>,
@@ -189,6 +188,7 @@ exports[`UserOrganization mutations confirmUserOrganizationJoin succeeds confirm
   "redirect": null,
   "updated_at": Any<Date>,
   "user_organization": {
+    "activation_failed_attempts": 0,
     "confirmed": true,
     "confirmed_at": Any<Date>,
     "consented": true,
@@ -207,7 +207,6 @@ exports[`UserOrganization mutations confirmUserOrganizationJoin succeeds confirm
 
 exports[`UserOrganization mutations confirmUserOrganizationJoin succeeds confirming membership not associated with self with admin credentials if all checks pass: Bearer admin 1`] = `
 {
-  "activation_attempts": 1,
   "activation_code": "123456",
   "confirmed": true,
   "confirmed_at": Any<Date>,
@@ -221,6 +220,7 @@ exports[`UserOrganization mutations confirmUserOrganizationJoin succeeds confirm
   "redirect": null,
   "updated_at": Any<Date>,
   "user_organization": {
+    "activation_failed_attempts": 0,
     "confirmed": true,
     "confirmed_at": Any<Date>,
     "consented": true,

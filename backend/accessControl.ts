@@ -9,7 +9,6 @@ export enum Role {
   ADMIN = 2,
   ORGANIZATION = 3, //for automated scripts, not for accounts
 }
-// TODO: caching?
 
 type AuthorizeFunction = <TypeName extends string, FieldName extends string>(
   ...args: Parameters<FieldAuthorizeResolver<TypeName, FieldName>>
@@ -54,6 +53,36 @@ export const isSameOrganization: FieldAuthorizeResolver<
   return root.id === ctx.organization.id
 }
 
+// Course fields check ownership per row, so a list of courses would otherwise
+// query once per course.
+const ownedCourseIdsByContext = new WeakMap<Context, Promise<Set<string>>>()
+
+// Callers may pass ids from client args, which Postgres accepts unhyphenated.
+const normalizeUuid = (id: string) => id.replaceAll("-", "").toLowerCase()
+
+const getOwnedCourseIds = (ctx: Context, userId: string) => {
+  let ownedCourseIds = ownedCourseIdsByContext.get(ctx)
+  if (!ownedCourseIds) {
+    ownedCourseIds = ctx.prisma.courseOwnership
+      .findMany({
+        where: { user_id: userId, course_id: { not: null } },
+        select: { course_id: true },
+      })
+      .then(
+        (ownerships) =>
+          new Set(
+            ownerships.map((ownership) => normalizeUuid(ownership.course_id!)),
+          ),
+      )
+    ownedCourseIdsByContext.set(ctx, ownedCourseIds)
+  }
+  return ownedCourseIds
+}
+
+/**
+ * Passes when a non-admin user owns the course. Ownerships are read once per
+ * request, so ownership granted later in the same request isn't seen.
+ */
 export const isCourseOwner =
   (course_id: string): AuthorizeFunction =>
   async (root, args, ctx, info) => {
@@ -61,16 +90,9 @@ export const isCourseOwner =
       return false
     }
 
-    const ownership = await ctx.prisma.courseOwnership.findUnique({
-      where: {
-        user_id_course_id: {
-          user_id: ctx.user?.id,
-          course_id,
-        },
-      },
-    })
-
-    return Boolean(ownership)
+    return (await getOwnedCourseIds(ctx, ctx.user.id)).has(
+      normalizeUuid(course_id),
+    )
   }
 
 export const isAdminOrCourseOwner =

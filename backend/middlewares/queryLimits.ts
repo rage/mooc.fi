@@ -6,9 +6,13 @@ import {
   type ValidationRule,
 } from "graphql"
 
-// The deepest frontend operation (StudentProgresses) has a depth of 11 and the
-// most aliased one uses 1; see frontend/graphql.
+/**
+ * Deepest field nesting an operation may have, `__typename` aside. The standard
+ * introspection query (`getIntrospectionQuery()`) is exactly this deep, and the
+ * deepest frontend operation (StudentProgresses) is 11.
+ */
 export const MAX_QUERY_DEPTH = 15
+/** Most aliased fields an operation may contain; frontend operations use at most 1. */
 export const MAX_QUERY_ALIASES = 15
 
 interface SelectionStats {
@@ -29,7 +33,7 @@ const measureSelectionSet = (
     let ownDepth = 0
 
     if (selection.kind === Kind.FIELD) {
-      if (selection.name.value.startsWith("__")) {
+      if (selection.name.value === "__typename") {
         continue
       }
       if (selection.alias) {
@@ -83,8 +87,8 @@ const measureSelectionSet = (
 
 /**
  * Builds a validation rule rejecting operations whose field nesting (with
- * fragments inlined, introspection fields ignored) exceeds `maxDepth`, or that
- * contain more than `maxAliases` aliased fields.
+ * fragments inlined, `__typename` ignored) exceeds `maxDepth`, or that contain
+ * more than `maxAliases` aliased fields.
  */
 export const createQueryLimitsRule =
   ({

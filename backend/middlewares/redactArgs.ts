@@ -1,4 +1,5 @@
 const SENSITIVE_ARG_KEYS = new Set([
+  "code",
   "organization_secret",
   "personal_unique_code",
   "secret_key",

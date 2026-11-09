@@ -4,7 +4,6 @@ import { isAdmin, isUser, or, Role } from "../accessControl"
 import {
   GraphQLAuthenticationError,
   GraphQLForbiddenError,
-  GraphQLUserInputError,
 } from "../lib/errors"
 
 export const CourseStatsSubscription = objectType({
@@ -34,18 +33,6 @@ export const CourseStatsSubscriptionMutations = extendType({
 
         if (!user) {
           throw new GraphQLAuthenticationError("not logged in")
-        }
-
-        const template = await ctx.prisma.emailTemplate.findUnique({
-          where: { id },
-          select: { template_type: true },
-        })
-
-        if (template?.template_type !== "course-stats") {
-          throw new GraphQLUserInputError(
-            "email template is not a course stats template",
-            "id",
-          )
         }
 
         if (role !== Role.ADMIN) {

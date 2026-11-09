@@ -2,7 +2,7 @@ import { readdirSync, readFileSync } from "fs"
 import path from "path"
 
 import axios from "axios"
-import { buildSchema, parse, validate } from "graphql"
+import { buildSchema, getIntrospectionQuery, parse, validate } from "graphql"
 
 import { getTestContext } from "../../tests"
 import {
@@ -45,16 +45,50 @@ describe("query limits", () => {
         (error) => error.message,
       )
 
-    it("counts depth through fragments and ignores introspection fields", () => {
+    it("counts depth through fragments and ignores __typename", () => {
       const query = `
         query { a { ...F } }
-        fragment F on X { b { ... on Y { c { __typename __schema { types { name } } } } } }
+        fragment F on X { b { ... on Y { c { __typename } } } }
       `
 
       expect(errorsOf(query, { maxDepth: 3 })).toEqual([])
       expect(errorsOf(query, { maxDepth: 2 })).toEqual([
         "Query depth 3 exceeds the maximum of 2",
       ])
+    })
+
+    it("measures introspection fields like any other field", () => {
+      let deepType = "name"
+      for (let level = 0; level < MAX_QUERY_DEPTH; level++) {
+        deepType = `fields { type { ${deepType} } }`
+      }
+      const aliasedTypes = Array.from(
+        { length: MAX_QUERY_ALIASES + 1 },
+        (_, i) => `t${i}: __type(name: "Query") { name }`,
+      ).join(" ")
+
+      expect(errorsOf(`{ __type(name: "Query") { ${deepType} } }`)).toEqual([
+        `Query depth ${2 * MAX_QUERY_DEPTH + 2} exceeds the maximum of ${MAX_QUERY_DEPTH}`,
+      ])
+      expect(errorsOf(`{ ${aliasedTypes} }`)).toEqual([
+        `Query uses ${MAX_QUERY_ALIASES + 1} aliases, exceeding the maximum of ${MAX_QUERY_ALIASES}`,
+      ])
+    })
+
+    it("passes the standard introspection query", () => {
+      expect(errorsOf(getIntrospectionQuery())).toEqual([])
+      expect(
+        errorsOf(
+          getIntrospectionQuery({
+            descriptions: true,
+            specifiedByUrl: true,
+            directiveIsRepeatable: true,
+            schemaDescription: true,
+            inputValueDeprecation: true,
+            oneOf: true,
+          }),
+        ),
+      ).toEqual([])
     })
 
     it("counts aliases inside fragments", () => {

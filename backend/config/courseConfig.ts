@@ -17,6 +17,10 @@ const byTier = <T>(entry: (tierName: TierName, tier: number) => [string, T]) =>
     tierNames.map((tierName, index) => entry(tierName, index + 1)),
   )
 
+/**
+ * Building AI exercise custom id → its exercise number (1-based, shared across
+ * tiers), tier number, title and tier course id.
+ */
 export const BAIexercises: Record<string, ExerciseInfo> = Object.fromEntries(
   bai.exercises.flatMap(({ title, ids }, index) =>
     Object.entries(
@@ -33,6 +37,10 @@ export const BAIexercises: Record<string, ExerciseInfo> = Object.fromEntries(
   ),
 )
 
+/**
+ * Building AI final-task exercise custom id → the same info as `BAIexercises`,
+ * numbered after the last regular exercise.
+ */
 export const BAIbadge: Record<string, ExerciseInfo> = byTier(
   (tierName, tier) => [
     bai.tiers[tierName].finalTaskId,
@@ -45,6 +53,7 @@ export const BAIbadge: Record<string, ExerciseInfo> = byTier(
   ],
 )
 
+/** Building AI tier number ("1"–"3") → that tier's course id. */
 export const BAItiers: Record<string, string> = byTier((tierName, tier) => [
   String(tier),
   bai.tiers[tierName].courseId,

@@ -23,6 +23,7 @@ import {
   ensureDefinedArray,
   err,
   generateActivationCode,
+  MAX_ACTIVATION_ATTEMPTS,
   ok,
   Result,
 } from "../../util"
@@ -55,6 +56,27 @@ export async function assertUserOrganizationCredentials(
   }
 
   assertUserIdOnlyForAdmin(ctx, userOrganization.user_id)
+}
+
+/**
+ * Throws once the membership has used up its activation attempts, so that no
+ * code is accepted or issued until an admin resets `activation_failed_attempts`.
+ */
+export function assertActivationAttemptsLeft(
+  userOrganization: Pick<UserOrganization, "activation_failed_attempts">,
+) {
+  if (userOrganization.activation_failed_attempts >= MAX_ACTIVATION_ATTEMPTS) {
+    throw new TooManyActivationAttemptsError()
+  }
+}
+
+/** Raised for a membership locked by `assertActivationAttemptsLeft`. */
+export class TooManyActivationAttemptsError extends GraphQLForbiddenError {
+  constructor() {
+    super(
+      "too many wrong activation codes; an administrator has to unlock this membership",
+    )
+  }
 }
 
 // The address is handed to nodemailer as a recipient, so anything it would

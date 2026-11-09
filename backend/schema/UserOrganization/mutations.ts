@@ -21,6 +21,7 @@ import {
   OrphanedEntityError,
 } from "../common"
 import {
+  assertActivationAttemptsLeft,
   assertJoinConfirmationOptions,
   assertUserIdOnlyForAdmin,
   assertUserOrganizationCredentials,
@@ -29,6 +30,7 @@ import {
   createUserOrganizationJoinConfirmation,
   expirePreviousConfirmations,
   joinUserOrganization,
+  TooManyActivationAttemptsError,
 } from "./helpers"
 
 export const UserOrganizationMutations = extendType({
@@ -234,19 +236,21 @@ export const UserOrganizationMutations = extendType({
 
         // Counting the attempt atomically before comparing keeps concurrent
         // (e.g. aliased) requests from getting more than the allowed guesses.
+        // The count is per membership so that requesting a new code doesn't
+        // grant new guesses.
         const { count: attemptReserved } =
-          await ctx.prisma.userOrganizationJoinConfirmation.updateMany({
+          await ctx.prisma.userOrganization.updateMany({
             where: {
-              id,
-              activation_attempts: { lt: MAX_ACTIVATION_ATTEMPTS },
+              id: user_organization.id,
+              activation_failed_attempts: { lt: MAX_ACTIVATION_ATTEMPTS },
             },
             data: {
-              activation_attempts: { increment: 1 },
+              activation_failed_attempts: { increment: 1 },
             },
           })
 
         if (!attemptReserved) {
-          throw await expireConfirmation()
+          throw new TooManyActivationAttemptsError()
         }
 
         if (
@@ -268,6 +272,7 @@ export const UserOrganizationMutations = extendType({
                 update: {
                   confirmed: { set: true },
                   confirmed_at: currentDate,
+                  activation_failed_attempts: 0,
                 },
               },
             },
@@ -361,6 +366,8 @@ export const UserOrganizationMutations = extendType({
             "this user organization membership has already been confirmed",
           )
         }
+
+        assertActivationAttemptsLeft(userOrganization)
 
         const join_organization_email_template_id =
           organization.join_organization_email_template_id ??
@@ -534,6 +541,8 @@ export const UserOrganizationMutations = extendType({
           })
         }
 
+        assertActivationAttemptsLeft(userOrganization)
+
         const isEmailValid = checkEmailValidity(
           organizational_email,
           organization.required_organization_email,
@@ -619,6 +628,12 @@ export const UserOrganizationMutations = extendType({
 
         if (!userOrganization) {
           throw new GraphQLUserInputError("no user organization found", "id")
+        }
+
+        // Deleting would drop the attempt count and let the user re-join with
+        // a fresh code.
+        if (ctx.role !== Role.ADMIN && !userOrganization.confirmed) {
+          assertActivationAttemptsLeft(userOrganization)
         }
 
         const { user_id, organization_id, organization } = userOrganization

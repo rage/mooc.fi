@@ -93,14 +93,43 @@ describe("createCourseStatsSubscription", () => {
     ).rejects.toThrow(/requires ownership/)
   })
 
-  it("refuses a template that is not a course stats template", async () => {
+  it("lets a course owner subscribe to their course's template of any type", async () => {
+    await ctx.prisma.emailTemplate.update({
+      where: { id: ownedStatsTemplateId },
+      data: { template_type: null },
+    })
+
+    const res = await ctx.client.request<any>(
+      createCourseStatsSubscriptionMutation,
+      { id: ownedStatsTemplateId },
+      FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+    )
+
+    expect(res.createCourseStatsSubscription.email_template_id).toBe(
+      ownedStatsTemplateId,
+    )
+  })
+
+  it("refuses a normal user subscribing to a template no course uses for stats", async () => {
     await expect(
       ctx.client.request(
         createCourseStatsSubscriptionMutation,
         { id: thresholdTemplateId },
-        FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+        FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
       ),
-    ).rejects.toThrow(/not a course stats template/)
+    ).rejects.toThrow(/requires ownership/)
+  })
+
+  it("lets admins subscribe to a template of any type", async () => {
+    const res = await ctx.client.request<any>(
+      createCourseStatsSubscriptionMutation,
+      { id: thresholdTemplateId },
+      FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+    )
+
+    expect(res.createCourseStatsSubscription.email_template_id).toBe(
+      thresholdTemplateId,
+    )
   })
 
   it("lets admins subscribe to any course stats template", async () => {

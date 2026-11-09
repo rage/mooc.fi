@@ -1,6 +1,6 @@
 import { randomInt, timingSafeEqual } from "crypto"
 
-/** Code submissions a join confirmation accepts before it is treated as expired. */
+/** Wrong activation codes a membership may submit, across all its join confirmations, before it is locked. */
 export const MAX_ACTIVATION_ATTEMPTS = 5
 
 /** Generates a random 6-digit organization-join activation code. */

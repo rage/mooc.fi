@@ -141,14 +141,18 @@ export class CompletionController extends Controller {
     }
 
     // The export lists the handling course's completions.
-    if (course.completions_handled_by_id) {
-      const handlerAuthRes = await requireAdminOrCourseOwner(
-        course.completions_handled_by_id,
-        this.ctx,
-      )(req, res)
+    const { user, details } = authRes.value
+    if (course.completions_handled_by_id && !details.administrator) {
+      const handlerOwnership = await this.ctx.prisma.courseOwnership.findFirst({
+        where: {
+          user_id: user.id,
+          course_id: course.completions_handled_by_id,
+        },
+        select: { id: true },
+      })
 
-      if (handlerAuthRes.isErr()) {
-        return handlerAuthRes.error
+      if (!handlerOwnership) {
+        return res.status(401).json({ message: "unauthorized" })
       }
     }
 

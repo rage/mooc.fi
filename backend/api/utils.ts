@@ -68,11 +68,15 @@ export function requireAdmin(ctx: BaseContext) {
   }
 }
 
+/**
+ * Resolves the request's user if they are an admin or own the course. On
+ * failure the error response has already been sent.
+ */
 export function requireAdminOrCourseOwner(courseId: string, ctx: BaseContext) {
   return async function (
     req: Request,
     res: Response,
-  ): Promise<Result<boolean, Response>> {
+  ): Promise<Result<GetUserReturn, Response>> {
     const getUserResult = await getUser(ctx)(req, res)
 
     if (getUserResult.isErr()) {
@@ -83,7 +87,7 @@ export function requireAdminOrCourseOwner(courseId: string, ctx: BaseContext) {
 
     // Allow if user is admin
     if (details.administrator) {
-      return ok(true)
+      return ok(getUserResult.value)
     }
 
     // Check if user has course ownership for this course
@@ -95,7 +99,7 @@ export function requireAdminOrCourseOwner(courseId: string, ctx: BaseContext) {
       .first()
 
     if (ownership) {
-      return ok(true)
+      return ok(getUserResult.value)
     }
 
     return err(res.status(401).json({ message: "unauthorized" }))

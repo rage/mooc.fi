@@ -144,4 +144,38 @@ describe("Course relation authorization", () => {
       ),
     ).rejects.toThrow(/Not authorized/)
   })
+
+  it("loads a course owner's ownerships once for a list of courses", async () => {
+    const findOwnerships = jest.spyOn(ctx.prisma.courseOwnership, "findMany")
+
+    const res = await ctx.client
+      .rawRequest<any>(
+        gql`
+          {
+            courses {
+              slug
+              completion_email {
+                name
+              }
+              course_stats_email {
+                id
+              }
+            }
+          }
+        `,
+        {},
+        FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+      )
+      .catch((e) => e.response)
+
+    const completionEmails = Object.fromEntries(
+      res.data.courses.map((c: any) => [c.slug, c.completion_email?.name]),
+    )
+    expect(completionEmails).toMatchObject({
+      course1: undefined,
+      course2: "course2 completion",
+    })
+    expect(findOwnerships).toHaveBeenCalledTimes(1)
+    findOwnerships.mockRestore()
+  })
 })

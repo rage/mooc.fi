@@ -4,6 +4,7 @@ describe("redactArgs", () => {
   it("redacts sensitive keys at any depth", () => {
     const args = Object.assign(Object.create(null), {
       organization_secret: "s1",
+      code: "123456",
       input: {
         personal_unique_code: "c1",
         nested: [{ password: "p1", Token: "t1", name: "kept" }],
@@ -14,6 +15,7 @@ describe("redactArgs", () => {
 
     expect(redactArgs(args)).toEqual({
       organization_secret: "[REDACTED]",
+      code: "[REDACTED]",
       input: {
         personal_unique_code: "[REDACTED]",
         nested: [{ password: "[REDACTED]", Token: "[REDACTED]", name: "kept" }],

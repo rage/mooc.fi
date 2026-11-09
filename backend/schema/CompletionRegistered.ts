@@ -71,6 +71,7 @@ export const CompletionRegisteredQueries = extendType({
           }),
           ...(cursor?.id && { cursor: { id: cursor.id } }),
           where,
+          orderBy: [{ created_at: "asc" as const }, { id: "asc" as const }],
         }
 
         if (slug) {

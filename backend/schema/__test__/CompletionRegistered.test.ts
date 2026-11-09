@@ -82,6 +82,47 @@ describe("registeredCompletions", () => {
     expect(res.registeredCompletions).toHaveLength(50)
   })
 
+  it("pages in created_at, then id order", async () => {
+    await ctx.prisma.completionRegistered.deleteMany()
+    const registrations = [
+      ["00000000-0000-0000-0000-00000000c003", "2020-01-02T00:00:00Z"],
+      ["00000000-0000-0000-0000-00000000c002", "2020-01-01T00:00:00Z"],
+      ["00000000-0000-0000-0000-00000000c001", "2020-01-01T00:00:00Z"],
+    ]
+    await ctx.prisma.completionRegistered.createMany({
+      data: registrations.map(([id, created_at]) => ({
+        id,
+        created_at,
+        organization_id: koiraId,
+        completion_id: "30000000-0000-0000-0000-000000000106",
+        course_id: "00000000-0000-0000-0000-000000000002",
+        user_id: "20000000-0000-0000-0000-000000000106",
+        real_student_number: id,
+      })),
+    })
+
+    const page = async (skip: number) =>
+      (
+        await ctx.client.request<any>(
+          gql`
+            query ($skip: Int) {
+              registeredCompletions(skip: $skip, take: 2) {
+                id
+              }
+            }
+          `,
+          { skip },
+          { Authorization: "Basic koira" },
+        )
+      ).registeredCompletions.map((r: { id: string }) => r.id)
+
+    expect([...(await page(0)), ...(await page(2))]).toEqual([
+      "00000000-0000-0000-0000-00000000c001",
+      "00000000-0000-0000-0000-00000000c002",
+      "00000000-0000-0000-0000-00000000c003",
+    ])
+  })
+
   it.each([-1, 0, 51])("rejects take %d", async (take) => {
     await expect(
       ctx.client.request(
