@@ -148,7 +148,9 @@ jobs:
             export NODE_OPTIONS="--max-old-space-size=8192 --experimental-vm-modules"
             TEST=$(circleci tests glob ./**/*.test.ts | grep -v node_modules | circleci tests split --split-by=timings)
             echo $TEST
-            pnpm exec jest --ci --runInBand --coverage --runTestsByPath $TEST
+            # Not `pnpm exec`: the workspace root isn't attached, so pnpm would reinstall backend
+            # standalone, skipping the build-script allowlist and leaving node-rdkafka unbuilt.
+            node_modules/.bin/jest --ci --runInBand --coverage --runTestsByPath $TEST
       - run:
           name: "Process test reports"
           command: |
