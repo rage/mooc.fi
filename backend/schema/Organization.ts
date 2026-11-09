@@ -110,17 +110,14 @@ export const OrganizationQueries = extendType({
           where: {
             id: id ?? undefined,
             slug: slug ?? undefined,
-            ...(!hidden && { hidden: { not: true } }),
-            ...(!disabled && {
-              OR: [
-                {
-                  disabled: false,
-                },
-                {
-                  disabled: null,
-                },
-              ],
-            }),
+            AND: [
+              ...(hidden
+                ? []
+                : [{ OR: [{ hidden: false }, { hidden: null }] }]),
+              ...(disabled
+                ? []
+                : [{ OR: [{ disabled: false }, { disabled: null }] }]),
+            ],
           },
         })
       },

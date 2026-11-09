@@ -38,6 +38,9 @@ jobs:
       - run:
           name: "Lint"
           command: "bin/lint.sh"
+      - run:
+          name: "Frontend unit tests"
+          command: "pnpm --filter frontend run test"
       - helm/install-helm-client:
           version: v3.4.2
       - run:

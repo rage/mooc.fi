@@ -594,20 +594,15 @@ model UserOrganization {
 }
 
 model VerifiedUser {
-  id                            String        @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
-  display_name                  String?
-  personal_unique_code          String
-  home_organization             String?
-  person_affiliation            String?
-  person_affiliation_updated_at DateTime?
-  mail                          String?
-  organizational_unit           String?
-  user_id                       String?       @db.Uuid
-  organization_id               String?       @db.Uuid
-  created_at                    DateTime      @default(now())
-  updated_at                    DateTime      @default(now()) @updatedAt
-  user                          User?         @relation(fields: [user_id], references: [id], onUpdate: NoAction)
-  organization                  Organization? @relation(fields: [organization_id], references: [id], onUpdate: NoAction)
+  id                   String        @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  display_name         String?
+  personal_unique_code String
+  user_id              String?       @db.Uuid
+  organization_id      String?       @db.Uuid
+  created_at           DateTime      @default(now())
+  updated_at           DateTime      @default(now()) @updatedAt
+  user                 User?         @relation(fields: [user_id], references: [id], onUpdate: NoAction)
+  organization         Organization? @relation(fields: [organization_id], references: [id], onUpdate: NoAction)
 
   @@unique([organization_id, user_id, personal_unique_code], map: "verified_user_organization_user_puc_constraint")
   @@index([user_id], map: "verified_user.user_id_index")

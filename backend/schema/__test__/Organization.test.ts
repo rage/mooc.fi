@@ -108,3 +108,75 @@ describe("Organization relation authorization", () => {
     ).rejects.toThrow(/Not authorized/)
   })
 })
+
+describe("organization lookup", () => {
+  setupTMCWithDefaultFakeUsers()
+
+  beforeEach(async () => {
+    await seed(ctx.prisma)
+  })
+
+  it("finds organizations whose hidden flag is unset", async () => {
+    await ctx.prisma.organization.update({
+      where: { slug: "test" },
+      data: { hidden: null },
+    })
+
+    const res = await ctx.client.request<any>(gql`
+      {
+        organization(slug: "test") {
+          slug
+        }
+      }
+    `)
+
+    expect(res.organization).toEqual({ slug: "test" })
+  })
+
+  it("does not return hidden organizations without the hidden flag", async () => {
+    await ctx.prisma.organization.update({
+      where: { slug: "test" },
+      data: { hidden: true },
+    })
+
+    const res = await ctx.client.request<any>(gql`
+      {
+        organization(slug: "test") {
+          slug
+        }
+      }
+    `)
+
+    expect(res.organization).toBeNull()
+  })
+
+  it("lets admins read verified users", async () => {
+    await ctx.prisma.verifiedUser.create({
+      data: {
+        personal_unique_code: "puc",
+        display_name: "Verified",
+        organization: { connect: { slug: "test" } },
+        user: { connect: { id: "20000000000000000000000000000102" } },
+      },
+    })
+
+    const res = await ctx.client.request<any>(
+      gql`
+        {
+          organizations {
+            slug
+            verified_users {
+              display_name
+            }
+          }
+        }
+      `,
+      {},
+      FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+    )
+
+    expect(
+      res.organizations.find((o: any) => o.slug === "test").verified_users,
+    ).toEqual([{ display_name: "Verified" }])
+  })
+})
