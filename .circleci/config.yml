@@ -104,7 +104,6 @@ jobs:
       - run:
           name: "Set environment"
           command: |
-            pnpm run download-env
             cp .env.example .env
       - run:
           name: "Set up Prisma"
