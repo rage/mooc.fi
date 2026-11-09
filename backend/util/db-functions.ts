@@ -15,8 +15,15 @@ import {
   Optional,
 } from "./guards"
 
+// Search strings come from clients; name combinations grow quadratically.
+const MAX_SEARCH_LENGTH = 100
+const MAX_NAME_SEARCH_WORDS = 5
+
 const getNameCombinations = (search: string) => {
   const parts = search.match(/[^\s\n]+/g) ?? []
+  if (parts.length > MAX_NAME_SEARCH_WORDS) {
+    return []
+  }
   const combinations = []
   for (let i = 1; i < parts.length; i++) {
     combinations.push({
@@ -45,6 +52,7 @@ export const buildUserSearch = (
   if (!isDefined(search)) {
     return []
   }
+  search = search.slice(0, MAX_SEARCH_LENGTH)
 
   const userSearchQuery: Array<Prisma.UserWhereInput> = []
 
@@ -95,6 +103,7 @@ export const buildUserSearchRaw = (
   if (!isDefined(search)) {
     return
   }
+  search = search.slice(0, MAX_SEARCH_LENGTH)
 
   if (fields && fields.length === 0) {
     fields = defaultFields

@@ -38,67 +38,73 @@ export const handleMessage = async <Message extends { timestamp: string }>({
   //Going to mutex
   const release = await mutex.acquire()
 
-  logger.info("Handling a message.", {
-    topic: kafkaMessage.topic,
-    offset: kafkaMessage.offset,
-    partition: kafkaMessage.partition,
-    key: kafkaMessage.key,
-  })
-
-  let message: Message
-
   try {
-    message = parseJSON(kafkaMessage?.value?.toString("utf8") ?? "") as Message
-  } catch (error: any) {
-    logger.error(new KafkaMessageError("invalid message", kafkaMessage, error))
-    await commit(context, kafkaMessage)
-    release()
+    logger.info("Handling a message.", {
+      topic: kafkaMessage.topic,
+      offset: kafkaMessage.offset,
+      partition: kafkaMessage.partition,
+      key: kafkaMessage.key,
+    })
 
-    return
-  }
+    let message: Message
 
-  try {
-    await MessageYupSchema.validate(message)
-  } catch (error: any) {
-    logger.error(new ValidationError("JSON validation failed", message, error))
-    await commit(context, kafkaMessage)
-    release()
+    try {
+      message = parseJSON(
+        kafkaMessage?.value?.toString("utf8") ?? "",
+      ) as Message
+    } catch (error: any) {
+      logger.error(
+        new KafkaMessageError("invalid message", kafkaMessage, error),
+      )
+      await commit(context, kafkaMessage)
 
-    return
-  }
-
-  try {
-    logger.info("Saving message", { message: stringifyWithIndent(message) })
-
-    const saveResult = await saveToDatabase(context, message)
-
-    if (saveResult.isOk()) {
-      if (saveResult.hasValue()) {
-        logger.info(saveResult.value)
-      }
-    } else if (saveResult.isWarning()) {
-      if (saveResult.hasValue()) {
-        logger.warn(saveResult.value.message)
-      }
-    } else {
-      if (saveResult.isErr()) {
-        logger.error(saveResult.error)
-      }
+      return
     }
-  } catch (error: any) {
-    logger.error(
-      new DatabaseInputError(
-        "Could not save event to database",
-        message,
-        error,
-      ),
-    )
-    console.log("Reason: ", error.message)
-    console.log(error.stack)
+
+    try {
+      await MessageYupSchema.validate(message)
+    } catch (error: any) {
+      logger.error(
+        new ValidationError("JSON validation failed", message, error),
+      )
+      await commit(context, kafkaMessage)
+
+      return
+    }
+
+    try {
+      logger.info("Saving message", { message: stringifyWithIndent(message) })
+
+      const saveResult = await saveToDatabase(context, message)
+
+      if (saveResult.isOk()) {
+        if (saveResult.hasValue()) {
+          logger.info(saveResult.value)
+        }
+      } else if (saveResult.isWarning()) {
+        if (saveResult.hasValue()) {
+          logger.warn(saveResult.value.message)
+        }
+      } else {
+        if (saveResult.isErr()) {
+          logger.error(saveResult.error)
+        }
+      }
+    } catch (error: any) {
+      logger.error(
+        new DatabaseInputError(
+          "Could not save event to database",
+          message,
+          error,
+        ),
+      )
+      console.log("Reason: ", error.message)
+      console.log(error.stack)
+    }
+    await commit(context, kafkaMessage)
+  } finally {
+    release()
   }
-  await commit(context, kafkaMessage)
-  //Releasing mutex
-  release()
 }
 
 const commit = async (kafkaContext: KafkaContext, message: KafkaMessage) => {

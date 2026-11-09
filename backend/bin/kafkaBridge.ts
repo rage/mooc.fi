@@ -1,3 +1,4 @@
+import { createHash, timingSafeEqual } from "crypto"
 import { promisify } from "util"
 
 import compression from "compression"
@@ -87,12 +88,17 @@ const port = parseInt(KAFKA_BRIDGE_SERVER_PORT || "3003")
 // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 const host = KAFKA_BRIDGE_SERVER_HOST || "0.0.0.0"
 
+const sha256 = (value: string) => createHash("sha256").update(value).digest()
+const secretHash = sha256(KAFKA_BRIDGE_SECRET)
+
+const isAuthorized = (authorization: string | undefined) => {
+  const token = authorization?.split(" ")[1]
+  return token !== undefined && timingSafeEqual(sha256(token), secretHash)
+}
+
 app.post("/kafka-bridge/api/v0/event", async (req, res) => {
-  if (
-    !req.headers.authorization ||
-    req?.headers?.authorization?.split(" ")[1] !== KAFKA_BRIDGE_SECRET
-  ) {
-    return res.status(403).json({ error: "Not authorized" }).send()
+  if (!isAuthorized(req.headers.authorization)) {
+    return res.status(403).json({ error: "Not authorized" })
   }
 
   const { topic, payload } = req.body ?? {}
@@ -102,7 +108,7 @@ app.post("/kafka-bridge/api/v0/event", async (req, res) => {
         req.body,
       )}`,
     )
-    return res.status(400).json({ error: "Topic or payload missing" }).send()
+    return res.status(400).json({ error: "Topic or payload missing" })
   }
   logger.info(`Producing to topic ${topic} payload ${JSON.stringify(payload)}`)
 
@@ -112,27 +118,24 @@ app.post("/kafka-bridge/api/v0/event", async (req, res) => {
     producer.produce(topic, partition, Buffer.from(JSON.stringify(payload)))
   } catch (e: any) {
     logger.error(new KafkaError("Producing to kafka failed", e))
-    return res.status(500).json({ error: e.toString() }).send()
+    return res.status(500).json({ error: "Internal server error" })
   }
 
   return flushProducer(1000)
-    .then(() => res.json({ msg: "Thanks!" }).send())
+    .then(() => res.json({ msg: "Thanks!" }))
     .catch((e: any) => {
       logger.error(new KafkaError("Flushing the producer failed", e))
-      return res.status(500).json({ error: e.toString() }).send()
+      return res.status(500).json({ error: "Internal server error" })
     })
 })
 
 app.get("/kafka-bridge/api/v0/healthz", (_, res) => {
   if (!producerReady) {
-    return res.status(500).json({ error: "Kafka producer not ready" }).send()
+    return res.status(500).json({ error: "Kafka producer not ready" })
   }
 
   if (!producer.isConnected()) {
-    return res
-      .status(500)
-      .json({ error: "Kafka producer got disconnected" })
-      .send()
+    return res.status(500).json({ error: "Kafka producer got disconnected" })
   }
   return res.json({ status: "ok" })
 })

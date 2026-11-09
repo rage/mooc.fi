@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken"
 import { orderBy } from "lodash"
 
 import {
@@ -260,6 +261,30 @@ describe("API", () => {
           },
         ],
       })
+    })
+  })
+
+  describe("/api/completions/:courseId/csv", () => {
+    const courseId = "00000000000000000000000000000002"
+
+    beforeEach(async () => {
+      await seed(ctx.prisma)
+    })
+
+    it("escapes cells that spreadsheets would read as formulas", async () => {
+      await ctx.prisma.user.update({
+        where: { id: "20000000000000000000000000000102" },
+        data: { first_name: "=HYPERLINK(1)", last_name: "-1+1" },
+      })
+      const token = jwt.sign({ courseId }, process.env.JWT_SECRET!)
+      const { get } = createRequestHelpers(ctx.port)
+
+      const res = await get(
+        `/api/completions/${courseId}/csv?token=${token}`,
+        {},
+      )({})
+
+      expect(res.data).toContain("'=HYPERLINK(1),'-1+1")
     })
   })
 })

@@ -49,7 +49,7 @@ export class StoredDataController extends Controller {
         await prisma.storedData.create({
           data: {
             user: { connect: { id: user.id } },
-            course: { connect: { slug } },
+            course: { connect: { id: course.id } },
             data,
           },
         })
@@ -71,9 +71,12 @@ export class StoredDataController extends Controller {
 
       return res.status(200).json({ message: `stored data updated` })
     } catch (error: any) {
+      this.ctx.logger.error("error creating or updating stored data", {
+        error,
+      })
       return res
         .status(500)
-        .json({ message: "error creating or updating stored data", error })
+        .json({ message: "error creating or updating stored data" })
     }
   }
 

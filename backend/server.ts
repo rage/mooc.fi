@@ -50,7 +50,11 @@ const createExpressAppWithContext = ({
     cors<cors.CorsRequest>(),
     express.json({ limit: "2mb" }),
     frameguard(),
-    graphqlUploadExpress(),
+  )
+  // 50 MB matches the ingress proxy-body-size.
+  app.post(
+    GRAPHQL_ENDPOINT_PATH,
+    graphqlUploadExpress({ maxFileSize: 50 * 1024 * 1024, maxFiles: 10 }),
   )
   if (!isTest) {
     app.use(morgan("combined"))
@@ -135,7 +139,7 @@ const server = async (serverContext: ServerContext) => {
     ],
     introspection: true,
     logger: serverContext.logger,
-    includeStacktraceInErrorResponses: DEBUG,
+    includeStacktraceInErrorResponses: DEBUG && !isProduction,
     allowBatchedHttpRequests: true,
     // cache: "bounded",
   })

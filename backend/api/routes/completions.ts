@@ -31,6 +31,10 @@ if (!JWT_SECRET) {
   throw new Error("JWT_SECRET environment variable is required")
 }
 
+// Spreadsheet apps evaluate cells starting with these as formulas.
+const escapeCsvFormula = (value: unknown) =>
+  typeof value === "string" && /^[=+\-@\t\r]/.test(value) ? `'${value}` : value
+
 interface DownloadTokenPayload {
   courseId: string
   fromDate?: string
@@ -286,7 +290,10 @@ export class CompletionController extends Controller {
     }
 
     // Default CSV format
-    const csvContent = stringify([headers, ...rows])
+    const csvContent = stringify([
+      headers,
+      ...rows.map((row) => row.map(escapeCsvFormula)),
+    ])
 
     res.setHeader("Content-Type", "text/csv")
     res.setHeader(

@@ -8,7 +8,7 @@ export const MessageYupSchema = yup.object().shape({
   n_points: yup.number().nullable(),
   completed: yup.boolean().required(),
   attempted: yup.boolean().nullable(),
-  user_id: yup.number().required(),
+  user_id: yup.number().integer().positive().required(),
   course_id: yup.string().length(36).required(),
   service_id: yup.string().length(36).required(),
   required_actions: yup.array(yup.string()),

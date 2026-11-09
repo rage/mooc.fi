@@ -14,7 +14,7 @@ const UserPointsExerciseMessageYupSchema = UserPointsMessageYupSchema.shape({
 
 export const MessageYupSchema = yup.object().shape({
   timestamp: yup.date().required(),
-  user_id: yup.number().required(),
+  user_id: yup.number().integer().positive().required(),
   course_id: yup.string().length(36).required(),
   exercises: yup.array(UserPointsExerciseMessageYupSchema).required(),
   message_format_version: yup
