@@ -1,4 +1,4 @@
-export * from "./calculate-activation-code"
+export * from "./activation-code"
 export * from "./db-functions"
 export * from "./hashUser"
 export * from "./prismaLogger"

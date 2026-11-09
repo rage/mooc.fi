@@ -1,3 +1,5 @@
+import addressparser from "nodemailer/lib/addressparser"
+
 import { Role } from "../../accessControl"
 import { DEFAULT_JOIN_ORGANIZATION_EMAIL_TEMPLATE_ID } from "../../config/defaultData"
 import { Context } from "../../context"
@@ -20,6 +22,7 @@ import {
   emptyOrNullToUndefined,
   ensureDefinedArray,
   err,
+  generateActivationCode,
   ok,
   Result,
 } from "../../util"
@@ -54,6 +57,45 @@ export async function assertUserOrganizationCredentials(
   assertUserIdOnlyForAdmin(ctx, userOrganization.user_id)
 }
 
+// The address is handed to nodemailer as a recipient, so anything it would
+// parse as more than this one bare mailbox must be rejected.
+const isSingleEmailAddress = (email: string) => {
+  if (/[\s,;<>"]/.test(email)) {
+    return false
+  }
+  const parsed = addressparser(email)
+
+  return parsed.length === 1 && !parsed[0].name && parsed[0].address === email
+}
+
+const LANGUAGE_PATTERN = /^[a-z]{2}(_[A-Z]{2})?$/
+const CONTROL_CHARACTER_PATTERN = /[\u0000-\u001F\u007F]/
+
+/**
+ * Throws a user input error unless `language` is a locale like `en` or `en_US`
+ * and `redirect` is a same-site root-relative path. Absent values are allowed.
+ */
+export const assertJoinConfirmationOptions = ({
+  language,
+  redirect,
+}: {
+  language?: string | null
+  redirect?: string | null
+}) => {
+  if (language != null && !LANGUAGE_PATTERN.test(language)) {
+    throw new GraphQLUserInputError("invalid language", "language")
+  }
+  if (
+    redirect != null &&
+    (!/^\/(?![/\\])/.test(redirect) || CONTROL_CHARACTER_PATTERN.test(redirect))
+  ) {
+    throw new GraphQLUserInputError(
+      "redirect must be a root-relative path",
+      "redirect",
+    )
+  }
+}
+
 export const checkEmailValidity = (
   email?: string | null,
   requiredPattern?: string | null,
@@ -63,6 +105,12 @@ export const checkEmailValidity = (
       new GraphQLUserInputError(
         "no email specified and no email found in user profile",
       ),
+    )
+  }
+
+  if (!isSingleEmailAddress(email)) {
+    return err(
+      new GraphQLUserInputError("email must be a single plain email address"),
     )
   }
 
@@ -224,6 +272,7 @@ export const createUserOrganizationJoinConfirmation = async ({
           },
           redirect,
           language,
+          activation_code: generateActivationCode(),
           expires_at: new Date(currentDate.getTime() + 4 * 60 * 60 * 1000), // 4 hours for now
         },
         include: {

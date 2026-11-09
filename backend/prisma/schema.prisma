@@ -652,6 +652,10 @@ model UserOrganizationJoinConfirmation {
   updated_at           DateTime?        @default(now()) @updatedAt
   user_organization_id String           @db.Uuid
   email_delivery_id    String?          @unique @db.Uuid
+  /// Plaintext so the background emailer can render it; null on confirmations created before codes were stored
+  activation_code      String?
+  /// Code submissions so far, counted before checking the code
+  activation_attempts  Int              @default(0)
   user_organization    UserOrganization @relation(fields: [user_organization_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   email_delivery       EmailDelivery?   @relation(fields: [email_delivery_id], references: [id])
 

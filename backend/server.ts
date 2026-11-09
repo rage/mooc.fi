@@ -3,6 +3,7 @@ import http from "http"
 import compression from "compression"
 import cors from "cors"
 import express, { Express } from "express"
+import { specifiedRules, validate } from "graphql"
 import graphqlUploadExpress from "graphql-upload/graphqlUploadExpress.mjs"
 import { useServer as addServer } from "graphql-ws/use/ws"
 import { frameguard } from "helmet"
@@ -33,6 +34,7 @@ import { ServerContext } from "./context"
 import { createLoaders } from "./loaders/createLoaders"
 import createExpressGraphqlCacheMiddleware from "./middlewares/expressGraphqlCache"
 import { limitGraphqlBatchSize } from "./middlewares/graphqlBatchLimit"
+import { createQueryLimitsRule } from "./middlewares/queryLimits"
 import { createSchema } from "./schema/common"
 
 export const GRAPHQL_ENDPOINT_PATH = isProduction ? "/api" : "/"
@@ -99,9 +101,11 @@ const server = async (serverContext: ServerContext) => {
   const app = createExpressAppWithContext(serverContext)
   const httpServer = http.createServer(app)
   const schema = createSchema()
+  const queryLimitsRule = createQueryLimitsRule()
 
   const apolloServer = new ApolloServer<ServerContext>({
     schema,
+    validationRules: [queryLimitsRule],
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
       // No cache hints are used, and the default plugin wraps every resolver.
@@ -153,6 +157,8 @@ const server = async (serverContext: ServerContext) => {
   const serverCleanup = addServer(
     {
       schema,
+      validate: (wsSchema, document) =>
+        validate(wsSchema, document, [...specifiedRules, queryLimitsRule]),
       context: (ctx) => {
         const { prisma, logger, knex, extraContext } = serverContext
         const loaders = createLoaders(prisma)

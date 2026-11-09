@@ -22,7 +22,7 @@ import {
   seed,
   thirdUserDetails,
 } from "../../../tests/data"
-import { calculateActivationCode, PromiseReturnType } from "../../../util"
+import { PromiseReturnType } from "../../../util"
 
 const ctx = getTestContext()
 const tmc = fakeTMCCurrent({
@@ -148,6 +148,55 @@ describe("UserOrganization", () => {
             message:
               "given email does not fulfill organization email requirements",
           },
+          ...[
+            "v1@gmail.com,v2@yahoo.com,user@organization.fi",
+            "v1@gmail.com;user@organization.fi",
+            "v1@gmail.com user@organization.fi",
+            "Victim <v1@gmail.com>, user@organization.fi",
+            "User <user@organization.fi>",
+            "user@organization.fi\nBcc: v1@gmail.com, user@organization.fi",
+            "v1@gmail.com\r\nuser@organization.fi",
+          ].map((organizational_email) => ({
+            title: `if organizational email is not a single address: ${JSON.stringify(
+              organizational_email,
+            )}`,
+            args: {
+              organization_id: "10000000000000000000000000000102",
+              organizational_email,
+            },
+            headers: FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+            message: "email must be a single plain email address",
+          })),
+          ...[
+            "//evil.com",
+            "/\\evil.com",
+            "https://evil.com",
+            "foo",
+            "/foo\nbar",
+          ].map((redirect) => ({
+            title: `if redirect is not a root-relative path: ${JSON.stringify(
+              redirect,
+            )}`,
+            args: {
+              organization_id: "10000000000000000000000000000102",
+              organizational_email: "user@organization.fi",
+              redirect,
+            },
+            headers: FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+            message: "redirect must be a root-relative path",
+          })),
+          ...["", "english", "EN", "en-US", "en_us", "../x"].map(
+            (language) => ({
+              title: `if language is invalid: ${JSON.stringify(language)}`,
+              args: {
+                organization_id: "10000000000000000000000000000102",
+                organizational_email: "user@organization.fi",
+                language,
+              },
+              headers: FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+              message: "invalid language",
+            }),
+          ),
         ]
 
         it.each(errorCases)(
@@ -190,6 +239,40 @@ describe("UserOrganization", () => {
         })
 
         describe("with confirmation required", () => {
+          it("storing a random 6-digit activation code", async () => {
+            const codes = []
+            for (const [organization_id, headers] of [
+              [
+                "10000000000000000000000000000104",
+                FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+              ],
+              [
+                "10000000000000000000000000000102",
+                FAKE_THIRD_USER_AUTHORIZATION_HEADERS,
+              ],
+            ] as const) {
+              const { addUserOrganization } = await ctx.client.request<any>(
+                addUserOrganizationMutation,
+                { organization_id },
+                headers,
+              )
+              const confirmation =
+                await ctx.prisma.userOrganizationJoinConfirmation.findUniqueOrThrow(
+                  {
+                    where: {
+                      id: addUserOrganization
+                        .user_organization_join_confirmations[0].id,
+                    },
+                  },
+                )
+              codes.push(confirmation.activation_code)
+            }
+
+            for (const code of codes) {
+              expect(code).toMatch(/^\d{6}$/)
+            }
+          })
+
           it("creating a user organization join confirmation and an email delivery", async () => {
             const { addUserOrganization } = await ctx.client.request<any>(
               addUserOrganizationMutation,
@@ -243,7 +326,7 @@ describe("UserOrganization", () => {
               {
                 organization_id: "10000000000000000000000000000102",
                 organizational_email: "user@organization.fi",
-                redirect: "https://foo.bar",
+                redirect: "/foo/bar?baz=1",
               },
               FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
             )
@@ -277,7 +360,7 @@ describe("UserOrganization", () => {
               {
                 organization_id: "10000000000000000000000000000102",
                 organizational_email: "user@organization.fi",
-                redirect: "https://foo.bar",
+                redirect: "/foo/bar?baz=1",
               },
               FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
             )
@@ -390,6 +473,33 @@ describe("UserOrganization", () => {
                   confirmed: { set: false },
                   expired: { set: false },
                   expires_at: "2100-01-01T10:00:00.00+02:00",
+                  activation_code: "123456",
+                  user_organization: {
+                    update: {
+                      confirmed: { set: false },
+                    },
+                  },
+                },
+              }),
+          },
+          {
+            title: "if confirmation was created without an activation code",
+            args: {
+              id: CONFIRMATION_ID,
+              code: "123456",
+            },
+            headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+            message: "confirmation link has expired",
+            before: async () =>
+              ctx.prisma.userOrganizationJoinConfirmation.update({
+                where: {
+                  id: CONFIRMATION_ID,
+                },
+                data: {
+                  confirmed: { set: false },
+                  expired: { set: false },
+                  expires_at: "2100-01-01T10:00:00.00+02:00",
+                  activation_code: null,
                   user_organization: {
                     update: {
                       confirmed: { set: false },
@@ -420,6 +530,102 @@ describe("UserOrganization", () => {
         )
       })
 
+      describe("attempt limit", () => {
+        const ACTIVATION_CODE = "123456"
+
+        beforeEach(async () => {
+          await ctx.prisma.userOrganizationJoinConfirmation.update({
+            where: { id: CONFIRMATION_ID },
+            data: {
+              confirmed: { set: false },
+              expired: { set: false },
+              expires_at: "2100-01-01T10:00:00.00+02:00",
+              activation_code: ACTIVATION_CODE,
+              activation_attempts: 0,
+              user_organization: {
+                update: { confirmed: { set: false } },
+              },
+            },
+          })
+        })
+
+        const confirm = (code: string) =>
+          ctx.client.request(
+            confirmUserOrganizationJoinMutation,
+            { id: CONFIRMATION_ID, code },
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+          )
+
+        it("locks the confirmation after 5 wrong codes", async () => {
+          for (let i = 0; i < 5; i++) {
+            await expect(confirm("000000")).rejects.toMatchObject({
+              response: {
+                errors: [{ message: "invalid activation code" }],
+              },
+            })
+          }
+
+          await expect(confirm(ACTIVATION_CODE)).rejects.toMatchObject({
+            response: {
+              errors: [{ message: "confirmation link has expired" }],
+            },
+          })
+
+          const confirmation =
+            await ctx.prisma.userOrganizationJoinConfirmation.findUniqueOrThrow(
+              {
+                where: { id: CONFIRMATION_ID },
+                include: { user_organization: true },
+              },
+            )
+          expect(confirmation.expired).toBe(true)
+          expect(confirmation.confirmed).toBe(false)
+          expect(confirmation.user_organization.confirmed).toBe(false)
+        })
+
+        it("accepts the right code after fewer than 5 wrong ones", async () => {
+          for (let i = 0; i < 4; i++) {
+            await expect(confirm("000000")).rejects.toBeDefined()
+          }
+
+          await confirm(ACTIVATION_CODE)
+
+          const confirmation =
+            await ctx.prisma.userOrganizationJoinConfirmation.findUniqueOrThrow(
+              { where: { id: CONFIRMATION_ID } },
+            )
+          expect(confirmation.confirmed).toBe(true)
+        })
+
+        it("counts aliased guesses in one request against the limit", async () => {
+          const guesses = Array.from(
+            { length: 8 },
+            (_, i) =>
+              `g${i}: confirmUserOrganizationJoin(id: "${CONFIRMATION_ID}", code: "${String(
+                i,
+              ).padStart(6, "9")}") { id }`,
+          )
+          await expect(
+            ctx.client.request(
+              `mutation { ${guesses.join("\n")} }`,
+              {},
+              FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+            ),
+          ).rejects.toBeDefined()
+
+          const confirmation =
+            await ctx.prisma.userOrganizationJoinConfirmation.findUniqueOrThrow(
+              { where: { id: CONFIRMATION_ID } },
+            )
+          expect(confirmation.activation_attempts).toBe(5)
+          await expect(confirm(ACTIVATION_CODE)).rejects.toMatchObject({
+            response: {
+              errors: [{ message: "confirmation link has expired" }],
+            },
+          })
+        })
+      })
+
       describe("succeeds", () => {
         const confirmMembershipSuccessTest = async (
           headers: Record<string, string>,
@@ -434,6 +640,7 @@ describe("UserOrganization", () => {
                 confirmed_at: { set: null },
                 expired: { set: false },
                 expires_at: "2100-01-01T10:00:00.00+02:00",
+                activation_code: "123456",
                 user_organization: {
                   update: {
                     confirmed: { set: false },
@@ -451,22 +658,13 @@ describe("UserOrganization", () => {
               },
             })
 
-          const activationCodeResult = await calculateActivationCode({
-            prisma: ctx.prisma,
-            userOrganizationJoinConfirmation,
-          })
-
-          if (activationCodeResult.isErr()) {
-            fail("could not calculate activation code")
-          }
-
           const before = new Date()
 
           await ctx.client.request(
             confirmUserOrganizationJoinMutation,
             {
               id: CONFIRMATION_ID,
-              code: activationCodeResult.value,
+              code: "123456",
             },
             headers,
           )
@@ -707,12 +905,12 @@ describe("UserOrganization", () => {
         beforeEach(async () => {
           await createUnconfirmedUserOrganization()
           await createRequest({
-            redirect: "http://foo.foo.bar",
+            redirect: "/foo",
           })
         })
 
         it("creating confirmation with given redirect", () => {
-          expect(result.redirect).toEqual("http://foo.foo.bar")
+          expect(result.redirect).toEqual("/foo")
         })
       })
 
@@ -855,6 +1053,25 @@ describe("UserOrganization", () => {
           headers: FAKE_THIRD_USER_AUTHORIZATION_HEADERS,
           message:
             "given email does not fulfill organization email requirements",
+        },
+        {
+          title: "if new organizational email has multiple addresses",
+          args: {
+            id: "96900000000000000000000000000199",
+            organizational_email: "v1@gmail.com,third2@organization.fi",
+          },
+          headers: FAKE_THIRD_USER_AUTHORIZATION_HEADERS,
+          message: "email must be a single plain email address",
+        },
+        {
+          title: "if redirect is not a root-relative path",
+          args: {
+            id: "96900000000000000000000000000199",
+            organizational_email: "third2@organization.fi",
+            redirect: "//evil.com",
+          },
+          headers: FAKE_THIRD_USER_AUTHORIZATION_HEADERS,
+          message: "redirect must be a root-relative path",
         },
       ]
 

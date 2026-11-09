@@ -10,13 +10,18 @@ import {
   GraphQLForbiddenError,
   GraphQLUserInputError,
 } from "../../lib/errors"
-import { calculateActivationCode, filterNullFields } from "../../util"
+import {
+  filterNullFields,
+  isActivationCodeMatch,
+  MAX_ACTIVATION_ATTEMPTS,
+} from "../../util"
 import {
   ConfigurationError,
   ConflictError,
   OrphanedEntityError,
 } from "../common"
 import {
+  assertJoinConfirmationOptions,
   assertUserIdOnlyForAdmin,
   assertUserOrganizationCredentials,
   cancelEmailDeliveries,
@@ -73,6 +78,7 @@ export const UserOrganizationMutations = extendType({
         let user: User | null
 
         assertUserIdOnlyForAdmin(ctx, user_id)
+        assertJoinConfirmationOptions({ language, redirect })
 
         if (user_id && user_id !== ctx.user?.id) {
           user = await ctx.prisma.user.findUnique({
@@ -204,38 +210,51 @@ export const UserOrganizationMutations = extendType({
 
         const currentDate = new Date()
 
-        // confirmation expired or will expire now
-        const confirmationWillExpire =
-          userOrganizationJoinConfirmation.expires_at &&
-          userOrganizationJoinConfirmation.expires_at < currentDate
+        const expireConfirmation = async () => {
+          await ctx.prisma.userOrganizationJoinConfirmation.update({
+            where: { id },
+            data: {
+              expired: { set: true },
+            },
+          })
+          return new GraphQLForbiddenError("confirmation link has expired")
+        }
 
-        if (
-          userOrganizationJoinConfirmation.expired ||
-          confirmationWillExpire
-        ) {
-          if (confirmationWillExpire) {
-            await ctx.prisma.userOrganizationJoinConfirmation.update({
-              where: { id },
-              data: {
-                expired: { set: true },
-              },
-            })
-          }
-
-          // TODO: should we just return the expired confirmation?
+        if (userOrganizationJoinConfirmation.expired) {
           throw new GraphQLForbiddenError("confirmation link has expired")
         }
 
-        const activationCodeResult = await calculateActivationCode({
-          prisma: ctx.prisma,
-          userOrganizationJoinConfirmation,
-        })
-
-        if (activationCodeResult.isErr()) {
-          throw activationCodeResult.error
+        if (
+          (userOrganizationJoinConfirmation.expires_at &&
+            userOrganizationJoinConfirmation.expires_at < currentDate) ||
+          !userOrganizationJoinConfirmation.activation_code
+        ) {
+          throw await expireConfirmation()
         }
 
-        if (activationCodeResult.value !== code) {
+        // Counting the attempt atomically before comparing keeps concurrent
+        // (e.g. aliased) requests from getting more than the allowed guesses.
+        const { count: attemptReserved } =
+          await ctx.prisma.userOrganizationJoinConfirmation.updateMany({
+            where: {
+              id,
+              activation_attempts: { lt: MAX_ACTIVATION_ATTEMPTS },
+            },
+            data: {
+              activation_attempts: { increment: 1 },
+            },
+          })
+
+        if (!attemptReserved) {
+          throw await expireConfirmation()
+        }
+
+        if (
+          !isActivationCodeMatch(
+            userOrganizationJoinConfirmation.activation_code,
+            code,
+          )
+        ) {
           throw new GraphQLForbiddenError("invalid activation code")
         }
 
@@ -283,6 +302,8 @@ export const UserOrganizationMutations = extendType({
           // just to be sure, should never happen
           throw new GraphQLAuthenticationError("not logged in")
         }
+
+        assertJoinConfirmationOptions({ language, redirect })
 
         const userOrganization = await ctx.prisma.userOrganization.findFirst({
           where: {
@@ -461,6 +482,7 @@ export const UserOrganizationMutations = extendType({
         ctx: Context,
       ) => {
         await assertUserOrganizationCredentials(ctx, id)
+        assertJoinConfirmationOptions({ language, redirect })
 
         const userOrganization = await ctx.prisma.userOrganization.findUnique({
           where: {

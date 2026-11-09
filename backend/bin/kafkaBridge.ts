@@ -15,6 +15,7 @@ import {
 } from "../config"
 import { KafkaError } from "../lib/errors"
 import sentryLogger from "../lib/logger"
+import { isConfiguredTopic } from "./kafkaConsumer/kafkaConfig"
 import { KafkaPartitionAssigner } from "./kafkaPartitionAssigner"
 
 const logger = sentryLogger({ service: "kafka-bridge" })
@@ -109,6 +110,12 @@ app.post("/kafka-bridge/api/v0/event", async (req, res) => {
       )}`,
     )
     return res.status(400).json({ error: "Topic or payload missing" })
+  }
+  if (!isConfiguredTopic(topic)) {
+    logger.info(
+      `Received an event with an unknown topic ${JSON.stringify(topic)}`,
+    )
+    return res.status(400).json({ error: "Unknown topic" })
   }
   logger.info(`Producing to topic ${topic} payload ${JSON.stringify(payload)}`)
 
