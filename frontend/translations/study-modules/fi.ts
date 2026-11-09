@@ -1,8 +1,8 @@
 export default {
   modulesTitle: "Opinto&shy;kokonaisuudet",
   moduleNotFound: "Opintokokonaisuutta ei löydy!",
-  moduleWithIdNotFound:
-    "Opintokokonaisuutta tunnuksella <b>{{slug}}</b> ei löydy!",
+  moduleWithIdNotFoundPre: "Opintokokonaisuutta tunnuksella ",
+  moduleWithIdNotFoundPost: " ei löydy!",
   redirectMessagePre:
     "Sinut ohjataan takaisin opintokokonaisuuksien listaan 5 sekunnin kuluessa - paina ",
   redirectLinkText: "tästä",

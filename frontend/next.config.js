@@ -60,6 +60,19 @@ const nextConfiguration = (_phase) => ({
   },
   trailingSlash: true,
   agentRules: false,
+  poweredByHeader: false,
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        locale: false,
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+        ],
+      },
+    ]
+  },
   async rewrites() {
     // In development, proxy API requests to the backend server
     if (!isProduction) {
