@@ -70,4 +70,38 @@ describe("moocfiAuthPlugin", () => {
     expect(user.email).toBe("e@mail.com")
     expect(user.updated_at).not.toEqual(STALE_TIMESTAMP)
   })
+
+  describe("organization keys", () => {
+    const registeredCompletionsQuery = gql`
+      query {
+        registeredCompletions {
+          id
+        }
+      }
+    `
+
+    const requestAsOrganization = async (disabled: boolean) => {
+      await ctx.prisma.organization.create({
+        data: { slug: "org", name: "org", secret_key: "org-secret", disabled },
+      })
+
+      return ctx.client.request(
+        registeredCompletionsQuery,
+        {},
+        { Authorization: "Basic org-secret" },
+      )
+    }
+
+    it("accepts an enabled organization's key", async () => {
+      await expect(requestAsOrganization(false)).resolves.toEqual({
+        registeredCompletions: [],
+      })
+    })
+
+    it("refuses a disabled organization's key", async () => {
+      await expect(requestAsOrganization(true)).rejects.toMatchObject({
+        response: { errors: [{ message: "Please log in." }] },
+      })
+    })
+  })
 })

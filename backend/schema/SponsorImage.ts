@@ -1,5 +1,7 @@
 import { arg, extendType, inputObjectType, nonNull, objectType } from "nexus"
 
+import { isAdmin } from "../accessControl"
+
 export const SponsorImage = objectType({
   name: "SponsorImage",
   definition(t) {
@@ -43,6 +45,7 @@ export const SponsorImageMutations = extendType({
       args: {
         data: nonNull(arg({ type: "SponsorImageUpsertInput" })),
       },
+      authorize: isAdmin,
       resolve: async (_, { data }, ctx) => {
         return ctx.prisma.sponsorImage.create({
           data,

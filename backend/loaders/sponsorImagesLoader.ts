@@ -1,7 +1,6 @@
 import DataLoader from "dataloader"
 
-import { SponsorImage } from "@prisma/client"
-
+import { SponsorImage } from "../generated/prisma"
 import { ExtendedPrismaClient } from "../prisma"
 
 export interface SponsorImagesKey {

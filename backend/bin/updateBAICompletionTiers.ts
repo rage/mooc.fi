@@ -1,5 +1,4 @@
-import { Completion, User } from "@prisma/client"
-
+import { Completion, User } from "../generated/prisma"
 import sentryLogger from "../lib/logger"
 import prisma from "../prisma"
 import knex from "../services/knex"

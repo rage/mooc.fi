@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client"
+import { Prisma } from "../generated/prisma"
 
 /**
  * Completions dated before a credit registration cutoff; falls back to `created_at` when there is

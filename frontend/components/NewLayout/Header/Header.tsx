@@ -22,7 +22,7 @@ import CommonTranslations from "/translations/common"
 
 interface HideOnScrollProps {
   window?: () => Window
-  children: React.ReactElement
+  children: React.ReactElement<any>
 }
 
 function HideOnScroll({ window, children }: HideOnScrollProps) {

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
 import { LinkProps as NextLinkProps } from "next/link"
 
 import { ListItemButtonTypeMap } from "@mui/material"
@@ -27,14 +26,14 @@ type DefaultNextLinkProps = Omit<
 declare module "@mui/material/Link" {
   export type EnhancedLinkProps<
     D extends React.ElementType = LinkTypeMap["defaultComponent"],
-    P = {},
+    P = object,
   > = OverrideProps<
     LinkTypeMap<P & Partial<DefaultNextLinkProps>, D>,
     D & typeof LinkBehavior
   >
   export type EnhancedLink<
     D extends React.ElementType = LinkTypeMap["defaultComponent"],
-    P = {},
+    P = object,
   > = OverridableComponent<LinkTypeMap<P & Partial<DefaultNextLinkProps>, D>>
   const Link: OverridableComponent<
     LinkTypeMap<Partial<DefaultNextLinkProps>, typeof LinkBehavior>
@@ -44,11 +43,11 @@ declare module "@mui/material/Link" {
 declare module "@mui/material/ButtonBase" {
   export type EnhancedButtonBaseProps<
     D extends React.ElementType = ButtonBaseTypeMap["defaultComponent"],
-    P = {},
+    P = object,
   > = OverrideProps<ButtonBaseTypeMap<P & Partial<DefaultNextLinkProps>, D>, D>
   export type EnhancedButtonBase<
     D extends React.ElementType = ButtonBaseTypeMap["defaultComponent"],
-    P = {},
+    P = object,
   > = ExtendButtonBase<ButtonBaseTypeMap<P & Partial<DefaultNextLinkProps>, D>>
   const ButtonBase: ExtendButtonBase<
     ButtonBaseTypeMap<Partial<DefaultNextLinkProps>>
@@ -58,11 +57,11 @@ declare module "@mui/material/ButtonBase" {
 declare module "@mui/material/Button" {
   export type EnhancedButtonProps<
     D extends React.ElementType = ButtonTypeMap["defaultComponent"],
-    P = {},
+    P = object,
   > = OverrideProps<ButtonTypeMap<P & Partial<DefaultNextLinkProps>, D>, D>
   export type EnhancedButton<
     D extends React.ElementType = ButtonTypeMap["defaultComponent"],
-    P = {},
+    P = object,
   > = ExtendButtonBase<ButtonTypeMap<P & Partial<DefaultNextLinkProps>, D>>
   const Button: ExtendButtonBase<ButtonTypeMap<Partial<DefaultNextLinkProps>>>
 }
@@ -70,11 +69,11 @@ declare module "@mui/material/Button" {
 declare module "@mui/material/MenuItem" {
   export type EnhancedMenuItemProps<
     D extends React.ElementType = MenuItemTypeMap["defaultComponent"],
-    P = {},
+    P = object,
   > = OverrideProps<MenuItemTypeMap<P & Partial<DefaultNextLinkProps>, D>, D>
   export type EnhancedMenuItem<
     D extends React.ElementType = MenuItemTypeMap["defaultComponent"],
-    P = {},
+    P = object,
   > = ExtendButtonBase<MenuItemTypeMap<P & Partial<DefaultNextLinkProps>, D>>
   const MenuItem: ExtendButtonBase<
     MenuItemTypeMap<Partial<DefaultNextLinkProps>>
@@ -83,9 +82,9 @@ declare module "@mui/material/MenuItem" {
 
 declare module "@mui/material/ListItemButton" {
   export type EnhancedListItemButtonProps<
-    RootComponent extends
-      React.ElementType = ListItemButtonTypeMap["defaultComponent"],
-    AdditionalProps = {},
+    RootComponent extends React.ElementType =
+      ListItemButtonTypeMap["defaultComponent"],
+    AdditionalProps = object,
   > = OverrideProps<
     ListItemButtonTypeMap<
       AdditionalProps & Partial<DefaultNextLinkProps>,
@@ -95,7 +94,7 @@ declare module "@mui/material/ListItemButton" {
   > & { component?: React.ElementType }
   export type EnhancedListItemButton<
     D extends React.ElementType = ButtonTypeMap["defaultComponent"],
-    P = {},
+    P = object,
   > = ExtendButtonBase<ButtonTypeMap<P & Partial<DefaultNextLinkProps>, D>>
   const ListItemButton: ExtendButtonBase<
     ListItemButtonTypeMap<Partial<DefaultNextLinkProps>>
@@ -105,14 +104,14 @@ declare module "@mui/material/ListItemButton" {
 declare module "@mui/material/IconButton" {
   export type EnhancedIconButtonProps<
     D extends React.ElementType = IconButtonTypeMap["defaultComponent"],
-    P = {},
+    P = object,
   > = OverrideProps<IconButtonTypeMap<P & Partial<DefaultNextLinkProps>, D>, D>
   export type EnhancedIconButton<
     D extends React.ElementType = ButtonTypeMap["defaultComponent"],
-    P = {},
+    P = object,
   > = ExtendButtonBase<IconButtonTypeMap<P & Partial<DefaultNextLinkProps>, D>>
   const IconButton: ExtendButtonBase<
-    IconButonTypeMap<Partial<DefaultNextLinkProps>>
+    IconButtonTypeMap<Partial<DefaultNextLinkProps>>
   >
 }
 
@@ -252,7 +251,7 @@ declare module "@mui/material/styles" {
   }
 }
 
-declare module "@mui/material/styles/createPalette" {
+declare module "@mui/material/styles" {
   interface CommonColors {
     brand: {
       main: string

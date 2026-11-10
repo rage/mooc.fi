@@ -26,8 +26,8 @@ export const isCompletedAfterCutoff = ({
   const effectiveDate = completion_date ?? created_at
   return Boolean(
     delegatedAt &&
-      effectiveDate &&
-      new Date(effectiveDate) >= new Date(delegatedAt),
+    effectiveDate &&
+    new Date(effectiveDate) >= new Date(delegatedAt),
   )
 }
 

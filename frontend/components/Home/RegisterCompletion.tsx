@@ -1,6 +1,7 @@
 import { PropsWithChildren } from "react"
 
-import { NextSeo } from "next-seo"
+import { generateNextSeo } from "next-seo/pages"
+import Head from "next/head"
 
 import { Typography } from "@mui/material"
 
@@ -21,7 +22,7 @@ function RegisterCompletion({
 }: PropsWithChildren<RegisterCompletionProps>) {
   return (
     <>
-      {pageTitle && <NextSeo title={pageTitle} />}
+      {pageTitle && <Head>{generateNextSeo({ title: pageTitle })}</Head>}
       <Container>
         {/* <Alert severity="warning" variant="filled">
         {t("registrationClosed")}

@@ -6,7 +6,7 @@ import { sortBy } from "remeda"
 import { ArrowDropDown, ArrowDropUp, QuestionMark } from "@mui/icons-material"
 import {
   Autocomplete,
-  AutocompleteRenderGetTagProps,
+  AutocompleteRenderValueGetItemProps,
   AutocompleteRenderInputParams,
   Chip,
   IconButton,
@@ -105,15 +105,17 @@ function CourseSponsorsForm() {
   const renderSponsors = useCallback(
     (
       sponsors: Array<SponsorFormValue>,
-      getTagProps: AutocompleteRenderGetTagProps,
+      getItemProps: AutocompleteRenderValueGetItemProps<true>,
     ) => {
       return sponsors.map((sponsor, index) => {
         if (!hasName(sponsor)) {
           return null
         }
+        const { key, ...itemProps } = getItemProps({ index })
         return (
           <Chip
-            {...getTagProps({ index })}
+            key={key}
+            {...itemProps}
             variant="outlined"
             label={sponsor.name ?? ""}
             onDelete={onDelete(index)}
@@ -137,11 +139,17 @@ function CourseSponsorsForm() {
   )
 
   const renderOption = useCallback(
-    (props: React.HTMLAttributes<HTMLLIElement>, option: SponsorFormValue) => {
+    (
+      {
+        key,
+        ...props
+      }: React.HTMLAttributes<HTMLLIElement> & { key?: React.Key },
+      option: SponsorFormValue,
+    ) => {
       const logos = option.images?.filter((image) => image.type === "logo")
 
       return (
-        <SponsorOption {...props}>
+        <SponsorOption key={key} {...props}>
           <SponsorSmallLogoContainer>
             {logos.length > 0 ? (
               <ContainedImage
@@ -174,7 +182,7 @@ function CourseSponsorsForm() {
         value={field.value}
         options={options}
         onChange={onChange}
-        renderTags={renderSponsors}
+        renderValue={renderSponsors}
         renderInput={renderInput}
         renderOption={renderOption}
         getOptionLabel={(option) => option.name ?? ""}

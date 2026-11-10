@@ -13,12 +13,19 @@ import {
   stringArg,
 } from "nexus"
 
-import { Prisma } from "@prisma/client"
-
 import { isAdmin, isSameOrganization, or, Role } from "../accessControl"
 import { Context } from "../context"
+import { Prisma } from "../generated/prisma"
 import { GraphQLUserInputError } from "../lib/errors"
 import { filterNullFields, filterNullRecursive } from "../util"
+
+const isAdminOrSameOrganization = or(isAdmin, isSameOrganization)
+
+const flagUnset = (
+  flag: "hidden" | "disabled",
+): Prisma.OrganizationWhereInput => ({
+  OR: [{ [flag]: false }, { [flag]: null }],
+})
 
 export const Organization = objectType({
   name: "Organization",
@@ -46,18 +53,20 @@ export const Organization = objectType({
     t.model.verified_at()
     t.model.website()
     t.model.creator_id()
-    t.model.creator()
+    t.model.creator({
+      authorize: isAdminOrSameOrganization,
+    })
     t.model.completions_registered({
-      authorize: or(isAdmin, isSameOrganization),
+      authorize: isAdminOrSameOrganization,
     })
     t.model.courses()
     t.model.course_organizations()
     t.model.organization_translations()
     t.model.user_organizations({
-      authorize: or(isAdmin, isSameOrganization),
+      authorize: isAdminOrSameOrganization,
     })
     t.model.verified_users({
-      authorize: or(isAdmin, isSameOrganization),
+      authorize: isAdminOrSameOrganization,
     })
     t.model.required_confirmation({
       description:
@@ -68,7 +77,9 @@ export const Organization = objectType({
         "Optional regex pattern to use when joining organization or changing organizational email.",
     })
     t.model.join_organization_email_template_id()
-    t.model.join_organization_email_template()
+    t.model.join_organization_email_template({
+      authorize: isAdminOrSameOrganization,
+    })
   },
 })
 
@@ -109,17 +120,10 @@ export const OrganizationQueries = extendType({
           where: {
             id: id ?? undefined,
             slug: slug ?? undefined,
-            ...(!hidden && { hidden: { not: true } }),
-            ...(!disabled && {
-              OR: [
-                {
-                  disabled: false,
-                },
-                {
-                  disabled: null,
-                },
-              ],
-            }),
+            AND: [
+              ...(hidden ? [] : [flagUnset("hidden")]),
+              ...(disabled ? [] : [flagUnset("disabled")]),
+            ],
           },
         })
       },
@@ -134,7 +138,7 @@ export const OrganizationQueries = extendType({
         orderBy: list(
           nonNull(
             arg({
-              type: "OrganizationOrderByWithRelationAndSearchRelevanceInput",
+              type: "OrganizationOrderByWithRelationInput",
             }),
           ),
         ),
@@ -153,15 +157,11 @@ export const OrganizationQueries = extendType({
           where.AND = []
 
           if (!hidden) {
-            where.AND.push({
-              OR: [{ hidden: false }, { hidden: null }],
-            })
+            where.AND.push(flagUnset("hidden"))
           }
 
           if (!disabled) {
-            where.AND.push({
-              OR: [{ disabled: false }, { disabled: null }],
-            })
+            where.AND.push(flagUnset("disabled"))
           }
         }
 

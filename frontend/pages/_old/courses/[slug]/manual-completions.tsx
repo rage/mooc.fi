@@ -2,12 +2,14 @@ import { useState } from "react"
 
 import { DateTime } from "luxon"
 import { useConfirm } from "material-ui-confirm"
-import { NextSeo } from "next-seo"
+import { generateNextSeo } from "next-seo/pages"
 import dynamic from "next/dynamic"
+import Head from "next/head"
 import { useRouter } from "next/router"
 import { parse } from "papaparse"
 
-import { useMutation, useQuery } from "@apollo/client"
+import { CombinedGraphQLErrors } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client/react"
 import {
   Alert,
   AlertTitle,
@@ -18,8 +20,8 @@ import {
   Typography,
 } from "@mui/material"
 import { styled } from "@mui/material/styles"
-import { type DatePickerProps } from "@mui/x-date-pickers"
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon"
+import { type DatePickerProps } from "@mui/x-date-pickers/DatePicker"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
@@ -38,8 +40,8 @@ const StyledTextField = styled(TextField)`
   margin-bottom: 1rem;
 `
 
-const DynamicDatePicker = dynamic<DatePickerProps<Date | null>>(
-  () => import("@mui/x-date-pickers").then((mod) => mod.DatePicker),
+const DynamicDatePicker = dynamic<DatePickerProps>(
+  () => import("@mui/x-date-pickers/DatePicker").then((mod) => mod.DatePicker),
   { ssr: false, loading: () => <Skeleton variant="rectangular" /> },
 )
 
@@ -62,7 +64,7 @@ const ManualCompletions = () => {
   const [messageSeverity, setMessageSeverity] = useState<
     "info" | "error" | "success" | "warning" | undefined
   >("info")
-  const [completionDate, setCompletionDate] = useState<Date | null>(null)
+  const [completionDate, setCompletionDate] = useState<DateTime | null>(null)
   const [
     addCompletions,
     { loading: mutationLoading, error: mutationError, reset: resetMutation },
@@ -182,16 +184,16 @@ const ManualCompletions = () => {
       const error = !days
         ? t("manualCompletionsDateErroneous", { date: o.completion_date })
         : days > 0
-        ? t("manualCompletionsDateFuture", {
-            days: Math.round(days),
-            date: o.completion_date,
-          })
-        : days < -30 * 4
-        ? t("manualCompletionsDatePast", {
-            days: -Math.round(days),
-            date: o.completion_date,
-          })
-        : undefined
+          ? t("manualCompletionsDateFuture", {
+              days: Math.round(days),
+              date: o.completion_date,
+            })
+          : days < -30 * 4
+            ? t("manualCompletionsDatePast", {
+                days: -Math.round(days),
+                date: o.completion_date,
+              })
+            : undefined
 
       return {
         row,
@@ -244,14 +246,16 @@ const ManualCompletions = () => {
         confirmationText: t("manualCompletionsContinue"),
         cancellationText: t("manualCompletionsCancel"),
       })
-        .then(() =>
-          addCompletions({
-            variables: {
-              course_slug: slug,
-              completions: filteredData,
-            },
-          }),
-        )
+        .then(({ confirmed }) => {
+          if (confirmed) {
+            return addCompletions({
+              variables: {
+                course_slug: slug,
+                completions: filteredData,
+              },
+            })
+          }
+        })
         .catch(() => undefined)
         .finally(() => setSubmitting(false))
     } else {
@@ -274,7 +278,7 @@ const ManualCompletions = () => {
 
   return (
     <>
-      <NextSeo title={title} />
+      <Head>{generateNextSeo({ title: title })}</Head>
       <Container>
         <Typography variant="h3" component="h1">
           {t("manualCompletionsTitle")}
@@ -290,8 +294,8 @@ const ManualCompletions = () => {
           <Alert severity="error">
             <AlertTitle>{t("manualCompletionsAddError")}</AlertTitle>
             <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
-              {mutationError.graphQLErrors.length > 0
-                ? mutationError.graphQLErrors.map((e) => e.message).join("\n")
+              {CombinedGraphQLErrors.is(mutationError)
+                ? mutationError.errors.map((e) => e.message).join("\n")
                 : mutationError.message}
             </pre>
           </Alert>

@@ -2,11 +2,12 @@ type Entries<T> = {
   [K in keyof T]: [K, T[K]]
 }[keyof T][]
 
-type IdStripped<T> = T extends Array<infer U>
-  ? Array<IdStripped<U>>
-  : T extends Record<string | number | symbol, unknown>
-  ? { [K in keyof T]: K extends "id" ? never : IdStripped<T[K]> }
-  : T
+type IdStripped<T> =
+  T extends Array<infer U>
+    ? Array<IdStripped<U>>
+    : T extends Record<string | number | symbol, unknown>
+      ? { [K in keyof T]: K extends "id" ? never : IdStripped<T[K]> }
+      : T
 
 const isObject = (
   value: unknown,

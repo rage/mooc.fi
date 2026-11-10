@@ -9,9 +9,13 @@ import {
   stringArg,
 } from "nexus"
 
-import { Course, CourseStatus, CourseTranslation, Prisma } from "@prisma/client"
-
 import { isAdmin, isUser, or } from "../../accessControl"
+import {
+  Course,
+  CourseStatus,
+  CourseTranslation,
+  Prisma,
+} from "../../generated/prisma"
 import { GraphQLUserInputError } from "../../lib/errors"
 import { filterNullRecursive, isDefined } from "../../util"
 
@@ -101,7 +105,7 @@ export const CourseQueries = extendType({
         orderBy: list(
           nonNull(
             arg({
-              type: "CourseOrderByWithRelationAndSearchRelevanceInput",
+              type: "CourseOrderByWithRelationInput",
             }),
           ),
         ),

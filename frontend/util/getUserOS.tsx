@@ -5,10 +5,10 @@ export type UserOSType = "OS" | "Linux" | "Windows" | "macOS" | "ZIP"
 function getUserOS(req?: GetServerSidePropsContext["req"]): UserOSType {
   let OSName: UserOSType = "OS"
   const detectString =
-    req?.headers["user-agent"] ?? typeof window !== "undefined"
-      ? window.navigator.userAgentData?.platform ?? // all but firefox
+    (req?.headers["user-agent"] ?? typeof window !== "undefined")
+      ? (window.navigator.userAgentData?.platform ?? // all but firefox
         window.navigator.userAgent ?? // old
-        window.navigator.oscpu // firefox
+        window.navigator.oscpu) // firefox
       : ""
   if (detectString.indexOf("Win") != -1) OSName = "Windows"
   if (detectString.indexOf("Mac") != -1) OSName = "macOS"

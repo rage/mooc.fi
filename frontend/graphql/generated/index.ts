@@ -25,6 +25,7 @@ export { CourseEditorTagsDocument } from "./definitions/CourseEditorTagsDocument
 export { CourseFieldsFragmentDoc } from "./definitions/CourseFieldsFragmentDoc"
 export { CourseFromSlugDocument } from "./definitions/CourseFromSlugDocument"
 export { CourseKeyFieldsFragmentDoc } from "./definitions/CourseKeyFieldsFragmentDoc"
+export { CourseOwnerCheckDocument } from "./definitions/CourseOwnerCheckDocument"
 export { CoursesDocument } from "./definitions/CoursesDocument"
 export { CourseSponsorFieldsFragmentDoc } from "./definitions/CourseSponsorFieldsFragmentDoc"
 export { CourseTranslationCoreFieldsFragmentDoc } from "./definitions/CourseTranslationCoreFieldsFragmentDoc"

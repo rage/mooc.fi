@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
-import { NextSeo } from "next-seo"
+import { generateNextSeo } from "next-seo/pages"
+import Head from "next/head"
 import { useRouter } from "next/router"
 
-import { useApolloClient } from "@apollo/client"
+import { useApolloClient } from "@apollo/client/react"
 
 import Container from "/components/Container"
 import SearchForm from "/components/Dashboard/Users/Search/SearchForm"
@@ -127,6 +128,7 @@ const UserSearch = () => {
         ) {
           setResults((prev) => {
             const {
+              __typename,
               matches,
               field,
               fieldValue,
@@ -139,6 +141,7 @@ const UserSearch = () => {
               finished,
             } = data.userSearch
             const meta = {
+              __typename,
               field,
               fieldValue: fieldValue ?? "",
               search: searchVariables.search,
@@ -272,7 +275,7 @@ const UserSearch = () => {
 
   return (
     <>
-      <NextSeo title={textParam} />
+      <Head>{generateNextSeo({ title: textParam })}</Head>
       <Container>
         <UserSearchContext.Provider value={value}>
           <SearchForm />

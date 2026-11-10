@@ -1,5 +1,3 @@
-import React from "react"
-
 import { range } from "remeda"
 
 import { PropsOf } from "@emotion/react"

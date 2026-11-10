@@ -165,8 +165,8 @@ export function ListItem({
 }: StudyModuleListItemProps) {
   const t = useTranslator(StudyModulesTranslations)
 
-  const descriptionRef = useRef<HTMLElement | null>()
-  const ModuleSectionRef = useRef<HTMLLIElement | null>()
+  const descriptionRef = useRef<HTMLElement | null>(undefined)
+  const ModuleSectionRef = useRef<HTMLLIElement | null>(undefined)
   const { active, upcoming, ended } = useMemo(
     () => getCoursesByStatus(studyModule.courses),
     [studyModule],
@@ -220,7 +220,9 @@ export function ListItem({
         <ModuleSectionBody>
           <HeroContainer>
             <ModuleSectionDescription
-              ref={(ref) => (descriptionRef.current = ref)}
+              ref={(ref) => {
+                descriptionRef.current = ref
+              }}
             >
               <CenteredHeader variant="h1" component="h2">
                 {studyModule.name}
@@ -230,20 +232,19 @@ export function ListItem({
               </ModuleSectionDescriptionText>
             </ModuleSectionDescription>
           </HeroContainer>
-          {[active, upcoming].flatMap(
-            (courses) =>
-              courses?.map((course, index) => (
-                <CourseCard
-                  ref={(ref) => {
-                    if (index === 0) {
-                      ModuleSectionRef.current = ref
-                    }
-                  }}
-                  course={course}
-                  studyModule={studyModule.slug}
-                  key={course.id}
-                />
-              )),
+          {[active, upcoming].flatMap((courses) =>
+            courses?.map((course, index) => (
+              <CourseCard
+                ref={(ref) => {
+                  if (index === 0) {
+                    ModuleSectionRef.current = ref
+                  }
+                }}
+                course={course}
+                studyModule={studyModule.slug}
+                key={course.id}
+              />
+            )),
           )}
           {/* TODO: do something with ended courses */}
         </ModuleSectionBody>

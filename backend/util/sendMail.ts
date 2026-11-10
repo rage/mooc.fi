@@ -4,8 +4,6 @@ import Mail from "nodemailer/lib/mailer"
 import SMTPTransport from "nodemailer/lib/smtp-transport"
 import * as winston from "winston"
 
-import { PrismaClient } from "@prisma/client"
-
 import {
   SMTP_FROM,
   SMTP_HOST,
@@ -13,6 +11,7 @@ import {
   SMTP_PORT,
   SMTP_USER,
 } from "../config"
+import { PrismaClient } from "../generated/prisma"
 
 interface SendMailOptions {
   to: Mail.Options["to"]

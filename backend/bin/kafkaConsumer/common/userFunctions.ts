@@ -1,16 +1,15 @@
 import {
+  completionLanguageMap,
+  LanguageAbbreviation,
+} from "../../../config/languageConfig"
+import { BaseContext } from "../../../context"
+import {
   Course,
   ExerciseCompletion,
   ExerciseCompletionRequiredAction,
   User,
   UserCourseServiceProgress,
-} from "@prisma/client"
-
-import {
-  completionLanguageMap,
-  LanguageAbbreviation,
-} from "../../../config/languageConfig"
-import { BaseContext } from "../../../context"
+} from "../../../generated/prisma"
 import { DatabaseInputError } from "../../../lib/errors"
 import {
   emptyOrNullToUndefined,

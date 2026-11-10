@@ -1,6 +1,7 @@
 import { gql } from "graphql-request"
 
 import {
+  FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
   FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
   getTestContext,
   ID_REGEX,
@@ -38,6 +39,17 @@ const updateUserNameMutation = gql`
       id
       first_name
       last_name
+    }
+  }
+`
+
+const updateUserMutation = gql`
+  mutation UpdateUser($user: UserUpdateArg!) {
+    updateUser(user: $user) {
+      id
+      first_name
+      email
+      real_student_number
     }
   }
 `
@@ -187,17 +199,30 @@ describe("User", () => {
     })
 
     describe("addUser", () => {
+      const newUser = {
+        email: "new@mail.com",
+        first_name: "first",
+        last_name: "last",
+        username: "username",
+        research_consent: false,
+        upstream_id: 1,
+      }
+
       it("creates user correctly", async () => {
-        const res = await ctx.client.request(addUserMutation, {
-          user: {
-            email: "e@mail.com",
-            first_name: "first",
-            last_name: "last",
-            username: "username",
-            research_consent: false,
-            upstream_id: 1,
+        const res = await ctx.client.request(
+          addUserMutation,
+          {
+            user: {
+              email: "e@mail.com",
+              first_name: "first",
+              last_name: "last",
+              username: "username",
+              research_consent: false,
+              upstream_id: 1,
+            },
           },
-        })
+          FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+        )
 
         expect(res).toMatchSnapshot({
           addUser: {
@@ -211,18 +236,98 @@ describe("User", () => {
           data: normalUser,
         })
 
-        await expect(async () => {
-          await ctx.client.request(addUserMutation, {
+        await expect(
+          ctx.client.request(
+            addUserMutation,
+            { user: newUser },
+            FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+          ),
+        ).rejects.toThrow(/already exists/)
+      })
+
+      it("refuses anonymous callers", async () => {
+        await expect(
+          ctx.client.request(addUserMutation, { user: newUser }),
+        ).rejects.toThrow(/Not authorized/)
+      })
+
+      it("refuses normal users", async () => {
+        await expect(
+          ctx.client.request(
+            addUserMutation,
+            { user: { ...newUser, upstream_id: 999 } },
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+          ),
+        ).rejects.toThrow(/Not authorized/)
+        expect(
+          await ctx.prisma.user.findFirst({ where: { upstream_id: 999 } }),
+        ).toBeNull()
+      })
+    })
+
+    describe("updateUser", () => {
+      beforeEach(async () => {
+        await ctx.prisma.user.create({
+          data: { ...normalUser, real_student_number: "123" },
+        })
+      })
+
+      it("lets a normal user update their own name", async () => {
+        const res = await ctx.client.request<any>(
+          updateUserMutation,
+          { user: { first_name: "updated" } },
+          FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+        )
+
+        expect(res.updateUser.first_name).toBe("updated")
+      })
+
+      it("refuses a normal user changing their email", async () => {
+        await expect(
+          ctx.client.request(
+            updateUserMutation,
+            { user: { email: "other@mail.com" } },
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+          ),
+        ).rejects.toThrow(/only admins/)
+      })
+
+      it("refuses a normal user changing their real_student_number", async () => {
+        await expect(
+          ctx.client.request(
+            updateUserMutation,
+            { user: { real_student_number: "456" } },
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+          ),
+        ).rejects.toThrow(/only admins/)
+
+        const user = await ctx.prisma.user.findFirst({
+          where: { upstream_id: 1 },
+        })
+        expect(user?.real_student_number).toBe("123")
+      })
+
+      it("lets an admin change another user's email and real_student_number", async () => {
+        const target = await ctx.prisma.user.findFirstOrThrow({
+          where: { upstream_id: 1 },
+        })
+
+        const res = await ctx.client.request<any>(
+          updateUserMutation,
+          {
             user: {
-              email: "e@mail.com",
-              first_name: "first",
-              last_name: "last",
-              username: "username",
-              research_consent: false,
-              upstream_id: 1,
+              id: target.id,
+              email: "other@mail.com",
+              real_student_number: "456",
             },
-          })
-        }).rejects.toThrow()
+          },
+          FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+        )
+
+        expect(res.updateUser).toMatchObject({
+          email: "other@mail.com",
+          real_student_number: "456",
+        })
       })
     })
 

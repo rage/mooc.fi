@@ -19,6 +19,7 @@ import {
   Grid,
   InputAdornment,
   MenuItem,
+  Stack,
   Tooltip,
   Typography,
 } from "@mui/material"
@@ -117,11 +118,11 @@ const StudyModuleFormComponent = () => {
         description: t("moduleConfirmationContent"),
         confirmationText: t("moduleConfirmationYes"),
         cancellationText: t("moduleConfirmationNo"),
-      })
-        .then(() => helpers.remove(index))
-        .catch(() => {
-          // ignore
-        }),
+      }).then(({ confirmed }) => {
+        if (confirmed) {
+          helpers.remove(index)
+        }
+      }),
     [],
   )
 
@@ -138,7 +139,7 @@ const StudyModuleFormComponent = () => {
           {t("moduleDetailsTitle")}
         </FormSubtitle>
         <Grid container direction="row" spacing={2}>
-          <Grid item xs={10}>
+          <Grid size={10}>
             <StyledFieldWithAnchor
               name="name"
               type="text"
@@ -151,7 +152,7 @@ const StudyModuleFormComponent = () => {
               component={StyledTextField}
             />
           </Grid>
-          <Grid item xs={2}>
+          <Grid size={2}>
             <StyledFieldWithAnchor
               name="order"
               type="number"
@@ -194,14 +195,16 @@ const StudyModuleFormComponent = () => {
           variant="outlined"
           autoComplete="off"
           component={StyledTextField}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <Tooltip title={t("moduleImageTooltip")}>
-                  <HelpIcon />
-                </Tooltip>
-              </InputAdornment>
-            ),
+          slotProps={{
+            input: {
+              endAdornment: (
+                <InputAdornment position="end">
+                  <Tooltip title={t("moduleImageTooltip")}>
+                    <HelpIcon />
+                  </Tooltip>
+                </InputAdornment>
+              ),
+            },
           }}
         />
         <FormSubtitle variant="h6" component="h3" align="center">
@@ -248,16 +251,13 @@ const StudyModuleFormComponent = () => {
         <FormSubtitle variant="h6" component="h3" align="center">
           {t("moduleTranslationsTitle")}
         </FormSubtitle>
-        <Grid container direction="column">
+        <Stack>
           <FieldArray name="study_module_translations">
             {(helpers) => (
               <>
                 {values?.study_module_translations?.map(
                   (translation, index: number) => (
-                    <LanguageEntry
-                      item
-                      key={translation.id ?? translation.language}
-                    >
+                    <LanguageEntry key={translation.id ?? translation.language}>
                       <EntryContainer elevation={2}>
                         <StyledFieldWithAnchor
                           name={`study_module_translations[${index}].language`}
@@ -311,7 +311,12 @@ const StudyModuleFormComponent = () => {
                           component={StyledTextField}
                         />
                         <br />
-                        <Grid container justifyItems="flex-end">
+                        <Grid
+                          container
+                          sx={{
+                            justifyItems: "flex-end",
+                          }}
+                        >
                           <StyledButton
                             variant="contained"
                             disabled={isSubmitting}
@@ -346,7 +351,7 @@ const StudyModuleFormComponent = () => {
               </>
             )}
           </FieldArray>
-        </Grid>
+        </Stack>
       </Form>
     </FormContainer>
   )

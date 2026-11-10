@@ -4,6 +4,8 @@ import DataLoader from "dataloader"
 import { Knex } from "knex"
 import type { Logger } from "winston"
 
+import { Role } from "./accessControl"
+import { UserInfo } from "./domain/UserInfo"
 import {
   Exercise,
   Organization,
@@ -15,10 +17,7 @@ import {
   User,
   UserCourseProgress,
   UserCourseServiceProgress,
-} from "@prisma/client"
-
-import { Role } from "./accessControl"
-import { UserInfo } from "./domain/UserInfo"
+} from "./generated/prisma"
 import { CompletionLinkKey } from "./loaders/completionLinkLoader"
 import {
   CourseSponsorsKey,

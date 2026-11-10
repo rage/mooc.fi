@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react"
 
-import { ApolloClient, useApolloClient } from "@apollo/client"
+import { ApolloClient } from "@apollo/client"
+import { useApolloClient } from "@apollo/client/react"
 import { styled } from "@mui/material/styles"
 
 import { ButtonWithPaddingAndMargin as StyledButton } from "/components/Buttons/ButtonWithPaddingAndMargin"
@@ -64,6 +65,13 @@ function PointsExportButton(props: PointsExportButtonProps) {
   )
 }
 
+// Same rule as escapeCsvFormula in backend/api/routes/completions.ts.
+const escapeCsvFormula = (value: string) =>
+  /^[=+\-@\t\r]/.test(value) ? `'${value}` : value
+
+const toCsvText = (value: string | null | undefined) =>
+  escapeCsvFormula(value?.replace(/\s+/g, " ").trim() ?? "")
+
 async function flatten(
   data: ExportUserCourseProgressesQuery["userCourseProgresses"],
 ) {
@@ -92,15 +100,14 @@ async function flatten(
 
     const newDatum = {
       user_id: upstream_id,
-      first_name: first_name?.replace(/\s+/g, " ").trim() ?? "",
-      last_name: last_name?.replace(/\s+/g, " ").trim() ?? "",
-      email: email?.replace(/\s+/g, " ").trim() ?? "",
-      student_number: student_number?.replace(/\s+/g, " ").trim() ?? "",
-      confirmed_student_number:
-        real_student_number?.replace(/\s+/g, " ").trim() ?? "",
-      course_variant: course_variant?.replace(/\s+/g, " ").trim() ?? "",
-      country: country?.replace(/\s+/g, " ").trim() ?? "",
-      language: language?.replace(/\s+/g, " ").trim() ?? "",
+      first_name: toCsvText(first_name),
+      last_name: toCsvText(last_name),
+      email: toCsvText(email),
+      student_number: toCsvText(student_number),
+      confirmed_student_number: toCsvText(real_student_number),
+      course_variant: toCsvText(course_variant),
+      country: toCsvText(country),
+      language: toCsvText(language),
       ...groups,
     }
     return newDatum
@@ -110,7 +117,7 @@ async function flatten(
 
 async function downloadInChunks(
   courseSlug: string,
-  client: ApolloClient<object>,
+  client: ApolloClient,
   setMessage: React.Dispatch<React.SetStateAction<string>>,
 ): Promise<ExportUserCourseProgressesQuery["userCourseProgresses"]> {
   let finished = false

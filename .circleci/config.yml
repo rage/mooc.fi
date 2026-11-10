@@ -2,12 +2,20 @@ version: 2.1
 orbs:
   helm: circleci/helm@2.0.1
   jq: circleci/jq@2.2.0
-  node: circleci/node@5.1.0
 #  codecov: codecov/codecov@3.2.4
+commands:
+  install_pnpm:
+    steps:
+      - run:
+          name: "Install pnpm"
+          command: |
+            PNPM_SPEC=$(node -p 'require(process.argv[1]).packageManager' "$(git rev-parse --show-toplevel)/package.json")
+            cd /tmp && sudo npm install -g --no-update-notifier "$PNPM_SPEC"
+
 executors:
   node_postgres:
     docker:
-      - image: cimg/node:18.20.2
+      - image: cimg/node:26.13.0
       - image: cimg/postgres:15.3
         environment:
           POSTGRES_USER: root
@@ -17,16 +25,22 @@ executors:
 jobs:
   code_style:
     docker:
-      - image: cimg/node:18.20.2
+      - image: cimg/node:26.13.0
     steps:
       - checkout
-      - node/install-packages
+      - install_pnpm
+      - run:
+          name: "Install dependencies"
+          command: pnpm install --frozen-lockfile
       - run:
           name: "Check code style"
           command: "bin/check-code-style.sh"
       - run:
-          name: "ESLint"
-          command: "bin/eslint.sh"
+          name: "Lint"
+          command: "bin/lint.sh"
+      - run:
+          name: "Frontend unit tests"
+          command: "pnpm --filter frontend run test"
       - helm/install-helm-client:
           version: v3.4.2
       - run:
@@ -44,16 +58,8 @@ jobs:
           docker_layer_caching: true
       - restore_cache:
           keys:
-          - frontend-cache-{{ checksum "frontend/package.json" }}-{{ checksum "frontend/package-lock.json" }}
-          - frontend-cache-{{ checksum "frontend/package.json" }}
-      - run:
-          name: Move cache to correct location
-          command: |
-            mkdir -p frontend/.npm
-            [ -d /mnt/ramdisk/.npm ] && mv /mnt/ramdisk/.npm /mnt/ramdisk/frontend/.npm || true
-      - run:
-          name: Set npm cache
-          command: "npm config set cache /mnt/ramdisk/frontend/.npm"
+            - frontend-cache-{{ checksum "pnpm-lock.yaml" }}
+            - frontend-cache-
       - run:
           name: Install Docker Buildx
           command: |
@@ -68,15 +74,14 @@ jobs:
           name: "Build frontend image"
           command: "bin/build-docker-frontend.sh"
       - save_cache:
-          key: frontend-cache-{{ checksum "frontend/package.json" }}-{{ checksum "frontend/package-lock.json" }}
+          key: frontend-cache-{{ checksum "pnpm-lock.yaml" }}
           paths:
-            - /mnt/ramdisk/frontend/.npm
             - /mnt/ramdisk/frontend/.next/cache
       - when:
           condition:
             or:
-              - equal: [ master, << pipeline.git.branch >> ]
-              - equal: [ staging, << pipeline.git.branch >> ]
+              - equal: [master, << pipeline.git.branch >>]
+              - equal: [staging, << pipeline.git.branch >>]
           steps:
             - run:
                 name: "Push image"
@@ -90,40 +95,37 @@ jobs:
       - checkout:
           path: /mnt/ramdisk
       - jq/install
-      - run:
-          name: patch-package hash
-          command: md5sum patches/* > patches.hash
+      - install_pnpm
       - restore_cache:
           keys:
-          - backend-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}-{{ checksum "patches.hash" }}
-          - backend-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}
-          - backend-cache-{{ checksum "package-lock.json" }}
-      - run:
-          name: Set npm cache
-          command: "npm config set cache /mnt/ramdisk/.npm"
+            - backend-pnpm-store-{{ checksum "/mnt/ramdisk/pnpm-lock.yaml" }}
       - run:
           name: "Install dependencies"
-          command: npm ci --prefer-offline --no-audit
+          command: |
+            pnpm config set store-dir /mnt/ramdisk/.pnpm-store
+            pnpm install --frozen-lockfile --filter backend
       - run:
           name: "Set environment"
           command: |
-            npm run download-env
             cp .env.example .env
       - run:
           name: "Set up Prisma"
           command: |
-            npm run generate
+            pnpm run generate
       - save_cache:
-          key: backend-cache-{{ checksum "package-lock.json" }}-{{ checksum "prisma/schema.prisma" }}-{{ checksum "patches.hash" }}
+          key: backend-pnpm-store-{{ checksum "/mnt/ramdisk/pnpm-lock.yaml" }}
           paths:
-            - /mnt/ramdisk/.npm
+            - /mnt/ramdisk/.pnpm-store
       - run:
-          name: "Delete npm cache from workspace"
-          command: "rm -rf /mnt/ramdisk/.npm"
+          name: "Delete pnpm store from workspace"
+          command: "rm -rf /mnt/ramdisk/.pnpm-store"
       - persist_to_workspace:
           root: /mnt/ramdisk
           paths:
             - backend
+            - node_modules
+            # queryLimits.test.ts checks the frontend's operations against the limits.
+            - frontend/graphql
     resource_class: large
 
   test_backend:
@@ -147,10 +149,12 @@ jobs:
       - run:
           name: "Run tests"
           command: |
-            export NODE_OPTIONS="--max-old-space-size=8192"
+            export NODE_OPTIONS="--max-old-space-size=8192 --experimental-vm-modules"
             TEST=$(circleci tests glob ./**/*.test.ts | grep -v node_modules | circleci tests split --split-by=timings)
             echo $TEST
-            npm run test:ci -- --runTestsByPath $TEST
+            # Not `pnpm exec`: the workspace root isn't attached, so pnpm would reinstall backend
+            # standalone, skipping the build-script allowlist and leaving node-rdkafka unbuilt.
+            node_modules/.bin/jest --ci --runInBand --coverage --runTestsByPath $TEST
       - run:
           name: "Process test reports"
           command: |
@@ -177,9 +181,9 @@ jobs:
             curl https://uploader.codecov.io/latest/linux/codecov -o /tmp/codecov
             chmod +x /tmp/codecov
             /tmp/codecov -F backend -n "${CIRCLE_BUILD_NUM}"
-  ### when codecov orb is enabled
-  #    - codecov/upload:
-  #        flags: backend
+    ### when codecov orb is enabled
+    #    - codecov/upload:
+    #        flags: backend
     # The resource_class feature allows configuring CPU and RAM resources for each job. Different resource classes are available for different executors. https://circleci.com/docs/2.0/configuration-reference/#resourceclass
     resource_class: large
   # could combine the artifacts in this step if needed, now the codecov/junit stuff combines automatically
@@ -214,22 +218,6 @@ jobs:
           docker_layer_caching: true
       - jq/install
       - run:
-          name: patch-package hash
-          command: md5sum backend/patches/* > backend/patches.hash
-      - restore_cache:
-          keys:
-          - backend-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}-{{ checksum "backend/patches.hash" }}
-          - backend-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}
-          - backend-cache-{{ checksum "backend/package-lock.json" }}
-      - run:
-          name: Move cache to correct location
-          command: |
-            mkdir -p backend/.npm
-            [ -d /mnt/ramdisk/.npm ] && mv /mnt/ramdisk/.npm /mnt/ramdisk/backend/.npm || true
-      - run:
-          name: Set npm cache
-          command: "npm config set cache /mnt/ramdisk/backend/.npm"
-      - run:
           name: Install Docker Buildx
           command: |
             mkdir -vp ~/.docker/cli-plugins/
@@ -242,15 +230,11 @@ jobs:
       - run:
           name: "Build backend image"
           command: "bin/build-docker-backend.sh"
-      - save_cache:
-          key: backend-cache-{{ checksum "backend/package-lock.json" }}-{{ checksum "backend/prisma/schema.prisma" }}-{{ checksum "backend/patches.hash" }}
-          paths:
-            - /mnt/ramdisk/backend/.npm
       - when:
           condition:
             or:
-              - equal: [ master, << pipeline.git.branch >> ]
-              - equal: [ staging, << pipeline.git.branch >> ]
+              - equal: [master, << pipeline.git.branch >>]
+              - equal: [staging, << pipeline.git.branch >>]
           steps:
             - run:
                 name: Install latest sentry-cli

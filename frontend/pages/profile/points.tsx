@@ -1,3 +1,3 @@
-import Points from "pages/_old/profile/points"
+import Points from "/pages/_old/profile/points"
 
 export default Points

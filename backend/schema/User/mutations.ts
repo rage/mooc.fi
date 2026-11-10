@@ -20,6 +20,7 @@ export const UserMutations = extendType({
         first_name: stringArg(),
         last_name: stringArg(),
       },
+      authorize: or(isUser, isAdmin),
       resolve: async (_, { first_name, last_name }, ctx: Context) => {
         const { user: currentUser } = ctx
         const authorization = ctx?.req?.headers?.authorization
@@ -48,6 +49,7 @@ export const UserMutations = extendType({
       args: {
         value: nonNull(booleanArg()),
       },
+      authorize: or(isUser, isAdmin),
       resolve: async (_, { value }, ctx: Context) => {
         const { user: currentUser } = ctx
         const authorization = ctx?.req?.headers?.authorization
@@ -79,6 +81,7 @@ export const UserMutations = extendType({
           }),
         ),
       },
+      authorize: isAdmin,
       resolve: async (_, { user }, ctx) => {
         const exists = await ctx.prisma.user.findFirst({
           select: { id: true },
@@ -118,6 +121,15 @@ export const UserMutations = extendType({
 
         if (ctx.role !== Role.ADMIN && id && currentUser.id !== id) {
           throw new GraphQLForbiddenError("invalid credentials to do that")
+        }
+
+        if (
+          ctx.role !== Role.ADMIN &&
+          (email !== undefined || rest.real_student_number !== undefined)
+        ) {
+          throw new GraphQLForbiddenError(
+            "only admins can change email or real_student_number",
+          )
         }
 
         // TODO: sync changes with TMC here?

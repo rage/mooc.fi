@@ -5,8 +5,7 @@ import {
   User,
   UserCourseProgress,
   UserCourseServiceProgress,
-} from "@prisma/client"
-
+} from "../../../../generated/prisma"
 import { DatabaseInputError, TMCError } from "../../../../lib/errors"
 import { err, ok, parseTimestamp, Result } from "../../../../util"
 import { getUserWithRaceCondition } from "../getUserWithRaceCondition"

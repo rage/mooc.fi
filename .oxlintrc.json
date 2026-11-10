@@ -1,0 +1,153 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "react", "import", "nextjs"],
+  "jsPlugins": [
+    "./eslint-custom-rules/index.js",
+    "eslint-plugin-styled-components-a11y"
+  ],
+  "categories": {
+    "correctness": "off"
+  },
+  "env": {
+    "builtin": true,
+    "es2018": true,
+    "browser": true,
+    "node": true
+  },
+  "settings": {
+    "next": {
+      "rootDir": "frontend"
+    }
+  },
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "**/generated/**",
+    "**/dist/**",
+    "**/sourcemap/**",
+    "**/.next/**",
+    "**/coverage/**"
+  ],
+  "rules": {
+    "typescript/ban-ts-comment": [
+      "error",
+      {
+        "ts-ignore": "allow-with-description",
+        "ts-expect-error": "allow-with-description",
+        "ts-nocheck": "allow-with-description",
+        "ts-check": false
+      }
+    ],
+    "typescript/no-array-constructor": "error",
+    "typescript/no-duplicate-enum-values": "error",
+    "typescript/no-empty-object-type": "error",
+    "typescript/no-extra-non-null-assertion": "error",
+    "typescript/no-misused-new": "error",
+    "typescript/no-namespace": "error",
+    "typescript/no-non-null-asserted-nullish-coalescing": "error",
+    "typescript/no-non-null-asserted-optional-chain": "error",
+    "typescript/no-this-alias": "error",
+    "typescript/no-unnecessary-type-constraint": "error",
+    "typescript/no-unsafe-declaration-merging": "error",
+    "typescript/no-unsafe-function-type": "error",
+    "typescript/no-wrapper-object-types": "error",
+    "typescript/prefer-as-const": "error",
+    "typescript/triple-slash-reference": "error",
+    "no-loss-of-precision": "error",
+    "no-restricted-imports": [
+      "warn",
+      {
+        "patterns": [
+          {
+            "group": ["@mui/*/*/*"],
+            "message": "Don't use deep @mui imports - prevents module duplication"
+          }
+        ]
+      }
+    ],
+    "no-warning-comments": [
+      "error",
+      {
+        "terms": ["debug", "removeme", "remove-me"],
+        "location": "start"
+      }
+    ],
+    "complexity": "warn",
+    "eslint-custom-rules/no-emotion-styled-import": "error",
+    "react/rules-of-hooks": "error",
+    "import/no-anonymous-default-export": "error",
+    "nextjs/google-font-display": "warn",
+    "nextjs/google-font-preconnect": "warn",
+    "nextjs/inline-script-id": "error",
+    "nextjs/next-script-for-ga": "warn",
+    "nextjs/no-assign-module-variable": "error",
+    "nextjs/no-async-client-component": "warn",
+    "nextjs/no-before-interactive-script-outside-document": "warn",
+    "nextjs/no-css-tags": "warn",
+    "nextjs/no-document-import-in-page": "error",
+    "nextjs/no-duplicate-head": "error",
+    "nextjs/no-head-element": "warn",
+    "nextjs/no-head-import-in-document": "error",
+    "nextjs/no-html-link-for-pages": "error",
+    "nextjs/no-img-element": "warn",
+    "nextjs/no-page-custom-font": "warn",
+    "nextjs/no-script-component-in-head": "error",
+    "nextjs/no-styled-jsx-in-document": "warn",
+    "nextjs/no-sync-scripts": "error",
+    "nextjs/no-title-in-document-head": "warn",
+    "nextjs/no-typos": "warn",
+    "nextjs/no-unwanted-polyfillio": "warn",
+    "styled-components-a11y/alt-text": "error",
+    "styled-components-a11y/anchor-has-content": "error",
+    "styled-components-a11y/anchor-is-valid": "error",
+    "styled-components-a11y/aria-activedescendant-has-tabindex": "error",
+    "styled-components-a11y/aria-props": "error",
+    "styled-components-a11y/aria-proptypes": "error",
+    "styled-components-a11y/aria-role": "error",
+    "styled-components-a11y/aria-unsupported-elements": "error",
+    "styled-components-a11y/autocomplete-valid": "error",
+    "styled-components-a11y/click-events-have-key-events": "error",
+    "styled-components-a11y/heading-has-content": "error",
+    "styled-components-a11y/html-has-lang": "error",
+    "styled-components-a11y/iframe-has-title": "error",
+    "styled-components-a11y/img-redundant-alt": "error",
+    "styled-components-a11y/interactive-supports-focus": [
+      "error",
+      {
+        "tabbable": [
+          "button",
+          "checkbox",
+          "link",
+          "progressbar",
+          "searchbox",
+          "slider",
+          "spinbutton",
+          "switch",
+          "textbox"
+        ]
+      }
+    ],
+    "styled-components-a11y/label-has-associated-control": "error",
+    "styled-components-a11y/media-has-caption": "error",
+    "styled-components-a11y/mouse-events-have-key-events": "error",
+    "styled-components-a11y/no-access-key": "error",
+    "styled-components-a11y/no-autofocus": "error",
+    "styled-components-a11y/no-distracting-elements": "error",
+    "styled-components-a11y/no-interactive-element-to-noninteractive-role": "error",
+    "styled-components-a11y/no-noninteractive-element-interactions": [
+      "error",
+      {
+        "body": ["onError", "onLoad"],
+        "iframe": ["onError", "onLoad"],
+        "img": ["onError", "onLoad"]
+      }
+    ],
+    "styled-components-a11y/no-noninteractive-element-to-interactive-role": "error",
+    "styled-components-a11y/no-noninteractive-tabindex": "error",
+    "styled-components-a11y/no-redundant-roles": "error",
+    "styled-components-a11y/no-static-element-interactions": "error",
+    "styled-components-a11y/role-has-required-aria-props": "error",
+    "styled-components-a11y/role-supports-aria-props": "error",
+    "styled-components-a11y/scope": "error",
+    "styled-components-a11y/tabindex-no-positive": "error"
+  }
+}

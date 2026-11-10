@@ -1,24 +1,27 @@
 import http from "http"
 
-import bodyParser from "body-parser"
 import compression from "compression"
 import cors from "cors"
 import express, { Express } from "express"
-import { graphqlUploadExpress } from "graphql-upload"
-import { useServer as addServer } from "graphql-ws/lib/use/ws"
+import { specifiedRules, validate } from "graphql"
+import graphqlUploadExpress from "graphql-upload/graphqlUploadExpress.mjs"
+import { useServer as addServer } from "graphql-ws/use/ws"
 import { frameguard } from "helmet"
 import morgan from "morgan"
 import { WebSocketServer } from "ws"
 
 import { ApolloServer } from "@apollo/server"
-import { ApolloServerPluginEmbeddedLandingPageProductionDefaultOptions } from "@apollo/server/dist/esm/plugin/landingPage/default/types"
-import { expressMiddleware } from "@apollo/server/express4"
 import { ApolloServerPluginCacheControlDisabled } from "@apollo/server/plugin/disabled"
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer"
 import {
   ApolloServerPluginLandingPageLocalDefault,
   ApolloServerPluginLandingPageProductionDefault,
+  type ApolloServerPluginLandingPageProductionDefaultOptions,
 } from "@apollo/server/plugin/landingPage/default"
+import {
+  expressMiddleware,
+  type ExpressContextFunctionArgument,
+} from "@as-integrations/express5"
 
 import { apiRouter } from "./api"
 import {
@@ -36,6 +39,7 @@ import { ServerContext } from "./context"
 import { createLoaders } from "./loaders/createLoaders"
 import createExpressGraphqlCacheMiddleware from "./middlewares/expressGraphqlCache"
 import { limitGraphqlBatchSize } from "./middlewares/graphqlBatchLimit"
+import { createQueryLimitsRule } from "./middlewares/queryLimits"
 import { createSchema } from "./schema/common"
 
 export const GRAPHQL_ENDPOINT_PATH = isProduction ? "/api" : "/"
@@ -65,9 +69,13 @@ const createExpressAppWithContext = ({
           : {},
       ),
     ),
-    bodyParser.json({ limit: "2mb" }),
+    express.json({ limit: "2mb" }),
     frameguard(),
-    graphqlUploadExpress(),
+  )
+  // 50 MB matches the ingress proxy-body-size.
+  app.post(
+    GRAPHQL_ENDPOINT_PATH,
+    graphqlUploadExpress({ maxFileSize: 50 * 1024 * 1024, maxFiles: 10 }),
   )
   if (!isTest) {
     app.use(morgan("combined"))
@@ -90,7 +98,7 @@ const addExpressMiddleware = async (
   app.use(
     GRAPHQL_ENDPOINT_PATH,
     expressMiddleware(apolloServer, {
-      context: async (ctx) => {
+      context: async (ctx: ExpressContextFunctionArgument) => {
         const loaders = createLoaders(prisma)
         return {
           ...ctx,
@@ -112,17 +120,21 @@ const server = async (serverContext: ServerContext) => {
   const app = createExpressAppWithContext(serverContext)
   const httpServer = http.createServer(app)
   const schema = createSchema()
+  const queryLimitsRule = createQueryLimitsRule()
 
   const apolloServer = new ApolloServer<ServerContext>({
     schema,
+    validationRules: [queryLimitsRule],
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
       // No cache hints are used, and the default plugin wraps every resolver.
       ApolloServerPluginCacheControlDisabled(),
       isProduction
         ? ApolloServerPluginLandingPageProductionDefault({
+            // Without a graphRef this renders the embedded Sandbox; the types only model the
+            // Studio-backed Explorer.
             embed: true,
-          } as ApolloServerPluginEmbeddedLandingPageProductionDefaultOptions)
+          } as ApolloServerPluginLandingPageProductionDefaultOptions)
         : ApolloServerPluginLandingPageLocalDefault(),
       {
         async requestDidStart() {
@@ -150,7 +162,7 @@ const server = async (serverContext: ServerContext) => {
     ],
     introspection: true,
     logger: serverContext.logger,
-    includeStacktraceInErrorResponses: DEBUG,
+    includeStacktraceInErrorResponses: DEBUG && !isProduction,
     allowBatchedHttpRequests: true,
     // cache: "bounded",
   })
@@ -164,6 +176,8 @@ const server = async (serverContext: ServerContext) => {
   const serverCleanup = addServer(
     {
       schema,
+      validate: (wsSchema, document) =>
+        validate(wsSchema, document, [...specifiedRules, queryLimitsRule]),
       context: (ctx) => {
         const { prisma, logger, knex, extraContext } = serverContext
         const loaders = createLoaders(prisma)

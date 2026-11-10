@@ -1,6 +1,6 @@
 import { useContext, useState } from "react"
 
-import { useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client/react"
 import { CircularProgress } from "@mui/material"
 
 import CompletionsListWithData from "./CompletionsListWithData"

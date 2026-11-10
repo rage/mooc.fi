@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react"
 
-import { NetworkStatus, useQuery } from "@apollo/client"
+import { NetworkStatus } from "@apollo/client"
+import { useQuery } from "@apollo/client/react"
 import { Alert, TextField } from "@mui/material"
 import { styled } from "@mui/material/styles"
 

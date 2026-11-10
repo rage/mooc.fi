@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 
-import { isDefined, sortBy } from "remeda"
+import { isNonNullish, sortBy } from "remeda"
 
 import { styled } from "@mui/material/styles"
 
@@ -38,7 +38,7 @@ function Module(props: ModuleProps) {
         studyModule?.courses ?? [],
         [
           (course) =>
-            isDefined(course.study_module_order)
+            isNonNullish(course.study_module_order)
               ? course.study_module_order
               : Number.MAX_SAFE_INTEGER,
           "asc",

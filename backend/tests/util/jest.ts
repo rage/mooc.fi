@@ -22,11 +22,11 @@ const isObject = (value: unknown): value is Record<string, unknown> =>
 
 export function stripDates<T>(obj: T): T
 export function stripDates<T>(obj: T): Omit<T, "created_at" | "updated_at">
-export function stripDates<T>(obj: null): null
+export function stripDates(obj: null): null
 export function stripDates<T>(
   obj: T | null,
 ): Omit<T, "created_at" | "updated_at"> | null
-export function stripDates<T>(obj: undefined): undefined
+export function stripDates(obj: undefined): undefined
 export function stripDates<T>(
   obj?: T | null,
 ): Omit<T, "created_at" | "updated_at"> | null | undefined {
@@ -63,45 +63,47 @@ type _DeepOmit<T, P> = T extends object
         [K in keyof T]: K extends Head ? DeepOmit<T[K], Rest> : T[K]
       }
     : P extends `${infer Head}`
-    ? {
-        [K in keyof T]: K extends Head
-          ? never
-          : T[K] extends object
-          ? DeepOmit<T[K], P>
-          : T[K]
-      }
-    : never
+      ? {
+          [K in keyof T]: K extends Head
+            ? never
+            : T[K] extends object
+              ? DeepOmit<T[K], P>
+              : T[K]
+        }
+      : never
   : never
 
 type DeepOmit<T, P> = UnionToIntersection<_DeepOmit<T, P>>
 
-export type Path<T> = T extends Record<string, unknown>
-  ? {
-      [K in keyof T & string]:
-        | K
-        | `${K}.${Path<T[K]> extends infer U extends string ? U : never}`
-    }[keyof T & string]
-  : T extends Array<infer R>
-  ? {
-      [K in keyof R & string]:
-        | K
-        | `${K}.${Path<R[K]> extends infer U extends string ? U : never}`
-    }[keyof R & string]
-  : never
+export type Path<T> =
+  T extends Record<string, unknown>
+    ? {
+        [K in keyof T & string]:
+          | K
+          | `${K}.${Path<T[K]> extends infer U extends string ? U : never}`
+      }[keyof T & string]
+    : T extends Array<infer R>
+      ? {
+          [K in keyof R & string]:
+            | K
+            | `${K}.${Path<R[K]> extends infer U extends string ? U : never}`
+        }[keyof R & string]
+      : never
 
-type Field<T> = T extends Record<string, unknown>
-  ? {
-      [K in keyof T & string]: Field<T[K]> extends infer U extends string
-        ? K | U
-        : K
-    }[keyof T & string]
-  : T extends Array<infer R>
-  ? {
-      [K in keyof R & string]: Field<R[K]> extends infer U extends string
-        ? K | U
-        : K
-    }[keyof R & string]
-  : never
+type Field<T> =
+  T extends Record<string, unknown>
+    ? {
+        [K in keyof T & string]: Field<T[K]> extends infer U extends string
+          ? K | U
+          : K
+      }[keyof T & string]
+    : T extends Array<infer R>
+      ? {
+          [K in keyof R & string]: Field<R[K]> extends infer U extends string
+            ? K | U
+            : K
+        }[keyof R & string]
+      : never
 
 export function stripFields<
   T,
@@ -349,9 +351,8 @@ function getArrayMatchers<T extends Record<string, any>>(
   return Array.isArray(ret[key]) ? ret[key]?.[index] : ret[key]
 }
 
-type AnyOrArrayAnyObject<T> = T extends Array<infer R>
-  ? { [K in keyof R]: any }
-  : { [K in keyof T]: any }
+type AnyOrArrayAnyObject<T> =
+  T extends Array<infer R> ? { [K in keyof R]: any } : { [K in keyof T]: any }
 
 /**
  *

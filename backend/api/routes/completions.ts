@@ -6,6 +6,8 @@ import { chunk, omit } from "lodash"
 import * as XLSX from "xlsx"
 import * as yup from "yup"
 
+import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
+import { CREDIT_REGISTRATION_DELEGATE_ORG_SLUG } from "../../config"
 import {
   Completion,
   Course,
@@ -14,14 +16,11 @@ import {
   Organization,
   Prisma,
   User,
-} from "@prisma/client"
-
-import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
-import { CREDIT_REGISTRATION_DELEGATE_ORG_SLUG } from "../../config"
+} from "../../generated/prisma"
 import { err, isDefined, isUuid, Result } from "../../util"
 import { COMPLETED_BEFORE_HANDLER_CUTOFF_SQL } from "../../util/completedBeforeCutoff"
 import { ApiContext, Controller } from "../types"
-import { requireAdminOrCourseOwner } from "../utils"
+import { ownsCourse, requireAdminOrCourseOwner } from "../utils"
 
 const languageMap: Record<string, string> = {
   en: "en_US",
@@ -48,6 +47,10 @@ const delegatedHandlerCourseWhere = (id: string) =>
     completions_handled_by_id: null,
     credit_registration_delegated_at: { not: null },
   }) satisfies Prisma.CourseWhereInput
+
+// Spreadsheet apps evaluate cells starting with these as formulas.
+const escapeCsvFormula = (value: unknown) =>
+  typeof value === "string" && /^[=+\-@\t\r]/.test(value) ? `'${value}` : value
 
 interface DownloadTokenPayload {
   courseId: string
@@ -310,6 +313,16 @@ export class CompletionController extends Controller {
       return res.status(404).json({ message: "Course not found" })
     }
 
+    // The export lists the handling course's completions, so non-admins must own it.
+    const { user, details } = authRes.value
+    if (
+      course.completions_handled_by_id &&
+      !details.administrator &&
+      !(await ownsCourse(this.ctx, user.id, course.completions_handled_by_id))
+    ) {
+      return res.status(401).json({ message: "unauthorized" })
+    }
+
     // Generate a signed JWT token valid for 30 seconds
     const payload: DownloadTokenPayload = {
       courseId,
@@ -460,7 +473,10 @@ export class CompletionController extends Controller {
     }
 
     // Default CSV format
-    const csvContent = stringify([headers, ...rows])
+    const csvContent = stringify([
+      headers,
+      ...rows.map((row) => row.map(escapeCsvFormula)),
+    ])
 
     res.setHeader("Content-Type", "text/csv")
     res.setHeader(
@@ -602,7 +618,7 @@ export class CompletionController extends Controller {
     }
 
     const { slug } = req.params
-    const { user_upstream_id, certificate_id } = req.body
+    const { user_upstream_id, certificate_id } = req.body ?? {}
 
     const user = await prisma.user.findUnique({
       where: {
@@ -685,7 +701,7 @@ export class CompletionController extends Controller {
       return adminRes.error
     }
 
-    const { course_id, slug, user_id, user_upstream_id } = req.body
+    const { course_id, slug, user_id, user_upstream_id } = req.body ?? {}
 
     if (!course_id && !slug) {
       return res.status(400).json({

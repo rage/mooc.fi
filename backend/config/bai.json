@@ -1,0 +1,188 @@
+{
+  "parentCourseId": "49cbadd8-be32-454f-9b7d-e84d52100b74",
+  "tiers": {
+    "beginner": {
+      "courseId": "e1eaff32-8b2c-4423-998d-d3477535a1f9",
+      "finalTaskId": "836dae15-6755-416e-82e8-508afa5b6854"
+    },
+    "intermediate": {
+      "courseId": "3a2790fc-227c-4045-9f4c-40a2bdabe76a",
+      "finalTaskId": "a2441f0a-9d66-4282-a24b-4318d242a6f0"
+    },
+    "advanced": {
+      "courseId": "0e9d1a22-0e19-4320-8c8c-84115bb26452",
+      "finalTaskId": "bcbf760d-a203-46bc-9369-a802e73add15"
+    }
+  },
+  "finalTaskTitle": "Your AI idea",
+  "exercises": [
+    {
+      "title": "Exercise 1: Listing pineapple routes",
+      "ids": {
+        "beginner": "1e4af21e-7734-5282-a070-cc464a376e81",
+        "intermediate": "101369",
+        "advanced": "101403"
+      }
+    },
+    {
+      "title": "Exercise 2: Pineapple route emissions",
+      "ids": {
+        "beginner": "7252cbff-92b4-5766-9f9c-64558a577de2",
+        "intermediate": "101371",
+        "advanced": "101405"
+      }
+    },
+    {
+      "title": "Exercise 3: Reach the highest summit",
+      "ids": {
+        "beginner": "e97eaf29-d6d8-5837-9db1-2a1dec51a1a1",
+        "intermediate": "101373",
+        "advanced": "101407"
+      }
+    },
+    {
+      "title": "Exercise 4: Probabilities",
+      "ids": {
+        "beginner": "202618dc-52fd-5977-a942-b814f6d7e35b",
+        "intermediate": "101375",
+        "advanced": "101409"
+      }
+    },
+    {
+      "title": "Exercise 5: Warm-up Temperature",
+      "ids": {
+        "beginner": "97339e0e-6dfc-59ea-8338-b516dee0b893",
+        "intermediate": "da433f82-b563-5b17-a580-3276ae851e3a",
+        "advanced": "101411"
+      }
+    },
+    {
+      "title": "Exercise 6: Simulated Annealing",
+      "ids": {
+        "beginner": "3ae47ac2-d2d7-5d3c-8823-dc6e32728340",
+        "intermediate": "101378",
+        "advanced": "101412"
+      }
+    },
+    {
+      "title": "Exercise 7: Flip the coin",
+      "ids": {
+        "beginner": "cd59d296-8f49-5ff5-97b3-d9d274a555e0",
+        "intermediate": "101380",
+        "advanced": "101414"
+      }
+    },
+    {
+      "title": "Exercise 8: Fishing in the Nordics",
+      "ids": {
+        "beginner": "43123f05-dec1-5c84-909a-e20e8ce30c63",
+        "intermediate": "101382",
+        "advanced": "101416"
+      }
+    },
+    {
+      "title": "Exercise 9: Block or not",
+      "ids": {
+        "beginner": "2537e870-4b2e-57c9-9b90-83f63e58d8c6",
+        "intermediate": "11b5bfa5-0b82-5e80-be0c-e61c91fb7416",
+        "advanced": "101418"
+      }
+    },
+    {
+      "title": "Exercise 10: Naive Bayes classifier",
+      "ids": {
+        "beginner": "47395118-16ba-5b98-a829-8aa53baf9e6c",
+        "intermediate": "101385",
+        "advanced": "101419"
+      }
+    },
+    {
+      "title": "Exercise 11: Real estate price predictions",
+      "ids": {
+        "beginner": "a1e05151-e63c-53ad-9da5-020c01fc00bd",
+        "intermediate": "101387",
+        "advanced": "101421"
+      }
+    },
+    {
+      "title": "Exercise 12: Least squares",
+      "ids": {
+        "beginner": "b8c3a491-0b81-57d6-a404-553c1009ec86",
+        "intermediate": "101389",
+        "advanced": "101423"
+      }
+    },
+    {
+      "title": "Exercise 13: Predictions with more data",
+      "ids": {
+        "beginner": "db4b9a3f-6a6d-57a6-bcd1-d247685d55e7",
+        "intermediate": "101391",
+        "advanced": "101425"
+      }
+    },
+    {
+      "title": "Exercise 14: Training data vs test data",
+      "ids": {
+        "beginner": "f558ab79-f749-5168-add1-d2bf8b141f51",
+        "intermediate": "101393",
+        "advanced": "101427"
+      }
+    },
+    {
+      "title": "Exercise 15: Vector distances",
+      "ids": {
+        "beginner": "6bc4c453-49c9-5966-9f58-8afc8859f235",
+        "intermediate": "48cee2ae-967f-50f5-9e1e-f2dbe9a8f411",
+        "advanced": "101429"
+      }
+    },
+    {
+      "title": "Exercise 16: Nearest neighbor",
+      "ids": {
+        "beginner": "c0d27ea9-86b7-596a-b1d2-b5e96b7b7b5e",
+        "intermediate": "101396",
+        "advanced": "101430"
+      }
+    },
+    {
+      "title": "Exercise 17: Bag of words",
+      "ids": {
+        "beginner": "a9964889-6f37-5696-bf58-431050566a1a",
+        "intermediate": "101398",
+        "advanced": "101432"
+      }
+    },
+    {
+      "title": "Exercise 18: TF-IDF",
+      "ids": {
+        "beginner": "d44b7655-af73-5b18-99e7-a2760359c137",
+        "intermediate": "101400",
+        "advanced": "101434"
+      }
+    },
+    {
+      "title": "Exercise 19: Looking out for overfitting",
+      "ids": {
+        "beginner": "b8c62bf4-c4b2-544c-a8e9-4d757d6adb77",
+        "intermediate": "deb6022a-9c1a-5fbf-a238-f69ecbede584",
+        "advanced": "538d4271-4dbf-402f-8e7a-4a9af85d635b"
+      }
+    },
+    {
+      "title": "Exercise 20: Logistic regression",
+      "ids": {
+        "beginner": "cb006881-955d-5205-925c-2a11e1666fd7",
+        "intermediate": "dfbdd7e5-1fc1-53a6-9ab4-866daac27b4a",
+        "advanced": "105ec65b-2de2-4ec0-8f15-07e51b0f2976"
+      }
+    },
+    {
+      "title": "Exercise 21: Neural networks",
+      "ids": {
+        "beginner": "48f05b72-10fd-5c83-b5a8-c104c7636376",
+        "intermediate": "8db327e4-0c2c-54ca-aa7e-23a66e6c4b6c",
+        "advanced": "bc1e3314-65eb-4584-bc28-f10f2032a309"
+      }
+    }
+  ]
+}

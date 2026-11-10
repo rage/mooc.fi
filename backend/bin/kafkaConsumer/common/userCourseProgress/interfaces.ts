@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client"
+import { Prisma } from "../../../../generated/prisma"
 
 export interface Message extends Prisma.JsonObject {
   timestamp: string

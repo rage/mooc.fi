@@ -24,3 +24,13 @@ const kafkaConfig = {
 }
 
 export default kafkaConfig
+
+const configuredTopicNames = new Set<string>(
+  Object.values(kafkaConfig).flatMap((consumerConfig) =>
+    typeof consumerConfig === "object" ? [consumerConfig.topic_name] : [],
+  ),
+)
+
+/** Whether `topic` names one of the topics the kafka consumers read. */
+export const isConfiguredTopic = (topic: unknown): topic is string =>
+  typeof topic === "string" && configuredTopicNames.has(topic)

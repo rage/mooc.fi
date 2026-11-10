@@ -7,6 +7,7 @@ export const isDev = !isProduction && !isTest
 
 require("dotenv-safe").config({
   allowEmptyValues: isProduction || isTest,
+  quiet: true,
 })
 
 export const isStaging = () =>

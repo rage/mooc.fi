@@ -1,6 +1,7 @@
 import * as yup from "yup"
 
 import { MessageYupSchema as UserPointsMessageYupSchema } from "../userPoints/validate"
+import { userIdSchema } from "../validate"
 
 const CURRENT_MESSAGE_FORMAT_VERSION = 1
 
@@ -14,7 +15,7 @@ const UserPointsExerciseMessageYupSchema = UserPointsMessageYupSchema.shape({
 
 export const MessageYupSchema = yup.object().shape({
   timestamp: yup.date().required(),
-  user_id: yup.number().required(),
+  user_id: userIdSchema.required(),
   course_id: yup.string().length(36).required(),
   exercises: yup.array(UserPointsExerciseMessageYupSchema).required(),
   message_format_version: yup

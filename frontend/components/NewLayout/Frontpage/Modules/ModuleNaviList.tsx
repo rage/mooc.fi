@@ -1,12 +1,11 @@
 import ContentWrapper from "../../Common/ContentWrapper"
 import LinkBoxList from "../../Common/LinkBoxList"
 import { useTranslator } from "/hooks/useTranslator"
+import type { StudyModuleFields } from "/lib/api-types"
 import HomeTranslations from "/translations/home"
 
-import { StudyModuleFieldsFragment } from "/graphql/generated"
-
 interface ModuleNaviListProps {
-  modules?: Array<StudyModuleFieldsFragment> | null
+  modules?: Array<StudyModuleFields> | null
   loading?: boolean
 }
 

@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react"
 import fetch from "isomorphic-unfetch"
 import { useRouter } from "next/router"
 
-import { useApolloClient } from "@apollo/client"
+import { useApolloClient } from "@apollo/client/react"
 
 import RegisterCompletion from "/components/Home/RegisterCompletion"
 import {
@@ -19,7 +19,7 @@ import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useTranslator } from "/hooks/useTranslator"
 import { endSession, getAccessToken, startSession } from "/lib/authentication"
 import redirect from "/lib/redirect"
-import { toSitePath } from "/lib/sitePath"
+import { isSafeRedirectPath } from "/lib/redirectBack"
 import RegisterCompletionTranslations from "/translations/register-completion"
 
 type HandoffState =
@@ -62,9 +62,9 @@ function CreditRegistrationHandoffPage() {
   const handleAnswer = async (res: Response) => {
     const body = await res.json().catch(() => ({}))
     // Paths come from our own backend; still, only follow one that stays on this site.
-    const destinationPath = toSitePath(body.destination_path)
+    const destinationPath = body.destination_path
 
-    if (res.ok && destinationPath) {
+    if (res.ok && isSafeRedirectPath(destinationPath)) {
       const destination = `${localePrefix}${destinationPath}`
       if (body.result === "continue") {
         window.location.replace(destination)
@@ -200,8 +200,8 @@ function CreditRegistrationHandoffPage() {
     const actionLabel = isDifferentAccount
       ? t("handoffLogOutAndContinue")
       : email
-      ? t("handoffContinueAs", { email })
-      : t("handoffContinue")
+        ? t("handoffContinueAs", { email })
+        : t("handoffContinue")
 
     return (
       <RegisterCompletion pageTitle={confirmTitle}>

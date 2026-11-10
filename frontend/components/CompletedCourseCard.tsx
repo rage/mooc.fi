@@ -69,7 +69,7 @@ function CompletedCourseCard(props: CourseCardProps) {
     "no language available"
 
   return (
-    <Grid item xs={12}>
+    <Grid size={12}>
       <Background>
         <CourseTitle component="h3" variant="h6" gutterBottom>
           {completion.course?.name}

@@ -3,7 +3,7 @@ import { ReactNode, useEffect, useState } from "react"
 import fetch from "isomorphic-unfetch"
 import { useRouter } from "next/router"
 
-import { useApolloClient } from "@apollo/client"
+import { useApolloClient } from "@apollo/client/react"
 import { Alert, Button, Link } from "@mui/material"
 
 import { CallToActionButton, InstructionsSection, Prose } from "./styles"

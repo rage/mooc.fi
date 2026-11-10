@@ -1,6 +1,6 @@
 import { useMemo, useReducer, useRef, useState } from "react"
 
-import { useMutation } from "@apollo/client"
+import { useMutation } from "@apollo/client/react"
 
 import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { updateAccount } from "/lib/account"

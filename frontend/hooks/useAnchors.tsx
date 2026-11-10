@@ -127,7 +127,7 @@ export function useAnchors(initialAnchors?: Record<string, Anchor>) {
 export function useAnchor(name: string) {
   const { anchors, tab } = useEditorContext()
   const { addAnchor } = useEditorMethods()
-  const ref = useRef<HTMLElement>()
+  const ref = useRef<HTMLElement>(undefined)
 
   const anchor = useMemo(() => {
     if (!anchors[name]) {

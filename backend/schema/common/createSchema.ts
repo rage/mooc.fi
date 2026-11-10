@@ -3,7 +3,6 @@ import * as path from "path"
 import { connectionPlugin, fieldAuthorizePlugin, makeSchema } from "nexus"
 
 import { nexusPrisma } from "@morgothulhu/nexus-plugin-prisma"
-import { Prisma } from "@prisma/client"
 
 import * as types from ".."
 import {
@@ -12,16 +11,17 @@ import {
   NEW_RELIC_LICENSE_KEY,
   NEXUS_REFLECTION,
 } from "../../config"
+import { Prisma } from "../../generated/prisma"
 import {
   cachePlugin,
   loggerPlugin,
   moocfiAuthPlugin,
+  requireMutationAuthorizePlugin,
   validateArgsPlugin,
 } from "../../middlewares"
 
-if (NEXUS_REFLECTION) {
-  require("sharp") // image library sharp seems to crash without this require
-}
+const generatedPath = path.join(process.cwd(), "generated")
+const prismaClientPath = path.join(generatedPath, "prisma")
 
 const createPlugins = () => {
   const plugins = [
@@ -29,6 +29,10 @@ const createPlugins = () => {
       experimentalCRUD: true,
       paginationStrategy: "prisma",
       shouldGenerateArtifacts: true,
+      inputs: { prismaClient: prismaClientPath },
+      outputs: {
+        typegen: path.join(generatedPath, "typegen-nexus-plugin-prisma.d.ts"),
+      },
     }),
     connectionPlugin({
       nexusFieldName: "connection",
@@ -41,6 +45,7 @@ const createPlugins = () => {
     moocfiAuthPlugin(),
     cachePlugin(),
     fieldAuthorizePlugin(),
+    requireMutationAuthorizePlugin(),
     validateArgsPlugin(),
   ]
 
@@ -89,11 +94,11 @@ export const createSchema = () => {
       // in JSDoc, so we need to insert the import manually.
       headers: [
         `// generated at ${new Date()}\n
-import { Upload } from "graphql-upload/index"\n`,
+import type Upload from "graphql-upload/Upload.mjs"\n`,
       ],
       modules: [
         {
-          module: ".prisma/client/index.d.ts",
+          module: path.join(prismaClientPath, "index.d.ts"),
           alias: "PrismaClient",
           typeMatch: (type, defaultRegex) => {
             // don't match enums we will map manually
@@ -121,11 +126,8 @@ import { Upload } from "graphql-upload/index"\n`,
     },
     plugins: createPlugins(),
     outputs: {
-      typegen: path.join(
-        process.cwd(),
-        "./node_modules/@types/nexus-typegen/index.d.ts",
-      ),
-      schema: path.join(process.cwd(), "./generated/schema.graphql"),
+      typegen: path.join(generatedPath, "nexus-typegen.d.ts"),
+      schema: path.join(generatedPath, "schema.graphql"),
     },
     shouldGenerateArtifacts: true,
     shouldExitAfterGenerateArtifacts: Boolean(NEXUS_REFLECTION),

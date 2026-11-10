@@ -1,6 +1,6 @@
 import { useId, useState } from "react"
 
-import { useMutation } from "@apollo/client"
+import { useMutation } from "@apollo/client/react"
 import { Alert, TextField } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
@@ -72,7 +72,7 @@ function CreditJustificationForm({
         label={t("justificationLabel")}
         value={justification}
         onChange={(event) => setJustification(event.target.value)}
-        inputProps={{ maxLength: 4000 }}
+        slotProps={{ htmlInput: { maxLength: 4000 } }}
         multiline
         minRows={4}
         required

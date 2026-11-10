@@ -1,5 +1,8 @@
-import { EmailTemplate, Organization, User } from "@prisma/client"
-
+import {
+  EmailTemplate,
+  Organization,
+  User,
+} from "../../../../../generated/prisma"
 import { TemplateContext } from "./TemplateContext"
 
 export type TemplateParams = {

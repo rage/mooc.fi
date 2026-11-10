@@ -85,9 +85,9 @@ const carriesSameSiteArrival = (req: Request) =>
 const isConfigured = () =>
   Boolean(
     COURSES_BASE_URL &&
-      COURSES_HANDOFF_SECRET &&
-      JWT_SECRET &&
-      isUserAccessTokenIssuingConfigured(),
+    COURSES_HANDOFF_SECRET &&
+    JWT_SECRET &&
+    isUserAccessTokenIssuingConfigured(),
   )
 
 const readContinuation = (value: unknown) =>

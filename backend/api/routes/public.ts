@@ -9,8 +9,7 @@ import {
   SponsorImage,
   StudyModule,
   StudyModuleTranslation,
-} from "@prisma/client"
-
+} from "../../generated/prisma"
 import { LoadedCourseSponsor } from "../../loaders/courseSponsorsLoader"
 import { LoadedCourseTag } from "../../loaders/courseTagsLoader"
 import { createLoaders } from "../../loaders/createLoaders"
@@ -396,7 +395,7 @@ export class PublicController extends Controller {
         full_name:
           user.first_name && user.last_name
             ? `${user.first_name} ${user.last_name}`
-            : user.first_name ?? user.last_name ?? null,
+            : (user.first_name ?? user.last_name ?? null),
         username: user.username,
         email: user.email,
         student_number: user.student_number,

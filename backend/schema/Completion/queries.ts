@@ -3,7 +3,6 @@ import { merge } from "lodash"
 import { extendType, idArg, intArg, nonNull, stringArg } from "nexus"
 
 import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
-import { Course, Prisma } from "@prisma/client"
 
 import {
   isAdmin,
@@ -13,6 +12,7 @@ import {
   Role,
 } from "../../accessControl"
 import { Context } from "../../context"
+import { Course, Prisma } from "../../generated/prisma"
 import { GraphQLForbiddenError, GraphQLUserInputError } from "../../lib/errors"
 import { buildUserSearch } from "../../util"
 import { completedBeforeCutoffWhere } from "../../util/completedBeforeCutoff"

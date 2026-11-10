@@ -1,8 +1,7 @@
 import DataLoader from "dataloader"
 import { uniqBy } from "lodash"
 
-import { Tag, TagTranslation, TagType } from "@prisma/client"
-
+import { Tag, TagTranslation, TagType } from "../generated/prisma"
 import { ExtendedPrismaClient } from "../prisma"
 
 export interface CourseTagsKey {

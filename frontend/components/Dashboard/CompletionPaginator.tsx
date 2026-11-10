@@ -12,9 +12,21 @@ interface PaginatorProps {
 function Paginator(props: PaginatorProps) {
   const { getNext, getPrevious, hasPrevious, hasNext } = props
   return (
-    <Grid item xs={12} sm={12} lg={8}>
-      <Grid container direction="row" alignItems="center">
-        <Grid item>
+    <Grid
+      size={{
+        xs: 12,
+        sm: 12,
+        lg: 8,
+      }}
+    >
+      <Grid
+        container
+        direction="row"
+        sx={{
+          alignItems: "center",
+        }}
+      >
+        <Grid>
           {hasPrevious ? (
             <IconButton onClick={getPrevious} size="large">
               <KeyboardArrowLeftIcon />
@@ -23,7 +35,7 @@ function Paginator(props: PaginatorProps) {
             ""
           )}
         </Grid>
-        <Grid item>
+        <Grid>
           {hasNext ? (
             <IconButton onClick={getNext} size="large">
               <KeyboardArrowRightIcon />

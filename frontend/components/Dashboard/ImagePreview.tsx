@@ -46,11 +46,10 @@ const ImagePreviewContainer = styled("div")`
   position: absolute;
 `
 
-interface ImagePreviewProps
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {
+interface ImagePreviewProps extends React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+> {
   file: string | undefined
   onImageRemove:
     | ((event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void)

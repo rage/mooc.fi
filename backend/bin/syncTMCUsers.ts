@@ -37,7 +37,7 @@ export const syncTMCUsers = async (
   const { logger } = ctx
 
   if (!ctx.prisma) {
-    ctx.prisma = (await import("../prisma")).default
+    ctx.prisma = (require("../prisma") as typeof import("../prisma")).default
   }
   if (!ctx.prisma) {
     throw new Error("couldn't get a Prisma instance")

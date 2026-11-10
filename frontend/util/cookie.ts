@@ -6,5 +6,5 @@ export const getCookie = (key: string) => {
   const cookieString = decodeURIComponent(document.cookie)
   const found = cookieString.match("(^|[^;]+)s*" + key + "s*=s*([^;]+)")
 
-  return found ? found.pop() ?? "" : ""
+  return found ? (found.pop() ?? "") : ""
 }

@@ -18,7 +18,7 @@ function PointsListGrid(props: GridProps) {
     () =>
       showOnlyTen
         ? (data.currentUser?.progresses ?? []).slice(0, 10)
-        : data.currentUser?.progresses ?? [],
+        : (data.currentUser?.progresses ?? []),
     [data, showOnlyTen],
   )
 

@@ -3,10 +3,9 @@ import path from "path"
 
 import { Knex } from "knex"
 
-import { Course, Prisma } from "@prisma/client"
-
 import { EXTENSION_PATH } from "../config"
 import { BaseContext } from "../context"
+import { Course, Prisma } from "../generated/prisma"
 import {
   isDefined,
   isNull,
@@ -15,6 +14,10 @@ import {
   Nullish,
   Optional,
 } from "./guards"
+
+// Search strings come from clients, and the name combinations built from them
+// grow quadratically with the input length.
+const MAX_SEARCH_LENGTH = 100
 
 const getNameCombinations = (search: string) => {
   const parts = search.match(/[^\s\n]+/g) ?? []
@@ -46,6 +49,7 @@ export const buildUserSearch = (
   if (!isDefined(search)) {
     return []
   }
+  search = search.slice(0, MAX_SEARCH_LENGTH)
 
   const userSearchQuery: Array<Prisma.UserWhereInput> = []
 
@@ -96,6 +100,7 @@ export const buildUserSearchRaw = (
   if (!isDefined(search)) {
     return
   }
+  search = search.slice(0, MAX_SEARCH_LENGTH)
 
   if (fields && fields.length === 0) {
     fields = defaultFields
@@ -197,12 +202,12 @@ export const convertPagination = (
 type NullFiltered<T> = T extends null
   ? Exclude<T, null>
   : T extends Array<infer R>
-  ? Array<Exclude<NullFiltered<R>, null | undefined>>
-  : T extends Record<PropertyKey, unknown>
-  ? {
-      [K in keyof T]: NullFiltered<T[K]>
-    }
-  : T
+    ? Array<Exclude<NullFiltered<R>, null | undefined>>
+    : T extends Record<PropertyKey, unknown>
+      ? {
+          [K in keyof T]: NullFiltered<T[K]>
+        }
+      : T
 
 export const filterNull = <T extends object>(
   o?: T | null,
@@ -229,10 +234,12 @@ export const ensureDefinedArray = <T>(
 }
 
 type OmitIndexSignature<ObjectType> = {
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  [KeyType in keyof ObjectType as {} extends Record<KeyType, unknown>
-    ? never
-    : KeyType]: ObjectType[KeyType]
+  [
+    // eslint-disable-next-line typescript/no-empty-object-type -- only index-signature keys accept {}
+    KeyType in keyof ObjectType as {} extends Record<KeyType, unknown>
+      ? never
+      : KeyType
+  ]: ObjectType[KeyType]
 }
 
 type FilterNullRecursiveReturnType<T> = T extends object
@@ -240,8 +247,8 @@ type FilterNullRecursiveReturnType<T> = T extends object
     ? Array<NullFiltered<Exclude<R, undefined>>>
     : { [K in keyof OmitIndexSignature<T>]: NullFiltered<T[K]> }
   : T extends null
-  ? undefined
-  : T
+    ? undefined
+    : T
 
 export function filterNullRecursive<T extends object>(
   o?: T | null,
@@ -282,16 +289,16 @@ type NonNullFields<
 > = U extends Nullish // null or undefined returns undefined
   ? undefined
   : [keyof T] extends [never] // empty object returns undefined
-  ? undefined
-  : Partial<T> extends T // all fields are optional, can be undefined as well
-  ?
-      | {
+    ? undefined
+    : Partial<T> extends T // all fields are optional, can be undefined as well
+      ?
+          | {
+              [K in keyof T]: NonNullable<T[K]>
+            }
+          | undefined
+      : {
           [K in keyof T]: NonNullable<T[K]>
         }
-      | undefined
-  : {
-      [K in keyof T]: NonNullable<T[K]>
-    }
 
 export function filterNullFields<T extends Record<string, any>>(
   obj: Optional<T>,

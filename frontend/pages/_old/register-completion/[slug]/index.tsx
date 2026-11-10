@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import fetch from "isomorphic-unfetch"
 import { useRouter } from "next/router"
 
-import { useMutation, useQuery } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client/react"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import {
   Accordion,
@@ -47,6 +47,7 @@ import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
 import { useQueryParameter } from "/hooks/useQueryParameter"
 import { useTranslator } from "/hooks/useTranslator"
 import { BACKEND_URL } from "/lib/backendUrl"
+import { escapeHtml } from "/lib/escapeHtml"
 import withSignedIn from "/lib/with-signed-in"
 import RegisterCompletionTranslations from "/translations/register-completion"
 import { getCookie } from "/util/cookie"
@@ -382,7 +383,11 @@ function RegisterCompletionPage() {
     return (
       <RegisterCompletion pageTitle={title} title={t("title")}>
         <StyledPaper>
-          <Typography paragraph>
+          <Typography
+            sx={{
+              marginBottom: "16px",
+            }}
+          >
             {t("open_university_registration_not_open")}{" "}
             <strong>{completion.course?.name}</strong> (
             {t(completion.completion_language as any)}).
@@ -482,7 +487,9 @@ function RegisterCompletionPage() {
             <AccordionDetails>
               <Prose
                 dangerouslySetInnerHTML={{
-                  __html: t("emailChangedBody", { email: completion.email }),
+                  __html: t("emailChangedBody", {
+                    email: escapeHtml(completion.email),
+                  }),
                 }}
               />
             </AccordionDetails>

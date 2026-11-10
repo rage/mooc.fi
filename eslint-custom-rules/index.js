@@ -1,8 +1,9 @@
 // @ts-check
-const eslint = require("eslint")
-
-/** @type {eslint.ESLint.Plugin} */
+// Loaded by oxlint as a JS plugin (.oxlintrc.json "jsPlugins"); oxlint implements the ESLint plugin API.
 const customRules = {
+  meta: {
+    name: "eslint-custom-rules",
+  },
   rules: {
     "ban-ts-ignore-without-comment": {
       meta: {
@@ -21,7 +22,7 @@ const customRules = {
       },
       create: function (context) {
         const tsIgnoreRegExp = /^\/*\s*@ts-ignore(?!:.*)/
-        const sourceCode = context.getSourceCode()
+        const sourceCode = context.sourceCode
 
         return {
           Program() {
@@ -42,9 +43,6 @@ const customRules = {
         }
       },
     },
-    "no-restricted-imports-clone":
-      new eslint.Linter().getRules().get("no-restricted-imports") ||
-      ((..._) => void 0),
     "no-emotion-styled-import": {
       meta: {
         type: "problem",

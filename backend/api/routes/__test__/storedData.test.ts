@@ -89,6 +89,25 @@ describe("API", () => {
         expect(created?.data).toEqual("foo foo")
       })
 
+      it("creates stored data via a course alias", async () => {
+        const res = await postStoredData("alias")({
+          data: { data: "foo foo" },
+          headers: FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+        })
+
+        expect(res.status).toBe(200)
+        expect(res.data.message).toContain("stored data created")
+
+        const created = await ctx.prisma.storedData.findFirst({
+          where: {
+            user_id: "20000000000000000000000000000102",
+            course_id: "00000000000000000000000000000002",
+          },
+        })
+
+        expect(created?.data).toEqual("foo foo")
+      })
+
       it("updates stored data", async () => {
         const existing = await ctx.prisma.storedData.findFirst({
           where: {

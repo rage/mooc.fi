@@ -1,5 +1,7 @@
 import * as yup from "yup"
 
+import { userIdSchema } from "../validate"
+
 const CURRENT_MESSAGE_FORMAT_VERSION = 1
 
 export const MessageYupSchema = yup.object().shape({
@@ -8,7 +10,7 @@ export const MessageYupSchema = yup.object().shape({
   n_points: yup.number().nullable(),
   completed: yup.boolean().required(),
   attempted: yup.boolean().nullable(),
-  user_id: yup.number().required(),
+  user_id: userIdSchema.required(),
   course_id: yup.string().length(36).required(),
   service_id: yup.string().length(36).required(),
   required_actions: yup.array(yup.string()),

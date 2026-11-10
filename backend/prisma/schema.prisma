@@ -1,12 +1,11 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch", "postgresqlExtensions"]
-  // , "fieldReference", 
+  output          = "../generated/prisma"
+  previewFeatures = ["fullTextSearchPostgres", "postgresqlExtensions"]
 }
 
 datasource db {
   provider   = "postgresql"
-  url        = env("DATABASE_URL")
   extensions = [uuidOssp(map: "uuid-ossp", schema: "extensions"), pg_trgm(schema: "extensions"), btree_gin(schema: "extensions")]
 }
 
@@ -583,6 +582,8 @@ model UserOrganization {
   user_id                              String?                            @db.Uuid
   organization_id                      String?                            @db.Uuid
   consented                            Boolean?                           @default(false)
+  /// Wrong activation codes across all of this membership's join confirmations, reset on confirmation; at MAX_ACTIVATION_ATTEMPTS the membership is locked until an admin resets it
+  activation_failed_attempts           Int                                @default(0)
   created_at                           DateTime                           @default(now())
   updated_at                           DateTime                           @default(now()) @updatedAt
   organization                         Organization?                      @relation(fields: [organization_id], references: [id], onUpdate: NoAction)
@@ -594,20 +595,15 @@ model UserOrganization {
 }
 
 model VerifiedUser {
-  id                            String        @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
-  display_name                  String?
-  personal_unique_code          String
-  home_organization             String?
-  person_affiliation            String?
-  person_affiliation_updated_at DateTime?
-  mail                          String?
-  organizational_unit           String?
-  user_id                       String?       @db.Uuid
-  organization_id               String?       @db.Uuid
-  created_at                    DateTime      @default(now())
-  updated_at                    DateTime      @default(now()) @updatedAt
-  user                          User?         @relation(fields: [user_id], references: [id], onUpdate: NoAction)
-  organization                  Organization? @relation(fields: [organization_id], references: [id], onUpdate: NoAction)
+  id                   String        @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  display_name         String?
+  personal_unique_code String
+  user_id              String?       @db.Uuid
+  organization_id      String?       @db.Uuid
+  created_at           DateTime      @default(now())
+  updated_at           DateTime      @default(now()) @updatedAt
+  user                 User?         @relation(fields: [user_id], references: [id], onUpdate: NoAction)
+  organization         Organization? @relation(fields: [organization_id], references: [id], onUpdate: NoAction)
 
   @@unique([organization_id, user_id, personal_unique_code], map: "verified_user_organization_user_puc_constraint")
   @@index([user_id], map: "verified_user.user_id_index")
@@ -654,6 +650,8 @@ model UserOrganizationJoinConfirmation {
   updated_at           DateTime?        @default(now()) @updatedAt
   user_organization_id String           @db.Uuid
   email_delivery_id    String?          @unique @db.Uuid
+  /// Plaintext so the background emailer can render it; null on confirmations created before codes were stored
+  activation_code      String?
   user_organization    UserOrganization @relation(fields: [user_organization_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   email_delivery       EmailDelivery?   @relation(fields: [email_delivery_id], references: [id])
 
@@ -754,16 +752,12 @@ enum CourseStatus {
   Active
   Ended
   Upcoming
-
-  @@map("course_status")
 }
 
 enum OrganizationRole {
   Teacher
   Student
   OrganizationAdmin
-
-  @@map("organization_role")
 }
 
 model SpentCoursesHandoffContinuation {

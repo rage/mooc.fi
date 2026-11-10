@@ -1,6 +1,6 @@
 import React from "react"
 
-import { ApolloError } from "@apollo/client"
+import { type ErrorLike } from "@apollo/client"
 
 import {
   CourseStatus,
@@ -18,7 +18,7 @@ export interface FilterContext {
   searchVariables: SearchVariables
   setSearchVariables: React.Dispatch<React.SetStateAction<SearchVariables>>
   loading: boolean
-  error?: ApolloError
+  error?: ErrorLike
   coursesData?: EditorCoursesQuery
   handlerCoursesData?: HandlerCoursesQuery
   onStatusClick?: (value: CourseStatus | null) => (_: any) => void

@@ -71,8 +71,10 @@ const CustomSnackbar = (props: CustomSnackbarProps) => {
           <CloseIcon />
         </IconButton>
       }
-      ContentProps={{
-        style: { backgroundColor: bgColor[type] },
+      slotProps={{
+        content: {
+          style: { backgroundColor: bgColor[type] },
+        },
       }}
     />
   )

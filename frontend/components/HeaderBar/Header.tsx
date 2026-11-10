@@ -19,7 +19,7 @@ import { useLoginStateContext } from "/contexts/LoginStateContext"
 
 interface Props {
   window?: () => Window
-  children: ReactElement
+  children: ReactElement<any>
 }
 
 const LoggedInUserMenu = dynamic(() => import("./LoggedInUserMenu"), {

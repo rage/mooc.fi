@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useMemo } from "react"
+import { PropsWithChildren, useMemo } from "react"
 
 import dynamic from "next/dynamic"
 import { sortBy } from "remeda"
@@ -62,7 +62,7 @@ export function CourseEntry({ children }: PropsWithChildren) {
   if (!selectedData?.course) {
     return (
       <CourseEntryCardBase elevation={0}>
-        <Typography variant="subtitle1" p="0.5rem">
+        <Typography variant="subtitle1" sx={{ p: "0.5rem" }}>
           {hasNoData ? t("noResults") : t("noCourseFound")}
         </Typography>
       </CourseEntryCardBase>

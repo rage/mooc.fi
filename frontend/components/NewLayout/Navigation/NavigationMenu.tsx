@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 
-import { isDefined } from "remeda"
+import { isNonNullish } from "remeda"
 
 import {
   DesktopNavigationMenu,
@@ -67,7 +67,7 @@ const NavigationMenu = () => {
                 ],
               }
             : null,
-        ].filter(isDefined),
+        ].filter(isNonNullish),
       [t, admin],
     ) ?? []
 

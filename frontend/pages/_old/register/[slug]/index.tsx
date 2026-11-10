@@ -1,6 +1,6 @@
 import { createRef, useEffect, useMemo, useState } from "react"
 
-import { useMutation, useQuery } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client/react"
 import Send from "@mui/icons-material/Send"
 import { Link } from "@mui/material"
 import Button from "@mui/material/Button"
@@ -383,15 +383,18 @@ const RegisterToOrganization = () => {
         organizationData.organization.required_confirmation && (
           <div>
             <FormControlLabel
-              label={`${t("joiningCheckbox")} ${organizationData.organization
-                ?.name}`}
+              label={`${t("joiningCheckbox")} ${
+                organizationData.organization?.name
+              }`}
               control={
                 <Checkbox
                   id="consent-checkbox"
                   name="consent-checkbox"
                   checked={consented}
                   onChange={handleCheckboxChange}
-                  inputProps={{ "aria-label": "consent checkbox" }}
+                  slotProps={{
+                    input: { "aria-label": "consent checkbox" },
+                  }}
                 />
               }
             />
@@ -457,15 +460,18 @@ const RegisterToOrganization = () => {
         !organizationData.organization.required_confirmation && (
           <div>
             <FormControlLabel
-              label={`${t("joiningCheckbox")} ${organizationData.organization
-                ?.name}`}
+              label={`${t("joiningCheckbox")} ${
+                organizationData.organization?.name
+              }`}
               control={
                 <Checkbox
                   id="consent-checkbox"
                   name="consent-checkbox"
                   checked={consented}
                   onChange={handleCheckboxChange}
-                  inputProps={{ "aria-label": "consent checkbox" }}
+                  slotProps={{
+                    input: { "aria-label": "consent checkbox" },
+                  }}
                 />
               }
             />

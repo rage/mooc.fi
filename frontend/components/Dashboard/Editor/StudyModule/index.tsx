@@ -1,20 +1,21 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import Router from "next/router"
-import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
-
 import {
-  useApolloClient,
-  useMutation,
-  type PureQueryOptions,
-} from "@apollo/client"
+  FormProvider,
+  Resolver,
+  SubmitErrorHandler,
+  useForm,
+} from "react-hook-form"
+
+import { ApolloClient } from "@apollo/client"
+import { useApolloClient, useMutation } from "@apollo/client/react"
 import { yupResolver } from "@hookform/resolvers/yup"
 
+import { useResetAfterSubmit } from "../Common"
 import EditorContainer from "../EditorContainer"
 import { EditorContextProvider } from "../EditorContext"
-import studyModuleEditSchema, {
-  StudyModuleEditSchemaType,
-} from "./form-validation"
+import studyModuleEditSchema from "./form-validation"
 import { fromStudyModuleForm, toStudyModuleForm } from "./serialization"
 import StudyModuleEditForm from "./StudyModuleEditForm"
 import { StudyModuleFormValues } from "./types"
@@ -61,12 +62,17 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
     [client, module, t],
   )
 
-  const methods = useForm({
+  const methods = useForm<StudyModuleFormValues>({
     defaultValues: defaultValues.current,
-    resolver: yupResolver<StudyModuleEditSchemaType>(validationSchema), // useCustomValidationResolver(validationSchema),
+    // the schema validates only part of the form values
+    resolver: yupResolver(
+      validationSchema,
+    ) as unknown as Resolver<StudyModuleFormValues>, // useCustomValidationResolver(validationSchema),
     mode: "onBlur",
   })
   const { trigger } = methods
+  const resetAfterSubmit = useResetAfterSubmit(methods)
+  const { isDirty } = methods.formState
 
   useEffect(() => {
     if (module?.id) {
@@ -77,10 +83,10 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
   const [redirectSlug, setRedirectSlug] = useState<string>()
 
   useEffect(() => {
-    if (redirectSlug) {
+    if (redirectSlug && !isDirty) {
       Router.push(`${baseUrl}/study-modules/${redirectSlug}/edit`)
     }
-  }, [redirectSlug])
+  }, [redirectSlug, isDirty])
 
   const [addStudyModule] = useMutation(AddStudyModuleDocument)
   const [updateStudyModule] = useMutation(UpdateStudyModuleDocument)
@@ -107,7 +113,7 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
               }),
             )
           : []),
-      ] as PureQueryOptions[]
+      ] as ApolloClient.QueryOptions[]
 
       try {
         addSnackbar({ message: t("statusSaving") })
@@ -120,7 +126,7 @@ const StudyModuleEdit = ({ module }: StudyModuleEditProps) => {
             message: t("statusSavingSuccess"),
             severity: "success",
           })
-          methods.reset(values)
+          resetAfterSubmit()
           setRedirectSlug(data?.addStudyModule?.slug ?? values.new_slug)
           return
         }

@@ -3,11 +3,8 @@ import { useCallback, useMemo, useRef } from "react"
 import { FormikHelpers } from "formik"
 import Router from "next/router"
 
-import {
-  useApolloClient,
-  useMutation,
-  type PureQueryOptions,
-} from "@apollo/client"
+import { ApolloClient } from "@apollo/client"
+import { useApolloClient, useMutation } from "@apollo/client/react"
 
 import CourseEditForm from "./CourseEditForm"
 import courseEditSchema from "./form-validation"
@@ -88,7 +85,7 @@ const CourseEdit = ({ course, modules, courses }: CourseEditProps) => {
               variables: { slug: values.new_slug },
             }
           : undefined,
-      ].filter((v) => !!v) as PureQueryOptions[]
+      ].filter((v) => !!v) as ApolloClient.QueryOptions[]
 
       try {
         setStatus({ message: t("statusSaving") })

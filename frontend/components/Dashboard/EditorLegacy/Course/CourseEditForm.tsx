@@ -119,8 +119,8 @@ const CourseEditFormComponent = ({
     values?.course_translations.length === 0
       ? ""
       : values?.course_translations.length == 2
-      ? "both"
-      : values?.course_translations[0].language,
+        ? "both"
+        : values?.course_translations[0].language,
   )
   // @ts-ignore: for now
   const [enableSuperSecret] = useState(!!secret)
@@ -156,7 +156,7 @@ const CourseEditFormComponent = ({
               error={errors.name}
               autoComplete="off"
               variant="outlined"
-              InputLabelProps={inputLabelProps}
+              slotProps={{ inputLabel: inputLabelProps }}
               component={StyledTextField}
               required
             />
@@ -165,7 +165,7 @@ const CourseEditFormComponent = ({
               name="new_slug"
               type="text"
               label={t("courseSlug")}
-              InputLabelProps={inputLabelProps}
+              slotProps={{ inputLabel: inputLabelProps }}
               error={errors.new_slug}
               variant="outlined"
               autoComplete="off"
@@ -177,7 +177,7 @@ const CourseEditFormComponent = ({
               name="ects"
               type="text"
               label={t("courseECTS")}
-              InputLabelProps={inputLabelProps}
+              slotProps={{ inputLabel: inputLabelProps }}
               errors={errors.ects}
               autoComplete="off"
               variant="outlined"
@@ -192,7 +192,7 @@ const CourseEditFormComponent = ({
               label={t("courseStartDate")}
               as={DatePickerField}
               required
-              InputLabelProps={inputLabelProps}
+              slotProps={{ inputLabel: inputLabelProps }}
               placeholder={t("courseDatePlaceholder")}
             />
             <StyledFieldWithAnchor
@@ -200,7 +200,7 @@ const CourseEditFormComponent = ({
               name="end_date"
               label={t("courseEndDate")}
               as={DatePickerField}
-              InputLabelProps={inputLabelProps}
+              slotProps={{ inputLabel: inputLabelProps }}
               placeholder={t("courseDatePlaceholder")}
             />
           </FormFieldGroup>
@@ -213,7 +213,7 @@ const CourseEditFormComponent = ({
               type="text"
               error={errors.teacher_in_charge_name}
               label={t("courseTeacherInChargeName")}
-              InputLabelProps={inputLabelProps}
+              slotProps={{ inputLabel: inputLabelProps }}
               autoComplete="off"
               variant="outlined"
               component={StyledTextField}
@@ -226,7 +226,7 @@ const CourseEditFormComponent = ({
               type="text"
               error={errors.teacher_in_charge_email}
               label={t("courseTeacherInChargeEmail")}
-              InputLabelProps={inputLabelProps}
+              slotProps={{ inputLabel: inputLabelProps }}
               autoComplete="off"
               variant="outlined"
               component={StyledTextField}
@@ -239,7 +239,7 @@ const CourseEditFormComponent = ({
               type="text"
               error={errors.support_email}
               label={t("courseSupportEmail")}
-              InputLabelProps={inputLabelProps}
+              slotProps={{ inputLabel: inputLabelProps }}
               autoComplete="off"
               variant="outlined"
               component={StyledTextField}
@@ -348,7 +348,7 @@ const CourseEditFormComponent = ({
                 autoComplete="off"
                 variant="outlined"
                 component={StyledTextField}
-                InputLabelProps={inputLabelProps}
+                slotProps={{ inputLabel: inputLabelProps }}
               />
               <StyledFieldWithAnchor
                 label={t("courseModuleOrder")}
@@ -359,7 +359,7 @@ const CourseEditFormComponent = ({
                 autoComplete="off"
                 variant="outlined"
                 component={StyledTextField}
-                InputLabelProps={inputLabelProps}
+                slotProps={{ inputLabel: inputLabelProps }}
               />
             </FormFieldGroup>
           </TabSection>
@@ -376,7 +376,7 @@ const CourseEditFormComponent = ({
                 variant="outlined"
                 component={StyledTextField}
                 style={{ width: "60%" }}
-                InputLabelProps={inputLabelProps}
+                slotProps={{ inputLabel: inputLabelProps }}
                 tab={1}
               />
               <StyledFieldWithAnchor
@@ -389,7 +389,7 @@ const CourseEditFormComponent = ({
                 variant="outlined"
                 component={StyledTextField}
                 style={{ width: "60%" }}
-                InputLabelProps={inputLabelProps}
+                slotProps={{ inputLabel: inputLabelProps }}
                 tab={1}
               />
               <CheckboxField
@@ -427,7 +427,7 @@ const CourseEditFormComponent = ({
                       select
                       autoComplete="off"
                       component={StyledTextField}
-                      InputLabelProps={inputLabelProps}
+                      slotProps={{ inputLabel: inputLabelProps }}
                     >
                       <MenuItem key="handledby-empty" value={undefined}>
                         (no choice)
@@ -450,7 +450,7 @@ const CourseEditFormComponent = ({
                       component={StyledTextField}
                       error={errors.tier}
                       style={{ width: "20%" }}
-                      InputLabelProps={inputLabelProps}
+                      slotProps={{ inputLabel: inputLabelProps }}
                     />
                     <StyledFieldWithAnchor
                       name="inherit_settings_from"
@@ -460,7 +460,7 @@ const CourseEditFormComponent = ({
                       select
                       autoComplete="off"
                       component={StyledTextField}
-                      InputLabelProps={inputLabelProps}
+                      slotProps={{ inputLabel: inputLabelProps }}
                     >
                       <MenuItem key="inheritfrom-empty" value={undefined}>
                         (no choice)

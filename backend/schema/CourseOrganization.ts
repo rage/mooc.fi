@@ -1,6 +1,6 @@
 import { booleanArg, extendType, idArg, nonNull, objectType } from "nexus"
 
-import { isAdmin, isVisitor, or } from "../accessControl"
+import { isAdmin } from "../accessControl"
 import { filterNullFields } from "../util"
 import { ConflictError } from "./common"
 
@@ -53,7 +53,7 @@ export const CourseOrganizationMutations = extendType({
         organization_id: nonNull(idArg()),
         creator: booleanArg(),
       },
-      authorize: or(isVisitor, isAdmin),
+      authorize: isAdmin,
       resolve: async (_, args, ctx) => {
         const { course_id, organization_id, creator } = args
 

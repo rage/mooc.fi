@@ -166,11 +166,11 @@ describe("redisify", () => {
       expect(res).toEqual(undefined)
       expect(getMock).toHaveBeenCalledWith("bar:baz")
       expect(logger.info).toHaveBeenCalledWith("Cache miss: bar")
-      expect(logger.warn).nthCalledWith(
+      expect(logger.warn).toHaveBeenNthCalledWith(
         1,
         "Cache miss but failed to resolve value: bar; error: foo",
       )
-      expect(logger.warn).nthCalledWith(
+      expect(logger.warn).toHaveBeenNthCalledWith(
         2,
         "Cache miss but failed to resolve value twice, giving up: bar; error: foo",
       )

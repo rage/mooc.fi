@@ -10,9 +10,9 @@ export const Service = objectType({
     t.model.created_at()
     t.model.updated_at()
     t.model.name()
-    t.model.url()
+    t.model.url({ authorize: isAdmin })
     t.model.exercises()
-    t.model.user_course_service_progresses()
+    t.model.user_course_service_progresses({ authorize: isAdmin })
     t.model.courses()
   },
 })

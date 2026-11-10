@@ -5,7 +5,7 @@ import { isString } from "remeda"
 
 import {
   Autocomplete,
-  AutocompleteRenderGetTagProps,
+  AutocompleteRenderValueGetItemProps,
   AutocompleteRenderInputParams,
   Chip,
   TextField,
@@ -57,17 +57,21 @@ function UserCourseSettingsVisibilityForm() {
 
   const renderTags = useCallback(
     (
-      value: UserCourseSettingsVisibilityFormValues[],
-      getTagProps: AutocompleteRenderGetTagProps,
+      value: (string | UserCourseSettingsVisibilityFormValues)[],
+      getItemProps: AutocompleteRenderValueGetItemProps<true>,
     ) =>
-      value.map((field, index) => (
-        <Chip
-          {...getTagProps({ index })}
-          variant="outlined"
-          label={field.language}
-          onDelete={onDelete(index)}
-        />
-      )),
+      value.map((field, index) => {
+        const { key, ...itemProps } = getItemProps({ index })
+        return (
+          <Chip
+            key={key}
+            {...itemProps}
+            variant="outlined"
+            label={isString(field) ? field : field.language}
+            onDelete={onDelete(index)}
+          />
+        )
+      }),
     [onDelete],
   )
 
@@ -96,7 +100,7 @@ function UserCourseSettingsVisibilityForm() {
         options={options}
         value={field.value ?? []}
         onChange={onChange}
-        renderTags={renderTags}
+        renderValue={renderTags}
         renderInput={renderInput}
       />
     </>

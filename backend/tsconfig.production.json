@@ -1,29 +1,30 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "/*": ["./*"]
-    },
     "rootDir": ".",
     "lib": ["es2016", "esnext"],
     "target": "es6",
-    "module": "commonjs",
+    "module": "node20",
     "outDir": "./dist",
+    "isolatedModules": true,
+    "types": ["node"],
     "strict": true,
-    "strictNullChecks": true,
     "noEmit": false,
-    "noImplicitAny": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "esModuleInterop": true,
     "sourceMap": true,
     "inlineSources": true,
-    "noEmitHelpers": true,
-    "importHelpers": true,
     "resolveJsonModule": true,
     "sourceRoot": "/",
     "skipLibCheck": true
   },
-  "include": [".", "./bin/**/*"],
-  "exclude": ["node_modules", "__mocks__", "dist"]
+  "include": ["."],
+  "exclude": [
+    "node_modules",
+    "__mocks__",
+    "dist",
+    "sourcemap",
+    "coverage",
+    "**/__test__",
+    "tests"
+  ]
 }

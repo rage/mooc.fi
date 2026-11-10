@@ -1,7 +1,10 @@
 import { extendType, idArg, nonNull, objectType } from "nexus"
 
 import { isAdmin, isUser, or, Role } from "../accessControl"
-import { GraphQLAuthenticationError } from "../lib/errors"
+import {
+  GraphQLAuthenticationError,
+  GraphQLForbiddenError,
+} from "../lib/errors"
 
 export const CourseStatsSubscription = objectType({
   name: "CourseStatsSubscription",
@@ -26,10 +29,31 @@ export const CourseStatsSubscriptionMutations = extendType({
       },
       authorize: or(isUser, isAdmin),
       resolve: async (_, { id }, ctx) => {
-        const { user } = ctx
+        const { role, user } = ctx
+
+        if (!user) {
+          throw new GraphQLAuthenticationError("not logged in")
+        }
+
+        if (role !== Role.ADMIN) {
+          const ownsCourse = await ctx.prisma.course.findFirst({
+            select: { id: true },
+            where: {
+              course_stats_email_id: id,
+              ownerships: { some: { user_id: user.id } },
+            },
+          })
+
+          if (!ownsCourse) {
+            throw new GraphQLForbiddenError(
+              "subscribing requires ownership of a course using this template",
+            )
+          }
+        }
+
         return ctx.prisma.courseStatsSubscription.create({
           data: {
-            user: { connect: { id: user?.id } },
+            user: { connect: { id: user.id } },
             email_template: { connect: { id } },
           },
         })

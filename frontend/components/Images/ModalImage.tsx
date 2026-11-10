@@ -70,11 +70,10 @@ const StyledIconButton = styled(IconButton)`
   right: 0;
 `
 
-interface ModalImageProps
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLSpanElement>,
-    HTMLSpanElement
-  > {
+interface ModalImageProps extends React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLSpanElement>,
+  HTMLSpanElement
+> {
   src: ImageProps["src"]
   alt: ImageProps["alt"]
   width?: string

@@ -61,7 +61,7 @@ const CourseAliasEditForm = () => {
                         label={t("courseAliasCourseCode")}
                         errors={[getIn(errors, `[${index}].course_code`)]}
                         variant="outlined"
-                        InputLabelProps={inputLabelProps}
+                        slotProps={{ inputLabel: inputLabelProps }}
                         style={{ width: "100%" }}
                         required
                       />
@@ -78,11 +78,11 @@ const CourseAliasEditForm = () => {
                               description: t("confirmationRemoveAlias"),
                               confirmationText: t("confirmationYes"),
                               cancellationText: t("confirmationNo"),
+                            }).then(({ confirmed }) => {
+                              if (confirmed) {
+                                helpers.remove(index)
+                              }
                             })
-                              .then(() => helpers.remove(index))
-                              .catch(() => {
-                                // ignore
-                              })
                           }
                         }}
                         endIcon={<RemoveIcon>{t("courseRemove")}</RemoveIcon>}

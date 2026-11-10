@@ -1,6 +1,5 @@
 import * as path from "path"
 
-import { RewriteFrames } from "@sentry/integrations"
 import * as Sentry from "@sentry/node"
 
 import { GIT_COMMIT, SENTRY_DSN } from "../config"
@@ -21,7 +20,7 @@ Sentry.init({
     return breadcrumb
   },
   integrations: [
-    new RewriteFrames({
+    Sentry.rewriteFramesIntegration({
       root: rootdir,
       iteratee: (frame) => {
         if (!frame?.filename) return frame

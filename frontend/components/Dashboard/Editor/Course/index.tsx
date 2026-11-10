@@ -1,20 +1,23 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { useRouter } from "next/router"
-import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
-
 import {
-  useApolloClient,
-  useMutation,
-  type PureQueryOptions,
-} from "@apollo/client"
+  FormProvider,
+  Resolver,
+  SubmitErrorHandler,
+  useForm,
+} from "react-hook-form"
+
+import { ApolloClient } from "@apollo/client"
+import { useApolloClient, useMutation } from "@apollo/client/react"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { useEventCallback } from "@mui/material/utils"
 
+import { useResetAfterSubmit } from "../Common"
 import EditorContainer from "../EditorContainer"
 import CourseEditForm from "./CourseEditForm"
 import { useCourseEditorData } from "./CourseEditorDataContext"
-import courseEditSchema, { CourseEditSchemaType } from "./form-validation"
+import courseEditSchema from "./form-validation"
 import { fromCourseForm, toCourseForm } from "./serialization"
 import { CourseFormValues } from "./types"
 import { EditorContextProvider } from "/components/Dashboard/Editor/EditorContext"
@@ -61,15 +64,20 @@ function CourseEditor() {
       }),
     [course, client, t, locale],
   )
-  const methods = useForm({
+  const methods = useForm<CourseFormValues>({
     defaultValues,
-    resolver: yupResolver<CourseEditSchemaType>(validationSchema), //useCustomValidationResolver(validationSchema),
+    // the schema validates only part of the form values
+    resolver: yupResolver(
+      validationSchema,
+    ) as unknown as Resolver<CourseFormValues>, //useCustomValidationResolver(validationSchema),
     mode: "onBlur",
     reValidateMode: "onBlur",
     shouldFocusError: false,
     shouldUnregister: false,
   })
-  const { trigger, reset } = methods
+  const { trigger } = methods
+  const resetAfterSubmit = useResetAfterSubmit(methods)
+  const { isDirty } = methods.formState
 
   useEffect(() => {
     if (course?.id && !isClone) {
@@ -78,10 +86,10 @@ function CourseEditor() {
   }, [])
 
   useEffect(() => {
-    if (redirectSlug) {
+    if (redirectSlug && !isDirty) {
       router.push(`${baseUrl}/courses/${redirectSlug}/edit`)
     }
-  }, [redirectSlug])
+  }, [redirectSlug, isDirty])
 
   const [addCourse] = useMutation(AddCourseDocument)
   const [updateCourse] = useMutation(UpdateCourseDocument)
@@ -103,7 +111,7 @@ function CourseEditor() {
       })
       // - if we create a new course, we refetch all courses so the new one is on the list
       // - if we update, we also need to refetch that course with a potentially updated slug
-      const refetchQueries: PureQueryOptions[] = [
+      const refetchQueries: ApolloClient.QueryOptions[] = [
         { query: CoursesDocument },
         { query: EditorCoursesDocument },
         { query: CourseEditorOtherCoursesDocument },
@@ -125,7 +133,7 @@ function CourseEditor() {
             refetchQueries: () => refetchQueries,
           })
 
-          reset(values)
+          resetAfterSubmit()
           setRedirectSlug(data?.addCourse?.slug ?? values.new_slug)
         } else {
           const { data } = await updateCourse({
@@ -137,7 +145,7 @@ function CourseEditor() {
             const saved = toCourseForm({ course: data.updateCourse })
 
             savedValues.current = saved
-            reset(saved)
+            resetAfterSubmit(saved)
           }
           if (values.new_slug !== values.slug) {
             setRedirectSlug(values.new_slug)

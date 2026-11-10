@@ -1,10 +1,31 @@
 import { booleanArg, intArg, list, nonNull, objectType, stringArg } from "nexus"
-
-import { Prisma } from "@prisma/client"
+import { FieldAuthorizeResolver } from "nexus/dist/plugins/fieldAuthorizePlugin"
 
 import { isAdmin, isAdminOrCourseOwner } from "../../accessControl"
+import { Prisma } from "../../generated/prisma"
 import { GraphQLForbiddenError, GraphQLUserInputError } from "../../lib/errors"
 import { filterNullFields } from "../../util"
+
+const isAdminOrRootCourseOwner: FieldAuthorizeResolver<"Course", any> = (
+  root,
+  args,
+  ctx,
+  info,
+) => isAdminOrCourseOwner(root.id)({}, args, ctx, info)
+
+// Completions are stored on the handling course, so its owners decide who reads them.
+const isAdminOrCompletionsCourseOwner: FieldAuthorizeResolver<"Course", any> = (
+  root,
+  args,
+  ctx,
+  info,
+) =>
+  isAdminOrCourseOwner(root.completions_handled_by_id ?? root.id)(
+    {},
+    args,
+    ctx,
+    info,
+  )
 
 export const Course = objectType({
   name: "Course",
@@ -12,7 +33,9 @@ export const Course = objectType({
     t.model.id()
     t.model.automatic_completions()
     t.model.completion_email_id()
-    t.model.completion_email()
+    t.model.completion_email({
+      authorize: isAdminOrRootCourseOwner,
+    })
     t.model.completions_handled_by_id()
     t.model.completions_handled_by()
     t.model.course_translations()
@@ -62,7 +85,7 @@ export const Course = objectType({
     // t.model.user_course_service_progresses()
     // t.model.user_course_settings()
     t.model.user_course_settings_visibilities()
-    t.model.services()
+    t.model.services({ authorize: isAdmin })
     t.model.study_modules()
     t.model.automatic_completions_eligible_for_ects()
     t.model.upcoming_active_link()
@@ -70,7 +93,9 @@ export const Course = objectType({
     t.model.handles_completions_for()
     t.model.handles_settings_for()
     t.model.course_stats_email_id()
-    t.model.course_stats_email()
+    t.model.course_stats_email({
+      authorize: isAdminOrRootCourseOwner,
+    })
     t.model.language()
 
     t.string("description")
@@ -83,9 +108,7 @@ export const Course = objectType({
         user_id: stringArg(),
         user_upstream_id: intArg(),
       },
-      authorize: async (parent, args, ctx, info) => {
-        return await isAdminOrCourseOwner(parent.id)({}, args, ctx, info)
-      },
+      authorize: isAdminOrCompletionsCourseOwner,
       validate: (_, { user_id, user_upstream_id }) => {
         if (!user_id && !user_upstream_id) {
           throw new GraphQLUserInputError("needs user_id or user_upstream_id", [

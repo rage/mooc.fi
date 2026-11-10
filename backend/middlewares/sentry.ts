@@ -4,6 +4,7 @@ import { isProduction } from "../config"
 import { Context } from "../context"
 import { Sentry } from "../services/sentry"
 import { catchResolverError } from "./catchResolverError"
+import { redactArgs } from "./redactArgs"
 
 export const sentryPlugin = () =>
   plugin({
@@ -18,7 +19,7 @@ export const sentryPlugin = () =>
                 scope.setFingerprint(["{{ default }}", config.fieldConfig.name])
                 scope.setExtra("type", config.parentTypeConfig.name)
                 scope.setExtra("field", config.fieldConfig.name)
-                scope.setExtra("args", args)
+                scope.setExtra("args", redactArgs(args))
                 scope.setUser({ id: ctx.user?.id })
 
                 Sentry.captureException(error)

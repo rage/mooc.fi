@@ -1,7 +1,6 @@
 import assert from "assert"
 
-import { Course, User } from "@prisma/client"
-
+import { Course, User } from "../../../../../generated/prisma"
 import { getTestContext } from "../../../../../tests"
 import { seed } from "../../../../../tests/data"
 import { KafkaContext } from "../../../common/kafkaContext"

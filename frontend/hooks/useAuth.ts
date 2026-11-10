@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react"
 
-import { useApolloClient } from "@apollo/client"
+import { useApolloClient } from "@apollo/client/react"
 
 import { clearSession, isAdmin, isSignedIn } from "/lib/authentication"
 
 import {
   CurrentUserDetailedDocument,
-  CurrentUserDetailedQuery,
   UserDetailedFieldsFragment,
 } from "/graphql/generated"
 
@@ -35,18 +34,18 @@ export function useAuth(): UseAuthResult {
 
       if (isUserSignedIn) {
         try {
-          const { data } = await apolloClient.query<CurrentUserDetailedQuery>({
+          const { data } = await apolloClient.query({
             query: CurrentUserDetailedDocument,
             fetchPolicy: "network-only",
             errorPolicy: "none",
           })
           // Null only when TMC rejects the token; the query errors when TMC is down.
-          if (!data.currentUser) {
+          if (!data?.currentUser) {
             clearSession()
             setSignedIn(false)
             setAdmin(false)
           }
-          setCurrentUser(data.currentUser ?? null)
+          setCurrentUser(data?.currentUser ?? null)
         } catch (error) {
           console.error("Failed to fetch current user:", error)
           setCurrentUser(null)
