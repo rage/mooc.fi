@@ -13,6 +13,20 @@ const isAdminOrRootCourseOwner: FieldAuthorizeResolver<"Course", any> = (
   info,
 ) => isAdminOrCourseOwner(root.id)({}, args, ctx, info)
 
+// Completions are stored on the handling course, so its owners decide who reads them.
+const isAdminOrCompletionsCourseOwner: FieldAuthorizeResolver<"Course", any> = (
+  root,
+  args,
+  ctx,
+  info,
+) =>
+  isAdminOrCourseOwner(root.completions_handled_by_id ?? root.id)(
+    {},
+    args,
+    ctx,
+    info,
+  )
+
 export const Course = objectType({
   name: "Course",
   definition(t) {
@@ -93,7 +107,7 @@ export const Course = objectType({
         user_id: stringArg(),
         user_upstream_id: intArg(),
       },
-      authorize: isAdminOrRootCourseOwner,
+      authorize: isAdminOrCompletionsCourseOwner,
       validate: (_, { user_id, user_upstream_id }) => {
         if (!user_id && !user_upstream_id) {
           throw new GraphQLUserInputError("needs user_id or user_upstream_id", [
