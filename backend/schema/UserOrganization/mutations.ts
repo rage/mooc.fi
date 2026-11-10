@@ -10,13 +10,19 @@ import {
   GraphQLForbiddenError,
   GraphQLUserInputError,
 } from "../../lib/errors"
-import { calculateActivationCode, filterNullFields } from "../../util"
+import {
+  filterNullFields,
+  isSecretMatch,
+  MAX_ACTIVATION_ATTEMPTS,
+} from "../../util"
 import {
   ConfigurationError,
   ConflictError,
   OrphanedEntityError,
 } from "../common"
 import {
+  assertActivationAttemptsLeft,
+  assertJoinConfirmationOptions,
   assertUserIdOnlyForAdmin,
   assertUserOrganizationCredentials,
   cancelEmailDeliveries,
@@ -24,7 +30,10 @@ import {
   createUserOrganizationJoinConfirmation,
   expirePreviousConfirmations,
   joinUserOrganization,
+  TooManyActivationAttemptsError,
 } from "./helpers"
+
+const CONFIRMATION_EXPIRED_MESSAGE = "confirmation link has expired"
 
 export const UserOrganizationMutations = extendType({
   type: "Mutation",
@@ -73,6 +82,7 @@ export const UserOrganizationMutations = extendType({
         let user: User | null
 
         assertUserIdOnlyForAdmin(ctx, user_id)
+        assertJoinConfirmationOptions({ language, redirect })
 
         if (user_id && user_id !== ctx.user?.id) {
           user = await ctx.prisma.user.findUnique({
@@ -204,38 +214,46 @@ export const UserOrganizationMutations = extendType({
 
         const currentDate = new Date()
 
-        // confirmation expired or will expire now
-        const confirmationWillExpire =
-          userOrganizationJoinConfirmation.expires_at &&
-          userOrganizationJoinConfirmation.expires_at < currentDate
+        if (userOrganizationJoinConfirmation.expired) {
+          throw new GraphQLForbiddenError(CONFIRMATION_EXPIRED_MESSAGE)
+        }
 
         if (
-          userOrganizationJoinConfirmation.expired ||
-          confirmationWillExpire
+          (userOrganizationJoinConfirmation.expires_at &&
+            userOrganizationJoinConfirmation.expires_at < currentDate) ||
+          !userOrganizationJoinConfirmation.activation_code
         ) {
-          if (confirmationWillExpire) {
-            await ctx.prisma.userOrganizationJoinConfirmation.update({
-              where: { id },
-              data: {
-                expired: { set: true },
-              },
-            })
-          }
-
-          // TODO: should we just return the expired confirmation?
-          throw new GraphQLForbiddenError("confirmation link has expired")
+          await ctx.prisma.userOrganizationJoinConfirmation.update({
+            where: { id },
+            data: {
+              expired: { set: true },
+            },
+          })
+          throw new GraphQLForbiddenError(CONFIRMATION_EXPIRED_MESSAGE)
         }
 
-        const activationCodeResult = await calculateActivationCode({
-          prisma: ctx.prisma,
-          userOrganizationJoinConfirmation,
-        })
+        // Counting the attempt atomically before comparing keeps concurrent
+        // (e.g. aliased) requests from getting more than the allowed guesses.
+        // The count is per membership so that requesting a new code doesn't
+        // grant new guesses.
+        const { count: attemptReserved } =
+          await ctx.prisma.userOrganization.updateMany({
+            where: {
+              id: user_organization.id,
+              activation_failed_attempts: { lt: MAX_ACTIVATION_ATTEMPTS },
+            },
+            data: {
+              activation_failed_attempts: { increment: 1 },
+            },
+          })
 
-        if (activationCodeResult.isErr()) {
-          throw activationCodeResult.error
+        if (!attemptReserved) {
+          throw new TooManyActivationAttemptsError()
         }
 
-        if (activationCodeResult.value !== code) {
+        if (
+          !isSecretMatch(userOrganizationJoinConfirmation.activation_code, code)
+        ) {
           throw new GraphQLForbiddenError("invalid activation code")
         }
 
@@ -249,6 +267,7 @@ export const UserOrganizationMutations = extendType({
                 update: {
                   confirmed: { set: true },
                   confirmed_at: currentDate,
+                  activation_failed_attempts: 0,
                 },
               },
             },
@@ -283,6 +302,8 @@ export const UserOrganizationMutations = extendType({
           // just to be sure, should never happen
           throw new GraphQLAuthenticationError("not logged in")
         }
+
+        assertJoinConfirmationOptions({ language, redirect })
 
         const userOrganization = await ctx.prisma.userOrganization.findFirst({
           where: {
@@ -340,6 +361,8 @@ export const UserOrganizationMutations = extendType({
             "this user organization membership has already been confirmed",
           )
         }
+
+        assertActivationAttemptsLeft(userOrganization)
 
         const join_organization_email_template_id =
           organization.join_organization_email_template_id ??
@@ -461,6 +484,7 @@ export const UserOrganizationMutations = extendType({
         ctx: Context,
       ) => {
         await assertUserOrganizationCredentials(ctx, id)
+        assertJoinConfirmationOptions({ language, redirect })
 
         const userOrganization = await ctx.prisma.userOrganization.findUnique({
           where: {
@@ -511,6 +535,8 @@ export const UserOrganizationMutations = extendType({
             },
           })
         }
+
+        assertActivationAttemptsLeft(userOrganization)
 
         const isEmailValid = checkEmailValidity(
           organizational_email,
@@ -597,6 +623,18 @@ export const UserOrganizationMutations = extendType({
 
         if (!userOrganization) {
           throw new GraphQLUserInputError("no user organization found", "id")
+        }
+
+        // Re-joining would start a fresh attempt count.
+        if (
+          ctx.role !== Role.ADMIN &&
+          !userOrganization.confirmed &&
+          userOrganization.activation_failed_attempts > 0
+        ) {
+          assertActivationAttemptsLeft(userOrganization)
+          throw new GraphQLForbiddenError(
+            "a membership with wrong activation codes can't be deleted before it is confirmed",
+          )
         }
 
         const { user_id, organization_id, organization } = userOrganization

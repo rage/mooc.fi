@@ -28,15 +28,26 @@ interface HandleMessageArgs<Message extends { timestamp: string }> {
   ) => Promise<Result<string | Warning, Error>>
 }
 
-export const handleMessage = async <Message extends { timestamp: string }>({
+/** Processes one Kafka message under the consumer mutex and commits it. */
+export const handleMessage = async <Message extends { timestamp: string }>(
+  args: HandleMessageArgs<Message>,
+) => {
+  const release = await args.context.mutex.acquire()
+
+  try {
+    await processMessage(args)
+  } finally {
+    release()
+  }
+}
+
+const processMessage = async <Message extends { timestamp: string }>({
   kafkaMessage,
   context,
   MessageYupSchema,
   saveToDatabase,
 }: HandleMessageArgs<Message>) => {
-  const { mutex, logger } = context
-  //Going to mutex
-  const release = await mutex.acquire()
+  const { logger } = context
 
   logger.info("Handling a message.", {
     topic: kafkaMessage.topic,
@@ -52,7 +63,6 @@ export const handleMessage = async <Message extends { timestamp: string }>({
   } catch (error: any) {
     logger.error(new KafkaMessageError("invalid message", kafkaMessage, error))
     await commit(context, kafkaMessage)
-    release()
 
     return
   }
@@ -62,7 +72,6 @@ export const handleMessage = async <Message extends { timestamp: string }>({
   } catch (error: any) {
     logger.error(new ValidationError("JSON validation failed", message, error))
     await commit(context, kafkaMessage)
-    release()
 
     return
   }
@@ -97,8 +106,6 @@ export const handleMessage = async <Message extends { timestamp: string }>({
     console.log(error.stack)
   }
   await commit(context, kafkaMessage)
-  //Releasing mutex
-  release()
 }
 
 const commit = async (kafkaContext: KafkaContext, message: KafkaMessage) => {

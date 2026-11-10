@@ -38,6 +38,9 @@ jobs:
       - run:
           name: "Lint"
           command: "bin/lint.sh"
+      - run:
+          name: "Frontend unit tests"
+          command: "pnpm --filter frontend run test"
       - helm/install-helm-client:
           version: v3.4.2
       - run:
@@ -104,7 +107,6 @@ jobs:
       - run:
           name: "Set environment"
           command: |
-            pnpm run download-env
             cp .env.example .env
       - run:
           name: "Set up Prisma"
@@ -122,6 +124,8 @@ jobs:
           paths:
             - backend
             - node_modules
+            # queryLimits.test.ts checks the frontend's operations against the limits.
+            - frontend/graphql
     resource_class: large
 
   test_backend:

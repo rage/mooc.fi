@@ -2,7 +2,7 @@
 import { omit, uniqBy } from "lodash"
 import { arg, extendType, idArg, nonNull, stringArg } from "nexus"
 
-import { isAdmin, isAdminOrCourseOwner } from "../../accessControl"
+import { isAdmin, isAdminOrCourseOwner, Role } from "../../accessControl"
 import { Context } from "../../context"
 import type { NexusGenInputs } from "../../generated/nexus-typegen"
 import {
@@ -12,7 +12,7 @@ import {
   StudyModule,
   Tag,
 } from "../../generated/prisma"
-import { GraphQLUserInputError } from "../../lib/errors"
+import { GraphQLForbiddenError, GraphQLUserInputError } from "../../lib/errors"
 import { invalidateAllGraphqlCachedQueries } from "../../middlewares/expressGraphqlCache"
 import KafkaProducer, { ProducerMessage } from "../../services/kafkaProducer"
 import { invalidate } from "../../services/redis"
@@ -22,6 +22,7 @@ import {
   createCourseMutations,
   getIds,
 } from "../../util/courseMutationHelpers"
+import { normalizeUuid } from "../../util/uuid"
 import { deleteImage, uploadImage } from "../Image"
 
 // @ts-ignore: not used for now
@@ -57,7 +58,7 @@ export const CourseMutations = extendType({
         } = course
         let tags = course.tags ?? []
 
-        const photo = await updatePossibleNewPhoto(course, ctx)
+        const photo = await updatePossibleNewPhoto(course, ctx, course.photo)
 
         if (study_modules?.some((s) => !s?.id && !s?.slug)) {
           throw new GraphQLUserInputError("study modules must have id or slug")
@@ -200,6 +201,7 @@ export const CourseMutations = extendType({
           study_modules,
           completion_email_id,
           status,
+          new_photo,
           delete_photo,
           inherit_settings_from,
           completions_handled_by,
@@ -212,8 +214,6 @@ export const CourseMutations = extendType({
         if (!slug) {
           throw new GraphQLUserInputError("slug required for update course")
         }
-
-        let photo = await updatePossibleNewPhoto(course, ctx)
 
         const existingCourse = await ctx.prisma.course.findUnique({
           where: { slug },
@@ -231,6 +231,17 @@ export const CourseMutations = extendType({
           throw new GraphQLUserInputError("course not found")
         }
 
+        if (ctx.role !== Role.ADMIN) {
+          assertCourseLinksUnchanged(course, existingCourse)
+        }
+        await assertNoCourseCodeCollisions(ctx, existingCourse, course)
+
+        let photo = await updatePossibleNewPhoto(
+          course,
+          ctx,
+          existingCourse.photo_id,
+        )
+
         if (
           existingCourse.status !== status &&
           status === "Ended" &&
@@ -239,8 +250,11 @@ export const CourseMutations = extendType({
           end_date = new Date()
         }
 
-        if (photo && delete_photo) {
-          await deleteImage({ ctx, id: photo })
+        if (delete_photo) {
+          const deletedPhotoId = new_photo ? photo : existingCourse.photo_id
+          if (deletedPhotoId) {
+            await deleteImage({ ctx, id: deletedPhotoId })
+          }
           photo = null
         }
 
@@ -383,8 +397,9 @@ export const CourseMutations = extendType({
 async function updatePossibleNewPhoto(
   course: NexusGenInputs["CourseCreateArg"] | NexusGenInputs["CourseUpsertArg"],
   ctx: Context,
+  replacedPhotoId: string | null | undefined,
 ) {
-  const { photo, new_photo, base64 } = course
+  const { new_photo, base64 } = course
 
   if (!new_photo) {
     return course.photo
@@ -395,11 +410,124 @@ async function updatePossibleNewPhoto(
     file: new_photo,
     base64: base64 ?? false,
   })
-  if (photo && photo !== newImage.id) {
+  if (replacedPhotoId && replacedPhotoId !== newImage.id) {
     // TODO: do something with return value
-    await deleteImage({ ctx, id: photo })
+    await deleteImage({ ctx, id: replacedPhotoId })
   }
   return newImage.id
+}
+
+const normalizeId = (id: string | null | undefined) =>
+  id ? normalizeUuid(id) : null
+
+// Empty course links disconnect; an empty email id or photo is left as is.
+const courseLinkRules = [
+  {
+    field: "completions_handled_by",
+    existingField: "completions_handled_by_id",
+    emptyDisconnects: true,
+  },
+  {
+    field: "inherit_settings_from",
+    existingField: "inherit_settings_from_id",
+    emptyDisconnects: true,
+  },
+  {
+    field: "completion_email_id",
+    existingField: "completion_email_id",
+    emptyDisconnects: false,
+  },
+  {
+    field: "course_stats_email_id",
+    existingField: "course_stats_email_id",
+    emptyDisconnects: false,
+  },
+  { field: "photo", existingField: "photo_id", emptyDisconnects: false },
+] as const
+
+/**
+ * Rejects a non-admin update that would link the course to another course,
+ * email template or image.
+ *
+ * The course editor resends the current values on every save, so only actual
+ * changes are rejected.
+ */
+function assertCourseLinksUnchanged(
+  course: NexusGenInputs["CourseUpsertArg"],
+  existingCourse: Course,
+) {
+  const changedFields = courseLinkRules
+    .filter(({ field, existingField, emptyDisconnects }) => {
+      const requested = course[field]
+      return (
+        (emptyDisconnects || requested) &&
+        normalizeId(requested) !== normalizeId(existingCourse[existingField])
+      )
+    })
+    .map(({ field }) => field)
+
+  if (changedFields.length > 0) {
+    throw new GraphQLForbiddenError(
+      `only admins can change ${changedFields.join(", ")}`,
+    )
+  }
+}
+
+/**
+ * Rejects a slug or alias code that would collide with another course's.
+ *
+ * Course lookups by code prefer slugs over aliases, so a collision would
+ * redirect lookups of the other course to this one. Alias codes are unique in
+ * the database, so alias-alias collisions are not checked here.
+ */
+async function assertNoCourseCodeCollisions(
+  ctx: Context,
+  existingCourse: Course,
+  { new_slug, course_aliases }: NexusGenInputs["CourseUpsertArg"],
+) {
+  if (new_slug && new_slug !== existingCourse.slug) {
+    const alias = await ctx.prisma.courseAlias.findUnique({
+      where: { course_code: new_slug },
+    })
+    if (alias && alias.course_id !== existingCourse.id) {
+      throw new GraphQLUserInputError(
+        `slug ${new_slug} is already a course alias`,
+      )
+    }
+  }
+
+  const aliasCodes = (course_aliases ?? []).map((alias) => alias.course_code)
+  if (aliasCodes.length === 0) {
+    return
+  }
+  // Existing aliases may already collide; the editor resends them on
+  // every save, so only aliases new to this course are checked.
+  const existingAliasCodes = new Set(
+    (
+      await ctx.prisma.courseAlias.findMany({
+        where: {
+          course_id: existingCourse.id,
+          course_code: { in: aliasCodes },
+        },
+        select: { course_code: true },
+      })
+    ).map((alias) => alias.course_code),
+  )
+  const newAliasCodes = aliasCodes.filter(
+    (code) => !existingAliasCodes.has(code),
+  )
+  if (newAliasCodes.length === 0) {
+    return
+  }
+  const collidingCourse = await ctx.prisma.course.findFirst({
+    where: { slug: { in: newAliasCodes }, id: { not: existingCourse.id } },
+    select: { slug: true },
+  })
+  if (collidingCourse) {
+    throw new GraphQLUserInputError(
+      `course alias ${collidingCourse.slug} is already a course slug`,
+    )
+  }
 }
 
 // Translation languages are locale codes, language tag ids are not ("sv_SE" is "se").

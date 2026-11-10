@@ -16,7 +16,7 @@ import {
 } from "../../generated/prisma"
 import { err, isDefined } from "../../util"
 import { ApiContext, Controller } from "../types"
-import { requireAdminOrCourseOwner } from "../utils"
+import { ownsCourse, requireAdminOrCourseOwner } from "../utils"
 
 const languageMap: Record<string, string> = {
   en: "en_US",
@@ -30,6 +30,10 @@ const JWT_SECRET = process.env.JWT_SECRET as Secret
 if (!JWT_SECRET) {
   throw new Error("JWT_SECRET environment variable is required")
 }
+
+// Spreadsheet apps evaluate cells starting with these as formulas.
+const escapeCsvFormula = (value: unknown) =>
+  typeof value === "string" && /^[=+\-@\t\r]/.test(value) ? `'${value}` : value
 
 interface DownloadTokenPayload {
   courseId: string
@@ -134,6 +138,16 @@ export class CompletionController extends Controller {
 
     if (!course) {
       return res.status(404).json({ message: "Course not found" })
+    }
+
+    // The export lists the handling course's completions, so non-admins must own it.
+    const { user, details } = authRes.value
+    if (
+      course.completions_handled_by_id &&
+      !details.administrator &&
+      !(await ownsCourse(this.ctx, user.id, course.completions_handled_by_id))
+    ) {
+      return res.status(401).json({ message: "unauthorized" })
     }
 
     // Generate a signed JWT token valid for 30 seconds
@@ -286,7 +300,10 @@ export class CompletionController extends Controller {
     }
 
     // Default CSV format
-    const csvContent = stringify([headers, ...rows])
+    const csvContent = stringify([
+      headers,
+      ...rows.map((row) => row.map(escapeCsvFormula)),
+    ])
 
     res.setHeader("Content-Type", "text/csv")
     res.setHeader(

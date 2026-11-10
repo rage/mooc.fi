@@ -14,6 +14,7 @@
     "upgrade-interactive": "pnpm up --interactive --latest",
     "generate-page-stubs": "node util/createStubs.js",
     "typecheck": "next typegen && tsc --noEmit",
+    "test": "tsx --test \"lib/**/*.test.ts\" \"components/**/*.test.ts\"",
     "start:inspect": "NODE_ENV=production PORT=3021 NODE_OPTIONS=--inspect next start",
     "graphql-codegen": "graphql-codegen --config codegen.ts",
     "graphql-codegen:watch": "graphql-codegen --config codegen.ts --watch"
@@ -102,6 +103,7 @@
     "event-stream": "^4.0.1",
     "next-statoscope": "^1.0.1",
     "source-map-support": "^0.5.21",
+    "tsx": "^4.23.15",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "user-agent-data-types": "^0.4.3",
     "webpack": "^5.112.2"

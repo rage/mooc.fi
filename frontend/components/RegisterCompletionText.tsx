@@ -5,6 +5,7 @@ import { styled } from "@mui/material/styles"
 
 import { OUTBOUND_LINK_ICON_URL } from "./OutboundLink"
 import { useTranslator } from "/hooks/useTranslator"
+import { escapeHtml } from "/lib/escapeHtml"
 import RegisterCompletionTranslations from "/translations/register-completion"
 
 // The Open University only publishes this page in Finnish and English; other languages fall
@@ -117,7 +118,12 @@ function RegisterCompletionText({
     <RegisterCompletionContainer>
       <InstructionText>{t("credits_details")}</InstructionText>
       <InstructionText
-        dangerouslySetInnerHTML={{ __html: t("donow", { email, infoUrl }) }}
+        dangerouslySetInnerHTML={{
+          __html: t("donow", {
+            email: escapeHtml(email),
+            infoUrl: escapeHtml(infoUrl),
+          }),
+        }}
       />
       <InstructionText>{t("grades")}</InstructionText>
       {tiers.length > 0 ? (

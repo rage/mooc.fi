@@ -115,12 +115,11 @@ const EditStudyModule = () => {
           {!loading && data?.study_module && <EditorComponent />}
           {!loading && !data?.study_module && (
             <ErrorContainer elevation={2}>
-              <Typography
-                variant="body1"
-                dangerouslySetInnerHTML={{
-                  __html: t("moduleWithIdNotFound", { slug }),
-                }}
-              />
+              <Typography variant="body1">
+                {t("moduleWithIdNotFoundPre")}
+                <b>{slug}</b>
+                {t("moduleWithIdNotFoundPost")}
+              </Typography>
               <Typography variant="body2">
                 {t("redirectMessagePre")}
                 <Link href="/study-modules">{t("redirectLinkText")}</Link>

@@ -1,7 +1,8 @@
 export default {
   modulesTitle: "Study modules",
   moduleNotFound: "Study module not found",
-  moduleWithIdNotFound: "Study module with slug <b>{{slug}}</b> not found!",
+  moduleWithIdNotFoundPre: "Study module with slug ",
+  moduleWithIdNotFoundPost: " not found!",
   redirectMessagePre:
     "You will be redirected back to the module list in 5 seconds - press ",
   redirectLinkText: "here",

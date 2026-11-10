@@ -190,6 +190,7 @@ const substitute = <
 
   // {{key}} is replaced by variable key given as parameter
   // [[key]] is replaced by query parameter named "key"
+  // Both are inserted unescaped; HTML-rendered callers escape with /lib/escapeHtml.
 
   const replaceGroups = translation.match(/{{(.*?)}}/gm)
   const keyGroups = translation.match(/\[\[(.*?)\]\]/gm)

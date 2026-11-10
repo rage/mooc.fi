@@ -537,6 +537,308 @@ describe("Course", () => {
       })
     })
 
+    describe("updateCourse as course owner", () => {
+      const course1Id = "00000000-0000-0000-0000-000000000002"
+      const course2Id = "00000000-0000-0000-0000-000000000001"
+      const handlerId = "00000000-0000-0000-0000-000000000666"
+      const course1PhotoId = "00000000-0000-0000-0000-000000001101"
+
+      const getOwnedCourse = () => ({
+        name: "course2",
+        slug: "course2",
+        teacher_in_charge_name: "teacher2",
+        teacher_in_charge_email: "e@mail.com",
+        start_date: "1900-01-01T00:00:00.000Z",
+      })
+
+      let templateId: string
+
+      beforeEach(async () => {
+        await seed(ctx.prisma)
+        templateId = (
+          await ctx.prisma.emailTemplate.create({ data: { name: "template" } })
+        ).id
+      })
+
+      it("refuses redirecting completions_handled_by to an unowned course", async () => {
+        const errors = await requestErrors(
+          {
+            ...getOwnedCourse(),
+            completions_handled_by: "00000000000000000000000000000002",
+          },
+          FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+        )
+
+        expect(errors).toEqual([expect.stringContaining("only admins")])
+        const course = await ctx.prisma.course.findUniqueOrThrow({
+          where: { id: course2Id },
+        })
+        expect(course.completions_handled_by_id).toBeNull()
+      })
+
+      it.each([
+        ["inherit_settings_from", () => course1Id],
+        ["completion_email_id", () => templateId],
+        ["course_stats_email_id", () => templateId],
+      ])("refuses changing %s", async (field, getValue) => {
+        const errors = await requestErrors(
+          { ...getOwnedCourse(), [field]: getValue() },
+          FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+        )
+
+        expect(errors).toEqual([expect.stringContaining(field)])
+      })
+
+      it("accepts unchanged links", async () => {
+        await ctx.prisma.course.update({
+          where: { id: course2Id },
+          data: {
+            completions_handled_by: { connect: { id: handlerId } },
+            inherit_settings_from: { connect: { id: handlerId } },
+            completion_email: { connect: { id: templateId } },
+            course_stats_email: { connect: { id: templateId } },
+          },
+        })
+
+        await ctx.client.request(
+          updateLinksMutation,
+          {
+            course: {
+              ...getOwnedCourse(),
+              name: "renamed",
+              completions_handled_by: handlerId,
+              inherit_settings_from: handlerId.replace(/-/g, ""),
+              completion_email_id: templateId,
+              course_stats_email_id: null,
+            },
+          },
+          FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+        )
+
+        const course = await ctx.prisma.course.findUniqueOrThrow({
+          where: { id: course2Id },
+        })
+        expect(course).toMatchObject({
+          name: "renamed",
+          completions_handled_by_id: handlerId,
+          inherit_settings_from_id: handlerId,
+          completion_email_id: templateId,
+          course_stats_email_id: templateId,
+        })
+      })
+
+      it.each([null, ""])(
+        "accepts unchanged empty links as %j",
+        async (value) => {
+          await ctx.client.request(
+            updateLinksMutation,
+            {
+              course: {
+                ...getOwnedCourse(),
+                name: "renamed",
+                completions_handled_by: value,
+                inherit_settings_from: value,
+                completion_email_id: value,
+                course_stats_email_id: value,
+                photo: value,
+              },
+            },
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+          )
+
+          const course = await ctx.prisma.course.findUniqueOrThrow({
+            where: { id: course2Id },
+          })
+          expect(course.name).toEqual("renamed")
+        },
+      )
+
+      it("lets admins change links", async () => {
+        await ctx.client.request(
+          updateLinksMutation,
+          {
+            course: {
+              ...getOwnedCourse(),
+              completions_handled_by: course1Id,
+              inherit_settings_from: course1Id,
+              completion_email_id: templateId,
+              course_stats_email_id: templateId,
+            },
+          },
+          FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+        )
+
+        const course = await ctx.prisma.course.findUniqueOrThrow({
+          where: { id: course2Id },
+        })
+        expect(course).toMatchObject({
+          completions_handled_by_id: course1Id,
+          inherit_settings_from_id: course1Id,
+          completion_email_id: templateId,
+          course_stats_email_id: templateId,
+        })
+      })
+
+      it("refuses deleting another course's photo", async () => {
+        const errors = await requestErrors(
+          { ...getOwnedCourse(), photo: course1PhotoId, delete_photo: true },
+          FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+        )
+
+        expect(errors).toEqual([expect.stringContaining("photo")])
+        const image = await ctx.prisma.image.findUnique({
+          where: { id: course1PhotoId },
+        })
+        expect(image).not.toBeNull()
+      })
+
+      it("deletes the course's own photo regardless of the photo sent", async () => {
+        const ownPhoto = await ctx.prisma.image.create({
+          data: {
+            original: "own.gif",
+            original_mimetype: "image/gif",
+            uncompressed: "own.jpeg",
+            uncompressed_mimetype: "image/jpeg",
+          },
+        })
+        await ctx.prisma.course.update({
+          where: { id: course2Id },
+          data: { photo: { connect: { id: ownPhoto.id } } },
+        })
+
+        await ctx.client.request(
+          updateLinksMutation,
+          {
+            course: {
+              ...getOwnedCourse(),
+              photo: course1PhotoId,
+              delete_photo: true,
+            },
+          },
+          FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+        )
+
+        expect(
+          await ctx.prisma.image.findUnique({ where: { id: ownPhoto.id } }),
+        ).toBeNull()
+        expect(
+          await ctx.prisma.image.findUnique({ where: { id: course1PhotoId } }),
+        ).not.toBeNull()
+      })
+    })
+
+    describe("updateCourse slug and alias collisions", () => {
+      const getCourse1 = () => ({
+        name: "course1",
+        slug: "course1",
+        teacher_in_charge_name: "teacher1",
+        teacher_in_charge_email: "e@mail.com",
+        start_date: "1900-01-01T00:00:00.000Z",
+      })
+
+      beforeEach(async () => {
+        await seed(ctx.prisma)
+      })
+
+      it("refuses a new slug that is another course's alias", async () => {
+        const errors = await requestErrors(
+          { ...getCourse1(), new_slug: "alias2" },
+          FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+        )
+
+        expect(errors).toEqual([expect.stringContaining("alias2")])
+        expect(
+          await ctx.prisma.course.findUnique({ where: { slug: "course1" } }),
+        ).not.toBeNull()
+      })
+
+      it("refuses an alias that is another course's slug", async () => {
+        const errors = await requestErrors(
+          { ...getCourse1(), course_aliases: [{ course_code: "course2" }] },
+          FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+        )
+
+        expect(errors).toEqual([expect.stringContaining("course2")])
+        expect(
+          await ctx.prisma.courseAlias.findUnique({
+            where: { course_code: "course2" },
+          }),
+        ).toBeNull()
+      })
+
+      it("refuses an alias that is another course's alias", async () => {
+        const errors = await requestErrors(
+          {
+            ...getCourse1(),
+            course_aliases: [
+              {
+                id: "67000000-0000-0000-0000-000000000001",
+                course_code: "alias",
+              },
+              { course_code: "alias2" },
+            ],
+          },
+          FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+        )
+
+        expect(errors).toHaveLength(1)
+        const alias = await ctx.prisma.courseAlias.findUniqueOrThrow({
+          where: { course_code: "alias2" },
+        })
+        expect(alias.course_id).toEqual("00000000-0000-0000-0000-000000000001")
+      })
+
+      it("keeps accepting an existing alias that is another course's slug", async () => {
+        await ctx.prisma.courseAlias.create({
+          data: {
+            id: "67000000-0000-0000-0000-000000000101",
+            course_code: "course2",
+            course: { connect: { slug: "course1" } },
+          },
+        })
+        const existingAliases = [
+          { id: "67000000-0000-0000-0000-000000000001", course_code: "alias" },
+          {
+            id: "67000000-0000-0000-0000-000000000101",
+            course_code: "course2",
+          },
+        ]
+
+        await ctx.client.request(
+          updateLinksMutation,
+          { course: { ...getCourse1(), course_aliases: existingAliases } },
+          FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+        )
+
+        const errors = await requestErrors(
+          {
+            ...getCourse1(),
+            course_aliases: [...existingAliases, { course_code: "handler" }],
+          },
+          FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+        )
+        expect(errors).toEqual([expect.stringContaining("handler")])
+      })
+
+      it("accepts an alias equal to the course's own slug", async () => {
+        await ctx.client.request(
+          updateLinksMutation,
+          {
+            course: {
+              ...getCourse1(),
+              course_aliases: [{ course_code: "course1" }],
+            },
+          },
+          FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
+        )
+
+        const alias = await ctx.prisma.courseAlias.findUniqueOrThrow({
+          where: { course_code: "course1" },
+        })
+        expect(alias.course_id).toEqual("00000000-0000-0000-0000-000000000002")
+      })
+    })
+
     describe("deleteCourse", () => {
       beforeEach(async () => {
         await seed(ctx.prisma)
@@ -817,3 +1119,25 @@ const deleteCourseMutation = gql`
     }
   }
 `
+
+const updateLinksMutation = gql`
+  mutation updateCourseLinks($course: CourseUpsertArg!) {
+    updateCourse(course: $course) {
+      id
+    }
+  }
+`
+
+async function requestErrors(
+  course: Record<string, unknown>,
+  headers: Record<string, string>,
+): Promise<Array<string> | undefined> {
+  try {
+    await ctx.client.request(updateLinksMutation, { course }, headers)
+    return undefined
+  } catch (e: any) {
+    return e.response?.errors?.map(
+      (error: { message: string }) => error.message,
+    )
+  }
+}

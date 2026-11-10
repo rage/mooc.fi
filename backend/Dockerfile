@@ -37,11 +37,9 @@ WORKDIR /app/backend
 
 RUN cp .env.example .env \
     && cp tsconfig.production.json tsconfig.json \
-    && pnpm run download-env \
     && pnpm run generate \
     && env NODE_ENV=production GOOGLE_CLOUD_STORAGE_BUCKET=x pnpm run build
 RUN pnpm run build-sourcemap
-RUN pnpm run copy-env
 
 # A --prod install over the full one unlinks devDependencies but leaves them in node_modules/.pnpm.
 RUN cd /app \

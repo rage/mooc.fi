@@ -72,7 +72,7 @@ exports[`UserOrganization mutations addUserOrganization succeeds with confirmati
       "expires_at": StringMatching /\\\\d\\{4\\}-\\\\d\\{2\\}-\\\\d\\{2\\}T\\\\d\\{2\\}:\\\\d\\{2\\}:\\\\d\\{2\\}\\(\\.\\\\d\\{3\\}\\)\\?Z/,
       "id": Any<String>,
       "language": "fi",
-      "redirect": "https://foo.bar",
+      "redirect": "/foo/bar?baz=1",
     },
   ],
 }
@@ -150,7 +150,7 @@ exports[`UserOrganization mutations addUserOrganization succeeds with confirmati
       "expires_at": StringMatching /\\\\d\\{4\\}-\\\\d\\{2\\}-\\\\d\\{2\\}T\\\\d\\{2\\}:\\\\d\\{2\\}:\\\\d\\{2\\}\\(\\.\\\\d\\{3\\}\\)\\?Z/,
       "id": Any<String>,
       "language": "fi",
-      "redirect": "https://foo.bar",
+      "redirect": "/foo/bar?baz=1",
     },
   ],
 }
@@ -175,6 +175,7 @@ exports[`UserOrganization mutations addUserOrganization succeeds with no confirm
 
 exports[`UserOrganization mutations confirmUserOrganizationJoin succeeds confirming membership if all checks pass: Bearer normal 1`] = `
 {
+  "activation_code": "123456",
   "confirmed": true,
   "confirmed_at": Any<Date>,
   "created_at": 1900-01-01T08:00:00.000Z,
@@ -187,6 +188,7 @@ exports[`UserOrganization mutations confirmUserOrganizationJoin succeeds confirm
   "redirect": null,
   "updated_at": Any<Date>,
   "user_organization": {
+    "activation_failed_attempts": 0,
     "confirmed": true,
     "confirmed_at": Any<Date>,
     "consented": true,
@@ -205,6 +207,7 @@ exports[`UserOrganization mutations confirmUserOrganizationJoin succeeds confirm
 
 exports[`UserOrganization mutations confirmUserOrganizationJoin succeeds confirming membership not associated with self with admin credentials if all checks pass: Bearer admin 1`] = `
 {
+  "activation_code": "123456",
   "confirmed": true,
   "confirmed_at": Any<Date>,
   "created_at": 1900-01-01T08:00:00.000Z,
@@ -217,6 +220,7 @@ exports[`UserOrganization mutations confirmUserOrganizationJoin succeeds confirm
   "redirect": null,
   "updated_at": Any<Date>,
   "user_organization": {
+    "activation_failed_attempts": 0,
     "confirmed": true,
     "confirmed_at": Any<Date>,
     "consented": true,

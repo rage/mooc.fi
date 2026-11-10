@@ -1,3 +1,4 @@
+import bai from "../../../../../config/bai.json"
 import {
   getProgress,
   getTierInfo,
@@ -9,8 +10,6 @@ import {
   TierInfo,
   TierProgressMap,
 } from "../interfaces"
-
-const env = require(__dirname + "/../../../../../config/env.json")
 
 describe("calculates tier progress correctly", () => {
   test("skips exercises not found", () => {
@@ -25,7 +24,7 @@ describe("calculates tier progress correctly", () => {
       {
         course_id: "test",
         exercise_id: "fake2",
-        custom_id: env.EX_ONE_BEGINNER,
+        custom_id: bai.exercises[0].ids.beginner,
         max_points: 2,
         n_points: 1,
       },
@@ -39,7 +38,7 @@ describe("calculates tier progress correctly", () => {
         max_points: 2,
         n_points: 1,
         progress: 0.5,
-        custom_id: env.EX_ONE_BEGINNER,
+        custom_id: bai.exercises[0].ids.beginner,
       },
     })
     expect(tierProgress).toEqual([
@@ -49,7 +48,7 @@ describe("calculates tier progress correctly", () => {
         max_points: 2,
         n_points: 1,
         progress: 0.5,
-        custom_id: env.EX_ONE_BEGINNER,
+        custom_id: bai.exercises[0].ids.beginner,
       },
     ])
     expect(progress).toEqual({
@@ -63,28 +62,28 @@ describe("calculates tier progress correctly", () => {
       {
         course_id: "test",
         exercise_id: "fake",
-        custom_id: env.EX_ONE_BEGINNER,
+        custom_id: bai.exercises[0].ids.beginner,
         max_points: 2,
         n_points: 2,
       },
       {
         course_id: "test",
         exercise_id: "fake2",
-        custom_id: env.EX_ONE_INTERMEDIATE_ID,
+        custom_id: bai.exercises[0].ids.intermediate,
         max_points: 2,
         n_points: 1,
       },
       {
         course_id: "test",
         exercise_id: "fake3",
-        custom_id: env.EX_TWO_INTERMEDIATE_ID,
+        custom_id: bai.exercises[1].ids.intermediate,
         max_points: 4,
         n_points: 1,
       },
       {
         course_id: "test",
         exercise_id: "fake4",
-        custom_id: env.EX_TWO_ADVANCED_ID,
+        custom_id: bai.exercises[1].ids.advanced,
         max_points: 4,
         n_points: 2,
       },
@@ -99,7 +98,7 @@ describe("calculates tier progress correctly", () => {
         max_points: 2,
         n_points: 2,
         progress: 1,
-        custom_id: env.EX_ONE_INTERMEDIATE_ID,
+        custom_id: bai.exercises[0].ids.intermediate,
       },
       {
         group: "2",
@@ -107,7 +106,7 @@ describe("calculates tier progress correctly", () => {
         max_points: 4,
         n_points: 2,
         progress: 0.5,
-        custom_id: env.EX_TWO_ADVANCED_ID,
+        custom_id: bai.exercises[1].ids.advanced,
       },
     ])
     expect(progress).toEqual({
@@ -121,14 +120,14 @@ describe("calculates tier progress correctly", () => {
       {
         course_id: "test",
         exercise_id: "fake",
-        custom_id: env.EX_ONE_BEGINNER,
+        custom_id: bai.exercises[0].ids.beginner,
         max_points: 0,
         n_points: 0,
       },
       {
         course_id: "test",
         exercise_id: "fake",
-        custom_id: env.EX_TWO_BEGINNER,
+        custom_id: bai.exercises[1].ids.beginner,
         max_points: 1,
         n_points: 1,
       },
@@ -142,14 +141,14 @@ describe("calculates tier progress correctly", () => {
         max_points: 0,
         n_points: 0,
         progress: 0,
-        custom_id: env.EX_ONE_BEGINNER,
+        custom_id: bai.exercises[0].ids.beginner,
       },
       2: {
         tier: 1,
         max_points: 1,
         n_points: 1,
         progress: 1,
-        custom_id: env.EX_TWO_BEGINNER,
+        custom_id: bai.exercises[1].ids.beginner,
       },
     })
 

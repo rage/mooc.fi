@@ -16,6 +16,7 @@ import {
   cachePlugin,
   loggerPlugin,
   moocfiAuthPlugin,
+  requireMutationAuthorizePlugin,
   validateArgsPlugin,
 } from "../../middlewares"
 
@@ -44,6 +45,7 @@ const createPlugins = () => {
     moocfiAuthPlugin(),
     cachePlugin(),
     fieldAuthorizePlugin(),
+    requireMutationAuthorizePlugin(),
     validateArgsPlugin(),
   ]
 

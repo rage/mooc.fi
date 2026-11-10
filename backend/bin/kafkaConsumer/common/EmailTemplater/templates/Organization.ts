@@ -1,7 +1,7 @@
 import { FRONTEND_URL } from "../../../../../config"
 import { Organization } from "../../../../../generated/prisma"
 import { EmailTemplaterError } from "../../../../../lib/errors"
-import { calculateActivationCode, PromiseReturnType } from "../../../../../util"
+import { PromiseReturnType } from "../../../../../util"
 import Template from "../types/Template"
 import { TemplateParams } from "../types/TemplateParams"
 
@@ -58,18 +58,17 @@ abstract class OrganizationTemplate extends Template {
       typeof this.getUserOrganizationJoinConfirmation
     >,
   ) {
-    const activationCodeResult = await calculateActivationCode({
-      prisma: this.context.prisma,
-      userOrganizationJoinConfirmation:
-        userOrganizationJoinConfirmation ??
-        (await this.getUserOrganizationJoinConfirmation()),
-    })
+    const { activation_code } =
+      userOrganizationJoinConfirmation ??
+      (await this.getUserOrganizationJoinConfirmation())
 
-    if (activationCodeResult.isErr()) {
-      throw activationCodeResult.error
+    if (!activation_code) {
+      throw new EmailTemplaterError(
+        "user organization join confirmation has no activation code",
+      )
     }
 
-    return activationCodeResult.value
+    return activation_code
   }
 }
 export class OrganizationActivationLink extends OrganizationTemplate {
@@ -80,15 +79,18 @@ export class OrganizationActivationLink extends OrganizationTemplate {
       userOrganizationJoinConfirmation,
     )
 
-    const { language, redirect } = userOrganizationJoinConfirmation
-    const baseUrl = `${FRONTEND_URL}${
-      language && language !== "fi" ? `/${language}` : ""
-    }`
+    const { id, language, redirect } = userOrganizationJoinConfirmation
+    const languagePath =
+      language && language !== "fi" ? `/${encodeURIComponent(language)}` : ""
+    const url = new URL(
+      `${FRONTEND_URL}${languagePath}/register/${encodeURIComponent(id)}/`,
+    )
+    url.searchParams.set("code", activationCode)
+    if (redirect) {
+      url.searchParams.set("redirect", redirect)
+    }
 
-    // TODO: change url to whatever it will be
-    return `${baseUrl}/register/${
-      userOrganizationJoinConfirmation.id
-    }/?code=${activationCode}${redirect ? `&redirect=${redirect}` : ""}`
+    return url.toString()
   }
 }
 

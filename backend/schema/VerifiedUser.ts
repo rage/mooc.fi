@@ -1,11 +1,13 @@
 import { arg, extendType, inputObjectType, nonNull, objectType } from "nexus"
 
+import { isAdmin, isUser, or } from "../accessControl"
 import { Context } from "../context"
 import {
   GraphQLAuthenticationError,
   GraphQLForbiddenError,
   GraphQLUserInputError,
 } from "../lib/errors"
+import { isSecretMatch } from "../util"
 
 export const VerifiedUser = objectType({
   name: "VerifiedUser",
@@ -44,6 +46,7 @@ export const VerifiedUserMutations = extendType({
           }),
         ),
       },
+      authorize: or(isUser, isAdmin),
       resolve: async (_, { verified_user }, ctx: Context) => {
         const {
           organization_id,
@@ -68,7 +71,10 @@ export const VerifiedUserMutations = extendType({
           )
         }
 
-        if (organization.secret_key !== organization_secret) {
+        if (
+          organization.disabled ||
+          !isSecretMatch(organization.secret_key, organization_secret)
+        ) {
           throw new GraphQLForbiddenError("wrong organization secret key")
         }
 

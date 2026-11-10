@@ -5,7 +5,7 @@
 import { FieldPolicy, FieldReadFunction, TypePolicies, TypePolicy } from '@apollo/client/cache';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-// Generated on 2026-11-06T13:46:12+02:00
+// Generated on 2026-11-09T13:55:43+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -4634,6 +4634,7 @@ export type UserOrganizationJoinConfirmationWhereInput = {
   AND?: InputMaybe<Array<UserOrganizationJoinConfirmationWhereInput>>;
   NOT?: InputMaybe<Array<UserOrganizationJoinConfirmationWhereInput>>;
   OR?: InputMaybe<Array<UserOrganizationJoinConfirmationWhereInput>>;
+  activation_code?: InputMaybe<StringNullableFilter>;
   confirmed?: InputMaybe<BoolNullableFilter>;
   confirmed_at?: InputMaybe<DateTimeNullableFilter>;
   created_at?: InputMaybe<DateTimeNullableFilter>;
@@ -4664,6 +4665,7 @@ export type UserOrganizationWhereInput = {
   AND?: InputMaybe<Array<UserOrganizationWhereInput>>;
   NOT?: InputMaybe<Array<UserOrganizationWhereInput>>;
   OR?: InputMaybe<Array<UserOrganizationWhereInput>>;
+  activation_failed_attempts?: InputMaybe<IntFilter>;
   confirmed?: InputMaybe<BoolNullableFilter>;
   confirmed_at?: InputMaybe<DateTimeNullableFilter>;
   consented?: InputMaybe<BoolNullableFilter>;
@@ -4684,6 +4686,7 @@ export type UserOrganizationWhereUniqueInput = {
   AND?: InputMaybe<Array<UserOrganizationWhereInput>>;
   NOT?: InputMaybe<Array<UserOrganizationWhereInput>>;
   OR?: InputMaybe<Array<UserOrganizationWhereInput>>;
+  activation_failed_attempts?: InputMaybe<IntFilter>;
   confirmed?: InputMaybe<BoolNullableFilter>;
   confirmed_at?: InputMaybe<DateTimeNullableFilter>;
   consented?: InputMaybe<BoolNullableFilter>;
@@ -4874,14 +4877,9 @@ export type VerifiedUserWhereInput = {
   OR?: InputMaybe<Array<VerifiedUserWhereInput>>;
   created_at?: InputMaybe<DateTimeFilter>;
   display_name?: InputMaybe<StringNullableFilter>;
-  home_organization?: InputMaybe<StringNullableFilter>;
   id?: InputMaybe<UuidFilter>;
-  mail?: InputMaybe<StringNullableFilter>;
   organization?: InputMaybe<OrganizationWhereInput>;
   organization_id?: InputMaybe<UuidNullableFilter>;
-  organizational_unit?: InputMaybe<StringNullableFilter>;
-  person_affiliation?: InputMaybe<StringNullableFilter>;
-  person_affiliation_updated_at?: InputMaybe<DateTimeNullableFilter>;
   personal_unique_code?: InputMaybe<StringFilter>;
   updated_at?: InputMaybe<DateTimeFilter>;
   user?: InputMaybe<UserWhereInput>;
@@ -4894,15 +4892,10 @@ export type VerifiedUserWhereUniqueInput = {
   OR?: InputMaybe<Array<VerifiedUserWhereInput>>;
   created_at?: InputMaybe<DateTimeFilter>;
   display_name?: InputMaybe<StringNullableFilter>;
-  home_organization?: InputMaybe<StringNullableFilter>;
   id?: InputMaybe<Scalars['String']['input']>;
-  mail?: InputMaybe<StringNullableFilter>;
   organization?: InputMaybe<OrganizationWhereInput>;
   organization_id?: InputMaybe<UuidNullableFilter>;
   organization_id_user_id_personal_unique_code?: InputMaybe<VerifiedUserOrganization_idUser_idPersonal_unique_codeCompoundUniqueInput>;
-  organizational_unit?: InputMaybe<StringNullableFilter>;
-  person_affiliation?: InputMaybe<StringNullableFilter>;
-  person_affiliation_updated_at?: InputMaybe<DateTimeNullableFilter>;
   personal_unique_code?: InputMaybe<StringFilter>;
   updated_at?: InputMaybe<DateTimeFilter>;
   user?: InputMaybe<UserWhereInput>;

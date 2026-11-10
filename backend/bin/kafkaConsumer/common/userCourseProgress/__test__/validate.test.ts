@@ -27,4 +27,15 @@ describe("handleNullProgress", () => {
       JSON.parse(handleNullProgress(message).value!.toString("utf8")),
     ).toEqual({ progress: [{ group: "a", progress: 0 }] })
   })
+
+  it.each([['{"progress":"x"}'], ['{"progress":{}}'], ['{"progress":[null]}']])(
+    "passes wrong-shaped progress %s through unchanged",
+    (value) => {
+      const message = kafkaMessage(value)
+
+      expect(
+        JSON.parse(handleNullProgress(message).value!.toString("utf8")),
+      ).toEqual(JSON.parse(value))
+    },
+  )
 })

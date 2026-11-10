@@ -21,14 +21,14 @@ export const EmailTemplate = objectType({
     t.model.title()
     t.model.txt_body()
     t.model.courses()
-    t.model.email_deliveries()
+    t.model.email_deliveries({ authorize: isAdmin })
     t.model.template_type()
     t.model.triggered_automatically_by_course_id()
     t.model.exercise_completions_threshold()
     t.model.points_threshold()
     t.model.course_instance_language()
-    t.model.course_stats_subscriptions()
-    t.model.joined_organizations()
+    t.model.course_stats_subscriptions({ authorize: isAdmin })
+    t.model.joined_organizations({ authorize: isAdmin })
   },
 })
 

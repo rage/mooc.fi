@@ -42,6 +42,7 @@ import { useIncrementalList } from "/hooks/useIncrementalList"
 import { useCoursesData } from "/hooks/usePublicData"
 import { useTranslator } from "/hooks/useTranslator"
 import { NewCourseFields, TagCoreFields } from "/lib/api-types"
+import { escapeHtml } from "/lib/escapeHtml"
 import CourseTranslations from "/translations/_new/courses"
 import CommonTranslations from "/translations/common"
 import { isDefinedAndNotEmpty } from "/util/guards"
@@ -220,7 +221,7 @@ const SearchResultStatus = ({
   const languageTagResultStatus = joinWithCustomLastSeparator(
     (tags ?? [])
       .filter((tag) => tag.types?.includes("language"))
-      .map((tag) => "<strong>" + tag.name + "</strong>")
+      .map((tag) => "<strong>" + escapeHtml(tag.name) + "</strong>")
       .filter(isDefinedAndNotEmpty),
     t("resultOr"),
   )
@@ -228,14 +229,14 @@ const SearchResultStatus = ({
     (tags ?? [])
       .filter((tag) => tag.types?.includes("difficulty"))
       .sort(sortByDifficulty)
-      .map((tag) => "<strong>" + tag.name + "</strong>")
+      .map((tag) => "<strong>" + escapeHtml(tag.name) + "</strong>")
       .filter(isDefinedAndNotEmpty),
     t("resultOr"),
   )
   const moduleTagResultStatus = joinWithCustomLastSeparator(
     (tags ?? [])
       .filter((tag) => tag.types?.includes("module"))
-      .map((tag) => "<strong>" + tag.name + "</strong>")
+      .map((tag) => "<strong>" + escapeHtml(tag.name) + "</strong>")
       .filter(isDefinedAndNotEmpty),
     t("resultOr"),
   )

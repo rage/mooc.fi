@@ -7,6 +7,7 @@ import { User } from "../generated/prisma"
 import { GraphQLAuthenticationError } from "../lib/errors"
 import TmcClient from "../services/tmc"
 import { getUserDetailsForToken } from "../services/userDetails"
+import { findActiveOrganizationBySecret } from "../util/organization"
 import { isRootField } from "./rootField"
 
 // Root query fields resolve concurrently, so they share one authentication.
@@ -70,9 +71,7 @@ const setContextOrganization = async (
 ) => {
   const secret: string = rawToken?.split(" ")[1] ?? ""
 
-  const org = await ctx.prisma.organization.findUnique({
-    where: { secret_key: secret },
-  })
+  const org = await findActiveOrganizationBySecret(ctx.prisma, secret)
   if (!org) {
     throw new GraphQLAuthenticationError("Please log in.")
   }

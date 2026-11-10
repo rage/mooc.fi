@@ -4,6 +4,8 @@ import nookies from "nookies"
 
 import { ApolloClient } from "@apollo/client"
 
+import { isSafeRedirectPath } from "./redirectBack"
+
 export const isSignedIn = (ctx?: NextContext): boolean => {
   if (typeof window !== "undefined") {
     const match = document.cookie.match(/(?:^|; )access_token=([^;]*)/)
@@ -23,6 +25,9 @@ export const isAdmin = (ctx?: NextContext): boolean => {
   const admin = cookies["admin"]
   return admin === "true"
 }
+
+const authCookieAttributes = () =>
+  `;path=/;SameSite=Lax${window.location.protocol === "https:" ? ";Secure" : ""}`
 
 interface SignInProps {
   email: string
@@ -45,9 +50,10 @@ export const signIn = async (
   const res = await tmcClient.authenticate({ username: email, password })
   const details = await userDetails(res.accessToken)
 
-  document.cookie = `access_token=${res.accessToken};path=/`
+  const cookieAttributes = authCookieAttributes()
+  document.cookie = `access_token=${res.accessToken}${cookieAttributes}`
 
-  document.cookie = `admin=${details.administrator};path=/`
+  document.cookie = `admin=${details.administrator}${cookieAttributes}`
 
   await apollo?.resetStore()
 
@@ -65,7 +71,7 @@ export const signIn = async (
 
     if (redirect) {
       setTimeout(() => {
-        if (url) {
+        if (isSafeRedirectPath(url)) {
           Router.push(url, undefined, { shallow, locale })
         } else {
           Router.back()
@@ -82,9 +88,9 @@ export const signIn = async (
 }
 
 export const signOut = async (apollo: ApolloClient, cb: () => void) => {
-  document.cookie =
-    "access_token" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
-  document.cookie = "admin" + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/"
+  const cookieAttributes = authCookieAttributes()
+  document.cookie = `access_token=; expires=Thu, 01 Jan 1970 00:00:01 GMT${cookieAttributes}`
+  document.cookie = `admin=; expires=Thu, 01 Jan 1970 00:00:01 GMT${cookieAttributes}`
   // Give browser a moment to react to the change
   setTimeout(() => {
     cb()

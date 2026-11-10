@@ -60,6 +60,38 @@ const nextConfiguration = (_phase) => ({
   },
   trailingSlash: true,
   agentRules: false,
+  poweredByHeader: false,
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        locale: false,
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          // Report-only until Next's inline scripts get nonces; browsers log what an
+          // enforced policy would block.
+          {
+            key: "Content-Security-Policy-Report-Only",
+            value: [
+              "default-src 'self'",
+              "script-src 'self' https://cdn.jsdelivr.net",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: blob: https://images.mooc.fi",
+              "font-src 'self' data:",
+              "connect-src 'self' https://www.mooc.fi wss://www.mooc.fi https://tmc.mooc.fi https://certificates.mooc.fi",
+              "frame-src https://www.youtube.com https://www.youtube-nocookie.com",
+              "frame-ancestors 'self'",
+              "object-src 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+            ].join("; "),
+          },
+        ],
+      },
+    ]
+  },
   async rewrites() {
     // In development, proxy API requests to the backend server
     if (!isProduction) {
