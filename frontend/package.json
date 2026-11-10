@@ -14,7 +14,7 @@
     "upgrade-interactive": "pnpm up --interactive --latest",
     "generate-page-stubs": "node util/createStubs.js",
     "typecheck": "next typegen && tsc --noEmit",
-    "test": "tsx --test \"lib/**/*.test.ts\" \"components/**/*.test.ts\"",
+    "test": "tsx --test \"lib/**/*.test.ts\" \"components/**/*.test.ts\" \"util/**/*.test.ts\"",
     "start:inspect": "NODE_ENV=production PORT=3021 NODE_OPTIONS=--inspect next start",
     "graphql-codegen": "graphql-codegen --config codegen.ts",
     "graphql-codegen:watch": "graphql-codegen --config codegen.ts --watch"
