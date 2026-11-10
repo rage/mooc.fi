@@ -501,9 +501,8 @@ function RegisterCompletionPage() {
       slug: courseSlug,
     },
   })
-  // The whole detour now depends on completion.course.has_certificate, queried alongside every
-  // other completion field here; errorPolicy "all" keeps a certificates.mooc.fi hiccup from
-  // taking down registration for every course instead of just degrading the certificate step.
+  // errorPolicy "all": a certificates.mooc.fi failure on has_certificate should degrade only the
+  // certificate step, not registration.
   const {
     loading: userLoading,
     error: userError,
