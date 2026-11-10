@@ -25,7 +25,7 @@ const MAX_CONTINUATION_LENGTH = 4096
 const HANDOFF_TOKEN_FORMAT = /^[A-Za-z0-9]{64}$/
 const CONTINUATION_AUDIENCE = "courses-handoff-continuation"
 const CONTINUATION_LIFETIME_SECONDS = 120
-/** Must match the cookie frontend/middleware.ts sets when the landing page was reached from courses. */
+/** Must match the cookie frontend/proxy.ts sets when the landing page was reached from courses. */
 const SAME_SITE_ARRIVAL_COOKIE = "__Host-courses_handoff_same_site_arrival"
 
 /** Where courses.mooc.fi may send a student, as paths without the locale prefix. */

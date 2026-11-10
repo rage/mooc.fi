@@ -37,7 +37,7 @@ type HandoffState =
   | { status: "ip_mismatch" }
   | { status: "failed" }
 
-// Same origin, not BACKEND_URL: the redeem must carry the cookie middleware.ts set on this page.
+// Same origin, not BACKEND_URL: the redeem must carry the cookie proxy.ts set on this page.
 const REDEEM_URL = "/api/courses-handoff/redeem"
 const CONTINUE_URL = "/api/courses-handoff/continue"
 

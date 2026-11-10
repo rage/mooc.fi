@@ -129,7 +129,7 @@ const handoffArrivalMiddleware = (req: NextRequest, res: NextResponse) => {
     return res
   }
 
-  // Not Sec-Fetch-Mode: next start's proxy to the middleware rewrites it to "cors".
+  // Not Sec-Fetch-Mode: next start's hop to the proxy rewrites it to "cors".
   const isArrivalFromCourses =
     req.headers.get("sec-fetch-site") === "same-site" &&
     req.headers.get("sec-fetch-dest") === "document" &&
