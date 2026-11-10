@@ -124,6 +124,8 @@ jobs:
           paths:
             - backend
             - node_modules
+            # queryLimits.test.ts checks the frontend's operations against the limits.
+            - frontend/graphql
     resource_class: large
 
   test_backend:
