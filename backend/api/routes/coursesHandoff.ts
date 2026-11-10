@@ -14,7 +14,7 @@ import {
   isUserAccessTokenIssuingConfigured,
   UserAccessTokenRefusedError,
 } from "../../services/tmc"
-import { isUuid } from "../../util"
+import { err, isUuid, ok, Result } from "../../util"
 import { requestErrorLogFields } from "../../util/requestErrorLogFields"
 import { Controller } from "../types"
 
@@ -121,8 +121,6 @@ export class CoursesHandoffController extends Controller {
    * retried.
    */
   redeem = async (req: Request, res: Response) => {
-    const { logger } = this.ctx
-
     // One arrival vouches for one redeem only.
     const hasArrivedSameSite = carriesSameSiteArrival(req)
     if (hasArrivedSameSite) {
@@ -150,39 +148,11 @@ export class CoursesHandoffController extends Controller {
       }
     }
 
-    let response
-    try {
-      response = await axios.post(
-        new URL(REDEEM_PATH, COURSES_BASE_URL).href,
-        { token, client_ip: req.ip },
-        {
-          headers: { Authorization: `Bearer ${COURSES_HANDOFF_SECRET}` },
-          timeout: REDEEM_TIMEOUT_MS,
-          maxRedirects: 0,
-        },
-      )
-    } catch (error) {
-      const refusal = axios.isAxiosError(error) ? error.response : undefined
-      const status = refusal?.status
-      if (status === 410) {
-        return res.status(410).json({
-          type:
-            refusal?.data?.type === "ip_mismatch" ? "ip_mismatch" : "expired",
-        })
-      }
-      if (status === 400) {
-        return res.status(400).json({ type: "invalid" })
-      }
-      // Log the status only: the error carries the request, token and secret included.
-      logger.warn("Redeeming a courses.mooc.fi handoff failed", { status })
-      return res.status(502).json({ type: "unavailable" })
+    const redeemed = await this.redeemAtCourses(req, res, token)
+    if (redeemed.isErr()) {
+      return redeemed.error
     }
-
-    const handoff = parseHandoff(response.data)
-    if (!handoff) {
-      logger.warn("courses.mooc.fi redeemed a handoff with an unexpected body")
-      return res.status(502).json({ type: "unavailable" })
-    }
+    const handoff = redeemed.value
 
     const destinationPath = await this.resolveDestinationPath(handoff)
     if (!destinationPath) {
@@ -212,6 +182,54 @@ export class CoursesHandoffController extends Controller {
     }
 
     return this.signIn(res, handoff.upstream_id, destinationPath, askToConfirm)
+  }
+
+  /** Spends the token at courses.mooc.fi; an error is the answer already sent. */
+  private redeemAtCourses = async (
+    req: Request,
+    res: Response,
+    token: string,
+  ): Promise<Result<Handoff, Response>> => {
+    let response
+    try {
+      response = await axios.post(
+        new URL(REDEEM_PATH, COURSES_BASE_URL).href,
+        { token, client_ip: req.ip },
+        {
+          headers: { Authorization: `Bearer ${COURSES_HANDOFF_SECRET}` },
+          timeout: REDEEM_TIMEOUT_MS,
+          maxRedirects: 0,
+        },
+      )
+    } catch (error) {
+      const refusal = axios.isAxiosError(error) ? error.response : undefined
+      const status = refusal?.status
+      if (status === 410) {
+        return err(
+          res.status(410).json({
+            type:
+              refusal?.data?.type === "ip_mismatch" ? "ip_mismatch" : "expired",
+          }),
+        )
+      }
+      if (status === 400) {
+        return err(res.status(400).json({ type: "invalid" }))
+      }
+      // Log the status only: the error carries the request, token and secret included.
+      this.ctx.logger.warn("Redeeming a courses.mooc.fi handoff failed", {
+        status,
+      })
+      return err(res.status(502).json({ type: "unavailable" }))
+    }
+
+    const handoff = parseHandoff(response.data)
+    if (!handoff) {
+      this.ctx.logger.warn(
+        "courses.mooc.fi redeemed a handoff with an unexpected body",
+      )
+      return err(res.status(502).json({ type: "unavailable" }))
+    }
+    return ok(handoff)
   }
 
   /**

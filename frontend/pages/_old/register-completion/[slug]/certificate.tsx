@@ -32,6 +32,7 @@ import RegisterCompletionTranslations from "/translations/register-completion"
 import {
   CourseFromSlugDocument,
   CurrentUserCertificateCompletionsDocument,
+  CurrentUserCertificateCompletionsQuery,
 } from "/graphql/generated"
 
 const NameFields = styled("div")`
@@ -137,39 +138,170 @@ function CertificateForm({ certificateSlug, onCreated }: CertificateFormProps) {
   )
 }
 
+type CertificateCompletion = NonNullable<
+  NonNullable<
+    CurrentUserCertificateCompletionsQuery["currentUser"]
+  >["completions"]
+>[number]
+
+interface CertificateSectionProps {
+  course: NonNullable<CertificateCompletion["course"]>
+  availability: CertificateCompletion["certificate_availability"]
+  certificateId: string | null | undefined
+  isRefetching: boolean
+  onRetry: () => void
+  onCreated: (certificateId: string) => void
+}
+
+/** The certificate, or what the student needs to do or wait for to get one. */
+function CertificateSection({
+  course,
+  availability,
+  certificateId,
+  isRefetching,
+  onRetry,
+  onCreated,
+}: CertificateSectionProps) {
+  const t = useTranslator(RegisterCompletionTranslations, CommonTranslations)
+  const { currentUser } = useLoginStateContext()
+
+  const renderRetry = (label: string) => (
+    <CallToActionButton
+      variant="outlined"
+      color="primary"
+      size="medium"
+      disabled={isRefetching}
+      onClick={onRetry}
+    >
+      {isRefetching ? t("certificateChecking") : label}
+    </CallToActionButton>
+  )
+
+  if (!course.has_certificate) {
+    return (
+      <InstructionsSection>
+        <Prose>{t("certificateFallbackBody")}</Prose>
+        {course.link && (
+          <CallToActionButton
+            variant="contained"
+            color="primary"
+            size="medium"
+            href={course.link}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t("goToCourseMaterials")}
+            <VisuallyHidden> ({t("opensInNewTab")})</VisuallyHidden>
+          </CallToActionButton>
+        )}
+      </InstructionsSection>
+    )
+  }
+  if (certificateId) {
+    return (
+      <InstructionsSection>
+        <Prose>{t("certificateReadyBody")}</Prose>
+        <CallToActionButton
+          variant="contained"
+          color="primary"
+          size="medium"
+          href={`${CERTIFICATES_URL}/validate/${certificateId}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {t("certificateShow")}
+          <VisuallyHidden> ({t("opensInNewTab")})</VisuallyHidden>
+        </CallToActionButton>
+      </InstructionsSection>
+    )
+  }
+  if (!availability || availability.service_unavailable) {
+    return (
+      <InstructionsSection aria-live="polite">
+        <Alert severity="warning">{t("certificateServiceUnavailable")}</Alert>
+        {renderRetry(t("certificateTryAgain"))}
+      </InstructionsSection>
+    )
+  }
+  if (!availability.completed_course) {
+    return (
+      <InstructionsSection aria-live="polite">
+        <Prose>{t("certificateNotCompletedBody")}</Prose>
+        {renderRetry(t("certificateCheckAgain"))}
+      </InstructionsSection>
+    )
+  }
+  // The form takes the saved name only when it mounts.
+  if (!currentUser) {
+    return <Spinner />
+  }
+  return <CertificateForm certificateSlug={course.slug} onCreated={onCreated} />
+}
+
+/** One that already has a certificate, else the latest eligible one. */
+const pickCertificateCompletion = (
+  completions: CertificateCompletion[] | null | undefined,
+) => {
+  const eligible = (completions ?? []).filter((c) => c.eligible_for_ects)
+  return (
+    eligible.find((c) => c.certificate_availability?.existing_certificate) ??
+    eligible[eligible.length - 1]
+  )
+}
+
+/** The course and the student's completion to offer a certificate for. */
+function useCertificateCompletion(courseSlug: string) {
+  const courseQuery = useQuery(CourseFromSlugDocument, {
+    variables: { slug: courseSlug },
+  })
+  const course = courseQuery.data?.course
+  const completionsQuery = useQuery(CurrentUserCertificateCompletionsDocument, {
+    variables: { course_slug: courseSlug, fresh: false },
+    skip: !course?.id,
+    notifyOnNetworkStatusChange: true,
+    errorPolicy: "all",
+  })
+  const { refetch } = completionsQuery
+  const currentUser = completionsQuery.data?.currentUser
+
+  // The server caches availability for minutes, so "unavailable" or "no certificate yet" would stick.
+  const refetchFresh = useCallback(() => {
+    refetch({ fresh: true })
+  }, [refetch])
+
+  return {
+    course,
+    isCourseLoading: courseQuery.loading,
+    isLoading:
+      courseQuery.loading ||
+      (Boolean(course?.id) &&
+        !completionsQuery.data &&
+        !completionsQuery.error),
+    error:
+      courseQuery.error ?? (currentUser ? undefined : completionsQuery.error),
+    completion: pickCertificateCompletion(currentUser?.completions),
+    isRefetching: completionsQuery.networkStatus === NetworkStatus.refetch,
+    refetchFresh,
+  }
+}
+
 function CertificatePage() {
   const courseSlug = encodeURIComponent(
     useQueryParameter("slug") ?? "",
   ).replace(/\./g, "")
 
   const t = useTranslator(RegisterCompletionTranslations, CommonTranslations)
-  const { currentUser } = useLoginStateContext()
   const [createdCertificateId, setCreatedCertificateId] = useState<string>()
   const {
-    loading: courseLoading,
-    error: courseError,
-    data: courseData,
-  } = useQuery(CourseFromSlugDocument, {
-    variables: { slug: courseSlug },
-  })
-  const course_exists = Boolean(courseData?.course?.id)
-  const {
-    error: completionsError,
-    data: completionsData,
-    networkStatus,
-    refetch,
-  } = useQuery(CurrentUserCertificateCompletionsDocument, {
-    variables: { course_slug: courseSlug, fresh: false },
-    skip: !course_exists,
-    notifyOnNetworkStatusChange: true,
-    errorPolicy: "all",
-  })
-  const isRefetching = networkStatus === NetworkStatus.refetch
-
-  // The server caches availability for minutes, so "unavailable" or "no certificate yet" would stick.
-  const refetchFresh = useCallback(() => {
-    refetch({ fresh: true })
-  }, [refetch])
+    course: slugCourse,
+    isCourseLoading,
+    isLoading,
+    error,
+    completion,
+    isRefetching,
+    refetchFresh,
+  } = useCertificateCompletion(courseSlug)
+  const course_exists = Boolean(slugCourse?.id)
 
   const onCreated = useCallback(
     (certificateId: string) => {
@@ -179,39 +311,25 @@ function CertificatePage() {
     [refetchFresh],
   )
 
-  const completions = (completionsData?.currentUser?.completions ?? []).filter(
-    (c) => c.eligible_for_ects,
-  )
-  const completion =
-    completions.find((c) => c.certificate_availability?.existing_certificate) ??
-    completions[completions.length - 1]
-
   useBreadcrumbs([
     { translation: "registerCompletion" },
     {
       label:
-        courseData?.course?.name ??
-        (!courseLoading && !course_exists ? courseSlug : undefined),
+        slugCourse?.name ??
+        (!isCourseLoading && !course_exists ? courseSlug : undefined),
       href: `/register-completion/${courseSlug}`,
     },
   ])
-  const title = courseData?.course?.name ?? "..."
+  const title = slugCourse?.name ?? "..."
 
-  if (
-    courseLoading ||
-    (course_exists && !completionsData && !completionsError)
-  ) {
+  if (isLoading) {
     return <Spinner />
   }
 
-  if (courseError || (completionsError && !completionsData?.currentUser)) {
+  if (error) {
     return (
       <ModifiableErrorMessage
-        errorMessage={JSON.stringify(
-          courseError ?? completionsError,
-          undefined,
-          2,
-        )}
+        errorMessage={JSON.stringify(error, undefined, 2)}
       />
     )
   }
@@ -241,82 +359,6 @@ function CertificatePage() {
   const certificateId =
     createdCertificateId ?? availability?.existing_certificate
 
-  const renderRetry = (label: string) => (
-    <CallToActionButton
-      variant="outlined"
-      color="primary"
-      size="medium"
-      disabled={isRefetching}
-      onClick={refetchFresh}
-    >
-      {isRefetching ? t("certificateChecking") : label}
-    </CallToActionButton>
-  )
-
-  const renderCertificate = () => {
-    if (!course.has_certificate) {
-      return (
-        <InstructionsSection>
-          <Prose>{t("certificateFallbackBody")}</Prose>
-          {course.link && (
-            <CallToActionButton
-              variant="contained"
-              color="primary"
-              size="medium"
-              href={course.link}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {t("goToCourseMaterials")}
-              <VisuallyHidden> ({t("opensInNewTab")})</VisuallyHidden>
-            </CallToActionButton>
-          )}
-        </InstructionsSection>
-      )
-    }
-    if (certificateId) {
-      return (
-        <InstructionsSection>
-          <Prose>{t("certificateReadyBody")}</Prose>
-          <CallToActionButton
-            variant="contained"
-            color="primary"
-            size="medium"
-            href={`${CERTIFICATES_URL}/validate/${certificateId}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {t("certificateShow")}
-            <VisuallyHidden> ({t("opensInNewTab")})</VisuallyHidden>
-          </CallToActionButton>
-        </InstructionsSection>
-      )
-    }
-    if (!availability || availability.service_unavailable) {
-      return (
-        <InstructionsSection aria-live="polite">
-          <Alert severity="warning">{t("certificateServiceUnavailable")}</Alert>
-          {renderRetry(t("certificateTryAgain"))}
-        </InstructionsSection>
-      )
-    }
-    if (!availability.completed_course) {
-      return (
-        <InstructionsSection aria-live="polite">
-          <Prose>{t("certificateNotCompletedBody")}</Prose>
-          {renderRetry(t("certificateCheckAgain"))}
-        </InstructionsSection>
-      )
-    }
-    // The form takes the saved name only when it mounts.
-    if (!currentUser) {
-      return <Spinner />
-    }
-    return (
-      <CertificateForm certificateSlug={course.slug} onCreated={onCreated} />
-    )
-  }
-
   return (
     <RegisterCompletion pageTitle={title}>
       <Card>
@@ -324,7 +366,14 @@ function CertificatePage() {
           <PageTitle>{t("certificatePageTitle")}</PageTitle>
           <CourseName>{t("course", { course: course.name })}</CourseName>
         </Header>
-        {renderCertificate()}
+        <CertificateSection
+          course={course}
+          availability={availability}
+          certificateId={certificateId}
+          isRefetching={isRefetching}
+          onRetry={refetchFresh}
+          onCreated={onCreated}
+        />
       </Card>
     </RegisterCompletion>
   )

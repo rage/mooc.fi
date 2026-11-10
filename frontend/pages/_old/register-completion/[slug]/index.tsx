@@ -60,6 +60,7 @@ import {
   CourseFromSlugDocument,
   CreateRegistrationAttemptDateDocument,
   CurrentUserOverviewDocument,
+  CurrentUserOverviewQuery,
 } from "/graphql/generated"
 
 const SISU_URL = "https://sisu.helsinki.fi/student/frontpage"
@@ -135,84 +136,40 @@ function CompletionLinkColumn() {
   )
 }
 
-function RegisterCompletionPage() {
-  const accessToken = getCookie("access_token")
-  const { currentUser } = useLoginStateContext()
-  const [instructions, setInstructions] = useState("")
-  const [tiers, setTiers] = useState([])
-  const [studentTypeAnswer, setStudentTypeAnswer] =
-    useState<StudentTypeAnswer>(null)
+type CourseCompletion = NonNullable<
+  NonNullable<CurrentUserOverviewQuery["currentUser"]>["completions"]
+>[number]
 
-  const courseSlug = encodeURIComponent(
-    useQueryParameter("slug") ?? "",
-  ).replace(/\./g, "")
+/** The completion registered here: completion link first, then the newest. */
+const pickRegistrableCompletion = (completions: CourseCompletion[]) =>
+  completions
+    .filter((c) => !isCompletedAfterCutoff(c))
+    .sort((a, b) => {
+      if (a.completion_link && !b.completion_link) {
+        return -1
+      }
+      if (!a.completion_link && b.completion_link) {
+        return 1
+      }
+      const aDate = a.created_at ? new Date(a.created_at).getTime() : 0
+      const bDate = b.created_at ? new Date(b.created_at).getTime() : 0
+      return bDate - aDate
+    })[0]
 
-  const t = useTranslator(RegisterCompletionTranslations)
-  const {
-    loading: courseLoading,
-    error: courseError,
-    data: courseData,
-  } = useQuery(CourseFromSlugDocument, {
-    variables: {
-      slug: courseSlug,
-    },
-  })
-  // The whole detour now depends on completion.course.has_certificate, queried alongside every
-  // other completion field here; errorPolicy "all" keeps a certificates.mooc.fi hiccup from
-  // taking down registration for every course instead of just degrading the certificate step.
-  const {
-    loading: userLoading,
-    error: userError,
-    data: userData,
-  } = useQuery(CurrentUserOverviewDocument, { errorPolicy: "all" })
-  const [createRegistrationAttemptDate] = useMutation(
-    CreateRegistrationAttemptDateDocument,
-  )
-  const { locale } = useRouter()
-
-  const course_exists = Boolean(courseData?.course?.id)
-
-  const courseCompletions =
-    userData?.currentUser?.completions?.filter(
-      (c) => c.course?.slug === courseSlug,
-    ) ?? []
+/** The completion courses.mooc.fi registers, if any still needs registering. */
+const findDelegatedCompletion = (completions: CourseCompletion[]) =>
   // Decided per completion: one student can have completions on both sides of the cutoff.
-  const delegatedCompletion = courseCompletions.find(
+  completions.find(
     (c) =>
       c.eligible_for_ects &&
       isCompletedAfterCutoff(c) &&
-      !hasRegisteredEquivalent(c, courseCompletions),
+      !hasRegisteredEquivalent(c, completions),
   )
-  const completion =
-    courseCompletions
-      .filter((c) => !isCompletedAfterCutoff(c))
-      .sort((a, b) => {
-        // First prioritize completions with a completion_link
-        if (a.completion_link && !b.completion_link) {
-          return -1
-        }
-        if (!a.completion_link && b.completion_link) {
-          return 1
-        }
 
-        // If both have or don't have completion_link, sort by created_at (newest first)
-        const aDate = a.created_at ? new Date(a.created_at).getTime() : 0
-        const bDate = b.created_at ? new Date(b.created_at).getTime() : 0
-        return bDate - aDate
-      })[0] ?? undefined
-
-  const onRegistrationClick = () => {
-    if (!completion?.id) {
-      return
-    }
-
-    createRegistrationAttemptDate({
-      variables: {
-        id: completion.id,
-        completion_registration_attempt_date: new Date(),
-      },
-    })
-  }
+/** The course's registration instructions in the page's language, or "" until they load. */
+function useCompletionInstructions(courseSlug: string) {
+  const [instructions, setInstructions] = useState("")
+  const { locale } = useRouter()
 
   useEffect(() => {
     if (!locale) {
@@ -240,6 +197,14 @@ function RegisterCompletionPage() {
 
     return () => controller.abort()
   }, [courseSlug, locale])
+
+  return instructions
+}
+
+/** The course's completion tiers, or [] until they load or when it has none. */
+function useCompletionTiers(courseSlug: string) {
+  const accessToken = getCookie("access_token")
+  const [tiers, setTiers] = useState([])
 
   useEffect(() => {
     const controller = new AbortController()
@@ -269,133 +234,39 @@ function RegisterCompletionPage() {
     }
   }, [courseSlug])
 
-  useBreadcrumbs([
-    {
-      translation: "registerCompletion",
-    },
-    {
-      label:
-        courseData?.course?.name ??
-        (!courseLoading && !course_exists ? courseSlug : undefined),
-      href: `/register-completion/${courseSlug}`,
-    },
-  ])
-  const title = courseData?.course?.name ?? "..."
+  return tiers
+}
 
-  if (courseLoading || userLoading) {
-    return <Spinner />
-  }
+interface StudentTypeRegistrationProps {
+  completion: CourseCompletion
+  link: string
+  instructions: string
+  tiers: never[]
+  delegatedRegistration: React.ReactNode
+}
 
-  // With errorPolicy "all", a field-level error (e.g. certificate_availability) still comes back
-  // with currentUser populated; only bail out here when there's truly nothing to show.
-  if ((userError && !userData?.currentUser) || courseError) {
-    return (
-      <ModifiableErrorMessage
-        errorMessage={JSON.stringify(userError ?? courseError, undefined, 2)}
-      />
-    )
-  }
-
-  if (!currentUser) {
-    return (
-      <RegisterCompletion
-        pageTitle={title}
-        title={t("error")}
-        message={t("notLoggedIn")}
-      />
-    )
-  }
-
-  if (!course_exists) {
-    return (
-      <RegisterCompletion
-        pageTitle={title}
-        title={t("course_not_found_title")}
-        message={t("course_not_found", { course: courseSlug })}
-      />
-    )
-  }
-
-  const delegatedRegistration = delegatedCompletion?.course && (
-    <DelegatedRegistrationButton
-      handoffUrl={`${BACKEND_URL}/api/credit-registration-handoff/${courseSlug}`}
-      handlerCourseId={delegatedCompletion.course.id}
-      description={
-        completion?.eligible_for_ects
-          ? t("delegatedRegistrationLaterCompletionBody")
-          : undefined
-      }
-    />
+/** Asks whether the student studies at the University of Helsinki and shows how they register. */
+function StudentTypeRegistration({
+  completion,
+  link,
+  instructions,
+  tiers,
+  delegatedRegistration,
+}: StudentTypeRegistrationProps) {
+  const t = useTranslator(RegisterCompletionTranslations)
+  const [studentTypeAnswer, setStudentTypeAnswer] =
+    useState<StudentTypeAnswer>(null)
+  const [createRegistrationAttemptDate] = useMutation(
+    CreateRegistrationAttemptDateDocument,
   )
 
-  if (!completion?.eligible_for_ects) {
-    if (delegatedCompletion) {
-      return (
-        <RegisterCompletion pageTitle={title}>
-          <Card>
-            <Header>
-              <PageTitle>{t("title")}</PageTitle>
-              <CourseName>
-                {t("course", { course: delegatedCompletion.course?.name })}
-              </CourseName>
-            </Header>
-            {delegatedRegistration}
-          </Card>
-        </RegisterCompletion>
-      )
-    }
-    return (
-      <RegisterCompletion
-        pageTitle={title}
-        title={t("course_completion_not_found_title")}
-        message={t("course_completion_not_found")}
-      />
-    )
-  }
-
-  const registeredCompletion =
-    completion?.completions_registered?.find(
-      (c) => c?.completion_id === completion?.id,
-    ) ?? undefined
-
-  if (registeredCompletion) {
-    return (
-      <RegisterCompletion
-        pageTitle={title}
-        title={t("course_completion_already_registered_title")}
-        message={t("course_completion_already_registered")}
-      >
-        <Card>
-          <Section>
-            <CompletionLinkColumn />
-          </Section>
-          {delegatedRegistration}
-        </Card>
-      </RegisterCompletion>
-    )
-  }
-
-  //map completions language to a link
-  //if completion has a language field defined
-  const courseLinkWithLanguage = completion?.completion_link
-
-  if (!courseLinkWithLanguage) {
-    return (
-      <RegisterCompletion pageTitle={title} title={t("title")}>
-        <StyledPaper>
-          <Typography
-            sx={{
-              marginBottom: "16px",
-            }}
-          >
-            {t("open_university_registration_not_open")}{" "}
-            <strong>{completion.course?.name}</strong> (
-            {t(completion.completion_language as any)}).
-          </Typography>
-        </StyledPaper>
-        {delegatedRegistration && <Card>{delegatedRegistration}</Card>}
-      </RegisterCompletion>
-    )
+  const onRegistrationClick = () => {
+    createRegistrationAttemptDate({
+      variables: {
+        id: completion.id,
+        completion_registration_attempt_date: new Date(),
+      },
+    })
   }
 
   const studentTypeOptions: AnswerOption<"yes" | "no">[] = [
@@ -411,7 +282,7 @@ function RegisterCompletionPage() {
       <ImportantNotice email={completion.email} />
       <RegisterCompletionText
         email={completion.email}
-        link={courseLinkWithLanguage}
+        link={link}
         tiers={tiers}
         onRegistrationClick={onRegistrationClick}
       />
@@ -420,7 +291,7 @@ function RegisterCompletionPage() {
   )
 
   return (
-    <RegisterCompletion pageTitle={title}>
+    <>
       {/* aria-live from first paint, before there's anything to reveal: a live region only
           reliably announces content added *after* it's already in the DOM, not content that
           arrives in the same paint as the region itself. */}
@@ -497,7 +368,210 @@ function RegisterCompletionPage() {
         )}
         {delegatedRegistration}
       </Card>
+    </>
+  )
+}
+
+interface CompletionRegistrationProps {
+  courseSlug: string
+  title: string
+  completion: CourseCompletion | undefined
+  delegatedCompletion: CourseCompletion | undefined
+  instructions: string
+  tiers: never[]
+}
+
+/** Where and how the student registers their completion, given what they have completed. */
+function CompletionRegistration({
+  courseSlug,
+  title,
+  completion,
+  delegatedCompletion,
+  instructions,
+  tiers,
+}: CompletionRegistrationProps) {
+  const t = useTranslator(RegisterCompletionTranslations)
+
+  const delegatedRegistration = delegatedCompletion?.course && (
+    <DelegatedRegistrationButton
+      handoffUrl={`${BACKEND_URL}/api/credit-registration-handoff/${courseSlug}`}
+      handlerCourseId={delegatedCompletion.course.id}
+      description={
+        completion?.eligible_for_ects
+          ? t("delegatedRegistrationLaterCompletionBody")
+          : undefined
+      }
+    />
+  )
+
+  if (!completion?.eligible_for_ects) {
+    if (delegatedCompletion) {
+      return (
+        <RegisterCompletion pageTitle={title}>
+          <Card>
+            <Header>
+              <PageTitle>{t("title")}</PageTitle>
+              <CourseName>
+                {t("course", { course: delegatedCompletion.course?.name })}
+              </CourseName>
+            </Header>
+            {delegatedRegistration}
+          </Card>
+        </RegisterCompletion>
+      )
+    }
+    return (
+      <RegisterCompletion
+        pageTitle={title}
+        title={t("course_completion_not_found_title")}
+        message={t("course_completion_not_found")}
+      />
+    )
+  }
+
+  const isRegistered = Boolean(
+    completion.completions_registered?.some(
+      (c) => c?.completion_id === completion.id,
+    ),
+  )
+
+  if (isRegistered) {
+    return (
+      <RegisterCompletion
+        pageTitle={title}
+        title={t("course_completion_already_registered_title")}
+        message={t("course_completion_already_registered")}
+      >
+        <Card>
+          <Section>
+            <CompletionLinkColumn />
+          </Section>
+          {delegatedRegistration}
+        </Card>
+      </RegisterCompletion>
+    )
+  }
+
+  if (!completion.completion_link) {
+    return (
+      <RegisterCompletion pageTitle={title} title={t("title")}>
+        <StyledPaper>
+          <Typography
+            sx={{
+              marginBottom: "16px",
+            }}
+          >
+            {t("open_university_registration_not_open")}{" "}
+            <strong>{completion.course?.name}</strong> (
+            {t(completion.completion_language as any)}).
+          </Typography>
+        </StyledPaper>
+        {delegatedRegistration && <Card>{delegatedRegistration}</Card>}
+      </RegisterCompletion>
+    )
+  }
+
+  return (
+    <RegisterCompletion pageTitle={title}>
+      <StudentTypeRegistration
+        completion={completion}
+        link={completion.completion_link}
+        instructions={instructions}
+        tiers={tiers}
+        delegatedRegistration={delegatedRegistration}
+      />
     </RegisterCompletion>
+  )
+}
+
+function RegisterCompletionPage() {
+  const { currentUser } = useLoginStateContext()
+
+  const courseSlug = encodeURIComponent(
+    useQueryParameter("slug") ?? "",
+  ).replace(/\./g, "")
+
+  const t = useTranslator(RegisterCompletionTranslations)
+  const {
+    loading: courseLoading,
+    error: courseError,
+    data: courseData,
+  } = useQuery(CourseFromSlugDocument, {
+    variables: {
+      slug: courseSlug,
+    },
+  })
+  // The whole detour now depends on completion.course.has_certificate, queried alongside every
+  // other completion field here; errorPolicy "all" keeps a certificates.mooc.fi hiccup from
+  // taking down registration for every course instead of just degrading the certificate step.
+  const {
+    loading: userLoading,
+    error: userError,
+    data: userData,
+  } = useQuery(CurrentUserOverviewDocument, { errorPolicy: "all" })
+  const instructions = useCompletionInstructions(courseSlug)
+  const tiers = useCompletionTiers(courseSlug)
+
+  const course = courseData?.course
+  const courseCompletions = (userData?.currentUser?.completions ?? []).filter(
+    (c) => c.course?.slug === courseSlug,
+  )
+
+  useBreadcrumbs([
+    {
+      translation: "registerCompletion",
+    },
+    {
+      label: course?.name ?? (courseLoading ? undefined : courseSlug),
+      href: `/register-completion/${courseSlug}`,
+    },
+  ])
+  const title = course?.name ?? "..."
+
+  if (courseLoading || userLoading) {
+    return <Spinner />
+  }
+
+  // With errorPolicy "all", a field-level error (e.g. certificate_availability) still comes back
+  // with currentUser populated; only bail out here when there's truly nothing to show.
+  const error = courseError ?? (userData?.currentUser ? undefined : userError)
+  if (error) {
+    return (
+      <ModifiableErrorMessage
+        errorMessage={JSON.stringify(error, undefined, 2)}
+      />
+    )
+  }
+
+  if (!currentUser) {
+    return (
+      <RegisterCompletion
+        pageTitle={title}
+        title={t("error")}
+        message={t("notLoggedIn")}
+      />
+    )
+  }
+
+  if (!course?.id) {
+    return (
+      <RegisterCompletion
+        pageTitle={title}
+        title={t("course_not_found_title")}
+        message={t("course_not_found", { course: courseSlug })}
+      />
+    )
+  }
+
+  return (
+    <CompletionRegistration
+      courseSlug={courseSlug}
+      title={title}
+      completion={pickRegistrableCompletion(courseCompletions)}
+      delegatedCompletion={findDelegatedCompletion(courseCompletions)}
+      instructions={instructions}
+      tiers={tiers}
+    />
   )
 }
 
