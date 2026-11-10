@@ -29,8 +29,10 @@ import withAdminOrCourseOwner from "/lib/with-admin-or-course-owner"
 import CoursesTranslations from "/translations/courses"
 
 import {
+  CourseDashboardCourseFieldsFragment,
   CourseDashboardDocument,
   CurrentUserStatsSubscriptionsDocument,
+  CurrentUserStatsSubscriptionsQuery,
   PaginatedCompletionsDocument,
   PaginatedCompletionsPreviousPageDocument,
   RecheckCompletionsDocument,
@@ -56,21 +58,154 @@ const StyledWideContainer = styled(WideContainer)`
   justify-content: center;
 `
 
+interface EmailControlProps {
+  course: CourseDashboardCourseFieldsFragment
+  baseUrl: string
+}
+
+const CompletionEmailControl = ({ course, baseUrl }: EmailControlProps) => {
+  const t = useTranslator(CoursesTranslations)
+
+  if (course.completion_email == null) {
+    return (
+      <CreateEmailTemplateDialog
+        buttonText={t("createCompletionEmail")}
+        course={course}
+        type="completion"
+      />
+    )
+  }
+  return (
+    <Link
+      href={`${baseUrl}/email-templates/${course.completion_email?.id}`}
+      prefetch={false}
+      passHref
+    >
+      <Button color="info">
+        {t("completionEmail")}: {course.completion_email?.name}
+      </Button>
+    </Link>
+  )
+}
+
+type CourseStatsSubscriptions = NonNullable<
+  NonNullable<
+    CurrentUserStatsSubscriptionsQuery["currentUser"]
+  >["course_stats_subscriptions"]
+>
+
+const CourseStatsEmailControl = ({
+  course,
+  baseUrl,
+  subscriptions,
+}: EmailControlProps & { subscriptions: CourseStatsSubscriptions }) => {
+  const client = useApolloClient()
+  const [subscribing, setSubscribing] = useState(false)
+  const courseStatsEmailId = course.course_stats_email?.id
+  const subscription = subscriptions.find(
+    (sub) => sub.email_template?.id === courseStatsEmailId,
+  )
+  const isSubscribed = Boolean(subscription)
+
+  const handleSubscribe = async () => {
+    setSubscribing(true)
+
+    try {
+      const refetchQueries = [{ query: CurrentUserStatsSubscriptionsDocument }]
+      if (isSubscribed) {
+        await client.mutate({
+          mutation: UserCourseStatsUnsubscribeDocument,
+          variables: { id: subscription?.id ?? "" },
+          refetchQueries,
+        })
+      } else {
+        await client.mutate({
+          mutation: UserCourseStatsSubscribeDocument,
+          variables: { id: courseStatsEmailId ?? "" },
+          refetchQueries,
+        })
+      }
+    } catch {
+      //
+    } finally {
+      setSubscribing(false)
+    }
+  }
+
+  const t = useTranslator(CoursesTranslations)
+
+  if (course.course_stats_email === null) {
+    return (
+      <CreateEmailTemplateDialog
+        buttonText={t("createCourseStatsEmail")}
+        course={course}
+        type="course-stats"
+      />
+    )
+  }
+  return (
+    <>
+      <Link
+        href={`${baseUrl}/email-templates/${course.course_stats_email?.id}`}
+        prefetch={false}
+        passHref
+      >
+        <Button color="info">
+          {t("courseStatsEmail")}: {course.course_stats_email?.name}
+        </Button>
+      </Link>
+      <Button onClick={handleSubscribe} disabled={subscribing}>
+        {isSubscribed ? t("unsubscribe") : t("subscribe")}
+      </Button>
+    </>
+  )
+}
+
+const RecheckCompletionsButton = ({
+  onConfirmed,
+  disabled,
+}: {
+  onConfirmed: () => Promise<void>
+  disabled: boolean
+}) => {
+  const t = useTranslator(CoursesTranslations)
+  const confirm = useConfirm()
+
+  return (
+    <div>
+      <Button
+        color="primary"
+        onClick={() => {
+          confirm({
+            title: t("recheckConfirmTitle"),
+            description: t("recheckConfirmDescription"),
+            confirmationText: t("recheckConfirmYes"),
+            cancellationText: t("recheckConfirmCancel"),
+          }).then(({ confirmed }) => {
+            if (confirmed) {
+              return onConfirmed()
+            }
+          })
+        }}
+        disabled={disabled}
+      >
+        {t("recheckCompletions")}
+      </Button>
+    </div>
+  )
+}
+
 const Course = () => {
   const isOld = useIsOld()
   const baseUrl = isOld ? "/_old" : "/admin"
   const slug = useQueryParameter("slug")
   const t = useTranslator(CoursesTranslations)
-  const confirm = useConfirm()
 
   const [checking, setChecking] = useState(false)
   const [checkMessage, setCheckMessage] = useState("")
-  const [subscribing, setSubscribing] = useState(false)
   const { data, loading, error } = useQuery(CourseDashboardDocument, {
     variables: { slug },
   })
-  const client = useApolloClient()
-
   const {
     data: userData,
     loading: userLoading,
@@ -134,36 +269,6 @@ const Course = () => {
     )
   }
 
-  const subscription = userData?.currentUser?.course_stats_subscriptions?.find(
-    (sub) => sub.email_template?.id === data?.course?.course_stats_email?.id,
-  )
-  const isSubscribed = Boolean(subscription)
-
-  const handleSubscribe = async () => {
-    setSubscribing(true)
-
-    try {
-      const refetchQueries = [{ query: CurrentUserStatsSubscriptionsDocument }]
-      if (isSubscribed) {
-        await client.mutate({
-          mutation: UserCourseStatsUnsubscribeDocument,
-          variables: { id: subscription?.id ?? "" },
-          refetchQueries,
-        })
-      } else {
-        await client.mutate({
-          mutation: UserCourseStatsSubscribeDocument,
-          variables: { id: data?.course?.course_stats_email?.id ?? "" },
-          refetchQueries,
-        })
-      }
-    } catch {
-      //
-    } finally {
-      setSubscribing(false)
-    }
-  }
-
   return (
     <>
       <Head>{generateNextSeo({ title: title })}</Head>
@@ -185,66 +290,18 @@ const Course = () => {
             {t("courseHome")}
           </SubtitleNoBackground>
           <Row>
-            {data.course?.completion_email != null ? (
-              <Link
-                href={`${baseUrl}/email-templates/${data.course.completion_email?.id}`}
-                prefetch={false}
-                passHref
-              >
-                <Button color="info">
-                  {t("completionEmail")}: {data.course.completion_email?.name}
-                </Button>
-              </Link>
-            ) : (
-              <CreateEmailTemplateDialog
-                buttonText={t("createCompletionEmail")}
-                course={data.course}
-                type="completion"
-              />
-            )}
-            {data.course?.course_stats_email !== null ? (
-              <>
-                <Link
-                  href={`${baseUrl}/email-templates/${data.course.course_stats_email?.id}`}
-                  prefetch={false}
-                  passHref
-                >
-                  <Button color="info">
-                    {t("courseStatsEmail")}:{" "}
-                    {data.course.course_stats_email?.name}
-                  </Button>
-                </Link>
-                <Button onClick={handleSubscribe} disabled={subscribing}>
-                  {isSubscribed ? t("unsubscribe") : t("subscribe")}
-                </Button>
-              </>
-            ) : (
-              <CreateEmailTemplateDialog
-                buttonText={t("createCourseStatsEmail")}
-                course={data.course}
-                type="course-stats"
-              />
-            )}
-            <div>
-              <Button
-                color="primary"
-                onClick={() => {
-                  confirm({
-                    title: t("recheckConfirmTitle"),
-                    description: t("recheckConfirmDescription"),
-                    confirmationText: t("recheckConfirmYes"),
-                    cancellationText: t("recheckConfirmCancel"),
-                  }).then(({ confirmed }) => {
-                    if (confirmed) {
-                      return handleRecheck()
-                    }
-                  })
-                }}
-                disabled={checking}
-              >
-                {t("recheckCompletions")}
-              </Button>
-            </div>
+            <CompletionEmailControl course={data.course} baseUrl={baseUrl} />
+            <CourseStatsEmailControl
+              course={data.course}
+              baseUrl={baseUrl}
+              subscriptions={
+                userData.currentUser?.course_stats_subscriptions ?? []
+              }
+            />
+            <RecheckCompletionsButton
+              onConfirmed={handleRecheck}
+              disabled={checking}
+            />
             {checkMessage !== "" && <Typography>{checkMessage}</Typography>}
             <div>
               <Button href={`${baseUrl}/courses/${slug}/manual-completions`}>

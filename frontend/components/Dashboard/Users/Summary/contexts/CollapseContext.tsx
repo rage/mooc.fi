@@ -40,7 +40,7 @@ export enum CollapsablePart {
   POINTS = "points",
 }
 
-export type CollapseAction =
+type ItemAction =
   | {
       type: ActionType.OPEN | ActionType.CLOSE | ActionType.TOGGLE
       course: string
@@ -55,6 +55,8 @@ export type CollapseAction =
         | CollapsablePart.COMPLETION
         | CollapsablePart.POINTS
     }
+
+type BulkAction =
   | {
       type: ActionType.OPEN_ALL | ActionType.CLOSE_ALL | ActionType.TOGGLE_ALL
       collapsable: CollapsablePart.COURSE
@@ -67,6 +69,10 @@ export type CollapseAction =
         | CollapsablePart.COMPLETION
         | CollapsablePart.POINTS
     }
+
+export type CollapseAction =
+  | ItemAction
+  | BulkAction
   | {
       type: ActionType.OPEN_ALL_COURSES | ActionType.CLOSE_ALL_COURSES
     }
@@ -84,6 +90,113 @@ interface CollapseContext {
   dispatch: Dispatch<CollapseAction>
 }
 
+const setCollapsed = (
+  state: CollapseState,
+  action: ItemAction,
+): CollapseState => {
+  const newValue = action.type === ActionType.OPEN
+  switch (action.collapsable) {
+    case CollapsablePart.COURSE:
+      return produce(state, (draft) => {
+        draft.courses[action.course].open = newValue
+      })
+    case CollapsablePart.EXERCISE:
+      return produce(state, (draft) => {
+        draft.courses[action.course].exercises[action.collapsableId] = newValue
+      })
+    case CollapsablePart.COMPLETION:
+      return produce(state, (draft) => {
+        draft.courses[action.course].completion = newValue
+      })
+    case CollapsablePart.POINTS:
+      return produce(state, (draft) => {
+        draft.courses[action.course].points = newValue
+      })
+    default:
+      return state
+  }
+}
+
+const toggleCollapsed = (
+  state: CollapseState,
+  action: ItemAction,
+): CollapseState => {
+  switch (action.collapsable) {
+    case CollapsablePart.COURSE:
+      return produce(state, (draft) => {
+        draft.courses[action.course].open = !draft.courses[action.course].open
+      })
+    case CollapsablePart.EXERCISE:
+      return produce(state, (draft) => {
+        draft.courses[action.course].exercises[action.collapsableId] =
+          !draft.courses[action.course].exercises[action.collapsableId]
+      })
+    case CollapsablePart.COMPLETION:
+      return produce(state, (draft) => {
+        draft.courses[action.course].completion =
+          !draft.courses[action.course].completion
+      })
+    case CollapsablePart.POINTS:
+      return produce(state, (draft) => {
+        draft.courses[action.course].points =
+          !draft.courses[action.course].points
+      })
+    default:
+      return state
+  }
+}
+
+const setAllCollapsed = (
+  state: CollapseState,
+  action: BulkAction,
+): CollapseState => {
+  const newValue = action.type === ActionType.OPEN_ALL
+  switch (action.collapsable) {
+    case CollapsablePart.COURSE: {
+      return produce(state, (draft) => {
+        Object.keys(state.courses).forEach(
+          (c) => (draft.courses[c].open = newValue),
+        )
+      })
+    }
+    case CollapsablePart.EXERCISE: {
+      return produce(state, (draft) => {
+        Object.keys(draft.courses[action.course].exercises).forEach(
+          (e) => (draft.courses[action.course].exercises[e] = newValue),
+        )
+      })
+    }
+    default:
+      return state
+  }
+}
+
+const toggleAllCollapsed = (
+  state: CollapseState,
+  action: BulkAction,
+): CollapseState => {
+  switch (action.collapsable) {
+    case CollapsablePart.COURSE: {
+      return produce(state, (draft) => {
+        Object.keys(state.courses).forEach(
+          (c) => (draft.courses[c].open = !draft.courses[c].open),
+        )
+      })
+    }
+    case CollapsablePart.EXERCISE: {
+      return produce(state, (draft) => {
+        Object.keys(draft.courses[action.course].exercises).forEach(
+          (e) =>
+            (draft.courses[action.course].exercises[e] =
+              !draft.courses[action.course].exercises[e]),
+        )
+      })
+    }
+    default:
+      return state
+  }
+}
+
 export const collapseReducer = (
   state: CollapseState,
   action: CollapseAction,
@@ -92,99 +205,19 @@ export const collapseReducer = (
     return action.state
   }
   if (action.type === ActionType.OPEN || action.type == ActionType.CLOSE) {
-    const newValue = action.type === ActionType.OPEN
-    switch (action.collapsable) {
-      case CollapsablePart.COURSE:
-        return produce(state, (draft) => {
-          draft.courses[action.course].open = newValue
-        })
-      case CollapsablePart.EXERCISE:
-        return produce(state, (draft) => {
-          draft.courses[action.course].exercises[action.collapsableId] =
-            newValue
-        })
-      case CollapsablePart.COMPLETION:
-        return produce(state, (draft) => {
-          draft.courses[action.course].completion = newValue
-        })
-      case CollapsablePart.POINTS:
-        return produce(state, (draft) => {
-          draft.courses[action.course].points = newValue
-        })
-      default:
-        return state
-    }
+    return setCollapsed(state, action)
   }
   if (action.type === ActionType.TOGGLE) {
-    switch (action.collapsable) {
-      case CollapsablePart.COURSE:
-        return produce(state, (draft) => {
-          draft.courses[action.course].open = !draft.courses[action.course].open
-        })
-      case CollapsablePart.EXERCISE:
-        return produce(state, (draft) => {
-          draft.courses[action.course].exercises[action.collapsableId] =
-            !draft.courses[action.course].exercises[action.collapsableId]
-        })
-      case CollapsablePart.COMPLETION:
-        return produce(state, (draft) => {
-          draft.courses[action.course].completion =
-            !draft.courses[action.course].completion
-        })
-      case CollapsablePart.POINTS:
-        return produce(state, (draft) => {
-          draft.courses[action.course].points =
-            !draft.courses[action.course].points
-        })
-      default:
-        return state
-    }
+    return toggleCollapsed(state, action)
   }
   if (
     action.type === ActionType.OPEN_ALL ||
     action.type === ActionType.CLOSE_ALL
   ) {
-    const newValue = action.type === ActionType.OPEN_ALL
-    switch (action.collapsable) {
-      case CollapsablePart.COURSE: {
-        return produce(state, (draft) => {
-          Object.keys(state.courses).forEach(
-            (c) => (draft.courses[c].open = newValue),
-          )
-        })
-      }
-      case CollapsablePart.EXERCISE: {
-        return produce(state, (draft) => {
-          Object.keys(draft.courses[action.course].exercises).forEach(
-            (e) => (draft.courses[action.course].exercises[e] = newValue),
-          )
-        })
-      }
-      default:
-        return state
-    }
+    return setAllCollapsed(state, action)
   }
   if (action.type === ActionType.TOGGLE_ALL) {
-    switch (action.collapsable) {
-      case CollapsablePart.COURSE: {
-        return produce(state, (draft) => {
-          Object.keys(state.courses).forEach(
-            (c) => (draft.courses[c].open = !draft.courses[c].open),
-          )
-        })
-      }
-      case CollapsablePart.EXERCISE: {
-        return produce(state, (draft) => {
-          Object.keys(draft.courses[action.course].exercises).forEach(
-            (e) =>
-              (draft.courses[action.course].exercises[e] =
-                !draft.courses[action.course].exercises[e]),
-          )
-        })
-      }
-      default:
-        return state
-    }
+    return toggleAllCollapsed(state, action)
   }
   if (action.type === ActionType.SET_LOADING) {
     return produce(state, (draft) => {

@@ -77,6 +77,32 @@ interface TierData {
   link: string | null
 }
 
+const getRecheckIdentifierError = ({
+  course_id,
+  slug,
+  user_id,
+  user_upstream_id,
+}: {
+  course_id?: string
+  slug?: string
+  user_id?: string
+  user_upstream_id?: number
+}): string | null => {
+  if (!course_id && !slug) {
+    return "Missing course_id and slug - please provide exactly one"
+  }
+  if (course_id && slug) {
+    return "Please provide exactly one of course_id and slug"
+  }
+  if (!user_id && !user_upstream_id) {
+    return "Missing user_id and user_upstream_id - please provide exactly one"
+  }
+  if (user_id && user_upstream_id) {
+    return "Please provide exactly one of user_id and user_upstream_id"
+  }
+  return null
+}
+
 export class CompletionController extends Controller {
   constructor(override readonly ctx: ApiContext) {
     super(ctx)
@@ -703,26 +729,9 @@ export class CompletionController extends Controller {
 
     const { course_id, slug, user_id, user_upstream_id } = req.body ?? {}
 
-    if (!course_id && !slug) {
-      return res.status(400).json({
-        message: "Missing course_id and slug - please provide exactly one",
-      })
-    }
-    if (course_id && slug) {
-      return res
-        .status(400)
-        .json({ message: "Please provide exactly one of course_id and slug" })
-    }
-    if (!user_id && !user_upstream_id) {
-      return res.status(400).json({
-        message:
-          "Missing user_id and user_upstream_id - please provide exactly one",
-      })
-    }
-    if (user_id && user_upstream_id) {
-      return res.status(400).json({
-        message: "Please provide exactly one of user_id and user_upstream_id",
-      })
+    const identifierError = getRecheckIdentifierError(req.body ?? {})
+    if (identifierError) {
+      return res.status(400).json({ message: identifierError })
     }
 
     const course = await prisma.course.findUniqueOrAlias({

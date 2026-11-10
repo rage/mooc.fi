@@ -18,6 +18,21 @@ let old: UserCourseSetting
 
 const logger = sentryLogger({ service: "fetch-user-app-datum" })
 
+const saveUserFromTmcWithRetry = async (upstreamId: number, tmc: TmcClient) => {
+  try {
+    await getUserFromTmcAndSaveToDB(upstreamId, tmc)
+  } catch (error) {
+    logger.error(
+      new TMCError(
+        "error in getting user data from tmc, trying again in 30s...",
+        error,
+      ),
+    )
+    await delay(30 * 1000)
+    await getUserFromTmcAndSaveToDB(upstreamId, tmc)
+  }
+}
+
 const fetchUserAppDatum = async () => {
   const startTime = new Date().getTime()
   const tmc = new TmcClient()
@@ -59,18 +74,7 @@ const fetchUserAppDatum = async () => {
     })
 
     if (!user) {
-      try {
-        await getUserFromTmcAndSaveToDB(e.user_id, tmc)
-      } catch (error) {
-        logger.error(
-          new TMCError(
-            "error in getting user data from tmc, trying again in 30s...",
-            error,
-          ),
-        )
-        await delay(30 * 1000)
-        await getUserFromTmcAndSaveToDB(e.user_id, tmc)
-      }
+      await saveUserFromTmcWithRetry(e.user_id, tmc)
     }
 
     course = await prisma.course.findUnique({

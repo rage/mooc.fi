@@ -124,10 +124,136 @@ const defaultState: EmailTemplateState = {
   course_instance_language: null,
 }
 
+const filterDescriptionsByType = (templateType?: EmailTemplateType | null) =>
+  emailTemplateDescriptions.filter((value) => {
+    if (value.types?.length && templateType) {
+      return value.types.includes(templateType)
+    }
+    return true
+  })
+
+const TemplateTimestamps = ({
+  createdAt,
+  updatedAt,
+}: {
+  createdAt?: string | null
+  updatedAt?: string | null
+}) => {
+  const { locale } = useRouter()
+  const t = useTranslator(EmailTemplatesTranslations)
+
+  return (
+    <Row>
+      <Typography variant="body2">
+        {t("createdAt")} {new Date(createdAt ?? "").toLocaleString(locale)}
+      </Typography>
+      <Typography variant="body2">
+        {t("updatedAt")} {new Date(updatedAt ?? "").toLocaleString(locale)}
+      </Typography>
+    </Row>
+  )
+}
+
+const TypeSpecificFields = ({
+  state,
+  onChange: setField,
+}: {
+  state: EmailTemplateState
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+}) => {
+  const t = useTranslator(EmailTemplatesTranslations)
+
+  return (
+    <>
+      {state.template_type === "threshold" ? (
+        <>
+          <TextField
+            type="number"
+            id="exercise_completions_threshold"
+            label={t("exerciseCompletionsThreshold")}
+            fullWidth
+            autoComplete="off"
+            variant="outlined"
+            style={{ width: "60%" }}
+            value={state.exercise_completions_threshold ?? ""}
+            onChange={setField}
+            disabled
+          />
+          <TextField
+            id="points_threshold"
+            type="number"
+            label={t("pointsThreshold")}
+            fullWidth
+            autoComplete="off"
+            variant="outlined"
+            style={{ width: "60%" }}
+            value={state.points_threshold ?? ""}
+            onChange={setField}
+          />
+        </>
+      ) : null}
+      {state.template_type === "course-stats" ? (
+        <>
+          <TextField
+            label={t("courseInstanceLanguage")}
+            fullWidth
+            autoComplete="off"
+            variant="outlined"
+            value={state.course_instance_language ?? ""}
+            onChange={setField}
+          />
+        </>
+      ) : null}
+    </>
+  )
+}
+
+const TemplateVariableList = ({
+  descriptions,
+}: {
+  descriptions: typeof emailTemplateDescriptions
+}) => {
+  const t = useTranslator(EmailTemplatesTranslations)
+
+  return (
+    <TemplateList>
+      {descriptions.map((value) => (
+        <Card key={value.name} style={{ padding: "0.5rem" }}>
+          <CardTitle>
+            <code>
+              {`{{ `}
+              {value.name}
+              {` }}`}
+            </code>
+          </CardTitle>
+          {(value.description || value.types?.length) && (
+            <CardContent>
+              <Typography variant="body1">{value.description}</Typography>
+              {value.types?.length && (
+                <p>
+                  {value.types.length > 1
+                    ? t("limitedToTypes")
+                    : t("limitedToType")}{" "}
+                  {value.types
+                    .map<React.ReactNode>((type) => (
+                      <strong key={type}>
+                        {emailTemplateNames[type] ?? type}
+                      </strong>
+                    ))
+                    .reduce((acc, curr) => [acc, ", ", curr])}
+                </p>
+              )}
+            </CardContent>
+          )}
+        </Card>
+      ))}
+    </TemplateList>
+  )
+}
+
 const EmailTemplateView = () => {
   const isOld = useIsOld()
   const baseUrl = isOld ? "/_old" : "/admin"
-  const { locale } = useRouter()
   const t = useTranslator(EmailTemplatesTranslations)
   const [isHelpOpen, setIsHelpOpen] = useState(false)
   const id = useQueryParameter("id")
@@ -187,12 +313,7 @@ const EmailTemplateView = () => {
     return <div>{t("noTemplateFound")}</div>
   }
 
-  const filteredDescriptions = emailTemplateDescriptions.filter((value) => {
-    if (value.types?.length && state.template_type) {
-      return value.types.includes(state.template_type)
-    }
-    return true
-  })
+  const filteredDescriptions = filterDescriptionsByType(state.template_type)
 
   const setField = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch({
@@ -249,59 +370,11 @@ const EmailTemplateView = () => {
                 variant="outlined"
                 onChange={setField}
               />
-              {state.template_type === "threshold" ? (
-                <>
-                  <TextField
-                    type="number"
-                    id="exercise_completions_threshold"
-                    label={t("exerciseCompletionsThreshold")}
-                    fullWidth
-                    autoComplete="off"
-                    variant="outlined"
-                    style={{ width: "60%" }}
-                    value={state.exercise_completions_threshold ?? ""}
-                    onChange={setField}
-                    disabled
-                  />
-                  <TextField
-                    id="points_threshold"
-                    type="number"
-                    label={t("pointsThreshold")}
-                    fullWidth
-                    autoComplete="off"
-                    variant="outlined"
-                    style={{ width: "60%" }}
-                    value={state.points_threshold ?? ""}
-                    onChange={setField}
-                  />
-                </>
-              ) : null}
-              {state.template_type === "course-stats" ? (
-                <>
-                  <TextField
-                    label={t("courseInstanceLanguage")}
-                    fullWidth
-                    autoComplete="off"
-                    variant="outlined"
-                    value={state.course_instance_language ?? ""}
-                    onChange={setField}
-                  />
-                </>
-              ) : null}
-              <Row>
-                <Typography variant="body2">
-                  {t("createdAt")}{" "}
-                  {new Date(
-                    data.email_template?.created_at ?? "",
-                  ).toLocaleString(locale)}
-                </Typography>
-                <Typography variant="body2">
-                  {t("updatedAt")}{" "}
-                  {new Date(
-                    data.email_template?.updated_at ?? "",
-                  ).toLocaleString(locale)}
-                </Typography>
-              </Row>
+              <TypeSpecificFields state={state} onChange={setField} />
+              <TemplateTimestamps
+                createdAt={data.email_template?.created_at}
+                updatedAt={data.email_template?.updated_at}
+              />
               <Row>
                 <Row>
                   <Button
@@ -379,40 +452,7 @@ const EmailTemplateView = () => {
               <Collapse in={isHelpOpen}>
                 <div style={{ margin: "0.5rem", padding: "0.5rem" }}>
                   <Typography variant="subtitle2">{t("helpIntro")}</Typography>
-                  <TemplateList>
-                    {filteredDescriptions.map((value) => (
-                      <Card key={value.name} style={{ padding: "0.5rem" }}>
-                        <CardTitle>
-                          <code>
-                            {`{{ `}
-                            {value.name}
-                            {` }}`}
-                          </code>
-                        </CardTitle>
-                        {(value.description || value.types?.length) && (
-                          <CardContent>
-                            <Typography variant="body1">
-                              {value.description}
-                            </Typography>
-                            {value.types?.length && (
-                              <p>
-                                {value.types.length > 1
-                                  ? t("limitedToTypes")
-                                  : t("limitedToType")}{" "}
-                                {value.types
-                                  .map<React.ReactNode>((type) => (
-                                    <strong key={type}>
-                                      {emailTemplateNames[type] ?? type}
-                                    </strong>
-                                  ))
-                                  .reduce((acc, curr) => [acc, ", ", curr])}
-                              </p>
-                            )}
-                          </CardContent>
-                        )}
-                      </Card>
-                    ))}
-                  </TemplateList>
+                  <TemplateVariableList descriptions={filteredDescriptions} />
                 </div>
               </Collapse>
             </TemplateForm>

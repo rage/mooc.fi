@@ -13,6 +13,13 @@ import redisClient, {
 const CACHE_EXPIRE_TIME_SECONDS = 60 * 60 * 5 // 5 hours
 const CACHE_PREFIX = "express-graphql-response-cache:"
 
+function errorLogFields(e: unknown) {
+  return {
+    error: e instanceof Error ? e.message : String(e),
+    stack: e instanceof Error ? e.stack : undefined,
+  }
+}
+
 function normalizeQuery(query: string): string {
   return query.replace(/\s+/g, " ").trim()
 }
@@ -175,8 +182,7 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
       } catch (e) {
         logger.error("GraphQL cache: error during response handling", {
           key,
-          error: e instanceof Error ? e.message : String(e),
-          stack: e instanceof Error ? e.stack : undefined,
+          ...errorLogFields(e),
         })
       }
       return originalSend(body)
@@ -252,8 +258,7 @@ const createExpressGraphqlCacheMiddleware = (logger: Logger) => {
       return next()
     } catch (e) {
       logger.error("GraphQL cache: middleware error", {
-        error: e instanceof Error ? e.message : String(e),
-        stack: e instanceof Error ? e.stack : undefined,
+        ...errorLogFields(e),
         path: req.originalUrl || req.path,
       })
       return next()
@@ -329,8 +334,7 @@ export async function invalidateAllGraphqlCachedQueries(
     }
   } catch (e) {
     logger?.error("GraphQL cache: invalidation error", {
-      error: e instanceof Error ? e.message : String(e),
-      stack: e instanceof Error ? e.stack : undefined,
+      ...errorLogFields(e),
       deleted,
       failed,
       scanIterations,

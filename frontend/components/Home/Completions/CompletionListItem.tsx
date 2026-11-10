@@ -85,6 +85,83 @@ const ButtonColumn = styled(Column)`
   }
 `
 
+type Registrations = NonNullable<
+  CompletionDetailedFieldsFragment["completions_registered"]
+>
+
+const RegisteredCompletions = ({
+  registrations,
+}: {
+  registrations: Registrations
+}) => {
+  const t = useTranslator(ProfileTranslations)
+
+  return (
+    <>
+      {registrations.map((r) => (
+        <Column id={r.id} key={r.id}>
+          <CardSubtitle sx={{ display: "flex", alignItems: "flex-end" }}>
+            <strong>
+              {t("registeredDate")} {formatDateTime(r.created_at)}
+            </strong>
+            <DoneIcon color="success" />
+          </CardSubtitle>
+          {r.organization ? (
+            <CardSubtitle>
+              {r.organization.name ??
+                `${t("organization")} ${r.organization.slug}`}
+            </CardSubtitle>
+          ) : null}
+        </Column>
+      ))}
+    </>
+  )
+}
+
+const CompletionFacts = ({
+  completion,
+}: {
+  completion: CompletionDetailedFieldsFragment
+}) => {
+  const t = useTranslator(ProfileTranslations)
+  const isRegistered = (completion?.completions_registered ?? []).length > 0
+
+  return (
+    <>
+      <CardSubtitle>
+        <strong>{`${t("completedDate")} ${formatDateTime(
+          completion.completion_date,
+        )}`}</strong>
+      </CardSubtitle>
+      {completion.completion_language ? (
+        <CardSubtitle>
+          {`${t("completionLanguage")} ${
+            mapLangToLanguage[completion?.completion_language ?? ""] ??
+            completion.completion_language
+          }`}
+        </CardSubtitle>
+      ) : null}
+      {isDefinedAndNotEmpty(completion.tier) && (
+        <CardSubtitle>
+          {`${t("completionTier")} ${t(
+            `completionTier-${completion.tier as 1 | 2 | 3}`,
+          )}`}
+        </CardSubtitle>
+      )}
+      {isDefinedAndNotEmpty(completion?.grade) && (
+        <CardSubtitle>
+          {t("grade")} <strong>{completion.grade}</strong>
+        </CardSubtitle>
+      )}
+      {isRegistered && completion.completions_registered ? (
+        <RegisteredCompletions
+          registrations={completion.completions_registered}
+        />
+      ) : null}
+    </>
+  )
+}
+
 export const CompletionListItem = ({
   completion,
   course,
@@ -121,53 +198,7 @@ export const CompletionListItem = ({
                   </CourseAvatar>
                 </Column>
                 <Column>
-                  <CardSubtitle>
-                    <strong>{`${t("completedDate")} ${formatDateTime(
-                      completion.completion_date,
-                    )}`}</strong>
-                  </CardSubtitle>
-                  {completion.completion_language ? (
-                    <CardSubtitle>
-                      {`${t("completionLanguage")} ${
-                        mapLangToLanguage[
-                          completion?.completion_language ?? ""
-                        ] ?? completion.completion_language
-                      }`}
-                    </CardSubtitle>
-                  ) : null}
-                  {isDefinedAndNotEmpty(completion.tier) && (
-                    <CardSubtitle>
-                      {`${t("completionTier")} ${t(
-                        `completionTier-${completion.tier as 1 | 2 | 3}`,
-                      )}`}
-                    </CardSubtitle>
-                  )}
-                  {isDefinedAndNotEmpty(completion?.grade) && (
-                    <CardSubtitle>
-                      {t("grade")} <strong>{completion.grade}</strong>
-                    </CardSubtitle>
-                  )}
-                  {isRegistered && completion.completions_registered
-                    ? completion.completions_registered?.map((r) => (
-                        <Column id={r.id} key={r.id}>
-                          <CardSubtitle
-                            sx={{ display: "flex", alignItems: "flex-end" }}
-                          >
-                            <strong>
-                              {t("registeredDate")}{" "}
-                              {formatDateTime(r.created_at)}
-                            </strong>
-                            <DoneIcon color="success" />
-                          </CardSubtitle>
-                          {r.organization ? (
-                            <CardSubtitle>
-                              {r.organization.name ??
-                                `${t("organization")} ${r.organization.slug}`}
-                            </CardSubtitle>
-                          ) : null}
-                        </Column>
-                      ))
-                    : null}
+                  <CompletionFacts completion={completion} />
                 </Column>
               </Row>
             </Column>
