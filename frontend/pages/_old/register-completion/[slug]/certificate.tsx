@@ -285,11 +285,7 @@ function useCertificateCompletion(courseSlug: string) {
   }
 }
 
-function CertificatePage() {
-  const courseSlug = encodeURIComponent(
-    useQueryParameter("slug") ?? "",
-  ).replace(/\./g, "")
-
+function CertificatePage({ courseSlug }: { courseSlug: string }) {
   const t = useTranslator(RegisterCompletionTranslations, CommonTranslations)
   const [createdCertificateId, setCreatedCertificateId] = useState<string>()
   const {
@@ -379,4 +375,13 @@ function CertificatePage() {
   )
 }
 
-export default withSignedIn(CertificatePage)
+function CertificatePageForSlug() {
+  const courseSlug = encodeURIComponent(
+    useQueryParameter("slug") ?? "",
+  ).replace(/\./g, "")
+
+  // Next.js keeps the page mounted across slugs, and a created certificate belongs to one course.
+  return <CertificatePage key={courseSlug} courseSlug={courseSlug} />
+}
+
+export default withSignedIn(CertificatePageForSlug)

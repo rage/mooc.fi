@@ -40,6 +40,12 @@ const typePolicies: StrictTypedTypePolicies = {
   StudyModule: {
     keyFields: ["slug", "id", "name"],
   },
+  Completion: {
+    fields: {
+      // `fresh` only bypasses the server's cache, so a fresh answer must replace the cached one.
+      certificate_availability: { keyArgs: false },
+    },
+  },
   Query: {
     fields: {
       userCourseSettings: {
