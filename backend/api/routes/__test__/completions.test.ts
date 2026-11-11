@@ -30,6 +30,12 @@ const delegateCourse = (id: string, cutoff = CUTOFF) =>
     data: { credit_registration_delegated_at: cutoff },
   })
 
+const handleOwnCompletions = (id: string) =>
+  ctx.prisma.course.update({
+    where: { id },
+    data: { completions_handled_by: { connect: { id } } },
+  })
+
 const createCompletion = (
   id: string,
   completion_date: Date | null,
@@ -354,6 +360,21 @@ describe("API", () => {
       ])
     })
 
+    it("accepts a course that handles its own completions", async () => {
+      await delegateCourse(COURSE1_ID)
+      await handleOwnCompletions(COURSE1_ID)
+
+      const res = await getDelegatedCompletions(COURSE1_ID, 1)({})
+
+      expect(res.status).toBe(200)
+      expect(res.data).toEqual([
+        expect.objectContaining({
+          id: "30000000-0000-0000-0000-000000000102",
+          course_id: COURSE1_ID,
+        }),
+      ])
+    })
+
     it("returns an empty list for a user without completions", async () => {
       await delegateCourse(COURSE1_ID)
 
@@ -429,6 +450,16 @@ describe("API", () => {
         link: "http:/link.fi.com",
         credit_registration_delegated_at: CUTOFF.toISOString(),
       })
+    })
+
+    it("returns a course that handles its own completions", async () => {
+      await delegateCourse(COURSE1_ID)
+      await handleOwnCompletions(COURSE1_ID)
+
+      const res = await getDelegatedCourse(COURSE1_ID)({})
+
+      expect(res.status).toBe(200)
+      expect(res.data).toMatchObject({ id: COURSE1_ID })
     })
   })
 
