@@ -44,7 +44,11 @@ const linkLanguagePreference = (language: string) => {
 const delegatedHandlerCourseWhere = (id: string) =>
   ({
     id,
-    completions_handled_by_id: null,
+    // A course that names itself as its handler hands nothing on, so it is a handler too.
+    OR: [
+      { completions_handled_by_id: null },
+      { completions_handled_by_id: id },
+    ],
     credit_registration_delegated_at: { not: null },
   }) satisfies Prisma.CourseWhereInput
 
