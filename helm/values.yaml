@@ -7,6 +7,7 @@ backend:
   connectionLimit: 5
   # COURSES_HANDOFF_SECRET, TMC_TOKEN_ISSUER_CLIENT_ID, TMC_TOKEN_ISSUER_CLIENT_SECRET,
   # TMC_FRONTEND_CLIENT_ID and TMC_FRONTEND_CLIENT_SECRET go in backend-secret
+  # The frontend image has its own copy, built in from frontend/lib/coursesBaseUrl.ts: change both
   coursesBaseUrl: https://courses.mooc.fi
   creditRegistrationDelegateOrgSlug: courses-mooc-fi
 
