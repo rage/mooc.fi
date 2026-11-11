@@ -20,6 +20,7 @@ const fakeClient = {
   del: jest.fn(async (key: string) => {
     store.delete(key)
   }),
+  expire: jest.fn(async () => 1),
 }
 
 jest.mock("../redis", () => {
@@ -103,6 +104,45 @@ describe("getCachedCertificateAvailability", () => {
     })
 
     expect(fetch).toHaveBeenCalledTimes(1)
+  })
+
+  it("expires the cached value by the next allowed fresh fetch when asked too soon", async () => {
+    const fetch = jest.fn().mockResolvedValue({ completed_course: true })
+
+    await getCachedCertificateAvailability("g-1", fetch, logger, {
+      fresh: true,
+    })
+    await getCachedCertificateAvailability("g-1", fetch, logger, {
+      fresh: true,
+    })
+
+    expect(fakeClient.expire).toHaveBeenCalledWith(
+      "certificateavailability:g-1",
+      10,
+    )
+  })
+
+  it("keeps a fresh result over an older fetch that finishes later", async () => {
+    let resolveOlder: (availability: unknown) => void = () => undefined
+    const older = getCachedCertificateAvailability(
+      "h-1",
+      () => new Promise((resolve) => (resolveOlder = resolve)),
+      logger,
+    )
+    await new Promise((resolve) => setImmediate(resolve))
+
+    await getCachedCertificateAvailability(
+      "h-1",
+      jest.fn().mockResolvedValue({ existing_certificate: "c" }),
+      logger,
+      { fresh: true },
+    )
+    resolveOlder({ completed_course: true })
+    await older
+
+    expect(
+      await getCachedCertificateAvailability("h-1", jest.fn(), logger),
+    ).toMatchObject({ existing_certificate: "c" })
   })
 
   it("logs only the status and code of a failure, never the request", async () => {

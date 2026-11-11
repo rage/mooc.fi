@@ -4,7 +4,12 @@ import { Logger } from "winston"
 import { CERTIFICATES_URL } from "../config"
 import { requestErrorLogFields } from "../util/requestErrorLogFields"
 import { inFlightFor, singleFlight } from "../util/singleFlight"
-import getRedisClient, { cacheGet, cacheSet, cacheSetIfAbsent } from "./redis"
+import getRedisClient, {
+  cacheExpire,
+  cacheGet,
+  cacheSet,
+  cacheSetIfAbsent,
+} from "./redis"
 
 const certificatesAxios = axios.create({ timeout: 2000 })
 
@@ -19,7 +24,8 @@ const FAILED_SENTINEL = "failed"
  * Failures are cached briefly so a slow or down service is not hit per completion.
  *
  * `fresh` skips the cached value and replaces it, for when the student has just created a
- * certificate or asks to try again; at most once per key in {@link FRESH_INTERVAL_SECONDS}.
+ * certificate or asks to try again; at most once per key in {@link FRESH_INTERVAL_SECONDS}. One
+ * asked sooner gets the cached value, which then expires by the time the next one is allowed.
  */
 export const getCachedCertificateAvailability = async (
   key: string,
@@ -44,6 +50,9 @@ export const getCachedCertificateAvailability = async (
   if (freshInFlight) {
     return freshInFlight
   }
+  if (fresh && !isFresh) {
+    await cacheExpire(cacheKey, FRESH_INTERVAL_SECONDS, cacheOptions)
+  }
   const cached = isFresh ? null : await cacheGet(cacheKey, cacheOptions)
   if (cached === FAILED_SENTINEL) {
     return null
@@ -56,12 +65,14 @@ export const getCachedCertificateAvailability = async (
     }
   }
 
-  // A fresh fetch must not join one that started before, say, the certificate was created.
+  // A fetch that started before, say, the certificate was created must neither be joined by a
+  // fresh one nor overwrite its result.
+  const write = isFresh ? cacheSet : cacheSetIfAbsent
   return singleFlight(isFresh ? freshKey : cacheKey, async () => {
     try {
       const availability = await fetchAvailability()
       if (typeof availability !== "undefined") {
-        await cacheSet(
+        await write(
           cacheKey,
           JSON.stringify(availability),
           AVAILABILITY_TTL_SECONDS,
@@ -74,12 +85,7 @@ export const getCachedCertificateAvailability = async (
         `Certificate availability failed for ${key}`,
         requestErrorLogFields(error),
       )
-      await cacheSet(
-        cacheKey,
-        FAILED_SENTINEL,
-        FAILURE_TTL_SECONDS,
-        cacheOptions,
-      )
+      await write(cacheKey, FAILED_SENTINEL, FAILURE_TTL_SECONDS, cacheOptions)
       return null
     }
   })

@@ -331,6 +331,19 @@ export const cacheSetIfAbsent = async (
     options,
   )) === "OK"
 
+/** Sets `key` to expire in `ttlSeconds`; a missing key stays missing. */
+export const cacheExpire = async (
+  key: string,
+  ttlSeconds: number,
+  options: CacheOptions = {},
+) => {
+  await guarded(
+    `expiry of ${key}`,
+    (client) => client.expire(key, ttlSeconds),
+    options,
+  )
+}
+
 export const cacheDel = async (key: string, options: CacheOptions = {}) => {
   await guarded(`delete of ${key}`, (client) => client.del(key), options)
 }
