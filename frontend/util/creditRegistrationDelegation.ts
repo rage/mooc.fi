@@ -84,3 +84,45 @@ export const hasRegisteredEquivalent = (
       (earlier.tier ?? null) === (completion.tier ?? null) &&
       normalizeGrade(earlier.grade) === normalizeGrade(completion.grade),
   )
+
+interface RegistrableCompletion extends DelegatableCompletion {
+  completion_link?: string | null
+  registered?: boolean | null
+}
+
+/**
+ * The completion the registration page is about: completion link first, then the newest. One that
+ * courses.mooc.fi registers counts only when it is registered already, so the page can say so.
+ */
+export const pickRegistrableCompletion = <T extends RegistrableCompletion>(
+  completions: T[],
+) =>
+  completions
+    .filter((c) => c.registered || !isCompletedAfterCutoff(c))
+    .sort((a, b) => {
+      if (a.completion_link && !b.completion_link) {
+        return -1
+      }
+      if (!a.completion_link && b.completion_link) {
+        return 1
+      }
+      const aDate = a.created_at ? new Date(a.created_at).getTime() : 0
+      const bDate = b.created_at ? new Date(b.created_at).getTime() : 0
+      return bDate - aDate
+    })[0]
+
+/** The completion courses.mooc.fi registers, if any still needs registering. */
+export const findDelegatedCompletion = <
+  T extends DelegatableCompletion &
+    ComparableCompletion & { eligible_for_ects?: boolean | null },
+>(
+  completions: T[],
+) =>
+  // Decided per completion: one student can have completions on both sides of the cutoff.
+  completions.find(
+    (c) =>
+      c.eligible_for_ects &&
+      !c.registered &&
+      isCompletedAfterCutoff(c) &&
+      !hasRegisteredEquivalent(c, completions),
+  )

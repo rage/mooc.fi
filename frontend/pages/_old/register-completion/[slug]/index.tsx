@@ -52,8 +52,8 @@ import withSignedIn from "/lib/with-signed-in"
 import RegisterCompletionTranslations from "/translations/register-completion"
 import { getCookie } from "/util/cookie"
 import {
-  hasRegisteredEquivalent,
-  isCompletedAfterCutoff,
+  findDelegatedCompletion,
+  pickRegistrableCompletion,
 } from "/util/creditRegistrationDelegation"
 
 import {
@@ -139,32 +139,6 @@ function CompletionLinkColumn() {
 type CourseCompletion = NonNullable<
   NonNullable<CurrentUserOverviewQuery["currentUser"]>["completions"]
 >[number]
-
-/** The completion registered here: completion link first, then the newest. */
-const pickRegistrableCompletion = (completions: CourseCompletion[]) =>
-  completions
-    .filter((c) => !isCompletedAfterCutoff(c))
-    .sort((a, b) => {
-      if (a.completion_link && !b.completion_link) {
-        return -1
-      }
-      if (!a.completion_link && b.completion_link) {
-        return 1
-      }
-      const aDate = a.created_at ? new Date(a.created_at).getTime() : 0
-      const bDate = b.created_at ? new Date(b.created_at).getTime() : 0
-      return bDate - aDate
-    })[0]
-
-/** The completion courses.mooc.fi registers, if any still needs registering. */
-const findDelegatedCompletion = (completions: CourseCompletion[]) =>
-  // Decided per completion: one student can have completions on both sides of the cutoff.
-  completions.find(
-    (c) =>
-      c.eligible_for_ects &&
-      isCompletedAfterCutoff(c) &&
-      !hasRegisteredEquivalent(c, completions),
-  )
 
 /** The course's registration instructions in the page's language, or "" until they load. */
 function useCompletionInstructions(courseSlug: string) {

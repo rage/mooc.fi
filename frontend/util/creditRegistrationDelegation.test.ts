@@ -2,8 +2,10 @@ import assert from "node:assert/strict"
 import { describe, it } from "node:test"
 
 import {
+  findDelegatedCompletion,
   hasRegisteredEquivalent,
   normalizeGrade,
+  pickRegistrableCompletion,
 } from "./creditRegistrationDelegation"
 
 const earlier = {
@@ -78,5 +80,45 @@ describe("normalizeGrade", () => {
     assert.equal(normalizeGrade("4.5"), null)
     assert.equal(normalizeGrade("6"), null)
     assert.equal(normalizeGrade("excellent"), null)
+  })
+})
+
+const course = { credit_registration_delegated_at: "2025-01-01T00:00:00Z" }
+const beforeCutoff = {
+  ...earlier,
+  id: "before",
+  registered: false,
+  eligible_for_ects: true,
+  course,
+}
+const afterCutoff = { ...later, id: "after", eligible_for_ects: true, course }
+
+describe("findDelegatedCompletion", () => {
+  it("finds an eligible completion dated after the cutoff", () => {
+    assert.equal(
+      findDelegatedCompletion([beforeCutoff, afterCutoff]),
+      afterCutoff,
+    )
+  })
+
+  it("skips one that is registered already", () => {
+    assert.equal(
+      findDelegatedCompletion([{ ...afterCutoff, registered: true }]),
+      undefined,
+    )
+  })
+})
+
+describe("pickRegistrableCompletion", () => {
+  it("leaves out an unregistered completion dated after the cutoff", () => {
+    assert.equal(
+      pickRegistrableCompletion([beforeCutoff, afterCutoff]),
+      beforeCutoff,
+    )
+  })
+
+  it("picks a registered completion dated after the cutoff", () => {
+    const registered = { ...afterCutoff, registered: true }
+    assert.equal(pickRegistrableCompletion([registered]), registered)
   })
 })
