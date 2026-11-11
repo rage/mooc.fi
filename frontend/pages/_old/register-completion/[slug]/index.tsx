@@ -458,6 +458,24 @@ function CompletionRegistration({
   )
 }
 
+/** The student's completions of the course; `error` only when they could not be loaded. */
+function useCourseCompletions(courseSlug: string) {
+  // errorPolicy "all": a certificates.mooc.fi failure on has_certificate or
+  // certificate_availability should degrade only the certificate step, not registration.
+  const { loading, error, data } = useQuery(CurrentUserOverviewDocument, {
+    errorPolicy: "all",
+  })
+  const completions = data?.currentUser?.completions
+
+  return {
+    isLoading: loading,
+    error: completions ? undefined : error,
+    courseCompletions: (completions ?? []).filter(
+      (c) => c.course?.slug === courseSlug,
+    ),
+  }
+}
+
 function RegisterCompletionPage() {
   const { currentUser } = useLoginStateContext()
 
@@ -475,20 +493,15 @@ function RegisterCompletionPage() {
       slug: courseSlug,
     },
   })
-  // errorPolicy "all": a certificates.mooc.fi failure on has_certificate should degrade only the
-  // certificate step, not registration.
   const {
-    loading: userLoading,
+    isLoading: userLoading,
     error: userError,
-    data: userData,
-  } = useQuery(CurrentUserOverviewDocument, { errorPolicy: "all" })
+    courseCompletions,
+  } = useCourseCompletions(courseSlug)
   const instructions = useCompletionInstructions(courseSlug)
   const tiers = useCompletionTiers(courseSlug)
 
   const course = courseData?.course
-  const courseCompletions = (userData?.currentUser?.completions ?? []).filter(
-    (c) => c.course?.slug === courseSlug,
-  )
 
   useBreadcrumbs([
     {
@@ -505,9 +518,7 @@ function RegisterCompletionPage() {
     return <Spinner />
   }
 
-  // With errorPolicy "all", a field-level error (e.g. certificate_availability) still comes back
-  // with currentUser populated; only bail out here when there's truly nothing to show.
-  const error = courseError ?? (userData?.currentUser ? undefined : userError)
+  const error = courseError ?? userError
   if (error) {
     return (
       <ModifiableErrorMessage

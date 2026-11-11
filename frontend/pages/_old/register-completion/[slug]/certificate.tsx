@@ -278,7 +278,8 @@ function useCertificateCompletion(courseSlug: string) {
         !completionsQuery.data &&
         !completionsQuery.error),
     error:
-      courseQuery.error ?? (currentUser ? undefined : completionsQuery.error),
+      courseQuery.error ??
+      (currentUser?.completions ? undefined : completionsQuery.error),
     completion: pickCertificateCompletion(currentUser?.completions),
     isRefetching: completionsQuery.networkStatus === NetworkStatus.refetch,
     refetchFresh,
