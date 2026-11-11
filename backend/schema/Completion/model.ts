@@ -1,4 +1,4 @@
-import { objectType } from "nexus"
+import { booleanArg, objectType } from "nexus"
 
 import { BAIParentCourse, BAITierCourses } from "../../config/courseConfig"
 import { UserCourseProgress } from "../../generated/prisma"
@@ -111,7 +111,12 @@ export const Completion = objectType({
 
     t.field("certificate_availability", {
       type: "CertificateAvailability",
-      resolve: async ({ course_id, user_upstream_id }, _, ctx) => {
+      description:
+        "Null when the course has no certificate. Cached for a few minutes unless `fresh`.",
+      args: {
+        fresh: booleanArg({ default: false }),
+      },
+      resolve: async ({ course_id, user_upstream_id }, { fresh }, ctx) => {
         if (!course_id) {
           return null
         }
@@ -151,16 +156,20 @@ export const Completion = objectType({
                 accessToken,
               ),
             ctx.logger,
+            { fresh: fresh ?? false },
           )
         } else {
           certificate_availability = await getCachedCertificateAvailability(
             `${course.slug}-${ctx.user?.upstream_id}`,
             () => checkCertificate(course.slug, accessToken),
             ctx.logger,
+            { fresh: fresh ?? false },
           )
         }
 
-        return certificate_availability ?? null
+        return certificate_availability
+          ? { ...certificate_availability, service_unavailable: false }
+          : { service_unavailable: true }
       },
     })
   },

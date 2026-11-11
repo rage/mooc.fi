@@ -2,13 +2,13 @@ import fetch from "isomorphic-unfetch"
 
 import { getAccessToken } from "./authentication"
 
-const SERVICE_URL = "https://certificates.mooc.fi"
+export const CERTIFICATES_URL = "https://certificates.mooc.fi"
 
 export const checkCertificate = async (courseSlug: string) => {
   const accessToken = getAccessToken(undefined)
 
   const res = await fetch(
-    `${SERVICE_URL}/certificate-availability/${courseSlug}`,
+    `${CERTIFICATES_URL}/certificate-availability/${courseSlug}`,
     {
       headers: {
         "Content-Type": "application/json",
@@ -25,7 +25,7 @@ export const checkCertificate = async (courseSlug: string) => {
 export const createCertificate = async (courseSlug: string) => {
   const accessToken = getAccessToken(undefined)
 
-  const res = await fetch(`${SERVICE_URL}/create/${courseSlug}`, {
+  const res = await fetch(`${CERTIFICATES_URL}/create/${courseSlug}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

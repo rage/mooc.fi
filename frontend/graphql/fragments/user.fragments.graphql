@@ -37,6 +37,7 @@ fragment UserOverviewFields on User {
     ...CompletionDetailedFields
     course {
       ...UserOverviewCourseFields
+      credit_registration_delegated_at
     }
   }
 }

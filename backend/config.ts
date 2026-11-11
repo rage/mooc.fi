@@ -104,7 +104,18 @@ export const {
   TMC_CLIENT_SECRET,
   TMC_PASSWORD,
   TMC_USERNAME,
+  // OAuth application allowed to issue access tokens for any user; unset turns sign-in handoffs off
+  TMC_TOKEN_ISSUER_CLIENT_ID,
+  TMC_TOKEN_ISSUER_CLIENT_SECRET,
+  // OAuth application of the frontend's sign-ins, whose tokens sign-out revokes
+  TMC_FRONTEND_CLIENT_ID,
+  TMC_FRONTEND_CLIENT_SECRET,
   RATELIMIT_PROTECTION_SAFE_API_KEY = "",
+  // courses.mooc.fi credit registration delegation; unset turns the handoff and lookup routes off
+  COURSES_BASE_URL,
+  COURSES_HANDOFF_SECRET,
+  CREDIT_REGISTRATION_DELEGATE_ORG_SLUG,
+  JWT_SECRET,
   // keys
   PUBLIC_KEY,
   PRIVATE_KEY,
@@ -135,3 +146,16 @@ export const PRIVATE_KEY_TEST = "config/mooc-private-test.pem"
 export const PUBLIC_KEY_TEST = "config/mooc-public-test.pem"
 
 export const REDIS_DB = process.env.REDIS_DB ? Number(process.env.REDIS_DB) : 4
+
+/** Origins whose pages may call the credit registration handoff mint with a student's TMC bearer. */
+export const CREDIT_REGISTRATION_HANDOFF_ORIGINS = (
+  process.env.CREDIT_REGISTRATION_HANDOFF_ORIGINS ??
+  [
+    "https://www.mooc.fi",
+    "https://course.elementsofai.com",
+    ...(isDev ? ["http://localhost:3000"] : []),
+  ].join(",")
+)
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean)

@@ -1,3 +1,4 @@
+import axios from "axios"
 import {
   NextFunction,
   Request,
@@ -6,6 +7,8 @@ import {
   Router,
 } from "express"
 import { Logger } from "winston"
+
+import { requestErrorLogFields } from "../util/requestErrorLogFields"
 
 const METHODS = ["get", "post", "put", "patch", "delete"] as const
 
@@ -16,9 +19,10 @@ const catchAsync =
     Promise.resolve()
       .then(() => handler(req, res, next))
       .catch((error) => {
-        logger.error(`Unhandled error in ${req.method} ${req.originalUrl}`, {
-          error,
-        })
+        logger.error(
+          `Unhandled error in ${req.method} ${req.originalUrl}`,
+          axios.isAxiosError(error) ? requestErrorLogFields(error) : { error },
+        )
         if (res.headersSent) {
           res.end()
           return

@@ -1,6 +1,7 @@
 // import styles, { ForegroundColor } from "ansi-styles"
 import { NextRequest, NextResponse } from "next/server"
 
+import { COURSES_BASE_URL } from "./lib/coursesBaseUrl"
 import { redirects_list } from "./Redirects"
 
 /*const responseStatus = [
@@ -96,7 +97,62 @@ const redirectMiddleware = (req: NextRequest, res: NextResponse) => {
   return res
 }
 
-const middlewares = [redirectMiddleware, loggerMiddleware]
+const HANDOFF_LANDING_PATH = /^(\/(en|fi))?\/credit-registration-handoff\/?$/
+/**
+ * Must match the cookie the backend's courses-handoff redeem reads and spends. __Host- keeps other
+ * mooc.fi subdomains from setting it.
+ */
+const SAME_SITE_ARRIVAL_COOKIE = "__Host-courses_handoff_same_site_arrival"
+const COURSES_ORIGIN = new URL(COURSES_BASE_URL).origin
+
+const isFromCourses = (referer: string | null) => {
+  try {
+    return referer !== null && new URL(referer).origin === COURSES_ORIGIN
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Tells the backend whether the student reached the handoff landing page from courses.mooc.fi.
+ *
+ * Only this navigation's own Sec-Fetch-Site, which pages cannot set, shows where the student came
+ * from. Same-site covers every mooc.fi subdomain, so the Referer must also name courses.mooc.fi.
+ * Any other page load, missing headers included, clears an earlier mark.
+ */
+const handoffArrivalMiddleware = (req: NextRequest, res: NextResponse) => {
+  // Hydration re-fetches the page as _next/data before the redeem; that must not clear the mark.
+  if (
+    !HANDOFF_LANDING_PATH.test(req.nextUrl.pathname) ||
+    req.headers.has("x-nextjs-data")
+  ) {
+    return res
+  }
+
+  // Not Sec-Fetch-Mode: next start's hop to the proxy rewrites it to "cors".
+  const isArrivalFromCourses =
+    req.headers.get("sec-fetch-site") === "same-site" &&
+    req.headers.get("sec-fetch-dest") === "document" &&
+    isFromCourses(req.headers.get("referer"))
+
+  res.cookies.set(SAME_SITE_ARRIVAL_COOKIE, isArrivalFromCourses ? "1" : "", {
+    path: "/",
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict",
+    // Long enough for the page to load and redeem; the backend spends it on first use.
+    maxAge: isArrivalFromCourses ? 60 : 0,
+  })
+  // A page served from cache would skip this middleware and leave the mark of an earlier visit.
+  res.headers.set("Cache-Control", "no-store")
+  return res
+}
+
+const middlewares = [
+  redirectMiddleware,
+  handoffArrivalMiddleware,
+  loggerMiddleware,
+]
 
 export async function proxy(req: NextRequest) {
   let response = NextResponse.next()

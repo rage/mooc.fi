@@ -17,6 +17,35 @@ interface SummaryCourseGroupResult extends SummaryCourseResult {
   group: "handled" | "not_handled" | "tiered"
 }
 
+const buildStartedCoursesSubquery = (
+  userId: string,
+  activityDateOrder: string | null | undefined,
+) => {
+  if (!activityDateOrder) {
+    return Prisma.sql`
+      select distinct(e.course_id) as course_id
+        from exercise_completion ec
+        join exercise e on ec.exercise_id = e.id
+      where ec.user_id = ${userId}::uuid
+      and ec.attempted = true
+    `
+  }
+  const activityDateClause =
+    activityDateOrder === "desc"
+      ? Prisma.sql`order by ec.timestamp desc`
+      : Prisma.sql`order by ec.timestamp`
+  return Prisma.sql`
+    select course_id from (
+      select distinct(e.course_id) as course_id, ec.timestamp
+        from exercise_completion ec
+        join exercise e on ec.exercise_id = e.id
+      where ec.user_id = ${userId}::uuid
+      and ec.attempted = true
+      ${activityDateClause}
+    ) as sub
+  `
+}
+
 export const User = objectType({
   name: "User",
   definition(t) {
@@ -413,30 +442,7 @@ export const User = objectType({
           ]
         }
 
-        let subquery = Prisma.sql`
-          select distinct(e.course_id) as course_id
-            from exercise_completion ec
-            join exercise e on ec.exercise_id = e.id
-          where ec.user_id = ${id}::uuid
-          and ec.attempted = true
-        `
-
-        if (orderBy?.activity_date) {
-          const activityDateClause =
-            orderBy.activity_date === "desc"
-              ? Prisma.sql`order by ec.timestamp desc`
-              : Prisma.sql`order by ec.timestamp`
-          subquery = Prisma.sql`
-            select course_id from (
-              select distinct(e.course_id) as course_id, ec.timestamp
-                from exercise_completion ec
-                join exercise e on ec.exercise_id = e.id
-              where ec.user_id = ${id}::uuid
-              and ec.attempted = true
-              ${activityDateClause}
-            ) as sub
-          `
-        }
+        const subquery = buildStartedCoursesSubquery(id, orderBy?.activity_date)
 
         // TODO: only get the newest one per exercise?
         // not very optimal, as the exercise completions will be queried twice if that field is selected

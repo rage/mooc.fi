@@ -21,6 +21,7 @@ import { ErrorLink } from "@apollo/client/link/error"
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions"
 import { getMainDefinition } from "@apollo/client/utilities"
 
+import { BACKEND_URL } from "/lib/backendUrl"
 import { isDefinedAndNotEmpty } from "/util/guards"
 
 import { StrictTypedTypePolicies } from "/graphql/generated"
@@ -28,8 +29,6 @@ import { StrictTypedTypePolicies } from "/graphql/generated"
 let apolloClient: ApolloClient | null = null
 
 const production = process.env.NODE_ENV === "production"
-const devBackendUrl =
-  process.env.NEXT_PUBLIC_DEV_BACKEND_URL ?? "http://localhost:4000"
 const development = !production && process.env.NODE_ENV !== "test"
 const isBrowser = typeof window !== "undefined"
 
@@ -40,6 +39,12 @@ const typePolicies: StrictTypedTypePolicies = {
   },
   StudyModule: {
     keyFields: ["slug", "id", "name"],
+  },
+  Completion: {
+    fields: {
+      // `fresh` only bypasses the server's cache, so a fresh answer must replace the cached one.
+      certificate_availability: { keyArgs: false },
+    },
   },
   Query: {
     fields: {
@@ -108,7 +113,7 @@ function create(
 
   const httpLinkOptions: ConstructorParameters<typeof UploadHttpLink>[0] &
     BatchHttpLink.Options = {
-    uri: production ? "https://www.mooc.fi/api/" : devBackendUrl,
+    uri: production ? `${BACKEND_URL}/api/` : BACKEND_URL,
     credentials: "same-origin",
     fetch,
     fetchOptions: {
@@ -141,8 +146,8 @@ function create(
     ? new GraphQLWsLink(
         createClient({
           url: production
-            ? "wss://www.mooc.fi/api"
-            : devBackendUrl.replace(/^http/, "ws"),
+            ? `${BACKEND_URL.replace(/^http/, "ws")}/api`
+            : BACKEND_URL.replace(/^http/, "ws"),
           connectionParams: () => {
             const accessToken = nookies.get()["access_token"]
             if (accessToken) {

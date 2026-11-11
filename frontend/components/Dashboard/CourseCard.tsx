@@ -172,6 +172,76 @@ interface CourseCardProps {
   loading?: boolean
 }
 
+const CourseDetails = ({ course }: { course: EditorCourseFieldsFragment }) => {
+  const t = useTranslator(CoursesTranslations)
+
+  return (
+    <CourseInfoList>
+      <CourseInfo style={{ marginBottom: "1rem" }}>
+        {formatDateTime(course?.start_date)} –{" "}
+        {formatDateTime(course?.end_date)}
+      </CourseInfo>
+
+      <CourseInfo
+        field={t("courseTeacherInChargeName")}
+        value={course?.teacher_in_charge_name ?? "-"}
+      />
+      <CourseInfo
+        field={t("courseTeacherInChargeEmail")}
+        value={course?.teacher_in_charge_email ?? "-"}
+      />
+      <CourseInfo
+        field={t("courseSupportEmail")}
+        value={course?.support_email ?? "-"}
+      />
+      <CourseInfo field={t("courseSlug")} value={course?.slug ?? "-"} />
+    </CourseInfoList>
+  )
+}
+
+const CourseActionButtons = ({
+  course,
+  baseUrl,
+}: {
+  course: EditorCourseFieldsFragment
+  baseUrl: string
+}) => {
+  const t = useTranslator(CoursesTranslations)
+
+  return (
+    <>
+      <StyledButton
+        href={`${baseUrl}/courses/${course.slug}`}
+        prefetch={false}
+        aria-label={t("courseToCoursePage", { name: course.name })}
+        variant="text"
+        startIcon={<DashboardIcon />}
+      >
+        {t("dashboard")}
+      </StyledButton>
+      <StyledButton
+        href={`${baseUrl}/courses/new?clone=${course.slug}`}
+        prefetch={false}
+        aria-label={t("courseCloneCourse", { name: course.name })}
+        variant="text"
+        color="secondary"
+        startIcon={<AddIcon />}
+      >
+        {t("clone")}
+      </StyledButton>
+      <StyledButton
+        href={`${baseUrl}/courses/${course.slug}/edit`}
+        prefetch={false}
+        aria-label={t("courseEditCourse", { name: course.name })}
+        variant="text"
+        startIcon={<EditIcon />}
+      >
+        {t("courseCardEdit")}
+      </StyledButton>
+    </>
+  )
+}
+
 const CourseCard = ({ course, loading, isNew }: CourseCardProps) => {
   const t = useTranslator(CoursesTranslations)
   const isOldLayout = useIsOld()
@@ -214,61 +284,11 @@ const CourseCard = ({ course, loading, isNew }: CourseCardProps) => {
             )}
             {isNew && t("courseNewCourse")}
           </CardTitle>
-          {course && (
-            <CourseInfoList>
-              <CourseInfo style={{ marginBottom: "1rem" }}>
-                {formatDateTime(course?.start_date)} –{" "}
-                {formatDateTime(course?.end_date)}
-              </CourseInfo>
-
-              <CourseInfo
-                field={t("courseTeacherInChargeName")}
-                value={course?.teacher_in_charge_name ?? "-"}
-              />
-              <CourseInfo
-                field={t("courseTeacherInChargeEmail")}
-                value={course?.teacher_in_charge_email ?? "-"}
-              />
-              <CourseInfo
-                field={t("courseSupportEmail")}
-                value={course?.support_email ?? "-"}
-              />
-              <CourseInfo field={t("courseSlug")} value={course?.slug ?? "-"} />
-            </CourseInfoList>
-          )}
+          {course && <CourseDetails course={course} />}
           <CourseCardActions>
             {loading && <Skeleton variant="rectangular" width="100%" />}
             {courseFound && (
-              <>
-                <StyledButton
-                  href={`${baseUrl}/courses/${course.slug}`}
-                  prefetch={false}
-                  aria-label={t("courseToCoursePage", { name: course.name })}
-                  variant="text"
-                  startIcon={<DashboardIcon />}
-                >
-                  {t("dashboard")}
-                </StyledButton>
-                <StyledButton
-                  href={`${baseUrl}/courses/new?clone=${course.slug}`}
-                  prefetch={false}
-                  aria-label={t("courseCloneCourse", { name: course.name })}
-                  variant="text"
-                  color="secondary"
-                  startIcon={<AddIcon />}
-                >
-                  {t("clone")}
-                </StyledButton>
-                <StyledButton
-                  href={`${baseUrl}/courses/${course.slug}/edit`}
-                  prefetch={false}
-                  aria-label={t("courseEditCourse", { name: course.name })}
-                  variant="text"
-                  startIcon={<EditIcon />}
-                >
-                  {t("courseCardEdit")}
-                </StyledButton>
-              </>
+              <CourseActionButtons course={course} baseUrl={baseUrl} />
             )}
             {isNew && (
               <StyledButton

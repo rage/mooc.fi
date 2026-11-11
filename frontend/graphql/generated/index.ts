@@ -32,6 +32,7 @@ export { CourseTranslationCoreFieldsFragmentDoc } from "./definitions/CourseTran
 export { CourseTranslationDetailedFieldsFragmentDoc } from "./definitions/CourseTranslationDetailedFieldsFragmentDoc"
 export { CourseWithPhotoCoreFieldsFragmentDoc } from "./definitions/CourseWithPhotoCoreFieldsFragmentDoc"
 export { CreateRegistrationAttemptDateDocument } from "./definitions/CreateRegistrationAttemptDateDocument"
+export { CurrentUserCertificateCompletionsDocument } from "./definitions/CurrentUserCertificateCompletionsDocument"
 export { CurrentUserDetailedDocument } from "./definitions/CurrentUserDetailedDocument"
 export { CurrentUserDocument } from "./definitions/CurrentUserDocument"
 export { CurrentUserOverviewDocument } from "./definitions/CurrentUserOverviewDocument"

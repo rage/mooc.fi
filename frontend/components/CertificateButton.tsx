@@ -23,14 +23,13 @@ import { useAlertContext } from "/contexts/AlertContext"
 import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useCertificate } from "/hooks/useCertificate"
 import { useTranslator } from "/hooks/useTranslator"
+import { CERTIFICATES_URL } from "/lib/certificates"
 import CompletionsTranslations from "/translations/completions"
 
 import {
   CompletionDetailedFieldsFragment,
   CourseCoreFieldsFragment,
 } from "/graphql/generated"
-
-const CERTIFICATES_URL = "https://certificates.mooc.fi"
 
 const StyledButton = styled(Button)`
   background-color: #005361;

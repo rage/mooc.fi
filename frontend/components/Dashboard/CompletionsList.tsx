@@ -24,6 +24,8 @@ interface QueryDetails {
   page: number
 }
 
+const undefinedIfEmpty = (value?: string) => (value !== "" ? value : undefined)
+
 const CompletionsList = ({ search }: CompletionsListProps) => {
   const completionLanguage = useContext(CourseLanguageContext)
   const course = useQueryParameter("slug")
@@ -44,9 +46,8 @@ const CompletionsList = ({ search }: CompletionsListProps) => {
   const variables = {
     cursor,
     course,
-    completionLanguage:
-      completionLanguage !== "" ? completionLanguage : undefined,
-    search: search !== "" ? search : undefined,
+    completionLanguage: undefinedIfEmpty(completionLanguage),
+    search: undefinedIfEmpty(search),
   }
 
   const { data, loading, error } = useQuery(query, {

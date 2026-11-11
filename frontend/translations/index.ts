@@ -195,44 +195,70 @@ const substitute = <
   const replaceGroups = translation.match(/{{(.*?)}}/gm)
   const keyGroups = translation.match(/\[\[(.*?)\]\]/gm)
 
-  let ret = translation
+  let ret: string = translation
 
   if (!replaceGroups && !keyGroups) {
-    return ret
+    return translation
   }
 
   if (keyGroups) {
-    if (!router && typeof window !== "undefined") {
-      console.warn(
-        `WARNING: no router given to translator - needed to access query parameters in ${translation}`,
-      )
-    }
-    for (const group of keyGroups) {
-      const key = group.slice(2, group.length - 2)
-      const replaceRegExp = new RegExp(`\\[\\[${key}\\]\\]`, "g")
-      const queryParam = router?.query?.[key]
-
-      if (!queryParam) {
-        console.warn(
-          `WARNING: no query param ${key} found for translation ${translation}`,
-        )
-      }
-
-      ret = ret.replace(
-        replaceRegExp,
-        (Array.isArray(queryParam) ? queryParam[0] : queryParam) ?? "...",
-      ) as typeof translation
-    }
+    ret = substituteQueryParams(ret, keyGroups, translation, router)
   }
 
   if (!variables && replaceGroups) {
     console.warn(
       `WARNING: no variables present for translation string "${translation}"`,
     )
-    return ret
+    return ret as typeof translation
   }
 
-  for (const group of replaceGroups ?? []) {
+  return substituteVariables(
+    ret,
+    replaceGroups ?? [],
+    translation,
+    variables,
+  ) as typeof translation
+}
+
+const substituteQueryParams = (
+  text: string,
+  keyGroups: string[],
+  translation: string,
+  router?: NextRouter,
+): string => {
+  let ret = text
+  if (!router && typeof window !== "undefined") {
+    console.warn(
+      `WARNING: no router given to translator - needed to access query parameters in ${translation}`,
+    )
+  }
+  for (const group of keyGroups) {
+    const key = group.slice(2, group.length - 2)
+    const replaceRegExp = new RegExp(`\\[\\[${key}\\]\\]`, "g")
+    const queryParam = router?.query?.[key]
+
+    if (!queryParam) {
+      console.warn(
+        `WARNING: no query param ${key} found for translation ${translation}`,
+      )
+    }
+
+    ret = ret.replace(
+      replaceRegExp,
+      (Array.isArray(queryParam) ? queryParam[0] : queryParam) ?? "...",
+    )
+  }
+  return ret
+}
+
+const substituteVariables = (
+  text: string,
+  replaceGroups: string[],
+  translation: string,
+  variables?: Record<string, unknown>,
+): string => {
+  let ret = text
+  for (const group of replaceGroups) {
     const key = group.slice(2, group.length - 2)
     const variable = variables?.[key]
 
@@ -242,10 +268,9 @@ const substitute = <
       )
     } else {
       const replaceRegExp = new RegExp(`{{${key}}}`, "g")
-      ret = ret.replace(replaceRegExp, `${variable}`) as typeof translation
+      ret = ret.replace(replaceRegExp, `${variable}`)
     }
   }
-
   return ret
 }
 

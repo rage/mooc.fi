@@ -147,36 +147,36 @@ const updateSortedData = (state: UserSummaryState) => {
   }
 }
 
+const clearSelection = (state: UserSummaryState): UserSummaryState => ({
+  ...state,
+  selected: "",
+  selectedData: null,
+})
+
+const isFilteredOutBySearch = (
+  { originalData, searchVariables: { search } }: UserSummaryState,
+  slug: string,
+) =>
+  Boolean(search) &&
+  Boolean(
+    originalData?.user?.user_course_summary?.find(
+      (d) => d.course?.slug === slug,
+    ),
+  )
+
 const selectDefault = (state: UserSummaryState): UserSummaryState => {
-  const {
-    data,
-    selected,
-    selectedData,
-    originalData,
-    searchVariables: { search },
-  } = state
-  const slugs = data?.map((d) => d.course?.slug) ?? []
-  const originalSlugs =
-    originalData?.user?.user_course_summary?.map((d) => d.course?.slug) ?? []
+  const { data, selected, selectedData } = state
 
   if (!data) {
-    return {
-      ...state,
-      selected: "",
-      selectedData: null,
-    }
+    return clearSelection(state)
   }
-  if (selected && !slugs.find((slug) => slug === selected)) {
+  if (selected && !data.some((d) => d.course?.slug === selected)) {
     // we have filtered the selected course from the list, but it the slug is valid
     // so we keep the selected course even if it does not show in the list
-    if (search && originalSlugs.find((slug) => slug === selected)) {
+    if (isFilteredOutBySearch(state, selected)) {
       return state
     }
-    return {
-      ...state,
-      selected: "",
-      selectedData: null,
-    }
+    return clearSelection(state)
   }
   if (selected && selected !== selectedData?.course?.slug) {
     return {

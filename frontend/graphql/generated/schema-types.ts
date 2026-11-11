@@ -5,7 +5,7 @@
 import { FieldPolicy, FieldReadFunction, TypePolicies, TypePolicy } from '@apollo/client/cache';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-// Generated on 2026-11-09T13:55:43+02:00
+// Generated on 2026-11-10T16:16:44+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -146,10 +146,13 @@ export type CertificateAvailability = {
   completed_course: Maybe<Scalars['Boolean']['output']>;
   existing_certificate: Maybe<Scalars['String']['output']>;
   honors: Maybe<Scalars['Boolean']['output']>;
+  /** The certificates service could not be reached; the other fields are then null. */
+  service_unavailable: Scalars['Boolean']['output'];
 };
 
 export type Completion = {
   __typename: 'Completion';
+  /** Null when the course has no certificate. Cached for a few minutes unless `fresh`. */
   certificate_availability: Maybe<CertificateAvailability>;
   certificate_id: Maybe<Scalars['String']['output']>;
   completion_date: Maybe<Scalars['DateTime']['output']>;
@@ -174,6 +177,11 @@ export type Completion = {
   user: Maybe<User>;
   user_id: Maybe<Scalars['String']['output']>;
   user_upstream_id: Maybe<Scalars['Int']['output']>;
+};
+
+
+export type Completioncertificate_availabilityArgs = {
+  fresh?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 
@@ -315,6 +323,7 @@ export type Course = {
   course_translations: Array<CourseTranslation>;
   course_variants: Array<CourseVariant>;
   created_at: Scalars['DateTime']['output'];
+  credit_registration_delegated_at: Maybe<Scalars['DateTime']['output']>;
   description: Maybe<Scalars['String']['output']>;
   ects: Maybe<Scalars['String']['output']>;
   end_date: Maybe<Scalars['DateTime']['output']>;
@@ -618,6 +627,7 @@ export type CourseOrderByWithRelationInput = {
   course_translations?: InputMaybe<CourseTranslationOrderByRelationAggregateInput>;
   course_variants?: InputMaybe<CourseVariantOrderByRelationAggregateInput>;
   created_at?: InputMaybe<SortOrder>;
+  credit_registration_delegated_at?: InputMaybe<SortOrderInput>;
   ects?: InputMaybe<SortOrderInput>;
   end_date?: InputMaybe<SortOrderInput>;
   exercise_completions_needed?: InputMaybe<SortOrderInput>;
@@ -1086,6 +1096,7 @@ export type CourseWhereInput = {
   course_translations?: InputMaybe<CourseTranslationListRelationFilter>;
   course_variants?: InputMaybe<CourseVariantListRelationFilter>;
   created_at?: InputMaybe<DateTimeFilter>;
+  credit_registration_delegated_at?: InputMaybe<DateTimeNullableFilter>;
   ects?: InputMaybe<StringNullableFilter>;
   end_date?: InputMaybe<DateTimeNullableFilter>;
   exercise_completions_needed?: InputMaybe<IntNullableFilter>;
@@ -1151,6 +1162,7 @@ export type CourseWhereUniqueInput = {
   course_translations?: InputMaybe<CourseTranslationListRelationFilter>;
   course_variants?: InputMaybe<CourseVariantListRelationFilter>;
   created_at?: InputMaybe<DateTimeFilter>;
+  credit_registration_delegated_at?: InputMaybe<DateTimeNullableFilter>;
   ects?: InputMaybe<StringNullableFilter>;
   end_date?: InputMaybe<DateTimeNullableFilter>;
   exercise_completions_needed?: InputMaybe<IntNullableFilter>;
@@ -4922,11 +4934,12 @@ export type AbStudyFieldPolicy = {
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
 	updated_at?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type CertificateAvailabilityKeySpecifier = ('completed_course' | 'existing_certificate' | 'honors' | CertificateAvailabilityKeySpecifier)[];
+export type CertificateAvailabilityKeySpecifier = ('completed_course' | 'existing_certificate' | 'honors' | 'service_unavailable' | CertificateAvailabilityKeySpecifier)[];
 export type CertificateAvailabilityFieldPolicy = {
 	completed_course?: FieldPolicy<any> | FieldReadFunction<any>,
 	existing_certificate?: FieldPolicy<any> | FieldReadFunction<any>,
-	honors?: FieldPolicy<any> | FieldReadFunction<any>
+	honors?: FieldPolicy<any> | FieldReadFunction<any>,
+	service_unavailable?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type CompletionKeySpecifier = ('certificate_availability' | 'certificate_id' | 'completion_date' | 'completion_language' | 'completion_link' | 'completion_registration_attempt_date' | 'completions_registered' | 'course' | 'course_id' | 'created_at' | 'credit_registration_identification_answer' | 'credit_registration_justification' | 'eligible_for_ects' | 'email' | 'grade' | 'id' | 'project_completion' | 'registered' | 'student_number' | 'tier' | 'updated_at' | 'user' | 'user_id' | 'user_upstream_id' | CompletionKeySpecifier)[];
 export type CompletionFieldPolicy = {
@@ -4976,7 +4989,7 @@ export type CompletionRegisteredFieldPolicy = {
 	user?: FieldPolicy<any> | FieldReadFunction<any>,
 	user_id?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type CourseKeySpecifier = ('automatic_completions' | 'automatic_completions_eligible_for_ects' | 'completion_email' | 'completion_email_id' | 'completions' | 'completions_handled_by' | 'completions_handled_by_id' | 'course_aliases' | 'course_organizations' | 'course_stats_email' | 'course_stats_email_id' | 'course_translations' | 'course_variants' | 'created_at' | 'description' | 'ects' | 'end_date' | 'exercise_completions_needed' | 'exercises' | 'handles_completions_for' | 'handles_settings_for' | 'has_certificate' | 'hidden' | 'id' | 'inherit_settings_from' | 'inherit_settings_from_id' | 'instructions' | 'language' | 'link' | 'name' | 'open_university_registration_links' | 'order' | 'owner_organization' | 'owner_organization_id' | 'photo' | 'photo_id' | 'points_needed' | 'promote' | 'services' | 'slug' | 'sponsors' | 'start_date' | 'start_point' | 'status' | 'study_module_order' | 'study_module_start_point' | 'study_modules' | 'support_email' | 'tags' | 'teacher_in_charge_email' | 'teacher_in_charge_name' | 'tier' | 'upcoming_active_link' | 'updated_at' | 'user_course_settings_visibilities' | CourseKeySpecifier)[];
+export type CourseKeySpecifier = ('automatic_completions' | 'automatic_completions_eligible_for_ects' | 'completion_email' | 'completion_email_id' | 'completions' | 'completions_handled_by' | 'completions_handled_by_id' | 'course_aliases' | 'course_organizations' | 'course_stats_email' | 'course_stats_email_id' | 'course_translations' | 'course_variants' | 'created_at' | 'credit_registration_delegated_at' | 'description' | 'ects' | 'end_date' | 'exercise_completions_needed' | 'exercises' | 'handles_completions_for' | 'handles_settings_for' | 'has_certificate' | 'hidden' | 'id' | 'inherit_settings_from' | 'inherit_settings_from_id' | 'instructions' | 'language' | 'link' | 'name' | 'open_university_registration_links' | 'order' | 'owner_organization' | 'owner_organization_id' | 'photo' | 'photo_id' | 'points_needed' | 'promote' | 'services' | 'slug' | 'sponsors' | 'start_date' | 'start_point' | 'status' | 'study_module_order' | 'study_module_start_point' | 'study_modules' | 'support_email' | 'tags' | 'teacher_in_charge_email' | 'teacher_in_charge_name' | 'tier' | 'upcoming_active_link' | 'updated_at' | 'user_course_settings_visibilities' | CourseKeySpecifier)[];
 export type CourseFieldPolicy = {
 	automatic_completions?: FieldPolicy<any> | FieldReadFunction<any>,
 	automatic_completions_eligible_for_ects?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -4992,6 +5005,7 @@ export type CourseFieldPolicy = {
 	course_translations?: FieldPolicy<any> | FieldReadFunction<any>,
 	course_variants?: FieldPolicy<any> | FieldReadFunction<any>,
 	created_at?: FieldPolicy<any> | FieldReadFunction<any>,
+	credit_registration_delegated_at?: FieldPolicy<any> | FieldReadFunction<any>,
 	description?: FieldPolicy<any> | FieldReadFunction<any>,
 	ects?: FieldPolicy<any> | FieldReadFunction<any>,
 	end_date?: FieldPolicy<any> | FieldReadFunction<any>,

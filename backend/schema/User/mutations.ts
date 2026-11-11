@@ -7,6 +7,7 @@ import {
   GraphQLForbiddenError,
 } from "../../lib/errors"
 import { invalidate } from "../../services/redis"
+import { forgetUserDetailsForToken } from "../../services/userDetails"
 import { hashUser } from "../../util"
 import { ConflictError } from "../common"
 
@@ -30,7 +31,7 @@ export const UserMutations = extendType({
 
         const access_token = authorization?.split(" ")[1]
 
-        await invalidate("userdetails", `Bearer ${access_token}`)
+        await forgetUserDetailsForToken(`Bearer ${access_token}`, ctx)
         await invalidate("user", hashUser(currentUser))
 
         return ctx.prisma.user.update({
@@ -59,7 +60,7 @@ export const UserMutations = extendType({
 
         const access_token = authorization?.split(" ")[1]
 
-        await invalidate("userdetails", `Bearer ${access_token}`)
+        await forgetUserDetailsForToken(`Bearer ${access_token}`, ctx)
         await invalidate("user", hashUser(currentUser))
 
         return ctx.prisma.user.update({

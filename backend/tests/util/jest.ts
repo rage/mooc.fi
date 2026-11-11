@@ -242,6 +242,36 @@ const getIdField = <T>(
   return find(idFields, (idField) => idField.field === key)
 }
 
+const hasUsefulMatchers = (expectedArray: unknown[]) =>
+  expectedArray.length > 0 &&
+  (!isObject(expectedArray[0]) ||
+    expectedArray.every((val: any) => Object.keys(val).length > 0))
+
+const findIdMatch = <T>(
+  idFields: Array<FieldWithMatch<Path<T> | Field<T>>>,
+  key: Field<T>,
+  path: Path<T>,
+  existingMatcher: unknown,
+) => {
+  const idFieldKey = getIdField(idFields, key)
+  const idFieldPath = getIdField(idFields, path)
+
+  if (idFieldKey || (idFieldPath?.match && !isDefinedOrNull(existingMatcher))) {
+    return idFieldKey?.match ?? idFieldPath?.match ?? ""
+  }
+  return null
+}
+
+const isExcluded = <T extends Record<string, unknown>>(
+  { excludeFields, excludePaths }: StrippedSnapshotFinalOptions<T>,
+  key: Field<T>,
+  path: Path<T>,
+  currentPath: Path<T>,
+) =>
+  excludeFields.includes(key) ||
+  excludePaths.includes(path) ||
+  excludePaths.includes(currentPath)
+
 export function idsToExpect<
   T extends Record<string, unknown>,
   U extends { [K in keyof T]: any } = { [K in keyof T]: any },
@@ -255,7 +285,7 @@ export function idsToExpect<
     return propertyMatchers
   }
 
-  const { excludeFields, excludePaths, idFields } = options
+  const { idFields } = options
   const ret = { ...propertyMatchers }
 
   for (const key of Object.keys(obj) as Array<keyof typeof obj>) {
@@ -270,12 +300,7 @@ export function idsToExpect<
         options,
         currentPath,
       )
-      if (
-        expectedArray.length > 0 &&
-        (!isObject(expectedArray[0]) ||
-          (isObject(expectedArray[0]) &&
-            expectedArray.every((val: any) => Object.keys(val).length > 0)))
-      ) {
+      if (hasUsefulMatchers(expectedArray)) {
         ret[key] = expectedArray as any
       }
     } else if (isObject(value)) {
@@ -289,20 +314,13 @@ export function idsToExpect<
         ret[key] = expectedObject as any
       }
     } else {
-      if (
-        excludeFields.includes(key as Field<T>) ||
-        excludePaths.includes(path) ||
-        excludePaths.includes(currentPath)
-      ) {
+      if (isExcluded(options, key as Field<T>, path, currentPath)) {
         continue
       }
-      const idFieldKey = getIdField(idFields, key as Field<T>)
-      const idFieldPath = getIdField(idFields, path)
+      const idMatch = findIdMatch(idFields, key as Field<T>, path, ret[key])
 
-      if (idFieldKey || (idFieldPath?.match && !isDefinedOrNull(ret[key]))) {
-        ret[key] = expect.stringMatching(
-          idFieldKey?.match ?? idFieldPath?.match ?? "",
-        )
+      if (idMatch !== null) {
+        ret[key] = expect.stringMatching(idMatch)
       }
     }
   }

@@ -1,10 +1,14 @@
+import { limitRequestsPerIp } from "../middlewares/rateLimit"
 import { asyncRouter } from "./asyncRouter"
 import {
   abEnrollmentRouter,
   abStudiesRouter,
   CompletionController,
+  CoursesHandoffController,
+  CreditRegistrationHandoffController,
   ProgressController,
   PublicController,
+  SessionController,
   StoredDataController,
   UserCourseSettingsController,
 } from "./routes"
@@ -12,10 +16,18 @@ import { ApiContext } from "./types"
 
 export function apiRouter(ctx: ApiContext) {
   const completionController = new CompletionController(ctx)
+  const coursesHandoffController = new CoursesHandoffController(ctx)
+  const creditRegistrationHandoffController =
+    new CreditRegistrationHandoffController(ctx)
   const progressController = new ProgressController(ctx)
   const storedDataController = new StoredDataController(ctx)
   const userCourseSettingsController = new UserCourseSettingsController(ctx)
   const publicController = new PublicController(ctx)
+  const sessionController = new SessionController(ctx)
+  // Generous: a lecture hall behind one NAT may hand off all at once, in either direction.
+  const handoffRateLimit = limitRequestsPerIp({ limit: 120, windowMs: 60_000 })
+  // Each sign-out costs a TMC request that skips TMC's own rate limit.
+  const signOutRateLimit = limitRequestsPerIp({ limit: 60, windowMs: 60_000 })
 
   return asyncRouter(ctx.logger)
     .get("/public/frontpage", publicController.frontpage)
@@ -35,6 +47,27 @@ export function apiRouter(ctx: ApiContext) {
     )
     .post("/recheck-completion", completionController.recheckCompletion)
     .post("/register-completions", completionController.registerCompletions)
+    .get(
+      "/delegated-completions/:course_id/users/:upstream_id",
+      completionController.delegatedCompletions,
+    )
+    .get("/delegated-courses/:course_id", completionController.delegatedCourse)
+    .post(
+      "/courses-handoff/redeem",
+      handoffRateLimit,
+      coursesHandoffController.redeem,
+    )
+    .post(
+      "/courses-handoff/continue",
+      handoffRateLimit,
+      coursesHandoffController.continue,
+    )
+    .post("/sign-out", signOutRateLimit, sessionController.signOut)
+    .post(
+      "/credit-registration-handoff/:slug",
+      handoffRateLimit,
+      creditRegistrationHandoffController.create,
+    )
     .post(
       "/completions/:slug/certificate",
       completionController.updateCertificateId,

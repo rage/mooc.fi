@@ -7,14 +7,18 @@ import * as XLSX from "xlsx"
 import * as yup from "yup"
 
 import { generateUserCourseProgress } from "../../bin/kafkaConsumer/common/userCourseProgress/generateUserCourseProgress"
+import { CREDIT_REGISTRATION_DELEGATE_ORG_SLUG } from "../../config"
 import {
   Completion,
   Course,
   CourseTranslation,
   OpenUniversityRegistrationLink,
+  Organization,
+  Prisma,
   User,
 } from "../../generated/prisma"
-import { err, isDefined } from "../../util"
+import { err, isDefined, isUuid, Result } from "../../util"
+import { COMPLETED_BEFORE_HANDLER_CUTOFF_SQL } from "../../util/completedBeforeCutoff"
 import { ApiContext, Controller } from "../types"
 import { ownsCourse, requireAdminOrCourseOwner } from "../utils"
 
@@ -30,6 +34,19 @@ const JWT_SECRET = process.env.JWT_SECRET as Secret
 if (!JWT_SECRET) {
   throw new Error("JWT_SECRET environment variable is required")
 }
+
+const LINK_LANGUAGES = ["fi_FI", "en_US"]
+const linkLanguagePreference = (language: string) => {
+  const index = LINK_LANGUAGES.indexOf(language)
+  return index === -1 ? LINK_LANGUAGES.length : index
+}
+
+const delegatedHandlerCourseWhere = (id: string) =>
+  ({
+    id,
+    completions_handled_by_id: null,
+    credit_registration_delegated_at: { not: null },
+  }) satisfies Prisma.CourseWhereInput
 
 // Spreadsheet apps evaluate cells starting with these as formulas.
 const escapeCsvFormula = (value: unknown) =>
@@ -58,6 +75,32 @@ interface Tier {
 interface TierData {
   name: string
   link: string | null
+}
+
+const getRecheckIdentifierError = ({
+  course_id,
+  slug,
+  user_id,
+  user_upstream_id,
+}: {
+  course_id?: string
+  slug?: string
+  user_id?: string
+  user_upstream_id?: number
+}): string | null => {
+  if (!course_id && !slug) {
+    return "Missing course_id and slug - please provide exactly one"
+  }
+  if (course_id && slug) {
+    return "Please provide exactly one of course_id and slug"
+  }
+  if (!user_id && !user_upstream_id) {
+    return "Missing user_id and user_upstream_id - please provide exactly one"
+  }
+  if (user_id && user_upstream_id) {
+    return "Please provide exactly one of user_id and user_upstream_id"
+  }
+  return null
 }
 
 export class CompletionController extends Controller {
@@ -92,11 +135,21 @@ export class CompletionController extends Controller {
         "completion.id",
         "completion_registered.completion_id",
       )
+      .join(
+        "course as handler_course",
+        "handler_course.id",
+        "completion.course_id",
+      )
       .where(
         "completion.course_id",
         course.completions_handled_by_id ?? course.id,
       )
       .andWhere("eligible_for_ects", true)
+      .andWhere((builder) =>
+        builder
+          .whereNull("handler_course.credit_registration_delegated_at")
+          .orWhereRaw(COMPLETED_BEFORE_HANDLER_CUTOFF_SQL),
+      )
 
     if (!registered) {
       sql.whereNull("completion_registered.id")
@@ -114,6 +167,152 @@ export class CompletionController extends Controller {
     req.on("close", stream.end.bind(stream))
 
     return // NOSONAR
+  }
+
+  /**
+   * A user's completions on a delegated handler course, eligible or not, with every organization's
+   * registrations. Only for the organization courses.mooc.fi uses.
+   */
+  delegatedCompletions = async (
+    req: Request<{ course_id: string; upstream_id: string }>,
+    res: Response,
+  ) => {
+    const { prisma } = this.ctx
+    const delegateResult = await this.requireDelegateOrganization(req, res)
+
+    if (delegateResult.isErr()) {
+      return delegateResult.error
+    }
+
+    const { course_id } = req.params
+    const upstream_id = Number(req.params.upstream_id)
+
+    if (!isUuid(course_id) || !Number.isInteger(upstream_id)) {
+      return res
+        .status(400)
+        .json({ message: "Malformed course_id or upstream_id" })
+    }
+
+    const course = await prisma.course.findFirst({
+      where: delegatedHandlerCourseWhere(course_id),
+      select: { id: true },
+    })
+
+    if (!course) {
+      return res.status(404).json({ message: "Delegated course not found" })
+    }
+
+    const completions = await prisma.completion.findMany({
+      where: { course_id: course.id, user: { upstream_id } },
+      select: {
+        id: true,
+        course_id: true,
+        completion_date: true,
+        created_at: true,
+        updated_at: true,
+        completion_language: true,
+        grade: true,
+        tier: true,
+        eligible_for_ects: true,
+        completions_registered: {
+          select: {
+            registration_date: true,
+            created_at: true,
+            organization: { select: { slug: true } },
+          },
+        },
+      },
+      orderBy: { created_at: "asc" },
+    })
+
+    return res.status(200).json(
+      completions.map(({ completions_registered, ...completion }) => ({
+        ...completion,
+        registrations: completions_registered.map((registration) => ({
+          organization_slug: registration.organization?.slug ?? null,
+          registration_date: registration.registration_date,
+          created_at: registration.created_at,
+        })),
+      })),
+    )
+  }
+
+  /**
+   * A delegated handler course as courses.mooc.fi needs it to link students to mooc.fi and to
+   * validate its own credit targets. Only for the organization courses.mooc.fi uses.
+   *
+   * `slug` is the handler course's own slug, `link` the course materials (Finnish first), and
+   * `has_certificate` is course level only. 404 if the course is not a delegated handler course.
+   */
+  delegatedCourse = async (
+    req: Request<{ course_id: string }>,
+    res: Response,
+  ) => {
+    const { prisma } = this.ctx
+    const delegateResult = await this.requireDelegateOrganization(req, res)
+
+    if (delegateResult.isErr()) {
+      return delegateResult.error
+    }
+
+    const { course_id } = req.params
+
+    if (!isUuid(course_id)) {
+      return res.status(400).json({ message: "Malformed course_id" })
+    }
+
+    const course = await prisma.course.findFirst({
+      where: delegatedHandlerCourseWhere(course_id),
+      select: {
+        id: true,
+        slug: true,
+        name: true,
+        has_certificate: true,
+        credit_registration_delegated_at: true,
+        course_translations: {
+          where: { link: { not: null } },
+          select: { language: true, link: true },
+        },
+      },
+    })
+
+    if (!course) {
+      return res.status(404).json({ message: "Delegated course not found" })
+    }
+
+    const links = course.course_translations.sort(
+      (a, b) =>
+        linkLanguagePreference(a.language) - linkLanguagePreference(b.language),
+    )
+
+    return res.status(200).json({
+      id: course.id,
+      slug: course.slug,
+      name: course.name,
+      has_certificate: course.has_certificate ?? false,
+      link: links[0]?.link ?? null,
+      credit_registration_delegated_at: course.credit_registration_delegated_at,
+    })
+  }
+
+  private requireDelegateOrganization = async (
+    req: Request,
+    res: Response,
+  ): Promise<Result<Organization, Response>> => {
+    const organizationResult = await this.getOrganization(req, res)
+
+    if (organizationResult.isErr()) {
+      return organizationResult
+    }
+
+    if (
+      !CREDIT_REGISTRATION_DELEGATE_ORG_SLUG ||
+      organizationResult.value.slug !== CREDIT_REGISTRATION_DELEGATE_ORG_SLUG
+    ) {
+      return err(res.status(403).json({ message: "Access denied." }))
+    }
+
+    return organizationResult
   }
 
   completionsCSVToken = async (
@@ -530,26 +729,9 @@ export class CompletionController extends Controller {
 
     const { course_id, slug, user_id, user_upstream_id } = req.body ?? {}
 
-    if (!course_id && !slug) {
-      return res.status(400).json({
-        message: "Missing course_id and slug - please provide exactly one",
-      })
-    }
-    if (course_id && slug) {
-      return res
-        .status(400)
-        .json({ message: "Please provide exactly one of course_id and slug" })
-    }
-    if (!user_id && !user_upstream_id) {
-      return res.status(400).json({
-        message:
-          "Missing user_id and user_upstream_id - please provide exactly one",
-      })
-    }
-    if (user_id && user_upstream_id) {
-      return res.status(400).json({
-        message: "Please provide exactly one of user_id and user_upstream_id",
-      })
+    const identifierError = getRecheckIdentifierError(req.body ?? {})
+    if (identifierError) {
+      return res.status(400).json({ message: identifierError })
     }
 
     const course = await prisma.course.findUniqueOrAlias({
