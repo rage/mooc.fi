@@ -307,12 +307,13 @@ export async function issueUserAccessToken(
 /**
  * Revokes a TMC access token of the frontend's sign-ins, so it stops working at TMC too.
  *
- * Does nothing when the frontend's OAuth application is not configured. Rejects when TMC fails;
- * the rejection may be an axios error, which carries the token: never log it whole.
+ * Resolves false, without asking TMC, when the frontend's OAuth application is not configured.
+ * Rejects when TMC fails; the rejection may be an axios error, which carries the token: never log
+ * it whole.
  */
 export async function revokeAccessToken(accessToken: string) {
   if (!TMC_FRONTEND_CLIENT_ID || !TMC_FRONTEND_CLIENT_SECRET) {
-    return
+    return false
   }
   // Doorkeeper revokes a confidential application's token only for that application's credentials.
   await tmcAxios.post(
@@ -326,4 +327,5 @@ export async function revokeAccessToken(accessToken: string) {
       headers: FORM_HEADERS,
     },
   )
+  return true
 }

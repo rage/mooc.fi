@@ -20,7 +20,11 @@ export class SessionController extends Controller {
 
     if (accessToken) {
       try {
-        await revokeAccessToken(accessToken)
+        if (!(await revokeAccessToken(accessToken))) {
+          logger.error(
+            "Sign-out cannot revoke TMC access tokens: TMC_FRONTEND_CLIENT_ID or TMC_FRONTEND_CLIENT_SECRET is unset",
+          )
+        }
       } catch (error) {
         logger.warn(
           "Revoking a TMC access token on sign-out failed",
