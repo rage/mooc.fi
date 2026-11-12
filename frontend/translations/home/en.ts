@@ -9,6 +9,9 @@ export default {
   allCoursesTitle: "All Courses",
   upcomingCoursesTitle: "Upcoming Courses",
   endedCoursesTitle: "Old courses",
+  courseRecommenderTitle: "Find a course for you",
+  courseRecommenderDescription:
+    "Not sure where to start? Tell our course recommender what you'd like to learn, and it will suggest courses that fit your goals and background.",
   popularCoursesTitle: "Popular courses",
   emailHeader: "Get notified of new courses",
   emailButton: "SUBSCRIBE",

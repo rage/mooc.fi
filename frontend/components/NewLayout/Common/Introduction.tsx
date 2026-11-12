@@ -150,7 +150,8 @@ const IntroductionTitleContainer = styled("div")(
 `,
 )
 
-const IntroductionTitle = styled("h2")(
+/** Section heading style shared by front page and listing page intros. */
+export const IntroductionTitle = styled("h2")(
   ({ theme }) => `
   ${fontSize(28, 32)}
   font-weight: 700;
@@ -171,7 +172,8 @@ const IntroductionTitle = styled("h2")(
 `,
 )
 
-const IntroductionDescription = styled("p")(
+/** Lead paragraph style that goes under an `IntroductionTitle`. */
+export const IntroductionDescription = styled("p")(
   ({ theme }) => `
   ${fontSize(15, 22)}
   font-weight: 200;

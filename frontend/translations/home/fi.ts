@@ -10,6 +10,9 @@ export default {
   allCoursesTitle: "Kaikki kurssit",
   upcomingCoursesTitle: "Tulevat kurssit",
   endedCoursesTitle: "Päättyneet kurssit",
+  courseRecommenderTitle: "Löydä sinulle sopiva kurssi",
+  courseRecommenderDescription:
+    "Etkö tiedä, mistä aloittaa? Kerro kurssisuosittelijalle, mitä haluaisit oppia, niin se ehdottaa tavoitteisiisi ja taustaasi sopivia kursseja.",
   popularCoursesTitle: "Suosittuja kursseja",
   emailHeader: "Haluatko ilmoituksia uusista kursseista?",
   emailButton: "LIITY",
