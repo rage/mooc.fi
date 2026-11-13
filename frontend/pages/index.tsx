@@ -1,5 +1,6 @@
 import { styled } from "@mui/material/styles"
 
+import CourseRecommender from "/components/NewLayout/Frontpage/CourseRecommender"
 import FrontpageHero from "/components/NewLayout/Frontpage/FrontpageHero"
 import Hype from "/components/NewLayout/Frontpage/Hype"
 import { ModuleNavigation } from "/components/NewLayout/Frontpage/Modules"
@@ -26,6 +27,7 @@ const Home = () => {
         <Hype />
         {/* <UkraineInfo /> */}
         <SelectedCourses />
+        <CourseRecommender />
         <ModuleNavigation />
       </ContentContainer>
     </HomeContainer>

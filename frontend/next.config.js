@@ -81,7 +81,7 @@ const nextConfiguration = (_phase) => ({
               "img-src 'self' data: blob: https://images.mooc.fi",
               "font-src 'self' data:",
               "connect-src 'self' https://www.mooc.fi wss://www.mooc.fi https://tmc.mooc.fi https://certificates.mooc.fi",
-              "frame-src https://www.youtube.com https://www.youtube-nocookie.com",
+              "frame-src https://www.youtube.com https://www.youtube-nocookie.com https://courses.mooc.fi",
               "frame-ancestors 'self'",
               "object-src 'none'",
               "base-uri 'self'",
