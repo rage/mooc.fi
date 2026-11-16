@@ -15,6 +15,7 @@ import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmit
 import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useTranslator } from "/hooks/useTranslator"
 import { isSignedIn, signIn } from "/lib/authentication"
+import { COURSES_BASE_URL } from "/lib/coursesBaseUrl"
 import CommonTranslations from "/translations/common"
 
 const StyledForm = styled("form")`
@@ -124,7 +125,7 @@ function SignIn(props?: PropsOf<typeof StyledForm>) {
         {t("login")}
       </SubmitButton>
       <Link
-        href="https://tmc.mooc.fi/password_reset_keys/new"
+        href={`${COURSES_BASE_URL}/reset-password`}
         target="_blank"
         rel="noopener noreferrer"
       >

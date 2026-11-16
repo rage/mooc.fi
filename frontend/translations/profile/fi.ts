@@ -109,7 +109,7 @@ export default {
   showCourseDetails: "Näytä kurssin tiedot",
   copyCourseLink: "Kopioi linkki",
   showTierCourse: "Näytä tasokurssi",
-  TMCSettingsInfo:
-    "Voit muokata käyttäjätilisi asetuksia, kuten päivittää sähköpostisi tai salasanasi, TMC-profiilisivun Settings-välilehdeltä.",
-  TMCProfileLink: "TMC-profiiliin",
+  accountSettingsInfo:
+    "Käyttäjätilisi asetukset ovat courses.mooc.fi:ssä. Siellä voit muuttaa nimesi, sähköpostiosoitteesi, salasanasi ja opiskelijanumerosi, vastata tutkimuslupakysymykseen ja poistaa käyttäjätilisi. Kirjaudut courses.mooc.fi:hin samalla käyttäjätilillä, jota käytät täällä.",
+  accountSettingsLink: "Siirry käyttäjätilin asetuksiin courses.mooc.fi:ssä",
 } as const

@@ -1,7 +1,10 @@
 import CTALink from "../NewLayout/Common/CTALink"
 import useIsOld from "/hooks/useIsOld"
 import { useTranslator } from "/hooks/useTranslator"
+import { COURSES_BASE_URL } from "/lib/coursesBaseUrl"
 import ProfileTranslations from "/translations/profile"
+
+const ACCOUNT_SETTINGS_URL = `${COURSES_BASE_URL}/user-settings`
 
 const ProfileSettings = () => {
   const t = useTranslator(ProfileTranslations)
@@ -9,14 +12,14 @@ const ProfileSettings = () => {
 
   return (
     <>
-      <p>{t("TMCSettingsInfo")}</p>
+      <p>{t("accountSettingsInfo")}</p>
       {isOld ? (
-        <a href="https://tmc.mooc.fi/participants/me" target="_blank">
-          {t("TMCProfileLink")}
+        <a href={ACCOUNT_SETTINGS_URL} target="_blank">
+          {t("accountSettingsLink")}
         </a>
       ) : (
-        <CTALink href="https://tmc.mooc.fi/participants/me" target="_blank">
-          {t("TMCProfileLink")}
+        <CTALink href={ACCOUNT_SETTINGS_URL} target="_blank">
+          {t("accountSettingsLink")}
         </CTALink>
       )}
     </>
