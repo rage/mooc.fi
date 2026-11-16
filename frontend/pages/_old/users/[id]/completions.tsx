@@ -2,7 +2,6 @@ import { generateNextSeo } from "next-seo/pages"
 import Head from "next/head"
 
 import { useQuery } from "@apollo/client/react"
-import { styled } from "@mui/material/styles"
 
 import Container from "/components/Container"
 import ExternalUserLinks from "/components/Dashboard/Users/ExternalUserLinks"
@@ -15,13 +14,6 @@ import { useQueryParameter } from "/hooks/useQueryParameter"
 import withAdmin from "/lib/with-admin"
 
 import { UserOverviewDocument } from "/graphql/generated"
-
-const Links = styled("div")`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin: 1rem 0;
-`
 
 function CompletionsPage() {
   const id = useQueryParameter("id")
@@ -64,9 +56,10 @@ function CompletionsPage() {
       <Head>{generateNextSeo({ title: data.user?.full_name ?? id })}</Head>
       <Container>
         {data.user && (
-          <Links>
-            <ExternalUserLinks upstreamId={data.user.upstream_id} />
-          </Links>
+          <ExternalUserLinks
+            upstreamId={data.user.upstream_id}
+            sx={{ my: 2 }}
+          />
         )}
         <Completions completions={completions} />
       </Container>

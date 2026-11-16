@@ -1,7 +1,8 @@
 import { useRouter } from "next/router"
 
-import { Link, Typography } from "@mui/material"
+import { Typography } from "@mui/material"
 
+import OutboundLink from "/components/OutboundLink"
 import { useTranslator } from "/hooks/useTranslator"
 import { coursesPageUrl } from "/lib/coursesBaseUrl"
 import ProfileTranslations from "/translations/profile"
@@ -14,13 +15,12 @@ const MyStudiesNote = () => {
   return (
     <Typography variant="body2" sx={{ margin: "1rem 0" }}>
       {t("myStudiesNote")}{" "}
-      <Link
+      <OutboundLink
         href={coursesPageUrl("/profile/studies", locale)}
-        target="_blank"
         rel="noopener noreferrer"
       >
         {t("myStudiesLink")}
-      </Link>
+      </OutboundLink>
     </Typography>
   )
 }

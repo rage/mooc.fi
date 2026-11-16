@@ -2,7 +2,6 @@ import { Typography } from "@mui/material"
 
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 import { CompletionListItem } from "/components/Home/Completions"
-import MyStudiesNote from "/components/Profile/MyStudiesNote"
 import useIsOld from "/hooks/useIsOld"
 import { useTranslator } from "/hooks/useTranslator"
 import ProfileTranslations from "/translations/profile"
@@ -21,7 +20,6 @@ const ProfileCompletionsDisplay = (props: CompletionsProps) => {
 
   return (
     <>
-      <MyStudiesNote />
       {completions
         .filter(completionHasCourse)
         .slice(0, 10)
