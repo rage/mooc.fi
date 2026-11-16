@@ -2,6 +2,7 @@ import { useQuery } from "@apollo/client/react"
 
 import { FormSubmitButton } from "/components/Buttons/FormSubmitButton"
 import ErrorMessage from "/components/ErrorMessage"
+import MyStudiesNote from "/components/Profile/MyStudiesNote"
 import Spinner from "/components/Spinner"
 import PointsListGrid from "/components/User/Points/PointsListGrid"
 import useIsOld from "/hooks/useIsOld"
@@ -24,11 +25,12 @@ const ProfilePointsDisplay = () => {
   }
 
   if (!data?.currentUser?.progresses) {
-    return <></>
+    return <MyStudiesNote />
   }
 
   return (
     <>
+      <MyStudiesNote />
       <PointsListGrid data={data} showOnlyTen />
       <FormSubmitButton
         href={isOld ? "/_old/profile/points" : "/profile/points"}

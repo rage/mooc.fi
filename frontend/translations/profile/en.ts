@@ -110,6 +110,9 @@ export default {
   showCourseDetails: "Show course details",
   copyCourseLink: "Copy permanent link",
   showTierCourse: "Show tier course",
+  myStudiesNote:
+    "Courses you take on courses.mooc.fi are listed in My studies there. You use the same account on both sites.",
+  myStudiesLink: "Go to My studies on courses.mooc.fi",
   accountSettingsInfo:
     "Your account settings are on courses.mooc.fi. There you can change your name, email address, password and student number, answer the research consent question and delete your account. You sign in to courses.mooc.fi with the same account you use here.",
   accountSettingsLink: "Go to account settings on courses.mooc.fi",
