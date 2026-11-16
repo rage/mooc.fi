@@ -19,6 +19,8 @@ export default {
   userTMCid: "TMC ID",
   completions: "Suoritukset",
   summary: "Yhteenveto",
+  openOnTmc: "Avaa tmc.mooc.fi:ssä",
+  findOnCoursesMoocFi: "Etsi courses.mooc.fi:stä",
   rowsPerPage: "Rivejä sivulla:",
   displayedRowsOf: "/",
   searchByString: "Etsi merkkijonolla",

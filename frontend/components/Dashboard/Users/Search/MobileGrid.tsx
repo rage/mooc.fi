@@ -20,6 +20,7 @@ import { styled } from "@mui/material/styles"
 
 import InfoRow from "../InfoRow"
 import Pagination from "./Pagination"
+import ExternalUserLinks from "/components/Dashboard/Users/ExternalUserLinks"
 import UserSearchContext from "/contexts/UserSearchContext"
 import useIsOld from "/hooks/useIsOld"
 import { useTranslator } from "/hooks/useTranslator"
@@ -192,6 +193,7 @@ const DataCard = ({ row }: DataCardProps) => {
             >
               {t("completions")}
             </Button>
+            <ExternalUserLinks upstreamId={row.upstream_id} />
           </>
         ) : (
           <Skeleton />

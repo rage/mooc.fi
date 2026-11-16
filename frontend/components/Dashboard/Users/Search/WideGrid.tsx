@@ -17,6 +17,7 @@ import {
 import { styled } from "@mui/material/styles"
 
 import Pagination from "./Pagination"
+import ExternalUserLinks from "/components/Dashboard/Users/ExternalUserLinks"
 import UserSearchContext from "/contexts/UserSearchContext"
 import useIsOld from "/hooks/useIsOld"
 import { useTranslator } from "/hooks/useTranslator"
@@ -162,6 +163,9 @@ const RenderResults = () => {
                 >
                   {t("completions")}
                 </Button>
+                {upstream_id != null && (
+                  <ExternalUserLinks upstreamId={upstream_id} />
+                )}
               </ButtonContainer>
             </TableCell>
           </TableRow>

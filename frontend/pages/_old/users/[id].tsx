@@ -20,6 +20,7 @@ import {
 import { styled } from "@mui/material/styles"
 
 import Container from "/components/Container"
+import ExternalUserLinks from "/components/Dashboard/Users/ExternalUserLinks"
 import UserInfo from "/components/Dashboard/Users/UserInfo"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
@@ -147,6 +148,7 @@ const UserPage = () => {
           >
             {t("completions")}
           </Button>
+          <ExternalUserLinks upstreamId={user.upstream_id} />
         </Links>
         <SectionTitle variant="h2">{t("courseSettings")}</SectionTitle>
         {settings.length === 0 ? (

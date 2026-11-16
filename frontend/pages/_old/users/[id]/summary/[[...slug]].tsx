@@ -11,6 +11,7 @@ import { styled, Theme } from "@mui/material/styles"
 import { useEventCallback } from "@mui/material/utils"
 
 import Container from "/components/Container"
+import ExternalUserLinks from "/components/Dashboard/Users/ExternalUserLinks"
 import { UserPointsSummaryContextProvider } from "/components/Dashboard/Users/Summary/contexts"
 import CourseFilterMenu from "/components/Dashboard/Users/Summary/CourseFilterMenu"
 import CourseSelectDropdown from "/components/Dashboard/Users/Summary/CourseSelectDropdown"
@@ -195,6 +196,9 @@ function UserSummaryView() {
               </Button>
               {isNarrow && <CourseSelectDropdown />}
               <RightToolbarContainer>
+                {data?.user && (
+                  <ExternalUserLinks upstreamId={data.user.upstream_id} />
+                )}
                 {/*<CollapseButton
                       onClick={onCollapseClick}
                       open={!allCoursesClosed}
