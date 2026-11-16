@@ -41,6 +41,7 @@ const PAGE_SIZE = 50
 
 const Links = styled("div")`
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   justify-content: center;
   margin: 1rem 0;

@@ -47,6 +47,8 @@ const UserCardContent = styled(CardContent)`
 const UserCardActions = styled(CardActions)`
   margin-left: auto;
   justify-content: flex-end;
+  flex-wrap: wrap;
+  row-gap: 0.5rem;
 `
 
 const PaginationContainer = styled(Paper)`

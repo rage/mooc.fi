@@ -54,6 +54,7 @@ const HideOverflow = styled("div")`
 
 const RightToolbarContainer = styled("div")`
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
 `
 

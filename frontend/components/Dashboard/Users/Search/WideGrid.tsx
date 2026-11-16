@@ -137,7 +137,7 @@ const RenderResults = () => {
   return (
     <TableBody>
       {data.map((row) => {
-        const { upstream_id, email, full_name, student_number } = row ?? {}
+        const { upstream_id, email, full_name, student_number } = row
 
         return (
           <TableRow key={upstream_id}>
@@ -163,9 +163,7 @@ const RenderResults = () => {
                 >
                   {t("completions")}
                 </Button>
-                {upstream_id != null && (
-                  <ExternalUserLinks upstreamId={upstream_id} />
-                )}
+                <ExternalUserLinks upstreamId={upstream_id} />
               </ButtonContainer>
             </TableCell>
           </TableRow>

@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 
+import { useRouter } from "next/router"
+
 import { useApolloClient } from "@apollo/client/react"
 import { PropsOf } from "@emotion/react"
 import {
@@ -15,7 +17,7 @@ import { FormSubmitButton as SubmitButton } from "/components/Buttons/FormSubmit
 import { useLoginStateContext } from "/contexts/LoginStateContext"
 import { useTranslator } from "/hooks/useTranslator"
 import { isSignedIn, signIn } from "/lib/authentication"
-import { COURSES_BASE_URL } from "/lib/coursesBaseUrl"
+import { coursesPageUrl } from "/lib/coursesBaseUrl"
 import CommonTranslations from "/translations/common"
 
 const StyledForm = styled("form")`
@@ -25,6 +27,7 @@ const StyledForm = styled("form")`
 function SignIn(props?: PropsOf<typeof StyledForm>) {
   const { logInOrOut } = useLoginStateContext()
   const t = useTranslator(CommonTranslations)
+  const { locale } = useRouter()
   const apollo = useApolloClient()
   const [password, setPassword] = useState("")
   const [email, setEmail] = useState("")
@@ -125,7 +128,7 @@ function SignIn(props?: PropsOf<typeof StyledForm>) {
         {t("login")}
       </SubmitButton>
       <Link
-        href={`${COURSES_BASE_URL}/reset-password`}
+        href={coursesPageUrl("/reset-password", locale)}
         target="_blank"
         rel="noopener noreferrer"
       >

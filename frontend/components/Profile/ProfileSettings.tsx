@@ -1,24 +1,30 @@
+import { useRouter } from "next/router"
+
 import CTALink from "../NewLayout/Common/CTALink"
 import useIsOld from "/hooks/useIsOld"
 import { useTranslator } from "/hooks/useTranslator"
-import { COURSES_BASE_URL } from "/lib/coursesBaseUrl"
+import { coursesPageUrl } from "/lib/coursesBaseUrl"
 import ProfileTranslations from "/translations/profile"
-
-const ACCOUNT_SETTINGS_URL = `${COURSES_BASE_URL}/user-settings`
 
 const ProfileSettings = () => {
   const t = useTranslator(ProfileTranslations)
   const isOld = useIsOld()
+  const { locale } = useRouter()
+  const accountSettingsUrl = coursesPageUrl("/user-settings", locale)
 
   return (
     <>
       <p>{t("accountSettingsInfo")}</p>
       {isOld ? (
-        <a href={ACCOUNT_SETTINGS_URL} target="_blank">
+        <a href={accountSettingsUrl} target="_blank" rel="noopener noreferrer">
           {t("accountSettingsLink")}
         </a>
       ) : (
-        <CTALink href={ACCOUNT_SETTINGS_URL} target="_blank">
+        <CTALink
+          href={accountSettingsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           {t("accountSettingsLink")}
         </CTALink>
       )}

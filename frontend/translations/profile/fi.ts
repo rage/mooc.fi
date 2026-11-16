@@ -110,9 +110,9 @@ export default {
   copyCourseLink: "Kopioi linkki",
   showTierCourse: "Näytä tasokurssi",
   myStudiesNote:
-    "Courses.mooc.fi:ssä suorittamasi kurssit löydät sieltä Opintoni-sivulta. Käytät molemmissa palveluissa samaa käyttäjätiliä.",
+    "Kurssit, joita opiskelet courses.mooc.fi:ssä, löydät sen Opintoni-sivulta. Käytät molemmissa palveluissa samaa käyttäjätiliä.",
   myStudiesLink: "Siirry courses.mooc.fi:n Opintoni-sivulle",
   accountSettingsInfo:
-    "Käyttäjätilisi asetukset ovat courses.mooc.fi:ssä. Siellä voit muuttaa nimesi, sähköpostiosoitteesi, salasanasi ja opiskelijanumerosi, vastata tutkimuslupakysymykseen ja poistaa käyttäjätilisi. Kirjaudut courses.mooc.fi:hin samalla käyttäjätilillä, jota käytät täällä.",
+    "Käyttäjätilisi asetukset ovat courses.mooc.fi:ssä. Siellä voit muuttaa nimesi, sähköpostiosoitteesi, salasanasi ja opiskelijanumerosi sekä poistaa käyttäjätilisi. Kirjaudut courses.mooc.fi:hin samalla käyttäjätilillä, jota käytät täällä.",
   accountSettingsLink: "Siirry käyttäjätilin asetuksiin courses.mooc.fi:ssä",
 } as const
