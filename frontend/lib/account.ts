@@ -2,7 +2,9 @@ import { v4 as uuidv4 } from "uuid"
 
 import { getAccessToken } from "/lib/authentication"
 
-const BASE_URL = "https://tmc.mooc.fi/api/v8"
+export const TMC_BASE_URL = "https://tmc.mooc.fi"
+
+const BASE_URL = `${TMC_BASE_URL}/api/v8`
 
 export function createAccount(data: any) {
   data.username = uuidv4()

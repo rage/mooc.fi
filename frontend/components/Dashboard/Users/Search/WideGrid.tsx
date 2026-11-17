@@ -17,6 +17,7 @@ import {
 import { styled } from "@mui/material/styles"
 
 import Pagination from "./Pagination"
+import ExternalUserLinks from "/components/Dashboard/Users/ExternalUserLinks"
 import UserSearchContext from "/contexts/UserSearchContext"
 import useIsOld from "/hooks/useIsOld"
 import { useTranslator } from "/hooks/useTranslator"
@@ -136,7 +137,7 @@ const RenderResults = () => {
   return (
     <TableBody>
       {data.map((row) => {
-        const { upstream_id, email, full_name, student_number } = row ?? {}
+        const { upstream_id, email, full_name, student_number } = row
 
         return (
           <TableRow key={upstream_id}>
@@ -162,6 +163,7 @@ const RenderResults = () => {
                 >
                   {t("completions")}
                 </Button>
+                <ExternalUserLinks upstreamId={upstream_id} />
               </ButtonContainer>
             </TableCell>
           </TableRow>

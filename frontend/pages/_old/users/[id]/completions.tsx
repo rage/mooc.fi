@@ -4,6 +4,7 @@ import Head from "next/head"
 import { useQuery } from "@apollo/client/react"
 
 import Container from "/components/Container"
+import ExternalUserLinks from "/components/Dashboard/Users/ExternalUserLinks"
 import { Completions } from "/components/Home/Completions"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import Spinner from "/components/Spinner"
@@ -54,6 +55,12 @@ function CompletionsPage() {
     <>
       <Head>{generateNextSeo({ title: data.user?.full_name ?? id })}</Head>
       <Container>
+        {data.user && (
+          <ExternalUserLinks
+            upstreamId={data.user.upstream_id}
+            sx={{ my: 2 }}
+          />
+        )}
         <Completions completions={completions} />
       </Container>
     </>

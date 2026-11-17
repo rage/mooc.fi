@@ -110,7 +110,10 @@ export default {
   showCourseDetails: "Show course details",
   copyCourseLink: "Copy permanent link",
   showTierCourse: "Show tier course",
-  TMCSettingsInfo:
-    "You can manage your account settings, such as updating your email or password, from your TMC-profile page under the Settings-tab.",
-  TMCProfileLink: "To TMC-profile",
+  myStudiesNote:
+    "You can find the courses you study on courses.mooc.fi on its My studies page. You use the same account on both sites.",
+  myStudiesLink: "Go to My studies on courses.mooc.fi",
+  accountSettingsInfo:
+    "Your account settings are on courses.mooc.fi. There you can change your name, email address, password and student number, and delete your account. You sign in to courses.mooc.fi with the same account you use here.",
+  accountSettingsLink: "Go to account settings on courses.mooc.fi",
 } as const

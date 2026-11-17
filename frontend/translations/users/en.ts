@@ -19,6 +19,8 @@ export default {
   userTMCid: "TMC ID",
   completions: "Completions",
   summary: "Summary",
+  openOnTmc: "Open on tmc.mooc.fi",
+  findOnCoursesMoocFi: "Find on courses.mooc.fi",
   rowsPerPage: "Rows per page:",
   displayedRowsOf: " of ",
   searchByString: "Search by string",

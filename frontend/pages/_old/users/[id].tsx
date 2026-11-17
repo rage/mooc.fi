@@ -20,6 +20,7 @@ import {
 import { styled } from "@mui/material/styles"
 
 import Container from "/components/Container"
+import ExternalUserLinks from "/components/Dashboard/Users/ExternalUserLinks"
 import UserInfo from "/components/Dashboard/Users/UserInfo"
 import ModifiableErrorMessage from "/components/ModifiableErrorMessage"
 import { useBreadcrumbs } from "/hooks/useBreadcrumbs"
@@ -40,6 +41,7 @@ const PAGE_SIZE = 50
 
 const Links = styled("div")`
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   justify-content: center;
   margin: 1rem 0;
@@ -147,6 +149,7 @@ const UserPage = () => {
           >
             {t("completions")}
           </Button>
+          <ExternalUserLinks upstreamId={user.upstream_id} />
         </Links>
         <SectionTitle variant="h2">{t("courseSettings")}</SectionTitle>
         {settings.length === 0 ? (

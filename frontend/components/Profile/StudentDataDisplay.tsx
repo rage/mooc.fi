@@ -3,6 +3,7 @@ import { PropsWithChildren } from "react"
 import { Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
+import MyStudiesNote from "/components/Profile/MyStudiesNote"
 import ProfileCompletionsDisplay from "/components/Profile/ProfileCompletionsDisplay"
 import ProfilePointsDisplay from "/components/Profile/ProfilePointsDisplay"
 import ProfileSettings from "/components/Profile/ProfileSettings"
@@ -46,6 +47,7 @@ const StudentDataDisplay = ({ tab, data }: StudentDataDisplayProps) => {
 
   return (
     <>
+      <MyStudiesNote />
       <TabPanel index={0} value={tab}>
         <ProfilePointsDisplay />
       </TabPanel>
