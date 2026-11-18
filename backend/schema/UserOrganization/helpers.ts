@@ -178,43 +178,38 @@ const isJoinConfirmationRateLimited = async ({
   }
 
   const now = Date.now()
-  const dayAgo = new Date(now - 24 * 60 * 60 * 1000)
+  const normalizedEmail = email.toLowerCase()
 
   // Counts deliveries rather than confirmations: deleting a membership
   // cascade-deletes its confirmations, deliveries survive. Only join
   // confirmations set organization_id on a delivery.
-  const sentByUserLastDay = await prisma.emailDelivery.count({
+  const sentLastDay = await prisma.emailDelivery.findMany({
     where: {
-      user_id: userId,
       organization_id: { not: null },
-      created_at: { gte: dayAgo },
+      created_at: { gte: new Date(now - 24 * 60 * 60 * 1000) },
+      OR: [
+        { user_id: userId },
+        { email: { equals: email, mode: "insensitive" } },
+      ],
     },
-  })
-  if (sentByUserLastDay >= MAX_JOIN_CONFIRMATIONS_PER_DAY) {
-    return true
-  }
-
-  const sentToEmailLastDay = await prisma.emailDelivery.count({
-    where: {
-      email: { equals: email, mode: "insensitive" },
-      organization_id: { not: null },
-      created_at: { gte: dayAgo },
-    },
-  })
-  if (sentToEmailLastDay >= MAX_JOIN_CONFIRMATIONS_PER_DAY) {
-    return true
-  }
-
-  const sentToEmailRecently = await prisma.emailDelivery.count({
-    where: {
-      user_id: userId,
-      email: { equals: email, mode: "insensitive" },
-      organization_id: { not: null },
-      created_at: { gte: new Date(now - MIN_JOIN_CONFIRMATION_INTERVAL_MS) },
-    },
+    select: { user_id: true, email: true, created_at: true },
   })
 
-  return sentToEmailRecently > 0
+  const byUser = sentLastDay.filter((d) => d.user_id === userId)
+  const toEmail = sentLastDay.filter(
+    (d) => d.email?.toLowerCase() === normalizedEmail,
+  )
+  const recentFromUserToEmail = toEmail.some(
+    (d) =>
+      d.user_id === userId &&
+      d.created_at.getTime() >= now - MIN_JOIN_CONFIRMATION_INTERVAL_MS,
+  )
+
+  return (
+    byUser.length >= MAX_JOIN_CONFIRMATIONS_PER_DAY ||
+    toEmail.length >= MAX_JOIN_CONFIRMATIONS_PER_DAY ||
+    recentFromUserToEmail
+  )
 }
 
 /** Serializes join confirmation sends per user and per address until the transaction ends. */
@@ -223,9 +218,13 @@ const lockJoinConfirmationSends = async (
   userId: User["id"],
   email: string,
 ) => {
-  // Always user before address, so two transactions can't deadlock.
-  await prisma.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`join-confirmation-user:${userId}`}))`
-  await prisma.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`join-confirmation-email:${email.toLowerCase()}`}))`
+  // Fixed order (user, then address) so two transactions can't deadlock.
+  for (const key of [
+    `join-confirmation-user:${userId}`,
+    `join-confirmation-email:${email.toLowerCase()}`,
+  ]) {
+    await prisma.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${key}))`
+  }
 }
 
 interface JoinUserOrganizationOptions {

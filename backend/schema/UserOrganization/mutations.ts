@@ -380,7 +380,7 @@ export const UserOrganizationMutations = extendType({
 
         if (changedEmail) {
           const isEmailValid = checkEmailValidity(
-            organizational_email,
+            changedEmail,
             organization.required_organization_email,
           )
 
