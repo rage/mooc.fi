@@ -151,6 +151,66 @@ export const checkEmailValidity = (
   return ok(true)
 }
 
+const MAX_JOIN_CONFIRMATIONS_PER_DAY = 3
+const MIN_JOIN_CONFIRMATION_INTERVAL_MS = 5 * 60 * 1000
+
+/**
+ * True when mailing a join confirmation to `email` would exceed a cap: per user
+ * per day, per address (case-insensitive, across all users) per day, or a repeat
+ * to the same address within the minimum interval. Admins are exempt.
+ */
+export const isJoinConfirmationRateLimited = async ({
+  ctx,
+  userId,
+  email,
+}: {
+  ctx: Context
+  userId: User["id"]
+  email: string
+}) => {
+  if (ctx.role === Role.ADMIN) {
+    return false
+  }
+
+  const now = Date.now()
+  const dayAgo = new Date(now - 24 * 60 * 60 * 1000)
+
+  const sentByUserLastDay =
+    await ctx.prisma.userOrganizationJoinConfirmation.count({
+      where: {
+        user_organization: { user_id: userId },
+        created_at: { gte: dayAgo },
+      },
+    })
+  if (sentByUserLastDay >= MAX_JOIN_CONFIRMATIONS_PER_DAY) {
+    return true
+  }
+
+  const sentToEmailLastDay =
+    await ctx.prisma.userOrganizationJoinConfirmation.count({
+      where: {
+        email: { equals: email, mode: "insensitive" },
+        created_at: { gte: dayAgo },
+      },
+    })
+  if (sentToEmailLastDay >= MAX_JOIN_CONFIRMATIONS_PER_DAY) {
+    return true
+  }
+
+  const sentToEmailRecently =
+    await ctx.prisma.userOrganizationJoinConfirmation.count({
+      where: {
+        user_organization: { user_id: userId },
+        email: { equals: email, mode: "insensitive" },
+        created_at: {
+          gte: new Date(now - MIN_JOIN_CONFIRMATION_INTERVAL_MS),
+        },
+      },
+    })
+
+  return sentToEmailRecently > 0
+}
+
 interface JoinUserOrganizationOptions {
   ctx: Context
   user: User
@@ -216,7 +276,14 @@ export const joinUserOrganization = async ({
       },
     })
 
-    if (required_confirmation) {
+    if (
+      required_confirmation &&
+      !(await isJoinConfirmationRateLimited({
+        ctx,
+        userId: user.id,
+        email: organizational_email ?? user.email,
+      }))
+    ) {
       const createUserOrganizationJoinConfirmationResult =
         await createUserOrganizationJoinConfirmation({
           ctx,

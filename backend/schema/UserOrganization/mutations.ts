@@ -29,11 +29,18 @@ import {
   checkEmailValidity,
   createUserOrganizationJoinConfirmation,
   expirePreviousConfirmations,
+  isJoinConfirmationRateLimited,
   joinUserOrganization,
   TooManyActivationAttemptsError,
 } from "./helpers"
 
 const CONFIRMATION_EXPIRED_MESSAGE = "confirmation link has expired"
+
+const pickConfirmationEmail = (
+  changedEmail: string | null | undefined,
+  storedEmail: string | null,
+  userEmail: string,
+) => changedEmail || (storedEmail ?? userEmail)
 
 export const UserOrganizationMutations = extendType({
   type: "Mutation",
@@ -387,12 +394,24 @@ export const UserOrganizationMutations = extendType({
           }
         }
 
-        const newUserOrganizationJoinConfirmationEmail = emailChanged
-          ? organizational_email
-          : (userOrganization.organizational_email ?? user.email)
+        const newUserOrganizationJoinConfirmationEmail = pickConfirmationEmail(
+          emailChanged ? organizational_email : null,
+          userOrganization.organizational_email,
+          user.email,
+        )
 
         const previousConfirmation = user_organization_join_confirmations?.[0]
         // or do we get some according to the last email, or expired, or what?
+
+        if (
+          await isJoinConfirmationRateLimited({
+            ctx,
+            userId: user.id,
+            email: newUserOrganizationJoinConfirmationEmail,
+          })
+        ) {
+          return previousConfirmation
+        }
 
         const createUserOrganizationJoinConfirmationResult =
           await createUserOrganizationJoinConfirmation({
@@ -545,6 +564,16 @@ export const UserOrganizationMutations = extendType({
 
         if (isEmailValid.isErr()) {
           throw isEmailValid.error
+        }
+
+        if (
+          await isJoinConfirmationRateLimited({
+            ctx,
+            userId: user.id,
+            email: organizational_email,
+          })
+        ) {
+          return omit(userOrganization, ["organization", "user"])
         }
 
         const previousConfirmation =
