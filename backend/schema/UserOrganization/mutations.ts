@@ -4,7 +4,7 @@ import { booleanArg, extendType, idArg, nonNull, stringArg } from "nexus"
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { DEFAULT_JOIN_ORGANIZATION_EMAIL_TEMPLATE_ID } from "../../config/defaultData"
 import { Context } from "../../context"
-import { User } from "../../generated/prisma"
+import { User, UserOrganizationJoinConfirmation } from "../../generated/prisma"
 import {
   GraphQLAuthenticationError,
   GraphQLForbiddenError,
@@ -34,6 +34,25 @@ import {
 } from "./helpers"
 
 const CONFIRMATION_EXPIRED_MESSAGE = "confirmation link has expired"
+
+/** The confirmation if its code can still be used, otherwise null. */
+const usableConfirmationOrNull = <
+  T extends Pick<UserOrganizationJoinConfirmation, "expired" | "expires_at">,
+>(
+  confirmation: T | undefined,
+  now: Date,
+) =>
+  confirmation &&
+  !confirmation.expired &&
+  (!confirmation.expires_at || confirmation.expires_at > now)
+    ? confirmation
+    : null
+
+/** The requested organizational email when it differs from the stored one, otherwise null. */
+const changedOrganizationalEmail = (
+  requested: string | null | undefined,
+  stored: string | null,
+) => (requested && requested !== stored ? requested : null)
 
 export const UserOrganizationMutations = extendType({
   type: "Mutation",
@@ -351,9 +370,10 @@ export const UserOrganizationMutations = extendType({
           )
         }
 
-        const emailChanged =
-          organizational_email &&
-          organizational_email !== userOrganization.organizational_email
+        const changedEmail = changedOrganizationalEmail(
+          organizational_email,
+          userOrganization.organizational_email,
+        )
 
         // TODO: will we send new confirmation on email change?
         if (userOrganization.confirmed) {
@@ -376,9 +396,9 @@ export const UserOrganizationMutations = extendType({
 
         const currentDate = new Date()
 
-        if (emailChanged) {
+        if (changedEmail) {
           const isEmailValid = checkEmailValidity(
-            organizational_email,
+            changedEmail,
             organization.required_organization_email,
           )
 
@@ -387,9 +407,8 @@ export const UserOrganizationMutations = extendType({
           }
         }
 
-        const newUserOrganizationJoinConfirmationEmail = emailChanged
-          ? organizational_email
-          : (userOrganization.organizational_email ?? user.email)
+        const newUserOrganizationJoinConfirmationEmail =
+          changedEmail ?? userOrganization.organizational_email ?? user.email
 
         const previousConfirmation = user_organization_join_confirmations?.[0]
         // or do we get some according to the last email, or expired, or what?
@@ -412,6 +431,10 @@ export const UserOrganizationMutations = extendType({
         const newUserOrganizationJoinConfirmation =
           createUserOrganizationJoinConfirmationResult.value
 
+        if (!newUserOrganizationJoinConfirmation) {
+          return usableConfirmationOrNull(previousConfirmation, currentDate)
+        }
+
         await cancelEmailDeliveries({
           ctx,
           userId: user.id,
@@ -427,7 +450,7 @@ export const UserOrganizationMutations = extendType({
           userOrganizationJoinConfirmation: newUserOrganizationJoinConfirmation,
         })
 
-        if (emailChanged) {
+        if (changedEmail) {
           // TODO: should we update the organizational email only when it is confirmed?
           await ctx.prisma.userOrganization.update({
             where: {
@@ -572,6 +595,10 @@ export const UserOrganizationMutations = extendType({
 
         const userOrganizationJoinConfirmation =
           createUserOrganizationJoinConfirmationResult.value
+
+        if (!userOrganizationJoinConfirmation) {
+          return omit(userOrganization, ["organization", "user"])
+        }
 
         await cancelEmailDeliveries({
           ctx,
