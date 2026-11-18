@@ -177,7 +177,7 @@ const isJoinConfirmationRateLimited = async ({
     return false
   }
 
-  const now = Date.now()
+  const now = new Date().getTime()
   const normalizedEmail = email.toLowerCase()
 
   // Counts deliveries rather than confirmations: deleting a membership
@@ -382,7 +382,8 @@ export const createUserOrganizationJoinConfirmation = async ({
         redirect,
         language,
         activation_code: generateActivationCode(),
-        expires_at: new Date(Date.now() + 4 * 60 * 60 * 1000), // 4 hours for now
+        // new Date(), not Date.now(): tests mock Date.now() but compare against new Date().
+        expires_at: new Date(new Date().getTime() + 4 * 60 * 60 * 1000), // 4 hours for now
       },
       include: {
         email_delivery: true,
