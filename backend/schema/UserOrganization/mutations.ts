@@ -29,18 +29,11 @@ import {
   checkEmailValidity,
   createUserOrganizationJoinConfirmation,
   expirePreviousConfirmations,
-  isJoinConfirmationRateLimited,
   joinUserOrganization,
   TooManyActivationAttemptsError,
 } from "./helpers"
 
 const CONFIRMATION_EXPIRED_MESSAGE = "confirmation link has expired"
-
-const pickConfirmationEmail = (
-  changedEmail: string | null | undefined,
-  storedEmail: string | null,
-  userEmail: string,
-) => changedEmail || (storedEmail ?? userEmail)
 
 export const UserOrganizationMutations = extendType({
   type: "Mutation",
@@ -358,9 +351,11 @@ export const UserOrganizationMutations = extendType({
           )
         }
 
-        const emailChanged =
+        const changedEmail =
           organizational_email &&
           organizational_email !== userOrganization.organizational_email
+            ? organizational_email
+            : null
 
         // TODO: will we send new confirmation on email change?
         if (userOrganization.confirmed) {
@@ -383,7 +378,7 @@ export const UserOrganizationMutations = extendType({
 
         const currentDate = new Date()
 
-        if (emailChanged) {
+        if (changedEmail) {
           const isEmailValid = checkEmailValidity(
             organizational_email,
             organization.required_organization_email,
@@ -394,24 +389,11 @@ export const UserOrganizationMutations = extendType({
           }
         }
 
-        const newUserOrganizationJoinConfirmationEmail = pickConfirmationEmail(
-          emailChanged ? organizational_email : null,
-          userOrganization.organizational_email,
-          user.email,
-        )
+        const newUserOrganizationJoinConfirmationEmail =
+          changedEmail ?? userOrganization.organizational_email ?? user.email
 
         const previousConfirmation = user_organization_join_confirmations?.[0]
         // or do we get some according to the last email, or expired, or what?
-
-        if (
-          await isJoinConfirmationRateLimited({
-            ctx,
-            userId: user.id,
-            email: newUserOrganizationJoinConfirmationEmail,
-          })
-        ) {
-          return previousConfirmation
-        }
 
         const createUserOrganizationJoinConfirmationResult =
           await createUserOrganizationJoinConfirmation({
@@ -431,6 +413,10 @@ export const UserOrganizationMutations = extendType({
         const newUserOrganizationJoinConfirmation =
           createUserOrganizationJoinConfirmationResult.value
 
+        if (!newUserOrganizationJoinConfirmation) {
+          return previousConfirmation
+        }
+
         await cancelEmailDeliveries({
           ctx,
           userId: user.id,
@@ -446,7 +432,7 @@ export const UserOrganizationMutations = extendType({
           userOrganizationJoinConfirmation: newUserOrganizationJoinConfirmation,
         })
 
-        if (emailChanged) {
+        if (changedEmail) {
           // TODO: should we update the organizational email only when it is confirmed?
           await ctx.prisma.userOrganization.update({
             where: {
@@ -566,16 +552,6 @@ export const UserOrganizationMutations = extendType({
           throw isEmailValid.error
         }
 
-        if (
-          await isJoinConfirmationRateLimited({
-            ctx,
-            userId: user.id,
-            email: organizational_email,
-          })
-        ) {
-          return omit(userOrganization, ["organization", "user"])
-        }
-
         const previousConfirmation =
           user_organization_join_confirmations?.find(
             (conf) =>
@@ -601,6 +577,10 @@ export const UserOrganizationMutations = extendType({
 
         const userOrganizationJoinConfirmation =
           createUserOrganizationJoinConfirmationResult.value
+
+        if (!userOrganizationJoinConfirmation) {
+          return omit(userOrganization, ["organization", "user"])
+        }
 
         await cancelEmailDeliveries({
           ctx,

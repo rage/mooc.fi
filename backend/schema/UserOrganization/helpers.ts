@@ -158,13 +158,18 @@ const MIN_JOIN_CONFIRMATION_INTERVAL_MS = 5 * 60 * 1000
  * True when mailing a join confirmation to `email` would exceed a cap: per user
  * per day, per address (case-insensitive, across all users) per day, or a repeat
  * to the same address within the minimum interval. Admins are exempt.
+ *
+ * Call inside the transaction that creates the confirmation, after
+ * `lockJoinConfirmationSends`, or concurrent requests all pass.
  */
-export const isJoinConfirmationRateLimited = async ({
+const isJoinConfirmationRateLimited = async ({
   ctx,
+  prisma,
   userId,
   email,
 }: {
   ctx: Context
+  prisma: ExtendedTransactionClient
   userId: User["id"]
   email: string
 }) => {
@@ -175,40 +180,52 @@ export const isJoinConfirmationRateLimited = async ({
   const now = Date.now()
   const dayAgo = new Date(now - 24 * 60 * 60 * 1000)
 
-  const sentByUserLastDay =
-    await ctx.prisma.userOrganizationJoinConfirmation.count({
-      where: {
-        user_organization: { user_id: userId },
-        created_at: { gte: dayAgo },
-      },
-    })
+  // Counts deliveries rather than confirmations: deleting a membership
+  // cascade-deletes its confirmations, deliveries survive. Only join
+  // confirmations set organization_id on a delivery.
+  const sentByUserLastDay = await prisma.emailDelivery.count({
+    where: {
+      user_id: userId,
+      organization_id: { not: null },
+      created_at: { gte: dayAgo },
+    },
+  })
   if (sentByUserLastDay >= MAX_JOIN_CONFIRMATIONS_PER_DAY) {
     return true
   }
 
-  const sentToEmailLastDay =
-    await ctx.prisma.userOrganizationJoinConfirmation.count({
-      where: {
-        email: { equals: email, mode: "insensitive" },
-        created_at: { gte: dayAgo },
-      },
-    })
+  const sentToEmailLastDay = await prisma.emailDelivery.count({
+    where: {
+      email: { equals: email, mode: "insensitive" },
+      organization_id: { not: null },
+      created_at: { gte: dayAgo },
+    },
+  })
   if (sentToEmailLastDay >= MAX_JOIN_CONFIRMATIONS_PER_DAY) {
     return true
   }
 
-  const sentToEmailRecently =
-    await ctx.prisma.userOrganizationJoinConfirmation.count({
-      where: {
-        user_organization: { user_id: userId },
-        email: { equals: email, mode: "insensitive" },
-        created_at: {
-          gte: new Date(now - MIN_JOIN_CONFIRMATION_INTERVAL_MS),
-        },
-      },
-    })
+  const sentToEmailRecently = await prisma.emailDelivery.count({
+    where: {
+      user_id: userId,
+      email: { equals: email, mode: "insensitive" },
+      organization_id: { not: null },
+      created_at: { gte: new Date(now - MIN_JOIN_CONFIRMATION_INTERVAL_MS) },
+    },
+  })
 
   return sentToEmailRecently > 0
+}
+
+/** Serializes join confirmation sends per user and per address until the transaction ends. */
+const lockJoinConfirmationSends = async (
+  prisma: ExtendedTransactionClient,
+  userId: User["id"],
+  email: string,
+) => {
+  // Always user before address, so two transactions can't deadlock.
+  await prisma.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`join-confirmation-user:${userId}`}))`
+  await prisma.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`join-confirmation-email:${email.toLowerCase()}`}))`
 }
 
 interface JoinUserOrganizationOptions {
@@ -276,14 +293,7 @@ export const joinUserOrganization = async ({
       },
     })
 
-    if (
-      required_confirmation &&
-      !(await isJoinConfirmationRateLimited({
-        ctx,
-        userId: user.id,
-        email: organizational_email ?? user.email,
-      }))
-    ) {
+    if (required_confirmation) {
       const createUserOrganizationJoinConfirmationResult =
         await createUserOrganizationJoinConfirmation({
           ctx,
@@ -317,7 +327,8 @@ interface CreateUserOrganizationJoinConfirmationOptions {
 
 /**
  * Create a confirmation link and an email delivery for the user to join the organization.
- * If creating the link or the email delivery somehow fails, return the error caught.
+ * Returns `ok(null)` without creating anything when the send is rate limited,
+ * and the error caught if creating the link or the email delivery fails.
  */
 export const createUserOrganizationJoinConfirmation = async ({
   ctx,
@@ -329,7 +340,6 @@ export const createUserOrganizationJoinConfirmation = async ({
   language,
   trx,
 }: CreateUserOrganizationJoinConfirmationOptions) => {
-  const prisma = trx ?? ctx.prisma
   const join_organization_email_template_id =
     organization.join_organization_email_template_id ??
     DEFAULT_JOIN_ORGANIZATION_EMAIL_TEMPLATE_ID
@@ -342,35 +352,51 @@ export const createUserOrganizationJoinConfirmation = async ({
     )
   }
 
-  const currentDate = new Date()
+  const createIfAllowed = async (prisma: ExtendedTransactionClient) => {
+    await lockJoinConfirmationSends(prisma, user.id, email)
+
+    if (
+      await isJoinConfirmationRateLimited({
+        ctx,
+        prisma,
+        userId: user.id,
+        email,
+      })
+    ) {
+      return null
+    }
+
+    return prisma.userOrganizationJoinConfirmation.create({
+      data: {
+        user_organization: { connect: { id: userOrganization.id } },
+        email,
+        email_delivery: {
+          create: {
+            user_id: user.id,
+            email,
+            email_template_id: join_organization_email_template_id,
+            organization_id: organization.id,
+            sent: false,
+            error: false,
+          },
+        },
+        redirect,
+        language,
+        activation_code: generateActivationCode(),
+        expires_at: new Date(Date.now() + 4 * 60 * 60 * 1000), // 4 hours for now
+      },
+      include: {
+        email_delivery: true,
+      },
+    })
+  }
 
   try {
-    const userOrganizationJoinConfirmation =
-      await prisma.userOrganizationJoinConfirmation.create({
-        data: {
-          user_organization: { connect: { id: userOrganization.id } },
-          email,
-          email_delivery: {
-            create: {
-              user_id: user.id,
-              email,
-              email_template_id: join_organization_email_template_id,
-              organization_id: organization.id,
-              sent: false,
-              error: false,
-            },
-          },
-          redirect,
-          language,
-          activation_code: generateActivationCode(),
-          expires_at: new Date(currentDate.getTime() + 4 * 60 * 60 * 1000), // 4 hours for now
-        },
-        include: {
-          email_delivery: true,
-        },
-      })
-
-    return ok(userOrganizationJoinConfirmation)
+    return ok(
+      trx
+        ? await createIfAllowed(trx)
+        : await ctx.prisma.$transaction(createIfAllowed),
+    )
   } catch (e: unknown) {
     if (e instanceof Error) return err(e)
 
