@@ -4,7 +4,7 @@ import { booleanArg, extendType, idArg, nonNull, stringArg } from "nexus"
 import { isAdmin, isUser, or, Role } from "../../accessControl"
 import { DEFAULT_JOIN_ORGANIZATION_EMAIL_TEMPLATE_ID } from "../../config/defaultData"
 import { Context } from "../../context"
-import { User } from "../../generated/prisma"
+import { User, UserOrganizationJoinConfirmation } from "../../generated/prisma"
 import {
   GraphQLAuthenticationError,
   GraphQLForbiddenError,
@@ -34,6 +34,25 @@ import {
 } from "./helpers"
 
 const CONFIRMATION_EXPIRED_MESSAGE = "confirmation link has expired"
+
+/** The confirmation if its code can still be used, otherwise null. */
+const usableConfirmationOrNull = <
+  T extends Pick<UserOrganizationJoinConfirmation, "expired" | "expires_at">,
+>(
+  confirmation: T | undefined,
+  now: Date,
+) =>
+  confirmation &&
+  !confirmation.expired &&
+  (!confirmation.expires_at || confirmation.expires_at > now)
+    ? confirmation
+    : null
+
+/** The requested organizational email when it differs from the stored one, otherwise null. */
+const changedOrganizationalEmail = (
+  requested: string | null | undefined,
+  stored: string | null,
+) => (requested && requested !== stored ? requested : null)
 
 export const UserOrganizationMutations = extendType({
   type: "Mutation",
@@ -351,11 +370,10 @@ export const UserOrganizationMutations = extendType({
           )
         }
 
-        const changedEmail =
-          organizational_email &&
-          organizational_email !== userOrganization.organizational_email
-            ? organizational_email
-            : null
+        const changedEmail = changedOrganizationalEmail(
+          organizational_email,
+          userOrganization.organizational_email,
+        )
 
         // TODO: will we send new confirmation on email change?
         if (userOrganization.confirmed) {
@@ -414,7 +432,7 @@ export const UserOrganizationMutations = extendType({
           createUserOrganizationJoinConfirmationResult.value
 
         if (!newUserOrganizationJoinConfirmation) {
-          return previousConfirmation
+          return usableConfirmationOrNull(previousConfirmation, currentDate)
         }
 
         await cancelEmailDeliveries({
