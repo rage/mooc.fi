@@ -5,7 +5,7 @@
 import { FieldPolicy, FieldReadFunction, TypePolicies, TypePolicy } from '@apollo/client/cache';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-// Generated on 2026-11-10T16:16:44+02:00
+// Generated on 2026-11-25T13:30:34+02:00
 
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -221,6 +221,7 @@ export type CompletionRegistered = {
   completion: Maybe<Completion>;
   completion_id: Maybe<Scalars['String']['output']>;
   course: Maybe<Course>;
+  course_code: Maybe<Scalars['String']['output']>;
   course_id: Maybe<Scalars['String']['output']>;
   created_at: Scalars['DateTime']['output'];
   id: Scalars['String']['output'];
@@ -250,6 +251,7 @@ export type CompletionRegisteredWhereInput = {
   completion?: InputMaybe<CompletionWhereInput>;
   completion_id?: InputMaybe<UuidNullableFilter>;
   course?: InputMaybe<CourseWhereInput>;
+  course_code?: InputMaybe<StringNullableFilter>;
   course_id?: InputMaybe<UuidNullableFilter>;
   created_at?: InputMaybe<DateTimeFilter>;
   id?: InputMaybe<UuidFilter>;
@@ -269,6 +271,7 @@ export type CompletionRegisteredWhereUniqueInput = {
   completion?: InputMaybe<CompletionWhereInput>;
   completion_id?: InputMaybe<UuidNullableFilter>;
   course?: InputMaybe<CourseWhereInput>;
+  course_code?: InputMaybe<StringNullableFilter>;
   course_id?: InputMaybe<UuidNullableFilter>;
   created_at?: InputMaybe<DateTimeFilter>;
   id?: InputMaybe<Scalars['String']['input']>;
@@ -4973,11 +4976,12 @@ export type CompletionEdgeFieldPolicy = {
 	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	node?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type CompletionRegisteredKeySpecifier = ('completion' | 'completion_id' | 'course' | 'course_id' | 'created_at' | 'id' | 'organization' | 'organization_id' | 'real_student_number' | 'registration_date' | 'updated_at' | 'user' | 'user_id' | CompletionRegisteredKeySpecifier)[];
+export type CompletionRegisteredKeySpecifier = ('completion' | 'completion_id' | 'course' | 'course_code' | 'course_id' | 'created_at' | 'id' | 'organization' | 'organization_id' | 'real_student_number' | 'registration_date' | 'updated_at' | 'user' | 'user_id' | CompletionRegisteredKeySpecifier)[];
 export type CompletionRegisteredFieldPolicy = {
 	completion?: FieldPolicy<any> | FieldReadFunction<any>,
 	completion_id?: FieldPolicy<any> | FieldReadFunction<any>,
 	course?: FieldPolicy<any> | FieldReadFunction<any>,
+	course_code?: FieldPolicy<any> | FieldReadFunction<any>,
 	course_id?: FieldPolicy<any> | FieldReadFunction<any>,
 	created_at?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,

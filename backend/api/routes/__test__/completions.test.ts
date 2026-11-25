@@ -583,6 +583,31 @@ describe("API", () => {
         }),
       ).toBe(2)
     })
+
+    it("stores the course code and registers each code once per completion", async () => {
+      const completion_id = "30000000-0000-0000-0000-000000000102"
+      const post = (course_code: string) =>
+        postCompletions({
+          data: {
+            completions: [
+              { completion_id, student_number: "12345", course_code },
+            ],
+          },
+        })
+
+      await post("TKT210281")
+      await post("TKT210281")
+      await post("TKT210282")
+
+      const registrations = await ctx.prisma.completionRegistered.findMany({
+        where: { completion_id },
+        orderBy: { course_code: "asc" },
+      })
+      expect(registrations.map((r) => r.course_code)).toEqual([
+        "TKT210281",
+        "TKT210282",
+      ])
+    })
   })
 
   describe("/api/completions/:courseId/csv/token", () => {

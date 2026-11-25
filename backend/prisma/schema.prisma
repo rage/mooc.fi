@@ -67,6 +67,7 @@ model CompletionRegistered {
   id                  String        @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   real_student_number String
   registration_date   DateTime?
+  course_code         String?
   user_id             String?       @db.Uuid
   completion_id       String?       @db.Uuid
   course_id           String?       @db.Uuid

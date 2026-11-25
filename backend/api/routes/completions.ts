@@ -68,6 +68,7 @@ interface RegisterCompletionInput {
   eligible_for_ects?: boolean
   tier?: number
   registration_date?: string
+  course_code?: string
 }
 interface Tier {
   tier: number
@@ -843,6 +844,7 @@ export class CompletionController extends Controller {
         .shape({
           completion_id: yup.string().min(32).max(36).required(),
           student_number: yup.string().required(),
+          course_code: yup.string().min(1).optional(),
         })
         .required(),
     )
@@ -866,6 +868,21 @@ export class CompletionController extends Controller {
           return Promise.resolve()
         }
 
+        if (entry.course_code) {
+          const alreadyRegistered = await prisma.completionRegistered.findFirst(
+            {
+              where: {
+                completion_id: entry.completion_id,
+                course_code: entry.course_code,
+              },
+              select: { id: true },
+            },
+          )
+          if (alreadyRegistered) {
+            return
+          }
+        }
+
         return prisma.completionRegistered.create({
           data: {
             completion: {
@@ -877,6 +894,7 @@ export class CompletionController extends Controller {
             course: { connect: { id: course_id } },
             real_student_number: entry.student_number,
             registration_date: entry.registration_date ?? null,
+            course_code: entry.course_code ?? null,
             user: { connect: { id: user_id } },
           },
         })

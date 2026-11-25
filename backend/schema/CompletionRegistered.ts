@@ -31,6 +31,7 @@ export const CompletionRegistered = objectType({
     t.model.organization()
     t.model.user()
     t.model.registration_date()
+    t.model.course_code()
   },
 })
 
