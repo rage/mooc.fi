@@ -354,6 +354,7 @@ describe("API", () => {
               organization_slug: "test",
               registration_date: "2026-10-01T00:00:00.000Z",
               created_at: expect.any(String),
+              course_code: null,
             },
           ],
         },

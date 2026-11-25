@@ -223,6 +223,7 @@ export class CompletionController extends Controller {
           select: {
             registration_date: true,
             created_at: true,
+            course_code: true,
             organization: { select: { slug: true } },
           },
         },
@@ -237,6 +238,7 @@ export class CompletionController extends Controller {
           organization_slug: registration.organization?.slug ?? null,
           registration_date: registration.registration_date,
           created_at: registration.created_at,
+          course_code: registration.course_code,
         })),
       })),
     )
