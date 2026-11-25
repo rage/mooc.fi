@@ -93,6 +93,12 @@ export const isCourseOwner =
     )
   }
 
+/** The course whose owners may read `course`'s completions: the handling course that stores them. */
+export const completionsOwnerCourseId = (course: {
+  id: string
+  completions_handled_by_id: string | null
+}) => course.completions_handled_by_id ?? course.id
+
 export const isAdminOrCourseOwner =
   (course_id: string): AuthorizeFunction =>
   async (root, args, ctx, info) => {

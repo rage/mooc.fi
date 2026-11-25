@@ -61,10 +61,20 @@ const StyledWideContainer = styled(WideContainer)`
 interface EmailControlProps {
   course: CourseDashboardCourseFieldsFragment
   baseUrl: string
+  // Email templates are admin-only; owners can only subscribe to course stats.
+  admin?: boolean
 }
 
-const CompletionEmailControl = ({ course, baseUrl }: EmailControlProps) => {
+const CompletionEmailControl = ({
+  course,
+  baseUrl,
+  admin,
+}: EmailControlProps) => {
   const t = useTranslator(CoursesTranslations)
+
+  if (!admin) {
+    return null
+  }
 
   if (course.completion_email == null) {
     return (
@@ -97,6 +107,7 @@ type CourseStatsSubscriptions = NonNullable<
 const CourseStatsEmailControl = ({
   course,
   baseUrl,
+  admin,
   subscriptions,
 }: EmailControlProps & { subscriptions: CourseStatsSubscriptions }) => {
   const client = useApolloClient()
@@ -135,6 +146,9 @@ const CourseStatsEmailControl = ({
   const t = useTranslator(CoursesTranslations)
 
   if (course.course_stats_email === null) {
+    if (!admin) {
+      return null
+    }
     return (
       <CreateEmailTemplateDialog
         buttonText={t("createCourseStatsEmail")}
@@ -143,17 +157,21 @@ const CourseStatsEmailControl = ({
       />
     )
   }
+  const label = `${t("courseStatsEmail")}: ${course.course_stats_email?.name}`
+
   return (
     <>
-      <Link
-        href={`${baseUrl}/email-templates/${course.course_stats_email?.id}`}
-        prefetch={false}
-        passHref
-      >
-        <Button color="info">
-          {t("courseStatsEmail")}: {course.course_stats_email?.name}
-        </Button>
-      </Link>
+      {admin ? (
+        <Link
+          href={`${baseUrl}/email-templates/${course.course_stats_email?.id}`}
+          prefetch={false}
+          passHref
+        >
+          <Button color="info">{label}</Button>
+        </Link>
+      ) : (
+        <Typography>{label}</Typography>
+      )}
       <Button onClick={handleSubscribe} disabled={subscribing}>
         {isSubscribed ? t("unsubscribe") : t("subscribe")}
       </Button>
@@ -195,7 +213,7 @@ const RecheckCompletionsButton = ({
   )
 }
 
-const Course = () => {
+const Course = ({ admin }: { admin?: boolean }) => {
   const isOld = useIsOld()
   const baseUrl = isOld ? "/_old" : "/admin"
   const slug = useQueryParameter("slug")
@@ -290,10 +308,15 @@ const Course = () => {
             {t("courseHome")}
           </SubtitleNoBackground>
           <Row>
-            <CompletionEmailControl course={data.course} baseUrl={baseUrl} />
+            <CompletionEmailControl
+              course={data.course}
+              baseUrl={baseUrl}
+              admin={admin}
+            />
             <CourseStatsEmailControl
               course={data.course}
               baseUrl={baseUrl}
+              admin={admin}
               subscriptions={
                 userData.currentUser?.course_stats_subscriptions ?? []
               }

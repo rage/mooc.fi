@@ -4,6 +4,7 @@ import {
   FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
   FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
   getTestContext,
+  grantOwnership,
   setupTMCWithDefaultFakeUsers,
 } from "../../../tests"
 import { seed } from "../../../tests/data"
@@ -125,6 +126,61 @@ describe("Completion", () => {
         expect(ids(res).completions.length).toBeGreaterThan(1)
         expect(ids(res).completions).toContain(EARLY_COMPLETION_ID)
         expect(ids(res).completionsPaginated).toEqual(ids(res).completions)
+      })
+    })
+
+    describe("as a course owner", () => {
+      it("lists their course's completions", async () => {
+        const res = await ctx.client.request<any>(
+          completionsQuery,
+          { course: "course2" },
+          FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+        )
+
+        expect(res.completions.length).toBeGreaterThan(0)
+        expect(res.completionsPaginated.edges).toHaveLength(
+          res.completions.length,
+        )
+      })
+
+      it("refuses another course's completions", async () => {
+        await expect(
+          ctx.client.request(
+            completionsQuery,
+            { course: "course1" },
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+          ),
+        ).rejects.toThrow(/Not authorized/)
+      })
+
+      it("refuses completions handled by a course they don't own", async () => {
+        await grantOwnership(ctx.prisma, "00000000000000000000000000000667")
+
+        await expect(
+          ctx.client.request(
+            completionsQuery,
+            { course: "handled" },
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+          ),
+        ).rejects.toThrow(/Not authorized/)
+      })
+
+      it("lists completions handled by a course they own", async () => {
+        await grantOwnership(ctx.prisma, "00000000000000000000000000000666")
+
+        const res = await ctx.client.request<any>(
+          completionsQuery,
+          { course: "handled" },
+          FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+        )
+
+        const handlerCompletionIds = ["30000000-0000-0000-0000-000000000107"]
+        expect(res.completions.map((c: any) => c.id)).toEqual(
+          handlerCompletionIds,
+        )
+        expect(
+          res.completionsPaginated.edges.map((e: any) => e.node.id),
+        ).toEqual(handlerCompletionIds)
       })
     })
   })

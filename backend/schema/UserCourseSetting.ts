@@ -10,7 +10,8 @@ import {
 
 import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
 
-import { isAdmin } from "../accessControl"
+import { isAdmin, isCourseOwner } from "../accessControl"
+import { Context } from "../context"
 import { Prisma } from "../generated/prisma"
 import { GraphQLForbiddenError, GraphQLUserInputError } from "../lib/errors"
 import { buildUserSearch, isDefined } from "../util"
@@ -33,6 +34,15 @@ export const UserCourseSetting = objectType({
     t.model.user()
   },
 })
+
+/** The course storing `courseId`'s user course settings: the one it inherits them from, else itself. */
+async function findSettingsCourseId(ctx: Context, courseId: string) {
+  const course = await ctx.prisma.course.findUnique({
+    where: { id: courseId },
+    select: { id: true, inherit_settings_from_id: true },
+  })
+  return course && (course.inherit_settings_from_id ?? course.id)
+}
 
 export const UserCourseSettingQueries = extendType({
   type: "Query",
@@ -200,20 +210,26 @@ export const UserCourseSettingQueries = extendType({
           throw new GraphQLForbiddenError("Cannot query more than 50 objects")
         }
       },
-      authorize: isAdmin,
+      authorize: async (root, args, ctx, info) => {
+        if (isAdmin(root, args, ctx, info)) {
+          return true
+        }
+
+        // Without course_id this lists a user's settings across every course.
+        const settingsCourseId =
+          args.course_id && (await findSettingsCourseId(ctx, args.course_id))
+
+        return settingsCourseId
+          ? await isCourseOwner(settingsCourseId)(root, args, ctx, info)
+          : false
+      },
       resolve: async (_, args, ctx) => {
         const { user_id, user_upstream_id, search } = args
 
         let { course_id } = args
 
         if (course_id) {
-          const inheritSettingsCourse = await ctx.prisma.course
-            .findUnique({ where: { id: course_id } })
-            .inherit_settings_from()
-
-          if (inheritSettingsCourse) {
-            course_id = inheritSettingsCourse.id
-          }
+          course_id = (await findSettingsCourseId(ctx, course_id)) ?? course_id
         }
 
         if (!course_id && !user_id && !user_upstream_id) {

@@ -11,7 +11,7 @@ import {
   stringArg,
 } from "nexus"
 
-import { isAdmin } from "../accessControl"
+import { isAdmin, isCourseOwner } from "../accessControl"
 import {
   PointsByGroup,
   ProgressExtra,
@@ -24,6 +24,7 @@ import {
   BAItiers,
   exerciseCompletionsNeeded,
 } from "../config/courseConfig"
+import { Context } from "../context"
 import { Prisma } from "../generated/prisma"
 import { GraphQLUserInputError } from "../lib/errors"
 import { ensureDefinedArray, filterNullFields } from "../util"
@@ -233,6 +234,20 @@ export const UserCourseProgress = objectType({
   },
 })
 
+/** The course `userCourseProgresses` lists: the slug's course when it exists, else `course_id`. */
+async function findProgressesCourseId(
+  ctx: Context,
+  args: { course_slug?: string | null; course_id?: string | null },
+) {
+  const course = args.course_slug
+    ? await ctx.prisma.course.findUniqueOrAlias({
+        where: { slug: args.course_slug },
+        select: { id: true },
+      })
+    : null
+  return course?.id ?? args.course_id ?? undefined
+}
+
 export const UserCourseProgressQueries = extendType({
   type: "Query",
   definition(t) {
@@ -276,10 +291,21 @@ export const UserCourseProgressQueries = extendType({
         take: intArg(),
         cursor: arg({ type: "UserCourseProgressCursorInput" }), // was: "UserCourseProgressWhereUniqueInput" but that broke for some reason
       },
-      authorize: isAdmin,
+      authorize: async (root, args, ctx, info) => {
+        if (isAdmin(root, args, ctx, info)) {
+          return true
+        }
+
+        const courseId = await findProgressesCourseId(ctx, args)
+
+        if (!courseId) {
+          return false
+        }
+
+        return await isCourseOwner(courseId)(root, args, ctx, info)
+      },
       resolve: async (_, args, ctx) => {
-        const { course_slug, skip, take, cursor, user_id } = args
-        let { course_id } = args
+        const { course_slug, course_id, skip, take, cursor, user_id } = args
 
         if (!course_id && !course_slug) {
           throw new GraphQLUserInputError(
@@ -288,26 +314,16 @@ export const UserCourseProgressQueries = extendType({
           )
         }
 
-        if (course_slug) {
-          const course = await ctx.prisma.course.findUniqueOrAlias({
-            where: {
-              slug: course_slug,
-            },
-          })
+        const courseId = await findProgressesCourseId(ctx, args)
 
-          if (!course && !course_id) {
-            throw new GraphQLUserInputError("course not found")
-          }
-
-          if (course) {
-            course_id = course.id
-          }
+        if (!courseId) {
+          throw new GraphQLUserInputError("course not found")
         }
 
         return ctx.prisma.course
           .findUnique({
             where: {
-              id: course_id!,
+              id: courseId,
             },
           })
           .user_course_progresses({
