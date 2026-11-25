@@ -105,7 +105,9 @@ describe("course points as a course owner", () => {
         FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
       )
 
-      expect(res.userCourseSettings.edges).toBeInstanceOf(Array)
+      expect(
+        res.userCourseSettings.edges.map((edge: any) => edge.node.id),
+      ).toEqual(["40000000-0000-0000-0000-000000000105"])
     })
   })
 

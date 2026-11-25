@@ -159,7 +159,7 @@ const CourseStatsEmailControl = ({
   }
   return (
     <>
-      {admin && (
+      {admin ? (
         <Link
           href={`${baseUrl}/email-templates/${course.course_stats_email?.id}`}
           prefetch={false}
@@ -169,6 +169,10 @@ const CourseStatsEmailControl = ({
             {t("courseStatsEmail")}: {course.course_stats_email?.name}
           </Button>
         </Link>
+      ) : (
+        <Typography>
+          {t("courseStatsEmail")}: {course.course_stats_email?.name}
+        </Typography>
       )}
       <Button onClick={handleSubscribe} disabled={subscribing}>
         {isSubscribed ? t("unsubscribe") : t("subscribe")}

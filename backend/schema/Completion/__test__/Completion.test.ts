@@ -181,8 +181,13 @@ describe("Completion", () => {
           FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
         )
 
-        expect(res.completions).toBeInstanceOf(Array)
-        expect(res.completionsPaginated.edges).toBeInstanceOf(Array)
+        const handlerCompletionIds = ["30000000-0000-0000-0000-000000000107"]
+        expect(res.completions.map((c: any) => c.id)).toEqual(
+          handlerCompletionIds,
+        )
+        expect(
+          res.completionsPaginated.edges.map((e: any) => e.node.id),
+        ).toEqual(handlerCompletionIds)
       })
     })
   })
