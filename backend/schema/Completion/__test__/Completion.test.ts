@@ -4,6 +4,7 @@ import {
   FAKE_ADMIN_USER_AUTHORIZATION_HEADERS,
   FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
   getTestContext,
+  grantOwnership,
   setupTMCWithDefaultFakeUsers,
 } from "../../../tests"
 import { seed } from "../../../tests/data"
@@ -129,14 +130,6 @@ describe("Completion", () => {
     })
 
     describe("as a course owner", () => {
-      const grantOwnership = (courseId: string) =>
-        ctx.prisma.courseOwnership.create({
-          data: {
-            user: { connect: { id: "20000000000000000000000000000102" } },
-            course: { connect: { id: courseId } },
-          },
-        })
-
       it("lists their course's completions", async () => {
         const res = await ctx.client.request<any>(
           completionsQuery,
@@ -161,7 +154,7 @@ describe("Completion", () => {
       })
 
       it("refuses completions handled by a course they don't own", async () => {
-        await grantOwnership("00000000000000000000000000000667")
+        await grantOwnership(ctx.prisma, "00000000000000000000000000000667")
 
         await expect(
           ctx.client.request(
@@ -173,7 +166,7 @@ describe("Completion", () => {
       })
 
       it("lists completions handled by a course they own", async () => {
-        await grantOwnership("00000000000000000000000000000666")
+        await grantOwnership(ctx.prisma, "00000000000000000000000000000666")
 
         const res = await ctx.client.request<any>(
           completionsQuery,

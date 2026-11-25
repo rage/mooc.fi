@@ -1,7 +1,11 @@
 import { booleanArg, intArg, list, nonNull, objectType, stringArg } from "nexus"
 import { FieldAuthorizeResolver } from "nexus/dist/plugins/fieldAuthorizePlugin"
 
-import { isAdmin, isAdminOrCourseOwner } from "../../accessControl"
+import {
+  completionsOwnerCourseId,
+  isAdmin,
+  isAdminOrCourseOwner,
+} from "../../accessControl"
 import { Prisma } from "../../generated/prisma"
 import { GraphQLForbiddenError, GraphQLUserInputError } from "../../lib/errors"
 import { filterNullFields } from "../../util"
@@ -13,19 +17,12 @@ const isAdminOrRootCourseOwner: FieldAuthorizeResolver<"Course", any> = (
   info,
 ) => isAdminOrCourseOwner(root.id)({}, args, ctx, info)
 
-// Completions are stored on the handling course, so its owners decide who reads them.
 const isAdminOrCompletionsCourseOwner: FieldAuthorizeResolver<"Course", any> = (
   root,
   args,
   ctx,
   info,
-) =>
-  isAdminOrCourseOwner(root.completions_handled_by_id ?? root.id)(
-    {},
-    args,
-    ctx,
-    info,
-  )
+) => isAdminOrCourseOwner(completionsOwnerCourseId(root))({}, args, ctx, info)
 
 export const Course = objectType({
   name: "Course",

@@ -6,6 +6,7 @@ import { FieldAuthorizeResolver } from "nexus/dist/plugins/fieldAuthorizePlugin"
 import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
 
 import {
+  completionsOwnerCourseId,
   isAdmin,
   isCourseOwner,
   isOrganization,
@@ -43,10 +44,7 @@ async function delegatedCompletionsFilter(
   return cutoff ? completedBeforeCutoffWhere(cutoff) : {}
 }
 
-/**
- * Passes for organizations, admins, and owners of the course that stores the `course` slug's
- * completions (its `completions_handled_by` course, else itself), matching `Course.completions`.
- */
+/** Passes for organizations, admins, and owners of the course storing the `course` slug's completions. */
 const canReadCourseCompletions: FieldAuthorizeResolver<
   "Query",
   "completions" | "completionsPaginated"
@@ -64,7 +62,7 @@ const canReadCourseCompletions: FieldAuthorizeResolver<
     return false
   }
 
-  return await isCourseOwner(course.completions_handled_by_id ?? course.id)(
+  return await isCourseOwner(completionsOwnerCourseId(course))(
     root,
     args,
     ctx,

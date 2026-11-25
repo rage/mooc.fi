@@ -157,6 +157,8 @@ const CourseStatsEmailControl = ({
       />
     )
   }
+  const label = `${t("courseStatsEmail")}: ${course.course_stats_email?.name}`
+
   return (
     <>
       {admin ? (
@@ -165,14 +167,10 @@ const CourseStatsEmailControl = ({
           prefetch={false}
           passHref
         >
-          <Button color="info">
-            {t("courseStatsEmail")}: {course.course_stats_email?.name}
-          </Button>
+          <Button color="info">{label}</Button>
         </Link>
       ) : (
-        <Typography>
-          {t("courseStatsEmail")}: {course.course_stats_email?.name}
-        </Typography>
+        <Typography>{label}</Typography>
       )}
       <Button onClick={handleSubscribe} disabled={subscribing}>
         {isSubscribed ? t("unsubscribe") : t("subscribe")}

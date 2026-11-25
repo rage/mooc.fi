@@ -3,6 +3,7 @@ import { gql } from "graphql-request"
 import {
   FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
   getTestContext,
+  grantOwnership,
   setupTMCWithDefaultFakeUsers,
 } from "../../tests"
 import { seed } from "../../tests/data/seed"
@@ -37,14 +38,6 @@ const userCourseProgressesQuery = gql`
     }
   }
 `
-
-const grantOwnership = (courseId: string) =>
-  ctx.prisma.courseOwnership.create({
-    data: {
-      user: { connect: { id: "20000000000000000000000000000102" } },
-      course: { connect: { id: courseId } },
-    },
-  })
 
 describe("course points as a course owner", () => {
   setupTMCWithDefaultFakeUsers()
@@ -85,7 +78,7 @@ describe("course points as a course owner", () => {
     })
 
     it("refuses settings inherited from a course they don't own", async () => {
-      await grantOwnership(inheritingId)
+      await grantOwnership(ctx.prisma, inheritingId)
 
       await expect(
         ctx.client.request(
@@ -97,7 +90,7 @@ describe("course points as a course owner", () => {
     })
 
     it("lists settings inherited from a course they own", async () => {
-      await grantOwnership(settingsSourceId)
+      await grantOwnership(ctx.prisma, settingsSourceId)
 
       const res = await ctx.client.request<any>(
         userCourseSettingsQuery,
@@ -113,7 +106,7 @@ describe("course points as a course owner", () => {
 
   describe("userCourseProgresses", () => {
     it("lists their course's progresses by slug and by id", async () => {
-      await grantOwnership(course1Id)
+      await grantOwnership(ctx.prisma, course1Id)
 
       const bySlug = await ctx.client.request<any>(
         userCourseProgressesQuery,
