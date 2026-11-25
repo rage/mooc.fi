@@ -10,7 +10,7 @@ import {
 
 import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
 
-import { isAdmin } from "../accessControl"
+import { isAdmin, isCourseOwner } from "../accessControl"
 import { Prisma } from "../generated/prisma"
 import { GraphQLForbiddenError, GraphQLUserInputError } from "../lib/errors"
 import { buildUserSearch, isDefined } from "../util"
@@ -200,7 +200,29 @@ export const UserCourseSettingQueries = extendType({
           throw new GraphQLForbiddenError("Cannot query more than 50 objects")
         }
       },
-      authorize: isAdmin,
+      // Owners can only list a course's settings, which live on its inherit_settings_from course.
+      authorize: async (root, args, ctx, info) => {
+        if (isAdmin(root, args, ctx, info)) {
+          return true
+        }
+
+        if (!args.course_id) {
+          return false
+        }
+
+        const course = await ctx.prisma.course.findUnique({
+          where: { id: args.course_id },
+          select: { id: true, inherit_settings_from_id: true },
+        })
+
+        if (!course) {
+          return false
+        }
+
+        return await isCourseOwner(
+          course.inherit_settings_from_id ?? course.id,
+        )(root, args, ctx, info)
+      },
       resolve: async (_, args, ctx) => {
         const { user_id, user_upstream_id, search } = args
 

@@ -1,14 +1,14 @@
 // import { convertPagination } from "../../util/db-functions"
 import { merge } from "lodash"
 import { extendType, idArg, intArg, nonNull, stringArg } from "nexus"
+import { FieldAuthorizeResolver } from "nexus/dist/plugins/fieldAuthorizePlugin"
 
 import { findManyCursorConnection } from "@devoxa/prisma-relay-cursor-connection"
 
 import {
   isAdmin,
-  isAdminOrCourseOwner,
+  isCourseOwner,
   isOrganization,
-  or,
   Role,
 } from "../../accessControl"
 import { Context } from "../../context"
@@ -43,6 +43,35 @@ async function delegatedCompletionsFilter(
   return cutoff ? completedBeforeCutoffWhere(cutoff) : {}
 }
 
+/**
+ * Passes for organizations, admins, and owners of the course that stores the `course` slug's
+ * completions (its `completions_handled_by` course, else itself), matching `Course.completions`.
+ */
+const canReadCourseCompletions: FieldAuthorizeResolver<
+  "Query",
+  "completions" | "completionsPaginated"
+> = async (root, args, ctx, info) => {
+  if (isOrganization(root, args, ctx, info) || isAdmin(root, args, ctx, info)) {
+    return true
+  }
+
+  const course = await ctx.prisma.course.findUniqueOrAlias({
+    where: { slug: args.course },
+    select: { id: true, completions_handled_by_id: true },
+  })
+
+  if (!course) {
+    return false
+  }
+
+  return await isCourseOwner(course.completions_handled_by_id ?? course.id)(
+    root,
+    args,
+    ctx,
+    info,
+  )
+}
+
 export const CompletionQueries = extendType({
   type: "Query",
   definition(t) {
@@ -56,25 +85,7 @@ export const CompletionQueries = extendType({
         last: intArg(),
         before: idArg(),
       },
-      authorize: async (root, args, ctx, info) => {
-        if (
-          isOrganization(root, args, ctx, info) ||
-          isAdmin(root, args, ctx, info)
-        ) {
-          return true
-        }
-
-        const course = await ctx.prisma.course.findUniqueOrAlias({
-          where: { slug: args.course },
-          select: { id: true },
-        })
-
-        if (!course) {
-          return false
-        }
-
-        return await isAdminOrCourseOwner(course.id)(root, args, ctx, info)
-      },
+      authorize: canReadCourseCompletions,
       resolve: async (_, args, ctx) => {
         const { first, last, completion_language } = args
         const { course: slug } = args
@@ -124,7 +135,7 @@ export const CompletionQueries = extendType({
         before: stringArg(),
         after: stringArg(),
       },
-      authorize: or(isOrganization, isAdmin),
+      authorize: canReadCourseCompletions,
       resolve: async (_, args, ctx, __) => {
         const { completion_language, first, last, before, after, search } = args
         const { course: slug } = args

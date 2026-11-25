@@ -11,7 +11,7 @@ import {
   stringArg,
 } from "nexus"
 
-import { isAdmin } from "../accessControl"
+import { isAdmin, isCourseOwner } from "../accessControl"
 import {
   PointsByGroup,
   ProgressExtra,
@@ -276,7 +276,26 @@ export const UserCourseProgressQueries = extendType({
         take: intArg(),
         cursor: arg({ type: "UserCourseProgressCursorInput" }), // was: "UserCourseProgressWhereUniqueInput" but that broke for some reason
       },
-      authorize: isAdmin,
+      authorize: async (root, args, ctx, info) => {
+        if (isAdmin(root, args, ctx, info)) {
+          return true
+        }
+
+        // Picks the course like the resolver does: a matching slug wins over course_id.
+        const course = args.course_slug
+          ? await ctx.prisma.course.findUniqueOrAlias({
+              where: { slug: args.course_slug },
+              select: { id: true },
+            })
+          : null
+        const courseId = course?.id ?? args.course_id
+
+        if (!courseId) {
+          return false
+        }
+
+        return await isCourseOwner(courseId)(root, args, ctx, info)
+      },
       resolve: async (_, args, ctx) => {
         const { course_slug, skip, take, cursor, user_id } = args
         let { course_id } = args

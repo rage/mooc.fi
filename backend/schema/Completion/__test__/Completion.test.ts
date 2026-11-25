@@ -127,6 +127,64 @@ describe("Completion", () => {
         expect(ids(res).completionsPaginated).toEqual(ids(res).completions)
       })
     })
+
+    describe("as a course owner", () => {
+      const grantOwnership = (courseId: string) =>
+        ctx.prisma.courseOwnership.create({
+          data: {
+            user: { connect: { id: "20000000000000000000000000000102" } },
+            course: { connect: { id: courseId } },
+          },
+        })
+
+      it("lists their course's completions", async () => {
+        const res = await ctx.client.request<any>(
+          completionsQuery,
+          { course: "course2" },
+          FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+        )
+
+        expect(res.completions.length).toBeGreaterThan(0)
+        expect(res.completionsPaginated.edges).toHaveLength(
+          res.completions.length,
+        )
+      })
+
+      it("refuses another course's completions", async () => {
+        await expect(
+          ctx.client.request(
+            completionsQuery,
+            { course: "course1" },
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+          ),
+        ).rejects.toThrow(/Not authorized/)
+      })
+
+      it("refuses completions handled by a course they don't own", async () => {
+        await grantOwnership("00000000000000000000000000000667")
+
+        await expect(
+          ctx.client.request(
+            completionsQuery,
+            { course: "handled" },
+            FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+          ),
+        ).rejects.toThrow(/Not authorized/)
+      })
+
+      it("lists completions handled by a course they own", async () => {
+        await grantOwnership("00000000000000000000000000000666")
+
+        const res = await ctx.client.request<any>(
+          completionsQuery,
+          { course: "handled" },
+          FAKE_NORMAL_USER_AUTHORIZATION_HEADERS,
+        )
+
+        expect(res.completions).toBeInstanceOf(Array)
+        expect(res.completionsPaginated.edges).toBeInstanceOf(Array)
+      })
+    })
   })
 
   describe("mutations", () => {
