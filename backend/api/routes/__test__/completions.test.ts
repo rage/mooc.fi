@@ -354,6 +354,7 @@ describe("API", () => {
               organization_slug: "test",
               registration_date: "2026-10-01T00:00:00.000Z",
               created_at: expect.any(String),
+              course_code: null,
             },
           ],
         },
@@ -582,6 +583,34 @@ describe("API", () => {
           where: { completion_id: "30000000-0000-0000-0000-000000000102" },
         }),
       ).toBe(2)
+    })
+
+    it("stores the course code and registers each code once per completion", async () => {
+      const completion_id = "30000000-0000-0000-0000-000000000102"
+      const post = (...course_codes: string[]) =>
+        postCompletions({
+          data: {
+            completions: course_codes.map((course_code) => ({
+              completion_id,
+              student_number: "12345",
+              course_code,
+            })),
+          },
+        })
+
+      // One batch inserts its entries concurrently, so the repeat races the first insert.
+      await post("TKT210281", "TKT210281")
+      await post("TKT210281")
+      await post("TKT210282")
+
+      const registrations = await ctx.prisma.completionRegistered.findMany({
+        where: { completion_id },
+        orderBy: { course_code: "asc" },
+      })
+      expect(registrations.map((r) => r.course_code)).toEqual([
+        "TKT210281",
+        "TKT210282",
+      ])
     })
   })
 

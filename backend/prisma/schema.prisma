@@ -67,6 +67,7 @@ model CompletionRegistered {
   id                  String        @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   real_student_number String
   registration_date   DateTime?
+  course_code         String?
   user_id             String?       @db.Uuid
   completion_id       String?       @db.Uuid
   course_id           String?       @db.Uuid
@@ -78,6 +79,7 @@ model CompletionRegistered {
   organization        Organization? @relation(fields: [organization_id], references: [id], onUpdate: NoAction)
   user                User?         @relation(fields: [user_id], references: [id], onUpdate: NoAction)
 
+  @@unique([completion_id, course_code])
   @@index([completion_id])
   @@index([course_id])
   @@index([organization_id])

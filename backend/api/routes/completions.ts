@@ -41,6 +41,11 @@ const linkLanguagePreference = (language: string) => {
   return index === -1 ? LINK_LANGUAGES.length : index
 }
 
+/** A write refused by a unique index, such as a repeat of an already recorded registration. */
+const isUniqueViolation = (error: unknown) =>
+  error instanceof Prisma.PrismaClientKnownRequestError &&
+  error.code === "P2002"
+
 const delegatedHandlerCourseWhere = (id: string) =>
   ({
     id,
@@ -68,6 +73,7 @@ interface RegisterCompletionInput {
   eligible_for_ects?: boolean
   tier?: number
   registration_date?: string
+  course_code?: string
 }
 interface Tier {
   tier: number
@@ -222,6 +228,7 @@ export class CompletionController extends Controller {
           select: {
             registration_date: true,
             created_at: true,
+            course_code: true,
             organization: { select: { slug: true } },
           },
         },
@@ -236,6 +243,7 @@ export class CompletionController extends Controller {
           organization_slug: registration.organization?.slug ?? null,
           registration_date: registration.registration_date,
           created_at: registration.created_at,
+          course_code: registration.course_code,
         })),
       })),
     )
@@ -843,6 +851,7 @@ export class CompletionController extends Controller {
         .shape({
           completion_id: yup.string().min(32).max(36).required(),
           student_number: yup.string().required(),
+          course_code: yup.string().min(1).optional(),
         })
         .required(),
     )
@@ -866,20 +875,28 @@ export class CompletionController extends Controller {
           return Promise.resolve()
         }
 
-        return prisma.completionRegistered.create({
-          data: {
-            completion: {
-              connect: { id: entry.completion_id },
+        try {
+          await prisma.completionRegistered.create({
+            data: {
+              completion: {
+                connect: { id: entry.completion_id },
+              },
+              organization: {
+                connect: { id: org?.id },
+              },
+              course: { connect: { id: course_id } },
+              real_student_number: entry.student_number,
+              registration_date: entry.registration_date ?? null,
+              course_code: entry.course_code ?? null,
+              user: { connect: { id: user_id } },
             },
-            organization: {
-              connect: { id: org?.id },
-            },
-            course: { connect: { id: course_id } },
-            real_student_number: entry.student_number,
-            registration_date: entry.registration_date ?? null,
-            user: { connect: { id: user_id } },
-          },
-        })
+          })
+        } catch (error) {
+          // A retried or concurrent registration of the same course code is already recorded.
+          if (!isUniqueViolation(error)) {
+            throw error
+          }
+        }
       })
     }
 
