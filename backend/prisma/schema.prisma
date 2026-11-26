@@ -79,6 +79,7 @@ model CompletionRegistered {
   organization        Organization? @relation(fields: [organization_id], references: [id], onUpdate: NoAction)
   user                User?         @relation(fields: [user_id], references: [id], onUpdate: NoAction)
 
+  @@unique([completion_id, course_code])
   @@index([completion_id])
   @@index([course_id])
   @@index([organization_id])

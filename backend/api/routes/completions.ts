@@ -41,6 +41,11 @@ const linkLanguagePreference = (language: string) => {
   return index === -1 ? LINK_LANGUAGES.length : index
 }
 
+/** A write refused by a unique index, such as a repeat of an already recorded registration. */
+const isUniqueViolation = (error: unknown) =>
+  error instanceof Prisma.PrismaClientKnownRequestError &&
+  error.code === "P2002"
+
 const delegatedHandlerCourseWhere = (id: string) =>
   ({
     id,
@@ -870,36 +875,28 @@ export class CompletionController extends Controller {
           return Promise.resolve()
         }
 
-        if (entry.course_code) {
-          const alreadyRegistered = await prisma.completionRegistered.findFirst(
-            {
-              where: {
-                completion_id: entry.completion_id,
-                course_code: entry.course_code,
+        try {
+          await prisma.completionRegistered.create({
+            data: {
+              completion: {
+                connect: { id: entry.completion_id },
               },
-              select: { id: true },
+              organization: {
+                connect: { id: org?.id },
+              },
+              course: { connect: { id: course_id } },
+              real_student_number: entry.student_number,
+              registration_date: entry.registration_date ?? null,
+              course_code: entry.course_code ?? null,
+              user: { connect: { id: user_id } },
             },
-          )
-          if (alreadyRegistered) {
-            return
+          })
+        } catch (error) {
+          // A retried or concurrent registration of the same course code is already recorded.
+          if (!isUniqueViolation(error)) {
+            throw error
           }
         }
-
-        return prisma.completionRegistered.create({
-          data: {
-            completion: {
-              connect: { id: entry.completion_id },
-            },
-            organization: {
-              connect: { id: org?.id },
-            },
-            course: { connect: { id: course_id } },
-            real_student_number: entry.student_number,
-            registration_date: entry.registration_date ?? null,
-            course_code: entry.course_code ?? null,
-            user: { connect: { id: user_id } },
-          },
-        })
       })
     }
 

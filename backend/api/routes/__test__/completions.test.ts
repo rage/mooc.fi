@@ -587,16 +587,19 @@ describe("API", () => {
 
     it("stores the course code and registers each code once per completion", async () => {
       const completion_id = "30000000-0000-0000-0000-000000000102"
-      const post = (course_code: string) =>
+      const post = (...course_codes: string[]) =>
         postCompletions({
           data: {
-            completions: [
-              { completion_id, student_number: "12345", course_code },
-            ],
+            completions: course_codes.map((course_code) => ({
+              completion_id,
+              student_number: "12345",
+              course_code,
+            })),
           },
         })
 
-      await post("TKT210281")
+      // One batch inserts its entries concurrently, so the repeat races the first insert.
+      await post("TKT210281", "TKT210281")
       await post("TKT210281")
       await post("TKT210282")
 
